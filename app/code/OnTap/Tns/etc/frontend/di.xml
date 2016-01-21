@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Payment\Model\CcGenericConfigProvider">
+        <arguments>
+            <argument name="methodCodes" xsi:type="array">
+                <item name="tns_direct" xsi:type="string">tns_direct</item>
+                <item name="tns_hosted" xsi:type="string">tns_hosted</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="OnTap\Tns\Model\Ui\Direct\ConfigProvider">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsConfig</argument>
+        </arguments>
+    </type>
+    <type name="OnTap\Tns\Model\Ui\Hosted\ConfigProvider">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsHostedConfig</argument>
+        </arguments>
+    </type>
+    <type name="Magento\Checkout\Model\CompositeConfigProvider">
+        <arguments>
+            <argument name="configProviders" xsi:type="array">
+                <item name="tns_direct" xsi:type="object">OnTap\Tns\Model\Ui\Direct\ConfigProvider</item>
+                <item name="tns_hosted" xsi:type="object">OnTap\Tns\Model\Ui\Hosted\ConfigProvider</item>
+            </argument>
+        </arguments>
+    </type>
+</config>

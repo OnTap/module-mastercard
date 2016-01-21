@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <payment>
+            <tns_direct>
+                <active>0</active>
+                <title>Credit or Debit Card (TNS)</title>
+                <model>TnsDirectFacade</model>
+                <payment_action>authorize</payment_action>
+
+                <api_version>32</api_version>
+
+                <api_url>https://eu-gateway.mastercard.com/api/rest/</api_url>
+                <api_test_url>https://test-gateway.mastercard.com/api/rest/</api_test_url>
+
+                <cctypes>AE,VI,MC,JCB,DN</cctypes>
+                <date_delim>-</date_delim>
+                <cc_year_length>4</cc_year_length>
+                <ccfields>card_cvn,card_expiry_date,card_number</ccfields>
+                <allowspecific>0</allowspecific>
+                <debug>0</debug>
+                <test>0</test>
+
+                <!--<can_initialize>1</can_initialize>-->
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_capture_partial>1</can_capture_partial>
+                <can_void>1</can_void>
+                <can_refund>1</can_refund>
+                <can_refund_partial_per_invoice>1</can_refund_partial_per_invoice>
+                <can_use_internal>1</can_use_internal>
+                <can_use_checkout>1</can_use_checkout>
+                <is_gateway>1</is_gateway>
+
+                <paymentInfoKeys>gateway_code,txn_result,card_scheme,card_number,card_expiry_date,cvv_validation</paymentInfoKeys>
+                <!--<privateInfoKeys></privateInfoKeys>-->
+            </tns_direct>
+            <tns_hosted>
+                <active>0</active>
+                <title>Hosted (TNS)</title>
+                <model>TnsHostedFacade</model>
+                <payment_action>authorize</payment_action>
+
+                <allowspecific>0</allowspecific>
+            </tns_hosted>
+        </payment>
+    </default>
+</config>
