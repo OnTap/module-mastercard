@@ -7,7 +7,6 @@
 namespace OnTap\Tns\Gateway\Request\Direct;
 
 use Magento\Payment\Gateway\Request\BuilderInterface;
-use Magento\Payment\Gateway\Helper\SubjectReader;
 
 class AuthorizeDataBuilder implements BuilderInterface
 {
@@ -21,14 +20,8 @@ class AuthorizeDataBuilder implements BuilderInterface
      */
     public function build(array $buildSubject)
     {
-        $paymentDO = SubjectReader::readPayment($buildSubject);
-
         return [
             'apiOperation' => self::OPERATION,
-            'order' => [
-                'amount' => sprintf('%.2F', SubjectReader::readAmount($buildSubject)),
-                'currency' => $paymentDO->getOrder()->getCurrencyCode(),
-            ]
         ];
     }
 }

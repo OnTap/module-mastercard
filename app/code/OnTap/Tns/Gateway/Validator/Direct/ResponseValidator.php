@@ -149,6 +149,10 @@ class ResponseValidator extends AbstractValidator
             return $this->createResult(false, ["Response does not contain a body"]);
         }
 
+        if (isset($response['error'])) {
+            return $this->createResult(false, ["Invalid request"]);
+        }
+
         $errors = [];
 
         switch($response['result']) {

@@ -43,9 +43,9 @@ class ConfigProvider implements ConfigProviderInterface
      */
     public function getConfig()
     {
-        return ['payment' => [
-            self::METHOD_CODE => [
-
+        return [
+            'payment' => [
+                self::METHOD_CODE => [
                 ]
             ]
         ];

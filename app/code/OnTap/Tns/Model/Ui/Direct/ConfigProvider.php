@@ -46,13 +46,6 @@ class ConfigProvider implements ConfigProviderInterface
         return [
             'payment' => [
                 self::METHOD_CODE => [
-                    'orderCancelUrl' => 'orderCancelUrl',
-                    'paymentGetAccessCodeUrl' => 'paymentGetAccessCodeUrl',
-                    'paymentUpdateUrl' => 'paymentUpdateUrl',
-                    'connectionType' => 'connectionType',
-                    'cryptUrl' => 'cryptUrl',
-                    'encryptKey' => 'encryptKey',
-                    'endpoint' => 'endpoint'
                 ]
             ]
         ];

@@ -189,6 +189,10 @@
             <argument name="builders" xsi:type="array">
                 <item name="authorize" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\AuthorizeDataBuilder</item>
                 <item name="card" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\CardDataBuilder</item>
+                <item name="order" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\OrderDataBuilder</item>
+                <item name="billing" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\BillingDataBuilder</item>
+                <item name="shipping" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\ShippingDataBuilder</item>
+                <item name="customer" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\CustomerDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -198,6 +202,10 @@
             <argument name="builders" xsi:type="array">
                 <item name="sale" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\SaleDataBuilder</item>
                 <item name="card" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\CardDataBuilder</item>
+                <item name="order" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\OrderDataBuilder</item>
+                <item name="billing" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\BillingDataBuilder</item>
+                <item name="shipping" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\ShippingDataBuilder</item>
+                <item name="customer" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\CustomerDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
