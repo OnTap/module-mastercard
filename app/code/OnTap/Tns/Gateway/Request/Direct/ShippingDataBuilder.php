@@ -49,7 +49,7 @@ class ShippingDataBuilder implements BuilderInterface
             'shipping' => [
                 'address' => [
                     'city' => $shippingAddress->getCity(),
-                    'company' => $shippingAddress->getCompany(),
+                    'company' => $shippingAddress->getCompany() != "" ? $shippingAddress->getCompany() : null,
                     'country' => $country->getThreeLetterAbbreviation(),
                     'postcodeZip' => $shippingAddress->getPostcode(),
                     'stateProvince' => $shippingAddress->getRegionCode(),

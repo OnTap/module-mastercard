@@ -115,7 +115,7 @@
             <argument name="requestBuilder" xsi:type="object">TnsDirectCaptureDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">TnsDirectTransferFactory</argument>
             <argument name="client" xsi:type="object">OnTap\Tns\Gateway\Http\Client\Rest</argument>
-            <argument name="handler" xsi:type="object">TnsDirectAuthorizeResponseHandler</argument>
+            <argument name="handler" xsi:type="object">OnTap\Tns\Gateway\Response\Direct\TransactionIdHandler</argument>
             <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\Direct\ResponseValidator</argument>
         </arguments>
     </virtualType>
@@ -237,6 +237,8 @@
     <virtualType name="TnsDirectAuthorizeResponseHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
         <arguments>
             <argument name="handlers" xsi:type="array">
+                <item name="transaction" xsi:type="string">OnTap\Tns\Gateway\Response\Direct\TransactionIdHandler</item>
+                <item name="authorize" xsi:type="string">OnTap\Tns\Gateway\Response\Direct\AuthorizeHandler</item>
                 <item name="payment" xsi:type="string">OnTap\Tns\Gateway\Response\Direct\PaymentHandler</item>
             </argument>
         </arguments>
@@ -245,6 +247,7 @@
     <virtualType name="TnsDirectSaleResponseHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
         <arguments>
             <argument name="handlers" xsi:type="array">
+                <item name="transaction" xsi:type="string">OnTap\Tns\Gateway\Response\Direct\TransactionIdHandler</item>
                 <item name="payment" xsi:type="string">OnTap\Tns\Gateway\Response\Direct\PaymentHandler</item>
             </argument>
         </arguments>

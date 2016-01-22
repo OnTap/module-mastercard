@@ -49,7 +49,7 @@ class BillingDataBuilder implements BuilderInterface
             'billing' => [
                 'address' => [
                     'city' => $billingAddress->getCity(),
-                    'company' => $billingAddress->getCompany(),
+                    'company' => $billingAddress->getCompany() != "" ? $billingAddress->getCompany() : null,
                     'country' => $country->getThreeLetterAbbreviation(),
                     'postcodeZip' => $billingAddress->getPostcode(),
                     'stateProvince' => $billingAddress->getRegionCode(),

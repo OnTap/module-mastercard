@@ -37,6 +37,18 @@ class OrderDataBuilder implements BuilderInterface
     }
 
     /**
+     * @param \Magento\Sales\Model\Order\Payment $payment
+     * @return array
+     */
+    protected function getDiscountData(\Magento\Sales\Model\Order\Payment $payment)
+    {
+        $discount = abs($payment->getOrder()->getBaseDiscountAmount());
+        return [
+            'amount' => $discount
+        ];
+    }
+
+    /**
      * Builds ENV request
      *
      * @param array $buildSubject
@@ -56,10 +68,7 @@ class OrderDataBuilder implements BuilderInterface
                 'currency' => $order->getCurrencyCode(),
                 'item' => $this->getOrderItems($order->getItems()),
                 'shippingAndHandlingAmount' => $payment->getShippingAmount(),
-// @todo: Mage does not have a good discount support yet it seems
-//                'discount' => [
-//                    'amount' => ''
-//                ]
+                'discount' => $this->getDiscountData($payment)
             ]
         ];
     }

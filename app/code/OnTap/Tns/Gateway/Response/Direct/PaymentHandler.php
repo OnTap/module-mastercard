@@ -27,11 +27,7 @@ class PaymentHandler implements HandlerInterface
         /** @var Payment $payment */
         $payment = $paymentDO->getPayment();
         ContextHelper::assertOrderPayment($payment);
-
-        $payment->setTransactionId($response['transaction']['id']);
-        $payment->setLastTransId($response['transaction']['id']);
-        $payment->setIsTransactionClosed(false);
-
+        
         $payment->setAdditionalInformation('gateway_code', $response['response']['gatewayCode']);
         $payment->setAdditionalInformation('txn_result', $response['result']);
 
@@ -60,4 +56,3 @@ class PaymentHandler implements HandlerInterface
         }
     }
 }
-
