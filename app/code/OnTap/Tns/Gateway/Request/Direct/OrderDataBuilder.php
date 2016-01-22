@@ -8,6 +8,7 @@ namespace OnTap\Tns\Gateway\Request\Direct;
 
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
+use \Magento\Sales\Model\Order\Payment;
 
 class OrderDataBuilder implements BuilderInterface
 {
@@ -37,10 +38,10 @@ class OrderDataBuilder implements BuilderInterface
     }
 
     /**
-     * @param \Magento\Sales\Model\Order\Payment $payment
+     * @param Payment $payment
      * @return array
      */
-    protected function getDiscountData(\Magento\Sales\Model\Order\Payment $payment)
+    protected function getDiscountData(Payment $payment)
     {
         $discount = abs($payment->getOrder()->getBaseDiscountAmount());
         return [
@@ -59,7 +60,7 @@ class OrderDataBuilder implements BuilderInterface
         $paymentDO = SubjectReader::readPayment($buildSubject);
         $order = $paymentDO->getOrder();
 
-        /** @var \Magento\Sales\Model\Order\Payment $payment */
+        /** @var Payment $payment */
         $payment = $paymentDO->getPayment();
 
         return [

@@ -27,7 +27,7 @@ class PaymentHandler implements HandlerInterface
         /** @var Payment $payment */
         $payment = $paymentDO->getPayment();
         ContextHelper::assertOrderPayment($payment);
-        
+
         $payment->setAdditionalInformation('gateway_code', $response['response']['gatewayCode']);
         $payment->setAdditionalInformation('txn_result', $response['result']);
 

@@ -105,7 +105,7 @@ class Rest implements ClientInterface
             }
             $this->adapter->write(
                 $transferObject->getMethod(),
-                $transferObject->getUri(),
+                \Zend_Uri_Http::fromString($transferObject->getUri()),
                 self::HTTP_1,
                 $headers,
                 \Zend_Json_Encoder::encode($transferObject->getBody())

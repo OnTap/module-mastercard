@@ -11,7 +11,6 @@ use Magento\Payment\Gateway\Http\TransferInterface;
 use Magento\Payment\Gateway\ConfigInterface;
 use OnTap\Tns\Gateway\Http\Client\Rest;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
-
 use Magento\Sales\Api\TransactionRepositoryInterface;
 use Magento\Framework\Api\FilterBuilder;
 use Magento\Framework\Api\SearchCriteriaBuilder;
@@ -44,8 +43,12 @@ class TransferFactory implements TransferFactoryInterface
     private $searchCriteriaBuilder;
 
     /**
+     * TransferFactory constructor.
      * @param ConfigInterface $config
      * @param TransferBuilder $transferBuilder
+     * @param TransactionRepositoryInterface $repository
+     * @param FilterBuilder $filterBuilder
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
      */
     public function __construct(
         ConfigInterface $config,

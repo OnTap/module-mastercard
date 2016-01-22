@@ -6,7 +6,9 @@
 
 namespace OnTap\Tns\Gateway\Http\Client\Adapter;
 
-class Rest extends \Magento\Framework\HTTP\Adapter\Curl
+use Magento\Framework\HTTP\Adapter\Curl;
+
+class Rest extends Curl
 {
     /**
      * Send request to the remote server

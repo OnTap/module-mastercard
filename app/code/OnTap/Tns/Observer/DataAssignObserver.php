@@ -9,7 +9,6 @@ namespace OnTap\Tns\Observer;
 use Magento\Framework\Event\Observer;
 use Magento\Payment\Observer\AbstractDataAssignObserver;
 use OnTap\Tns\Gateway\Request\Direct\CardDataBuilder;
-use Magento\Payment\Model\InfoInterface;
 
 class DataAssignObserver extends AbstractDataAssignObserver
 {
