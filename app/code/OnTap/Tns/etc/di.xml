@@ -88,7 +88,7 @@
     </virtualType>
 
     <!-- Pure authorize command -->
-    <virtualType name="TnsDirectAuthorizeCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
+    <type name="OnTap\Tns\Gateway\Command\AuthorizeCommand">
         <arguments>
             <argument name="requestBuilder" xsi:type="object">TnsDirectAuthorizeDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">TnsDirectTransferFactory</argument>
@@ -96,7 +96,8 @@
             <argument name="handler" xsi:type="object">TnsDirectAuthorizeResponseHandler</argument>
             <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\Direct\ResponseValidator</argument>
         </arguments>
-    </virtualType>
+        <plugin name="CheckThreeDSecureEnrollment" type="OnTap\Tns\Gateway\Plugin\ThreeDSecureEnrollment" sortOrder="0" />
+    </type>
 
     <!-- Authorize + Capture command aka. Sale -->
     <virtualType name="TnsDirectSaleCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
@@ -140,6 +141,23 @@
         </arguments>
     </virtualType>
 
+    <!-- Check 3D-Secure enrollment -->
+    <virtualType name="TnsDirect3dsEnrollmentCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">OnTap\Tns\Gateway\Request\Direct\ThreeDSecureDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">TnsDirectThreeDSecureTransferFactory</argument>
+            <argument name="client" xsi:type="object">OnTap\Tns\Gateway\Http\Client\Rest</argument>
+            <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\Direct\ThreeDSecureValidator</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="OnTap\Tns\Gateway\Plugin\ThreeDSecureEnrollment">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsConfig</argument>
+            <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
+        </arguments>
+    </type>
+
     <type name="OnTap\Tns\Gateway\Http\Client\Rest">
         <arguments>
             <argument name="logger" xsi:type="object">TnsLogger</argument>
@@ -157,12 +175,13 @@
     <virtualType name="TnsDirectCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
         <arguments>
             <argument name="commands" xsi:type="array">
-                <item name="authorize" xsi:type="string">TnsDirectAuthorizeCommand</item>
+                <item name="authorize" xsi:type="string">OnTap\Tns\Gateway\Command\AuthorizeCommand</item>
                 <item name="capture" xsi:type="string">TnsDirectCaptureStrategyCommand</item>
                 <item name="sale" xsi:type="string">TnsDirectSaleCommand</item>
                 <item name="pre_auth_capture" xsi:type="string">TnsPreAuthCaptureCommand</item>
                 <item name="refund" xsi:type="string">TnsDirectRefundCommand</item>
                 <item name="void" xsi:type="string">TnsDirectVoidCommand</item>
+                <item name="3ds_enrollment" xsi:type="string">TnsDirect3dsEnrollmentCommand</item>
             </argument>
         </arguments>
     </virtualType>
@@ -178,6 +197,12 @@
             <argument name="config" xsi:type="object">TnsConfig</argument>
         </arguments>
     </virtualType>
+    <virtualType name="TnsDirectThreeDSecureTransferFactory" type="OnTap\Tns\Gateway\Http\ThreeDSecureTransferFactory">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsConfig</argument>
+        </arguments>
+    </virtualType>
+
     <virtualType name="TnsLogger" type="Magento\Payment\Model\Method\Logger">
         <arguments>
             <argument name="config" xsi:type="object">TnsConfig</argument>

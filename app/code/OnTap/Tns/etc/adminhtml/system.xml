@@ -101,6 +101,11 @@
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <config_path>payment/tns_direct/debug</config_path>
                     </field>
+                    <field id="three_d_secure" translate="label" type="select" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>3D-Secure</label>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <config_path>payment/tns_direct/three_d_secure</config_path>
+                    </field>
                     <field id="cctypes" translate="label" type="multiselect" sortOrder="150" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Credit Card Types</label>
                         <source_model>Magento\Payment\Model\Source\Cctype</source_model>

@@ -26,6 +26,7 @@
                 <allowspecific>0</allowspecific>
                 <debug>0</debug>
                 <test>0</test>
+                <three_d_secure>0</three_d_secure>
 
                 <!--<can_initialize>1</can_initialize>-->
                 <can_authorize>1</can_authorize>

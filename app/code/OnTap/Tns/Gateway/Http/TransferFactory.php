@@ -20,7 +20,7 @@ class TransferFactory implements TransferFactoryInterface
     /**
      * @var ConfigInterface
      */
-    private $config;
+    protected $config;
 
     /**
      * @var TransferBuilder
@@ -111,23 +111,39 @@ class TransferFactory implements TransferFactoryInterface
     }
 
     /**
+     * @return mixed
+     */
+    protected function getGatewayUri()
+    {
+        return $this->config->getValue('api_test_url');
+    }
+
+    /**
+     * @param PaymentDataObjectInterface $payment
+     * @return string
+     */
+    protected function getUri(PaymentDataObjectInterface $payment)
+    {
+        $orderId = $payment->getOrder()->getOrderIncrementId();
+        $txnId = $this->createTxnId($payment);
+
+        return $this->getGatewayUri() . $this->apiVersionUri() . $this->merchantUri() . 'order/'.$orderId.'/transaction/'.$txnId;
+    }
+
+    /**
      * @param array $request
      * @param PaymentDataObjectInterface $payment
      * @return TransferInterface
      */
     public function create(array $request, PaymentDataObjectInterface $payment)
     {
-        $gatewayUrl = $this->config->getValue('api_test_url');
-        $orderId = $payment->getOrder()->getOrderIncrementId();
-        $txnId = $this->createTxnId($payment);
-
         return $this->transferBuilder
             ->setMethod(Rest::PUT)
             ->setHeaders(['Content-Type' => 'application/json;charset=UTF-8'])
             ->setBody($request)
             ->setAuthUsername($this->getMerchantUsername())
             ->setAuthPassword($this->config->getValue('api_test_password'))
-            ->setUri($gatewayUrl . $this->apiVersionUri() . $this->merchantUri() . 'order/'.$orderId.'/transaction/'.$txnId)
+            ->setUri($this->getUri($payment))
             ->build();
     }
 }

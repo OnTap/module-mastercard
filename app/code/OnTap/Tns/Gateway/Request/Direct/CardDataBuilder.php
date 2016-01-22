@@ -13,7 +13,6 @@ use Magento\Payment\Gateway\Helper\ContextHelper;
 class CardDataBuilder implements BuilderInterface
 {
     const TYPE = 'CARD';
-
     const CC_NUMBER = 'cc_number';
     const CC_TYPE = 'cc_type';
     const CC_EXP_YEAR = 'cc_exp_year';
@@ -54,7 +53,7 @@ class CardDataBuilder implements BuilderInterface
      * @param string $month
      * @return null|string
      */
-    private function formatMonth($month)
+    protected function formatMonth($month)
     {
         return !empty($month) ? sprintf('%02d', $month) : null;
     }
@@ -63,7 +62,7 @@ class CardDataBuilder implements BuilderInterface
      * @param string $year
      * @return null|string
      */
-    private function formatYear($year)
+    protected function formatYear($year)
     {
         return !empty($year) ? substr($year, -2, 2) : null;
     }
