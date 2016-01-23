@@ -61,6 +61,7 @@ before_script:
   # Change memory_limit for travis
   - echo 'memory_limit = -1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - phpenv rehash;
+  - composer config -a -g http-basic.repo.magento.com $COMPOSER_USER $COMPOSER_PASS
   - composer install --no-interaction --prefer-dist
 script:
   # Unit tests
