@@ -57,7 +57,7 @@ before_script:
       sudo apt-get -y -qq autoclean;
       sudo apt-get install -y -qq mysql-server-5.6 mysql-client-5.6;
       mysql -uroot -e 'SET @@global.sql_mode = NO_ENGINE_SUBSTITUTION; CREATE DATABASE magento_integration_tests;';
-      mysql -uroot -e "create user 'travis'@'localhost' identified by ''; grant all privileges on magento_integration_tests.* to travis@localhost;"
+      mysql -uroot -e 'create user '\''travis'\''@'\''localhost'\'' identified by '\'''\''; grant all privileges on magento_integration_tests.* to travis@localhost;'
       mv dev/tests/integration/etc/install-config-mysql.travis.php.dist dev/tests/integration/etc/install-config-mysql.php;
       fi"
 script:
