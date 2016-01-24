@@ -37,12 +37,19 @@ class ThreeDSecureEnrollment
         $this->commandPool = $commandPool;
     }
 
+    /**
+     * @param GatewayCommand $subject
+     * @param array $commandSubject
+     * @return array
+     * @throws \Magento\Framework\Exception\NotFoundException
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function beforeExecute(GatewayCommand $subject, array $commandSubject)
     {
         $isThreeDSecure = $this->config->getValue('three_d_secure') === '1';
 
         if ($isThreeDSecure) {
-            $result = $this->commandPool
+            $this->commandPool
                 ->get(self::CHECK_THREE_D_SECURE)
                 ->execute($commandSubject);
         }

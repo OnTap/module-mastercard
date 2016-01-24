@@ -64,8 +64,12 @@ class ThreeDSecureDataBuilder extends CardDataBuilder implements BuilderInterfac
                 'provided' => [
                     'card' => [
                         'expiry' => [
-                            'month' => $this->formatMonth($payment->getAdditionalInformation(CardDataBuilder::CC_EXP_MONTH)),
-                            'year' => $this->formatYear($payment->getAdditionalInformation(CardDataBuilder::CC_EXP_YEAR)),
+                            'month' => $this->formatMonth(
+                                $payment->getAdditionalInformation(CardDataBuilder::CC_EXP_MONTH)
+                            ),
+                            'year' => $this->formatYear(
+                                $payment->getAdditionalInformation(CardDataBuilder::CC_EXP_YEAR)
+                            ),
                         ],
                         'number' => $payment->getAdditionalInformation(CardDataBuilder::CC_NUMBER),
                     ],

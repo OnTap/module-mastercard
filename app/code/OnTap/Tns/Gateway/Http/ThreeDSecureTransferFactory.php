@@ -17,6 +17,6 @@ class ThreeDSecureTransferFactory extends TransferFactory
     protected function getUri(PaymentDataObjectInterface $payment)
     {
         $threeDSecureId = $payment->getOrder()->getOrderIncrementId();
-        return $this->getGatewayUri() . $this->apiVersionUri() . $this->merchantUri() . '3DSecureId/' . $threeDSecureId;
+        return $this->getGatewayUri() . '3DSecureId/' . $threeDSecureId;
     }
 }

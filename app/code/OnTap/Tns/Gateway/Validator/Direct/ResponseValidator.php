@@ -48,6 +48,9 @@ class ResponseValidator extends AbstractValidator
     const PARTIALLY_APPROVED = 'PARTIALLY_APPROVED';
     const UNKNOWN = 'UNKNOWN';
 
+    /**
+     * @var array
+     */
     private $gatewayCode = [
         self::APPROVED => 'Transaction Approved',
         self::UNSPECIFIED_FAILURE => 'Transaction could not be processed',
@@ -77,13 +80,16 @@ class ResponseValidator extends AbstractValidator
         self::DECLINED_AVS_CSC => 'Transaction declined due to address verification and card security code',
         self::DECLINED_PAYMENT_PLAN => 'Transaction declined due to payment plan',
         self::APPROVED_PENDING_SETTLEMENT => 'Transaction Approved - pending batch settlement',
-        self::PARTIALLY_APPROVED => 'The transaction was approved for a lesser amount than requested. The approved amount is returned in order.totalAuthorizedAmount.',
+        self::PARTIALLY_APPROVED => 'The transaction was approved for a lesser amount than requested.',
         self::UNKNOWN => 'Response unknown',
     ];
 
     const SUCCESS = 'SUCCESS';
     const FAILURE = 'FAILURE';
 
+    /**
+     * @var array
+     */
     private $resultCode = [
         self::SUCCESS => 'The operation was successfully processed',
         self::PENDING => 'The operation is currently in progress or pending processing',
@@ -138,6 +144,7 @@ class ResponseValidator extends AbstractValidator
      *
      * @param array $validationSubject
      * @return ResultInterface
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function validate(array $validationSubject)
     {
@@ -170,9 +177,9 @@ class ResponseValidator extends AbstractValidator
         //order.totalAuthorizedAmount
         //order.totalCapturedAmount
         //order.totalRefundedAmount
-//        if (number_format((float)$amount, 2) !== number_format($response['order']['amount'], 2)) {
-//            $errors[] = "Amount mismatch";
-//        }
+        //if (number_format((float)$amount, 2) !== number_format($response['order']['amount'], 2)) {
+        //    $errors[] = "Amount mismatch";
+        //}
 
         if ($payment->getOrder()->getOrderIncrementId() !== $response['order']['id']) {
             $errors[] = "OrderID mismatch";

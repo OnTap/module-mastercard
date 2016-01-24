@@ -15,6 +15,10 @@ use Magento\Sales\Api\TransactionRepositoryInterface;
 use Magento\Framework\Api\FilterBuilder;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 
+/**
+ * Class TransferFactory
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class TransferFactory implements TransferFactoryInterface
 {
     /**
@@ -115,7 +119,7 @@ class TransferFactory implements TransferFactoryInterface
      */
     protected function getGatewayUri()
     {
-        return $this->config->getValue('api_test_url');
+        return $this->config->getValue('api_test_url') . $this->apiVersionUri() . $this->merchantUri();
     }
 
     /**
@@ -127,7 +131,7 @@ class TransferFactory implements TransferFactoryInterface
         $orderId = $payment->getOrder()->getOrderIncrementId();
         $txnId = $this->createTxnId($payment);
 
-        return $this->getGatewayUri() . $this->apiVersionUri() . $this->merchantUri() . 'order/'.$orderId.'/transaction/'.$txnId;
+        return $this->getGatewayUri() . 'order/'.$orderId.'/transaction/'.$txnId;
     }
 
     /**

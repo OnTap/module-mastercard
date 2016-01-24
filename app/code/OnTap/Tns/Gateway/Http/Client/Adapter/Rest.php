@@ -15,13 +15,13 @@ class Rest extends Curl
      *
      * @param string $method
      * @param \Zend_Uri_Http|string $url
-     * @param string $http_ver
+     * @param string $httpVer
      * @param array $headers
      * @param string $body
      * @return string Request as text
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function write($method, $url, $http_ver = '1.1', $headers = [], $body = '')
+    public function write($method, $url, $httpVer = '1.1', $headers = [], $body = '')
     {
         if ($url instanceof \Zend_Uri_Http) {
             $url = $url->getUri();

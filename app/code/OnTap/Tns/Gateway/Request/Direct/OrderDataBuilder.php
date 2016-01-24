@@ -21,7 +21,7 @@ class OrderDataBuilder implements BuilderInterface
         $result = [];
 
         /** @var \Magento\Sales\Model\Order\Item $item */
-        foreach($items as $item) {
+        foreach ($items as $item) {
             if ($item->isDummy(true)) {
                 continue;
             }
