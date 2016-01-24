@@ -1,6 +1,5 @@
 sudo: required
 dist: trusty
-
 language: php
 php:
 #  - 5.5
@@ -14,6 +13,8 @@ env:
   - TEST_SUITE=integration_integrity
 #  - TEST_SUITE=static_phpcs
 #  - TEST_SUITE=static_annotation
+notifications:
+  hipchat: $HIPCHAT_TOKEN@1059693
 cache:
   apt: true
   directories:
