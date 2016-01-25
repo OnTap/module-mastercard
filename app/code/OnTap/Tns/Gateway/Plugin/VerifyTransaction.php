@@ -46,9 +46,10 @@ class VerifyTransaction
      */
     public function beforeExecute(GatewayCommand $subject, array $commandSubject)
     {
-        $needsVerification = $this->config->getValue('avs') === '1';
+        if (
+            $this->config->getValue('avs') === '1' ||
+            $this->config->getValue('csc_rules') === '1') {
 
-        if ($needsVerification) {
             $this->commandPool
                 ->get(self::VERIFY_TXN)
                 ->execute($commandSubject);

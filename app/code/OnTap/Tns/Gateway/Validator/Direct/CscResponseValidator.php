@@ -13,7 +13,7 @@ use Magento\Payment\Gateway\ConfigInterface;
 use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
 use OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour;
 
-class AvsResponseValidator extends AbstractValidator
+class CscResponseValidator extends AbstractValidator
 {
     /**
      * @var ConfigInterface
@@ -21,7 +21,18 @@ class AvsResponseValidator extends AbstractValidator
     protected $config;
 
     /**
-     * AvsResponseValidator constructor.
+     * @var array
+     */
+    protected $codeConfigMap = [
+        'MATCH' => 'csc_rules_match',
+        'NOT_PRESENT' => 'csc_rules_not_present',
+        'NOT_PROCESSED' => 'csc_rules_not_processed',
+        'NOT_SUPPORTED' => 'csc_rules_not_supported',
+        'NO_MATCH' => 'csc_rules_no_match'
+    ];
+
+    /**
+     * CscResponseValidator constructor.
      * @param ResultInterfaceFactory $resultFactory
      * @param ConfigInterface $config
      */
@@ -29,8 +40,8 @@ class AvsResponseValidator extends AbstractValidator
         ResultInterfaceFactory $resultFactory,
         ConfigInterface $config
     ) {
-        $this->config = $config;
         parent::__construct($resultFactory);
+        $this->config = $config;
     }
 
     /**
@@ -41,26 +52,21 @@ class AvsResponseValidator extends AbstractValidator
      */
     public function validate(array $validationSubject)
     {
-        if ($this->config->getValue('avs') !== '1') {
+        if ($this->config->getValue('csc_rules') !== '1') {
             return $this->createResult(true);
         }
 
         $response = SubjectReader::readResponse($validationSubject);
 
-        if (!isset($response['response']['cardholderVerification']['avs'])) {
-            return $this->createResult(false, [__('AVS validator error.')]);
+        if (!isset($response['response']['cardSecurityCode'])) {
+            return $this->createResult(false, [__('CSC validator error.')]);
         }
 
-        $avs = $response['response']['cardholderVerification']['avs'];
-
-        $codeToPath = [
-            'ZIP_MATCH' => 'avs_rules_zip_match',
-            'NO_MATCH' => 'avs_rules_no_match',
-        ];
-        $configPath = $codeToPath[$avs['gatewayCode']];
+        $csc = $response['response']['cardSecurityCode'];
+        $configPath = $this->codeConfigMap[$csc['gatewayCode']];
 
         if ($this->config->getValue($configPath) === ValidatorBehaviour::REJECT) {
-            return $this->createResult(false, [__('Transaction declined by AVS validation.')]);
+            return $this->createResult(false, [__('Transaction declined by CSC validation.')]);
         }
 
         return $this->createResult(true);

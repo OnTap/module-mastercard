@@ -14,6 +14,7 @@ use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use Magento\Sales\Api\TransactionRepositoryInterface;
 use Magento\Framework\Api\FilterBuilder;
 use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Sales\Model\Order\Payment\Transaction\ManagerInterface;
 
 /**
  * Class TransferFactory
@@ -47,25 +48,33 @@ class TransferFactory implements TransferFactoryInterface
     private $searchCriteriaBuilder;
 
     /**
+     * @var ManagerInterface
+     */
+    private $transactionManager;
+
+    /**
      * TransferFactory constructor.
      * @param ConfigInterface $config
      * @param TransferBuilder $transferBuilder
      * @param TransactionRepositoryInterface $repository
      * @param FilterBuilder $filterBuilder
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param ManagerInterface $managerInterface
      */
     public function __construct(
         ConfigInterface $config,
         TransferBuilder $transferBuilder,
         TransactionRepositoryInterface $repository,
         FilterBuilder $filterBuilder,
-        SearchCriteriaBuilder $searchCriteriaBuilder
+        SearchCriteriaBuilder $searchCriteriaBuilder,
+        ManagerInterface $managerInterface
     ) {
         $this->config = $config;
         $this->transferBuilder = $transferBuilder;
         $this->transactionRepository = $repository;
         $this->filterBuilder = $filterBuilder;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+        $this->transactionManager = $managerInterface;
     }
 
     /**
@@ -99,19 +108,7 @@ class TransferFactory implements TransferFactoryInterface
      */
     protected function createTxnId(PaymentDataObjectInterface $payment)
     {
-        $orderId = (string) $payment->getOrder()->getOrderIncrementId();
-
-        $filters[] = $this->filterBuilder->setField('payment_id')
-            ->setValue($payment->getPayment()->getId())
-            ->create();
-
-        $searchCriteria = $this->searchCriteriaBuilder->addFilters($filters)
-            ->create();
-
-        $count = $this->transactionRepository->getList($searchCriteria)->getTotalCount();
-        $count++;
-
-        return $orderId . '-' . (string) $count;
+        return uniqid(sprintf('%s-', (string) $payment->getOrder()->getOrderIncrementId()));
     }
 
     /**

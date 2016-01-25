@@ -136,6 +136,41 @@
                         <config_path>payment/tns_direct/debug</config_path>
                     </field>
 
+                    <!-- CSC Rules -->
+                    <group id="csc_rules" translate="label" type="text" sortOrder="121" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Security Code Rules</label>
+                        <field id="csc" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Enable CSC Rules</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <config_path>payment/tns_direct/csc_rules</config_path>
+                        </field>
+                        <field id="csc_rules_match" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Valid or matched</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_direct/csc_rules_match</config_path>
+                        </field>
+                        <field id="csc_rules_not_present" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Merchant indicated CSC not present on card</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_direct/csc_rules_not_present</config_path>
+                        </field>
+                        <field id="csc_rules_not_processed" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Not processed</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_direct/csc_rules_not_processed</config_path>
+                        </field>
+                        <field id="csc_rules_not_supported" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Card issuer is not registered and/or certified</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_direct/csc_rules_not_supported</config_path>
+                        </field>
+                        <field id="csc_rules_no_match" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Invalid or not matched</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_direct/csc_rules_no_match</config_path>
+                        </field>
+                    </group>
+
                     <!-- 3-D Secure -->
                     <group id="tds_rules" translate="label" type="text" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>3-D Secure Rules</label>

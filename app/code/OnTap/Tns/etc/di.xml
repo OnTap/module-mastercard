@@ -176,6 +176,7 @@
         <arguments>
             <argument name="validators" xsi:type="array">
                 <item name="response" xsi:type="string">OnTap\Tns\Gateway\Validator\Direct\ResponseValidator</item>
+                <item name="csc" xsi:type="string">OnTap\Tns\Gateway\Validator\Direct\CscResponseValidator</item>
                 <item name="avs" xsi:type="string">OnTap\Tns\Gateway\Validator\Direct\AvsResponseValidator</item>
                 <!--<item name="3ds" xsi:type="string">OnTap\Tns\Gateway\Validator\Direct\ThreeDSecureValidator</item>-->
             </argument>
@@ -189,6 +190,12 @@
     </type>
 
     <type name="OnTap\Tns\Gateway\Validator\Direct\AvsResponseValidator">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsConfig</argument>
+        </arguments>
+    </type>
+
+    <type name="OnTap\Tns\Gateway\Validator\Direct\CscResponseValidator">
         <arguments>
             <argument name="config" xsi:type="object">TnsConfig</argument>
         </arguments>

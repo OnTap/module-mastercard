@@ -14,10 +14,7 @@ env:
 #  - TEST_SUITE=static_phpcs
 #  - TEST_SUITE=static_annotation
 notifications:
-  hipchat:
-    rooms:
-      - $HIPCHAT_TOKEN@1059693
-    notify: true
+  hipchat: $HIPCHAT_TOKEN_V1@1059693
 cache:
   apt: true
   directories:
@@ -88,6 +85,7 @@ script:
   # Static OnTap
   - >
     sh -c "if [ '$TEST_SUITE' = 'static_ontap' ]; then
+    vendor/bin/phpcs --warning-severity=0 --extensions=php,phtml --standard=PSR2 app/code;
     vendor/bin/phpmd app/code text dev/tests/static/testsuite/Magento/Test/Php/_files/phpmd/ruleset.xml;
     vendor/bin/phpcs --warning-severity=0 --extensions=php,phtml --standard=dev/tests/static/testsuite/Magento/Test/Php/_files/phpcs/ruleset.xml app/code;
     fi"
