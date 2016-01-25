@@ -23,7 +23,8 @@ class ThreeDSecureValidator extends AbstractValidator
         $response = SubjectReader::readResponse($validationSubject);
 
         if (isset($response['error'])) {
-            $msg = sprintf('%s: %s (%s)',
+            $msg = sprintf(
+                '%s: %s (%s)',
                 $response['error']['cause'],
                 $response['error']['explanation'],
                 $response['error']['supportCode']
