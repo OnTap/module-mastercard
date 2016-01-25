@@ -30,4 +30,3 @@ class JsonToArray implements ConverterInterface
         return \Zend_Json_Decoder::decode($response, \Zend_Json::TYPE_ARRAY);
     }
 }
-

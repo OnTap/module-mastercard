@@ -157,7 +157,8 @@ class ResponseValidator extends AbstractValidator
         }
 
         if (isset($response['error'])) {
-            $msg = sprintf('%s: %s',
+            $msg = sprintf(
+                '%s: %s',
                 $response['error']['cause'],
                 $response['error']['explanation']
             );

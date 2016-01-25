@@ -50,7 +50,8 @@ class PaymentHandler implements HandlerInterface
         }
 
         if (isset($response['response']['cardSecurityCode'])) {
-            $payment->setAdditionalInformation('cvv_validation',
+            $payment->setAdditionalInformation(
+                'cvv_validation',
                 $response['response']['cardSecurityCode']['gatewayCode']
             );
         }
