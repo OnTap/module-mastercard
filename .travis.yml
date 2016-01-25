@@ -14,7 +14,10 @@ env:
 #  - TEST_SUITE=static_phpcs
 #  - TEST_SUITE=static_annotation
 notifications:
-  hipchat: $HIPCHAT_TOKEN@1059693
+  hipchat:
+    rooms:
+      - $HIPCHAT_TOKEN@1059693
+    notify: true
 cache:
   apt: true
   directories:

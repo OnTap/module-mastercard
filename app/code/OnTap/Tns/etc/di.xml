@@ -16,6 +16,11 @@
             <argument name="methodCode" xsi:type="const">OnTap\Tns\Model\Ui\Hosted\ConfigProvider::METHOD_CODE</argument>
         </arguments>
     </virtualType>
+    <virtualType name="TnsHpfConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">OnTap\Tns\Model\Ui\Hpf\ConfigProvider::METHOD_CODE</argument>
+        </arguments>
+    </virtualType>
 
     <virtualType name="TnsDirectFacade" type="Magento\Payment\Model\Method\Adapter">
         <arguments>
@@ -39,6 +44,17 @@
         </arguments>
     </virtualType>
 
+    <virtualType name="TnsHpfFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">OnTap\Tns\Model\Ui\Hpf\ConfigProvider::METHOD_CODE</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form\Cc</argument>
+            <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\Info\Cc</argument>
+            <argument name="valueHandlerPool" xsi:type="object">TnsHpfValueHandlerPool</argument>
+            <argument name="validatorPool" xsi:type="object">TnsValidatorPool</argument>
+            <!--<argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>-->
+        </arguments>
+    </virtualType>
+
     <virtualType name="TnsConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
         <arguments>
             <argument name="configInterface" xsi:type="object">TnsConfig</argument>
@@ -49,6 +65,11 @@
             <argument name="configInterface" xsi:type="object">TnsHostedConfig</argument>
         </arguments>
     </virtualType>
+    <virtualType name="TnsHpfConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">TnsHpfConfig</argument>
+        </arguments>
+    </virtualType>
 
     <virtualType name="TnsHostedValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
         <arguments>
@@ -57,6 +78,15 @@
             </argument>
         </arguments>
     </virtualType>
+
+    <virtualType name="TnsHpfValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">TnsHpfConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
     <virtualType name="TnsValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
         <arguments>
             <argument name="handlers" xsi:type="array">

@@ -8,7 +8,7 @@ define(
         'Magento_Checkout/js/view/payment/default',
         'ko',
         'Magento_Checkout/js/model/full-screen-loader',
-        'OnTap_Tns/js/view/payment/adapter'
+        'OnTap_Tns/js/view/payment/hosted-adapter'
     ],
     function (Component, ko, fullScreenLoader, paymentAdapter) {
         'use strict';

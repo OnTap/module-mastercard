@@ -50,6 +50,14 @@
 
                 <allowspecific>0</allowspecific>
             </tns_hosted>
+            <tns_hpf>
+                <active>0</active>
+                <title>Hosted Payment Session (TNS)</title>
+                <model>TnsHpfFacade</model>
+                <payment_action>authorize</payment_action>
+
+                <allowspecific>0</allowspecific>
+            </tns_hpf>
         </payment>
     </default>
 </config>

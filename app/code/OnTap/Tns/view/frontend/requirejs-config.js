@@ -4,13 +4,8 @@
  */
 
 var config = {
-    //map: {
-    //    '*': {
-    //        'Checkout': 'https://eu-gateway.mastercard.com/checkout/version/32/checkout.js'
-    //    }
-    //},
-
     paths: {
-        'tnshosted': 'https://test-gateway.mastercard.com/checkout/version/32/checkout'
+        'tnshosted': 'https://test-gateway.mastercard.com/checkout/version/32/checkout',
+        'tnshpf': 'https://test-gateway.mastercard.com/form/v3/hpf'
     }
 };

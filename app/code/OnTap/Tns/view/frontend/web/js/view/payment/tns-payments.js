@@ -22,6 +22,10 @@ define(
             {
                 type: 'tns_hosted',
                 component: 'OnTap_Tns/js/view/payment/method-renderer/tns-hosted'
+            },
+            {
+                type: 'tns_hpf',
+                component: 'OnTap_Tns/js/view/payment/method-renderer/tns-hpf'
             }
         );
         /** Add view logic here if needed */
