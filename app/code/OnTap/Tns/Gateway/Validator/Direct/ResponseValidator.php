@@ -153,11 +153,15 @@ class ResponseValidator extends AbstractValidator
         $payment = SubjectReader::readPayment($validationSubject);
 
         if (!isset($response['result'])) {
-            return $this->createResult(false, ["Response does not contain a body"]);
+            return $this->createResult(false, [__("Response does not contain a body.")]);
         }
 
         if (isset($response['error'])) {
-            return $this->createResult(false, ["Invalid request"]);
+            $msg = sprintf('%s: %s',
+                $response['error']['cause'],
+                $response['error']['explanation']
+            );
+            return $this->createResult(false, [__($msg)]);
         }
 
         $errors = [];
@@ -182,11 +186,11 @@ class ResponseValidator extends AbstractValidator
         //}
 
         if ($payment->getOrder()->getOrderIncrementId() !== $response['order']['id']) {
-            $errors[] = "OrderID mismatch";
+            $errors[] = __("OrderID mismatch");
         }
 
         if ($payment->getOrder()->getCurrencyCode() !== $response['order']['currency']) {
-            $errors[] = "Currency mismatch";
+            $errors[] = __("Currency mismatch");
         }
 
         if (count($errors) > 0) {

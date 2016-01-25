@@ -28,7 +28,7 @@
             <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form\Cc</argument>
             <argument name="infoBlockType" xsi:type="string">OnTap\Tns\Block\Direct\Info</argument>
             <argument name="valueHandlerPool" xsi:type="object">TnsValueHandlerPool</argument>
-            <argument name="validatorPool" xsi:type="object">TnsValidatorPool</argument>
+            <argument name="validatorPool" xsi:type="object">Magento\Payment\Gateway\Validator\ValidatorPool</argument>
             <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
         </arguments>
     </virtualType>
@@ -39,7 +39,7 @@
             <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form\Cc</argument>
             <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\Info\Cc</argument>
             <argument name="valueHandlerPool" xsi:type="object">TnsHostedValueHandlerPool</argument>
-            <argument name="validatorPool" xsi:type="object">TnsValidatorPool</argument>
+            <argument name="validatorPool" xsi:type="object">Magento\Payment\Gateway\Validator\ValidatorPool</argument>
             <!--<argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>-->
         </arguments>
     </virtualType>
@@ -50,7 +50,7 @@
             <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form\Cc</argument>
             <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\Info\Cc</argument>
             <argument name="valueHandlerPool" xsi:type="object">TnsHpfValueHandlerPool</argument>
-            <argument name="validatorPool" xsi:type="object">TnsValidatorPool</argument>
+            <argument name="validatorPool" xsi:type="object">Magento\Payment\Gateway\Validator\ValidatorPool</argument>
             <!--<argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>-->
         </arguments>
     </virtualType>
@@ -95,28 +95,6 @@
         </arguments>
     </virtualType>
 
-    <virtualType name="CountryValidator" type="Magento\Payment\Gateway\Validator\CountryValidator">
-        <arguments>
-            <argument name="config" xsi:type="object">TnsConfig</argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="TnsGlobalValidator" type="Magento\Payment\Gateway\Validator\ValidatorComposite">
-        <arguments>
-            <argument name="validators" xsi:type="array">
-                <item name="country" xsi:type="string">CountryValidator</item>
-            </argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="TnsValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
-        <arguments>
-            <argument name="validators" xsi:type="array">
-                <item name="global" xsi:type="string">TnsGlobalValidator</item>
-            </argument>
-        </arguments>
-    </virtualType>
-
     <!-- Pure authorize command -->
     <type name="OnTap\Tns\Gateway\Command\AuthorizeCommand">
         <arguments>
@@ -126,7 +104,8 @@
             <argument name="handler" xsi:type="object">TnsDirectAuthorizeResponseHandler</argument>
             <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\Direct\ResponseValidator</argument>
         </arguments>
-        <plugin name="CheckThreeDSecureEnrollment" type="OnTap\Tns\Gateway\Plugin\ThreeDSecureEnrollment" sortOrder="0" />
+        <plugin name="ThreeDSecureEnrollment" type="OnTap\Tns\Gateway\Plugin\ThreeDSecureEnrollment" sortOrder="10" />
+        <plugin name="VerifyTransaction" type="OnTap\Tns\Gateway\Plugin\VerifyTransaction" sortOrder="20" />
     </type>
 
     <!-- Authorize + Capture command aka. Sale -->
@@ -138,6 +117,8 @@
             <argument name="handler" xsi:type="object">TnsDirectSaleResponseHandler</argument>
             <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\Direct\ResponseValidator</argument>
         </arguments>
+        <!--<plugin name="ThreeDSecureEnrollment" type="OnTap\Tns\Gateway\Plugin\ThreeDSecureEnrollment" sortOrder="0" />-->
+        <!--<plugin name="VerifyTransaction" type="OnTap\Tns\Gateway\Plugin\VerifyTransaction" sortOrder="1" />-->
     </virtualType>
 
     <!-- Capture a pre-authorized payment -->
@@ -181,7 +162,46 @@
         </arguments>
     </virtualType>
 
+    <!-- Verify AVS/Risk -->
+    <virtualType name="TnsDirectVerifyCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">TnsDirectVerifyDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">TnsDirectTransferFactory</argument>
+            <argument name="client" xsi:type="object">OnTap\Tns\Gateway\Http\Client\Rest</argument>
+            <argument name="validator" xsi:type="object">TnsDirectVerifyResponse</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="TnsDirectVerifyResponse" type="Magento\Payment\Gateway\Validator\ValidatorComposite">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="response" xsi:type="string">OnTap\Tns\Gateway\Validator\Direct\ResponseValidator</item>
+                <item name="avs" xsi:type="string">OnTap\Tns\Gateway\Validator\Direct\AvsResponseValidator</item>
+                <!--<item name="3ds" xsi:type="string">OnTap\Tns\Gateway\Validator\Direct\ThreeDSecureValidator</item>-->
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <type name="OnTap\Tns\Gateway\Validator\Direct\ResponseValidator">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsConfig</argument>
+        </arguments>
+    </type>
+
+    <type name="OnTap\Tns\Gateway\Validator\Direct\AvsResponseValidator">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsConfig</argument>
+        </arguments>
+    </type>
+
     <type name="OnTap\Tns\Gateway\Plugin\ThreeDSecureEnrollment">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsConfig</argument>
+            <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
+        </arguments>
+    </type>
+
+    <type name="OnTap\Tns\Gateway\Plugin\VerifyTransaction">
         <arguments>
             <argument name="config" xsi:type="object">TnsConfig</argument>
             <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
@@ -196,12 +216,6 @@
         </arguments>
     </type>
 
-    <type name="OnTap\Tns\Gateway\Validator\Direct\ResponseValidator">
-        <arguments>
-            <argument name="config" xsi:type="object">TnsConfig</argument>
-        </arguments>
-    </type>
-
     <virtualType name="TnsDirectCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
         <arguments>
             <argument name="commands" xsi:type="array">
@@ -212,6 +226,7 @@
                 <item name="refund" xsi:type="string">TnsDirectRefundCommand</item>
                 <item name="void" xsi:type="string">TnsDirectVoidCommand</item>
                 <item name="3ds_enrollment" xsi:type="string">TnsDirect3dsEnrollmentCommand</item>
+                <item name="verify" xsi:type="string">TnsDirectVerifyCommand</item>
             </argument>
         </arguments>
     </virtualType>
@@ -256,6 +271,19 @@
         <arguments>
             <argument name="builders" xsi:type="array">
                 <item name="sale" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\SaleDataBuilder</item>
+                <item name="card" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\CardDataBuilder</item>
+                <item name="order" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\OrderDataBuilder</item>
+                <item name="billing" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\BillingDataBuilder</item>
+                <item name="shipping" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\ShippingDataBuilder</item>
+                <item name="customer" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\CustomerDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="TnsDirectVerifyDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="sale" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\VerifyDataBuilder</item>
                 <item name="card" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\CardDataBuilder</item>
                 <item name="order" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\OrderDataBuilder</item>
                 <item name="billing" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\BillingDataBuilder</item>
