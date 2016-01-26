@@ -23,7 +23,7 @@ class CscResponseValidator extends AbstractValidator
     /**
      * @var array
      */
-    protected $codeConfigMap = [
+    protected $responseCodeConfig = [
         'MATCH' => 'csc_rules_match',
         'NOT_PRESENT' => 'csc_rules_not_present',
         'NOT_PROCESSED' => 'csc_rules_not_processed',
@@ -62,13 +62,23 @@ class CscResponseValidator extends AbstractValidator
             return $this->createResult(false, [__('CSC validator error.')]);
         }
 
-        $csc = $response['response']['cardSecurityCode'];
-        $configPath = $this->codeConfigMap[$csc['gatewayCode']];
-
-        if ($this->config->getValue($configPath) === ValidatorBehaviour::REJECT) {
+        if ($this->validateGatewayCode($response, ValidatorBehaviour::REJECT)) {
             return $this->createResult(false, [__('Transaction declined by CSC validation.')]);
         }
 
         return $this->createResult(true);
+    }
+
+    /**
+     * @param array $response
+     * @param string $code
+     * @return bool
+     */
+    public function validateGatewayCode(array $response, $code)
+    {
+        $csc = $response['response']['cardSecurityCode'];
+        $configPath = $this->responseCodeConfig[$csc['gatewayCode']];
+
+        return $this->config->getValue($configPath) === $code;
     }
 }

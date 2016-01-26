@@ -8,15 +8,15 @@ namespace OnTap\Tns\Gateway\Command;
 
 use Magento\Payment\Gateway\Command;
 use Magento\Payment\Gateway\CommandInterface;
-use Magento\Sales\Model\Order;
+use Magento\Payment\Gateway\ConfigInterface;
+use Magento\Sales\Model\Order\Payment;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use Magento\Payment\Gateway\Helper\ContextHelper;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 
-class CaptureStrategyCommand implements CommandInterface
+class VerificationStrategyCommand implements CommandInterface
 {
-    const PRE_AUTH_CAPTURE = 'pre_auth_capture';
-    const SALE = 'sale';
+    const VERIFY = 'verify';
 
     /**
      * @var Command\CommandPoolInterface
@@ -24,12 +24,28 @@ class CaptureStrategyCommand implements CommandInterface
     private $commandPool;
 
     /**
+     * @var ConfigInterface
+     */
+    private $config;
+
+    /**
+     * @var string
+     */
+    private $successCommand;
+
+    /**
      * @param Command\CommandPoolInterface $commandPool
+     * @param ConfigInterface $config $config
+     * @param string $successCommand
      */
     public function __construct(
-        Command\CommandPoolInterface $commandPool
+        Command\CommandPoolInterface $commandPool,
+        ConfigInterface $config,
+        $successCommand = ''
     ) {
         $this->commandPool = $commandPool;
+        $this->config = $config;
+        $this->successCommand = $successCommand;
     }
 
     /**
@@ -43,23 +59,27 @@ class CaptureStrategyCommand implements CommandInterface
         /** @var PaymentDataObjectInterface $paymentDO */
         $paymentDO = SubjectReader::readPayment($commandSubject);
 
-        /** @var Order\Payment $paymentInfo */
+        /** @var Payment $paymentInfo */
         $paymentInfo = $paymentDO->getPayment();
         ContextHelper::assertOrderPayment($paymentInfo);
 
-        if (
-            $paymentInfo instanceof Order\Payment
-            && $paymentInfo->getAuthorizationTransaction()
-        ) {
-            // Capture an already authorized payment
-            return $this->commandPool
-                ->get(self::PRE_AUTH_CAPTURE)
-                ->execute($commandSubject);
+        if (!$paymentInfo->getAuthorizationTransaction()) { // Only verify when auth transaction does not exist
+            if (
+                $this->config->getValue('avs') === '1' ||
+                $this->config->getValue('csc_rules') === '1'
+            ) {
+                $this->commandPool
+                    ->get(self::VERIFY)
+                    ->execute($commandSubject);
+            }
         }
 
-        // Perform a auth+capture with a single call
+        if ($paymentInfo->getIsFraudDetected()) {
+            return null;
+        }
+
         return $this->commandPool
-            ->get(self::SALE)
+            ->get($this->successCommand)
             ->execute($commandSubject);
     }
 }

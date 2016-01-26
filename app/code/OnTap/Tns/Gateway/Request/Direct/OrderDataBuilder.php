@@ -30,7 +30,7 @@ class OrderDataBuilder implements BuilderInterface
                 'description' => $item->getDescription(),
                 'sku' => $item->getSku(),
                 'unitPrice' => $item->getBasePrice(),
-                'quantity' => $item->getQtyOrdered(),
+                'quantity' => (int) $item->getQtyOrdered(),
                 'unitTaxAmount' => $item->getBaseTaxAmount(),
             ];
         }

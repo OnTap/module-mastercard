@@ -22,6 +22,25 @@
         </arguments>
     </virtualType>
 
+    <virtualType name="TnsDirectCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="authorize" xsi:type="string">AuthorizeStrategyCommand</item>
+                <item name="authorize_simple" xsi:type="string">AuthorizeCommand</item>
+                <item name="capture" xsi:type="string">CaptureStrategyCommand</item>
+                <item name="capture_simple" xsi:type="string">OnTap\Tns\Gateway\Command\SaleStrategyCommand</item>
+                <item name="sale" xsi:type="string">TnsDirectSaleCommand</item>
+                <item name="pre_auth_capture" xsi:type="string">TnsPreAuthCaptureCommand</item>
+                <item name="refund" xsi:type="string">TnsDirectRefundCommand</item>
+                <item name="void" xsi:type="string">TnsDirectVoidCommand</item>
+                <item name="3ds_enrollment" xsi:type="string">TnsDirect3dsEnrollmentCommand</item>
+                <item name="verify" xsi:type="string">TnsDirectVerifyCommand</item>
+                <item name="accept_payment" xsi:type="string">OnTap\Tns\Gateway\Command\AcceptStrategyCommand</item>
+                <item name="deny_payment" xsi:type="string">OnTap\Tns\Gateway\Command\AcceptStrategyCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
     <virtualType name="TnsDirectFacade" type="Magento\Payment\Model\Method\Adapter">
         <arguments>
             <argument name="code" xsi:type="const">OnTap\Tns\Model\Ui\Direct\ConfigProvider::METHOD_CODE</argument>
@@ -96,7 +115,7 @@
     </virtualType>
 
     <!-- Pure authorize command -->
-    <type name="OnTap\Tns\Gateway\Command\AuthorizeCommand">
+    <virtualType name="AuthorizeCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
         <arguments>
             <argument name="requestBuilder" xsi:type="object">TnsDirectAuthorizeDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">TnsDirectTransferFactory</argument>
@@ -104,8 +123,37 @@
             <argument name="handler" xsi:type="object">TnsDirectAuthorizeResponseHandler</argument>
             <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\Direct\ResponseValidator</argument>
         </arguments>
-        <plugin name="ThreeDSecureEnrollment" type="OnTap\Tns\Gateway\Plugin\ThreeDSecureEnrollment" sortOrder="10" />
-        <plugin name="VerifyTransaction" type="OnTap\Tns\Gateway\Plugin\VerifyTransaction" sortOrder="20" />
+    </virtualType>
+
+    <!-- Verify + Authorize -->
+    <virtualType name="AuthorizeStrategyCommand" type="OnTap\Tns\Gateway\Command\VerificationStrategyCommand">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
+            <argument name="config" xsi:type="object">TnsConfig</argument>
+            <argument name="successCommand" xsi:type="string">authorize_simple</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Verify + Capture -->
+    <virtualType name="CaptureStrategyCommand" type="OnTap\Tns\Gateway\Command\VerificationStrategyCommand">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
+            <argument name="config" xsi:type="object">TnsConfig</argument>
+            <argument name="successCommand" xsi:type="string">capture_simple</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="OnTap\Tns\Gateway\Command\AcceptStrategyCommand">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
+            <argument name="config" xsi:type="object">TnsConfig</argument>
+        </arguments>
+    </type>
+
+    <type name="OnTap\Tns\Gateway\Command\SaleStrategyCommand">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
+        </arguments>
     </type>
 
     <!-- Authorize + Capture command aka. Sale -->
@@ -169,6 +217,7 @@
             <argument name="transferFactory" xsi:type="object">TnsDirectTransferFactory</argument>
             <argument name="client" xsi:type="object">OnTap\Tns\Gateway\Http\Client\Rest</argument>
             <argument name="validator" xsi:type="object">TnsDirectVerifyResponse</argument>
+            <argument name="handler" xsi:type="object">OnTap\Tns\Gateway\Response\Direct\FraudHandler</argument>
         </arguments>
     </virtualType>
 
@@ -222,27 +271,6 @@
             <argument name="adapter" xsi:type="object">OnTap\Tns\Gateway\Http\Client\Adapter\Rest</argument>
         </arguments>
     </type>
-
-    <virtualType name="TnsDirectCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
-        <arguments>
-            <argument name="commands" xsi:type="array">
-                <item name="authorize" xsi:type="string">OnTap\Tns\Gateway\Command\AuthorizeCommand</item>
-                <item name="capture" xsi:type="string">TnsDirectCaptureStrategyCommand</item>
-                <item name="sale" xsi:type="string">TnsDirectSaleCommand</item>
-                <item name="pre_auth_capture" xsi:type="string">TnsPreAuthCaptureCommand</item>
-                <item name="refund" xsi:type="string">TnsDirectRefundCommand</item>
-                <item name="void" xsi:type="string">TnsDirectVoidCommand</item>
-                <item name="3ds_enrollment" xsi:type="string">TnsDirect3dsEnrollmentCommand</item>
-                <item name="verify" xsi:type="string">TnsDirectVerifyCommand</item>
-            </argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="TnsDirectCaptureStrategyCommand" type="OnTap\Tns\Gateway\Command\CaptureStrategyCommand">
-        <arguments>
-            <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
-        </arguments>
-    </virtualType>
 
     <virtualType name="TnsDirectTransferFactory" type="OnTap\Tns\Gateway\Http\TransferFactory">
         <arguments>
