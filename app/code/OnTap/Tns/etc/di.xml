@@ -35,8 +35,8 @@
                 <item name="void" xsi:type="string">TnsDirectVoidCommand</item>
                 <item name="3ds_enrollment" xsi:type="string">TnsDirect3dsEnrollmentCommand</item>
                 <item name="verify" xsi:type="string">TnsDirectVerifyCommand</item>
-                <item name="accept_payment" xsi:type="string">OnTap\Tns\Gateway\Command\AcceptStrategyCommand</item>
-                <item name="deny_payment" xsi:type="string">OnTap\Tns\Gateway\Command\AcceptStrategyCommand</item>
+                <item name="accept_payment" xsi:type="string">AcceptReviewCommand</item>
+                <item name="deny_payment" xsi:type="string">DenyReviewCommand</item>
             </argument>
         </arguments>
     </virtualType>
@@ -143,12 +143,22 @@
         </arguments>
     </virtualType>
 
-    <type name="OnTap\Tns\Gateway\Command\AcceptStrategyCommand">
+    <virtualType name="AcceptReviewCommand" type="OnTap\Tns\Gateway\Command\ReviewStrategyCommand">
         <arguments>
             <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
             <argument name="config" xsi:type="object">TnsConfig</argument>
+            <argument name="solution" xsi:type="string">accept</argument>
         </arguments>
-    </type>
+    </virtualType>
+
+    <virtualType name="DenyReviewCommand" type="OnTap\Tns\Gateway\Command\ReviewStrategyCommand">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
+            <argument name="config" xsi:type="object">TnsConfig</argument>
+            <argument name="solution" xsi:type="string">deny</argument>
+        </arguments>
+    </virtualType>
+
 
     <type name="OnTap\Tns\Gateway\Command\SaleStrategyCommand">
         <arguments>

@@ -136,9 +136,9 @@
                         <config_path>payment/tns_direct/debug</config_path>
                     </field>
 
-                    <!-- CSC Rules -->
+                    <!-- CCV/CSC Rules -->
                     <group id="csc_rules" translate="label" type="text" sortOrder="121" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Security Code Rules</label>
+                        <label>CCV/CSC Rules</label>
                         <field id="csc" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
                             <label>Enable CSC Rules</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -199,23 +199,52 @@
                             <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
                             <config_path>payment/tns_direct/avs_rules_zip_match</config_path>
                         </field>
-                        <field id="avs_rules_no_match" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <field id="avs_rules_address_match" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Street address matched</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_direct/avs_rules_address_match</config_path>
+                        </field>
+                        <field id="avs_rules_name_match" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Card holder name matched</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_direct/avs_rules_name_match</config_path>
+                        </field>
+                        <field id="avs_rules_name_zip_match" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Card holder name and zip/postcode matched</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_direct/avs_rules_name_zip_match</config_path>
+                        </field>
+                        <field id="avs_rules_name_address_match" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Card holder name and street address matched</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_direct/avs_rules_name_address_match</config_path>
+                        </field>
+                        <field id="avs_rules_no_match" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="0">
                             <label>No match</label>
                             <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
                             <config_path>payment/tns_direct/avs_rules_no_match</config_path>
                         </field>
-                        <!--ADDRESS_ZIP_MATCH Street address and zip/postcode were matched-->
-                        <!--ZIP_MATCH Zip/postcode matched. Street address not matched-->
-                        <!--ADDRESS_MATCH Street address matched-->
-                        <!--NAME_MATCH Card holder name matched-->
-                        <!--NAME_ZIP_MATCH Card holder name and zip/postcode matched-->
-                        <!--NAME_ADDRESS_MATCH Card holder name and street address matched-->
-                        <!--NO_MATCH No match-->
-                        <!--SERVICE_NOT_SUPPORTED Service currently not supported by acquirer or merchant-->
+                        <field id="avs_rules_service_not_supported" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Service currently not supported by acquirer or merchant</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_direct/avs_rules_service_not_supported</config_path>
+                        </field>
                         <!--SERVICE_NOT_AVAILABLE_RETRY Issuer system is unavailable. Retry can be attempted-->
-                        <!--NOT_REQUESTED AVS not requested-->
-                        <!--NOT_AVAILABLE No data available from issuer or AVS data not supported for transaction-->
-                        <!--NOT_VERIFIED AVS could not be verified for an international transaction                        -->
+                        <field id="avs_rules_not_requested" translate="label" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>AVS not requested</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_direct/avs_rules_not_requested</config_path>
+                        </field>
+                        <field id="avs_rules_not_available" translate="label" type="select" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>No data available from issuer or AVS data not supported for transaction</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_direct/avs_rules_not_available</config_path>
+                        </field>
+                        <field id="avs_rules_not_verified" translate="label" type="select" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>AVS could not be verified for an international transaction</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_direct/avs_rules_not_verified</config_path>
+                        </field>
                     </group>
 
                     <field id="cctypes" translate="label" type="multiselect" sortOrder="150" showInDefault="1" showInWebsite="1" showInStore="0">

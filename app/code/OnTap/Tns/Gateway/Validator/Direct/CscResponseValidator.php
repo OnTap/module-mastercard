@@ -52,11 +52,11 @@ class CscResponseValidator extends AbstractValidator
      */
     public function validate(array $validationSubject)
     {
-        if ($this->config->getValue('csc_rules') !== '1') {
+        $response = SubjectReader::readResponse($validationSubject);
+
+        if ($this->config->getValue('csc_rules') !== '1' || isset($response['error'])) {
             return $this->createResult(true);
         }
-
-        $response = SubjectReader::readResponse($validationSubject);
 
         if (!isset($response['response']['cardSecurityCode'])) {
             return $this->createResult(false, [__('CSC validator error.')]);

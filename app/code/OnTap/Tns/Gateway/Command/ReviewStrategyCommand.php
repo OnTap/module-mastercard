@@ -14,9 +14,9 @@ use Magento\Payment\Gateway\Helper\ContextHelper;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Model\Method\AbstractMethod;
 
-class AcceptStrategyCommand implements CommandInterface
+class ReviewStrategyCommand implements CommandInterface
 {
-    const CAPTURE = 'capture';
+    const CAPTURE = 'capture_simple';
     const AUTHORIZE = 'authorize_simple';
 
     /**
@@ -30,15 +30,23 @@ class AcceptStrategyCommand implements CommandInterface
     protected $config;
 
     /**
+     * @var string
+     */
+    protected $solution;
+
+    /**
      * @param Command\CommandPoolInterface $commandPool
      * @param ConfigInterface $config
+     * @param string $solution
      */
     public function __construct(
         Command\CommandPoolInterface $commandPool,
-        ConfigInterface $config
+        ConfigInterface $config,
+        $solution = ''
     ) {
         $this->commandPool = $commandPool;
         $this->config = $config;
+        $this->solution = $solution;
     }
 
     /**
@@ -56,6 +64,15 @@ class AcceptStrategyCommand implements CommandInterface
         ContextHelper::assertOrderPayment($payment);
         $commandSubject['amount'] = $payment->getAmountOrdered();
 
+        return $this->{$this->solution}($commandSubject);
+    }
+
+    /**
+     * @param array $commandSubject
+     * @return Command\ResultInterface|null
+     */
+    protected function accept(array $commandSubject)
+    {
         if ($this->config->getValue('payment_action') == AbstractMethod::ACTION_AUTHORIZE) {
 
             return $this->commandPool
@@ -68,5 +85,20 @@ class AcceptStrategyCommand implements CommandInterface
                 ->get(self::CAPTURE)
                 ->execute($commandSubject);
         }
+    }
+
+    /**
+     * @param array $commandSubject
+     * @return null
+     */
+    protected function deny(array $commandSubject)
+    {
+        $paymentDO = SubjectReader::readPayment($commandSubject);
+
+        /** @var Payment $payment */
+        $payment = $paymentDO->getPayment();
+        $payment->setIsTransactionClosed(true);
+
+        return null;
     }
 }
