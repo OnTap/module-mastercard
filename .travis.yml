@@ -16,10 +16,7 @@ env:
 notifications:
   hipchat:
     rooms:
-    - $HIPCHAT_TOKEN@1059693
-    template:
-    - '%{repository}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}'
-    notify: true
+      secure: EsqySx1FWbsyN+QHfVKE9nHr7nu9YGjZ+1mQPFLl+C2zEsa7nJstL6Tw305l8+yi0LuoP099o7jXXJYBt1TJEvImjb22hIS5XQ7f+dSVECwkMz5YuQAY/HD/vY1KZWpN+woSd2FWsNG6sCV7jMwiw63YcgbjtBIpKWVqdOQIY3SZ1iyP/R2M3vIjyy6uXO7lO75vs/imNgKaEIQmAtJ5FhgnBh/TmcxKuB0CVaDIuTHaSp6EbjDKVsrAYVwCrs9+nKV+3suFjKg7/eRShgDmtXUvUu8jqTpiSGDYZOaxKUYM7UOx40WFQ5wTRZtehHcdDf+3TBw5rDSeBzU/8kq0nllKyjRkXUm4d3rfT5Vg9dm2UBkdGo1hSpDBq+7YFZnsKoZwV6gV/H1ooo5swZJRj5ptOSZXUun3KtbhaTwr/q+prxq2lGyRCgn0gNYQZvuAF6g4p3QA0gSIeQF5q/rDgbLtQrXq2jZFOcz2uVw24Sx0cdJSP5ap7y8HvQEkEZiMRLO1U41tz+wiJOtehdT5exnwCXOzqhQzxlHIqHRAbJuPW46iEtTLZDMqx78+M/9VNEAHbTEp1fSzyQ4u3bnhDahLYHA+islR0TnwIi9aR/igxnQA9wLJZDmpweVrClGImVwLETC0zku5bKBzi6IYW1h21hwfwJlY4YWsDi9N9Yg=
 cache:
   apt: true
   directories:
