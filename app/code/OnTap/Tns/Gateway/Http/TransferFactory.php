@@ -11,10 +11,6 @@ use Magento\Payment\Gateway\Http\TransferInterface;
 use Magento\Payment\Gateway\ConfigInterface;
 use OnTap\Tns\Gateway\Http\Client\Rest;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
-use Magento\Sales\Api\TransactionRepositoryInterface;
-use Magento\Framework\Api\FilterBuilder;
-use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Sales\Model\Order\Payment\Transaction\ManagerInterface;
 
 /**
  * Class TransferFactory
@@ -33,48 +29,16 @@ class TransferFactory implements TransferFactoryInterface
     private $transferBuilder;
 
     /**
-     * @var TransactionRepositoryInterface
-     */
-    private $transactionRepository;
-
-    /**
-     * @var FilterBuilder
-     */
-    private $filterBuilder;
-
-    /**
-     * @var SearchCriteriaBuilder
-     */
-    private $searchCriteriaBuilder;
-
-    /**
-     * @var ManagerInterface
-     */
-    private $transactionManager;
-
-    /**
      * TransferFactory constructor.
      * @param ConfigInterface $config
      * @param TransferBuilder $transferBuilder
-     * @param TransactionRepositoryInterface $repository
-     * @param FilterBuilder $filterBuilder
-     * @param SearchCriteriaBuilder $searchCriteriaBuilder
-     * @param ManagerInterface $managerInterface
      */
     public function __construct(
         ConfigInterface $config,
-        TransferBuilder $transferBuilder,
-        TransactionRepositoryInterface $repository,
-        FilterBuilder $filterBuilder,
-        SearchCriteriaBuilder $searchCriteriaBuilder,
-        ManagerInterface $managerInterface
+        TransferBuilder $transferBuilder
     ) {
         $this->config = $config;
         $this->transferBuilder = $transferBuilder;
-        $this->transactionRepository = $repository;
-        $this->filterBuilder = $filterBuilder;
-        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-        $this->transactionManager = $managerInterface;
     }
 
     /**
