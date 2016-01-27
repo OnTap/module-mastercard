@@ -322,42 +322,37 @@
         </arguments>
     </virtualType>
 
+    <!-- Virtual operation classes that specify apiOperation generically -->
     <virtualType name="VerifyOperationDataBuilder" type="OnTap\Tns\Gateway\Request\Direct\OperationBuilder">
         <arguments>
             <argument name="operation" xsi:type="string">VERIFY</argument>
         </arguments>
     </virtualType>
-
     <virtualType name="AuthorizeOperationDataBuilder" type="OnTap\Tns\Gateway\Request\Direct\OperationBuilder">
         <arguments>
             <argument name="operation" xsi:type="string">AUTHORIZE</argument>
         </arguments>
     </virtualType>
-
     <virtualType name="CaptureOperationDataBuilder" type="OnTap\Tns\Gateway\Request\Direct\OperationBuilder">
         <arguments>
             <argument name="operation" xsi:type="string">CAPTURE</argument>
         </arguments>
     </virtualType>
-
     <virtualType name="SaleOperationDataBuilder" type="OnTap\Tns\Gateway\Request\Direct\OperationBuilder">
         <arguments>
             <argument name="operation" xsi:type="string">PAY</argument>
         </arguments>
     </virtualType>
-
     <virtualType name="RefundOperationDataBuilder" type="OnTap\Tns\Gateway\Request\Direct\OperationBuilder">
         <arguments>
             <argument name="operation" xsi:type="string">REFUND</argument>
         </arguments>
     </virtualType>
-
     <virtualType name="VoidOperationDataBuilder" type="OnTap\Tns\Gateway\Request\Direct\OperationBuilder">
         <arguments>
             <argument name="operation" xsi:type="string">VOID</argument>
         </arguments>
     </virtualType>
-
     <virtualType name="ThreeDSecureOperationDataBuilder" type="OnTap\Tns\Gateway\Request\Direct\OperationBuilder">
         <arguments>
             <argument name="operation" xsi:type="string">CHECK_3DS_ENROLLMENT</argument>
@@ -377,7 +372,7 @@
         <arguments>
             <argument name="builders" xsi:type="array">
                 <item name="operation" xsi:type="string">RefundOperationDataBuilder</item>
-                <item name="refund" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\RefundDataBuilder</item>
+                <item name="refund" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\TransactionDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -386,7 +381,7 @@
         <arguments>
             <argument name="builders" xsi:type="array">
                 <item name="operation" xsi:type="string">CaptureOperationDataBuilder</item>
-                <item name="capture" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\CaptureDataBuilder</item>
+                <item name="capture" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\TransactionDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>

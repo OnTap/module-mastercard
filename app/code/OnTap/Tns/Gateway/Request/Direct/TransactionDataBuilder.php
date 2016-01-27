@@ -9,7 +9,7 @@ namespace OnTap\Tns\Gateway\Request\Direct;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 
-class RefundDataBuilder implements BuilderInterface
+class TransactionDataBuilder implements BuilderInterface
 {
     /**
      * Builds ENV request
