@@ -24,17 +24,12 @@ define(
             placeOrderHandler: null,
             validateHandler: null,
 
-            hasSsCardType: function () {
-                return false;
-            },
-
             initObservable: function () {
                 this._super()
                     .observe('active scriptLoaded');
 
                 return this;
             },
-
 
             setPlaceOrderHandler: function (handler) {
                 this.placeOrderHandler = handler;
@@ -86,23 +81,6 @@ define(
                     $('body').trigger('processStop');
                 //});
             },
-
-            getData: function () {
-                return {
-                    'method': this.item.method,
-                    'additionalData': {
-                        'cc_type': this.creditCardType(),
-                        'cc_exp_year': this.creditCardExpYear(),
-                        'cc_exp_month': this.creditCardExpMonth(),
-
-                        'cc_number': this.creditCardNumber(),
-                        'cc_cid': this.creditCardVerificationNumber(),
-                        'cc_ss_start_month': this.creditCardSsStartMonth(),
-                        'cc_ss_start_year': this.creditCardSsStartYear()
-                    }
-                };
-            },
-
 
             placeOrder: function () {
                 if (this.validateHandler() && additionalValidators.validate()) {

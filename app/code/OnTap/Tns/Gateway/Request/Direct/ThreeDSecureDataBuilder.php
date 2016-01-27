@@ -15,7 +15,6 @@ class ThreeDSecureDataBuilder extends CardDataBuilder implements BuilderInterfac
 {
     const PAGE_GENERATION_MODE = 'SIMPLE';
     const PAGE_ENCODING = 'UTF_8';
-    const OPERATION = 'CHECK_3DS_ENROLLMENT';
     const RESPONSE_URL = 'tns/threedsecure/reponse';
 
     /**
@@ -46,7 +45,6 @@ class ThreeDSecureDataBuilder extends CardDataBuilder implements BuilderInterfac
         ContextHelper::assertOrderPayment($payment);
 
         return [
-            'apiOperation' => self::OPERATION,
             '3DSecure' => [
                 'authenticationRedirect' => [
                     'pageGenerationMode' => self::PAGE_GENERATION_MODE,

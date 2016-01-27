@@ -8,7 +8,7 @@ namespace OnTap\Tns\Gateway\Http;
 
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 
-class ThreeDSecureTransferFactory extends TransferFactory
+class TransferFactory3DS extends TransferFactory
 {
     /**
      * @param PaymentDataObjectInterface $payment
@@ -16,7 +16,7 @@ class ThreeDSecureTransferFactory extends TransferFactory
      */
     protected function getUri(PaymentDataObjectInterface $payment)
     {
-        $threeDSecureId = $payment->getOrder()->getOrderIncrementId();
+        $threeDSecureId = uniqid(sprintf('3DS-%s-', (string) $payment->getOrder()->getOrderIncrementId()));
         return $this->getGatewayUri() . '3DSecureId/' . $threeDSecureId;
     }
 }

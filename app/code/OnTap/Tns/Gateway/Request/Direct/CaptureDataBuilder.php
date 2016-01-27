@@ -11,8 +11,6 @@ use Magento\Payment\Gateway\Helper\SubjectReader;
 
 class CaptureDataBuilder implements BuilderInterface
 {
-    const OPERATION = 'CAPTURE';
-
     /**
      * Builds ENV request
      *
@@ -24,7 +22,6 @@ class CaptureDataBuilder implements BuilderInterface
         $paymentDO = SubjectReader::readPayment($buildSubject);
 
         return [
-            'apiOperation' => self::OPERATION,
             'transaction' => [
                 'amount' => sprintf('%.2F', SubjectReader::readAmount($buildSubject)),
                 'currency' => $paymentDO->getOrder()->getCurrencyCode(),

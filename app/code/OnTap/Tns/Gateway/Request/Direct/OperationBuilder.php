@@ -8,9 +8,21 @@ namespace OnTap\Tns\Gateway\Request\Direct;
 
 use Magento\Payment\Gateway\Request\BuilderInterface;
 
-class VerifyDataBuilder implements BuilderInterface
+class OperationBuilder implements BuilderInterface
 {
-    const OPERATION = 'VERIFY';
+    /**
+     * @var string
+     */
+    protected $operation;
+
+    /**
+     * OperationBuilder constructor.
+     * @param string $operation
+     */
+    public function __construct($operation = '')
+    {
+        $this->operation = $operation;
+    }
 
     /**
      * Builds ENV request
@@ -22,7 +34,7 @@ class VerifyDataBuilder implements BuilderInterface
     public function build(array $buildSubject)
     {
         return [
-            'apiOperation' => self::OPERATION,
+            'apiOperation' => $this->operation,
         ];
     }
 }

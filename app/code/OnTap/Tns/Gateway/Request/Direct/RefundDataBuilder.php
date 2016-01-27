@@ -11,8 +11,6 @@ use Magento\Payment\Gateway\Helper\SubjectReader;
 
 class RefundDataBuilder implements BuilderInterface
 {
-    const OPERATION = 'REFUND';
-
     /**
      * Builds ENV request
      *
@@ -24,7 +22,6 @@ class RefundDataBuilder implements BuilderInterface
         $paymentDO = SubjectReader::readPayment($buildSubject);
 
         return [
-            'apiOperation' => self::OPERATION,
             'transaction' => [
                 'amount' => sprintf('%.2F', SubjectReader::readAmount($buildSubject)),
                 'currency' => $paymentDO->getOrder()->getCurrencyCode(),

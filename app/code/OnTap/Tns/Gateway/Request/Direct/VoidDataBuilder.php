@@ -11,8 +11,6 @@ use Magento\Payment\Gateway\Helper\SubjectReader;
 
 class VoidDataBuilder implements BuilderInterface
 {
-    const OPERATION = 'VOID';
-
     /**
      * Builds ENV request
      *
@@ -24,7 +22,6 @@ class VoidDataBuilder implements BuilderInterface
         $paymentDO = SubjectReader::readPayment($buildSubject);
 
         return [
-            'apiOperation' => self::OPERATION,
             'transaction' => [
                 'targetTransactionId' => $paymentDO->getPayment()->getParentTransactionId()
             ]

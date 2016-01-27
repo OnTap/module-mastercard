@@ -211,8 +211,8 @@
     <!-- Check 3D-Secure enrollment -->
     <virtualType name="TnsDirect3dsEnrollmentCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
         <arguments>
-            <argument name="requestBuilder" xsi:type="object">OnTap\Tns\Gateway\Request\Direct\ThreeDSecureDataBuilder</argument>
-            <argument name="transferFactory" xsi:type="object">TnsDirectThreeDSecureTransferFactory</argument>
+            <argument name="requestBuilder" xsi:type="object">TnsDirect3DSecureDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">TransferFactory3DS</argument>
             <argument name="client" xsi:type="object">OnTap\Tns\Gateway\Http\Client\Rest</argument>
             <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\Direct\ThreeDSecureValidator</argument>
         </arguments>
@@ -271,7 +271,7 @@
             <argument name="config" xsi:type="object">TnsConfig</argument>
         </arguments>
     </virtualType>
-    <virtualType name="TnsDirectThreeDSecureTransferFactory" type="OnTap\Tns\Gateway\Http\ThreeDSecureTransferFactory">
+    <virtualType name="TransferFactory3DS" type="OnTap\Tns\Gateway\Http\TransferFactory3DS">
         <arguments>
             <argument name="config" xsi:type="object">TnsConfig</argument>
         </arguments>
@@ -286,7 +286,7 @@
     <virtualType name="TnsDirectAuthorizeDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
         <arguments>
             <argument name="builders" xsi:type="array">
-                <item name="authorize" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\AuthorizeDataBuilder</item>
+                <item name="operation" xsi:type="string">AuthorizeOperationDataBuilder</item>
                 <item name="card" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\CardDataBuilder</item>
                 <item name="order" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\OrderDataBuilder</item>
                 <item name="billing" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\BillingDataBuilder</item>
@@ -299,7 +299,7 @@
     <virtualType name="TnsDirectSaleDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
         <arguments>
             <argument name="builders" xsi:type="array">
-                <item name="sale" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\SaleDataBuilder</item>
+                <item name="operation" xsi:type="string">SaleOperationDataBuilder</item>
                 <item name="card" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\CardDataBuilder</item>
                 <item name="order" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\OrderDataBuilder</item>
                 <item name="billing" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\BillingDataBuilder</item>
@@ -312,7 +312,7 @@
     <virtualType name="TnsDirectVerifyDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
         <arguments>
             <argument name="builders" xsi:type="array">
-                <item name="sale" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\VerifyDataBuilder</item>
+                <item name="operation" xsi:type="string">VerifyOperationDataBuilder</item>
                 <item name="card" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\CardDataBuilder</item>
                 <item name="order" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\OrderDataBuilder</item>
                 <item name="billing" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\BillingDataBuilder</item>
@@ -322,9 +322,52 @@
         </arguments>
     </virtualType>
 
+    <virtualType name="VerifyOperationDataBuilder" type="OnTap\Tns\Gateway\Request\Direct\OperationBuilder">
+        <arguments>
+            <argument name="operation" xsi:type="string">VERIFY</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="AuthorizeOperationDataBuilder" type="OnTap\Tns\Gateway\Request\Direct\OperationBuilder">
+        <arguments>
+            <argument name="operation" xsi:type="string">AUTHORIZE</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="CaptureOperationDataBuilder" type="OnTap\Tns\Gateway\Request\Direct\OperationBuilder">
+        <arguments>
+            <argument name="operation" xsi:type="string">CAPTURE</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="SaleOperationDataBuilder" type="OnTap\Tns\Gateway\Request\Direct\OperationBuilder">
+        <arguments>
+            <argument name="operation" xsi:type="string">PAY</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="RefundOperationDataBuilder" type="OnTap\Tns\Gateway\Request\Direct\OperationBuilder">
+        <arguments>
+            <argument name="operation" xsi:type="string">REFUND</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="VoidOperationDataBuilder" type="OnTap\Tns\Gateway\Request\Direct\OperationBuilder">
+        <arguments>
+            <argument name="operation" xsi:type="string">VOID</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="ThreeDSecureOperationDataBuilder" type="OnTap\Tns\Gateway\Request\Direct\OperationBuilder">
+        <arguments>
+            <argument name="operation" xsi:type="string">CHECK_3DS_ENROLLMENT</argument>
+        </arguments>
+    </virtualType>
+
     <virtualType name="TnsDirectVoidDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
         <arguments>
             <argument name="builders" xsi:type="array">
+                <item name="operation" xsi:type="string">VoidOperationDataBuilder</item>
                 <item name="void" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\VoidDataBuilder</item>
             </argument>
         </arguments>
@@ -333,6 +376,7 @@
     <virtualType name="TnsDirectRefundDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
         <arguments>
             <argument name="builders" xsi:type="array">
+                <item name="operation" xsi:type="string">RefundOperationDataBuilder</item>
                 <item name="refund" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\RefundDataBuilder</item>
             </argument>
         </arguments>
@@ -341,7 +385,17 @@
     <virtualType name="TnsDirectCaptureDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
         <arguments>
             <argument name="builders" xsi:type="array">
+                <item name="operation" xsi:type="string">CaptureOperationDataBuilder</item>
                 <item name="capture" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\CaptureDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="TnsDirect3DSecureDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="operation" xsi:type="string">ThreeDSecureOperationDataBuilder</item>
+                <item name="three_d_secure" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\ThreeDSecureDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
