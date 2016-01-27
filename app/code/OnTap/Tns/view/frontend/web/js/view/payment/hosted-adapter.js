@@ -15,15 +15,14 @@ define([
             Checkout.configure({
                 merchant: 'xxx',
                 order: {
-                    amount: function() {
-                        return 100.00;
-                    },
-                    currency: 'USD',
+                    amount: 100.00,
+                    currency: 'GBP',
                     description: 'Ordered goods'
                 },
                 interaction: {
+                    //cancelUrl: 'http://xxx.local/xxx',
                     merchant: {
-                        name: 'xxx'
+                        name: 'Merchant X'
                     }
                 }
             });

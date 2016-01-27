@@ -175,8 +175,6 @@
             <argument name="handler" xsi:type="object">TnsDirectSaleResponseHandler</argument>
             <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\Direct\ResponseValidator</argument>
         </arguments>
-        <!--<plugin name="ThreeDSecureEnrollment" type="OnTap\Tns\Gateway\Plugin\ThreeDSecureEnrollment" sortOrder="0" />-->
-        <!--<plugin name="VerifyTransaction" type="OnTap\Tns\Gateway\Plugin\VerifyTransaction" sortOrder="1" />-->
     </virtualType>
 
     <!-- Capture a pre-authorized payment -->
@@ -257,20 +255,6 @@
     <type name="OnTap\Tns\Gateway\Validator\Direct\CscResponseValidator">
         <arguments>
             <argument name="config" xsi:type="object">TnsConfig</argument>
-        </arguments>
-    </type>
-
-    <type name="OnTap\Tns\Gateway\Plugin\ThreeDSecureEnrollment">
-        <arguments>
-            <argument name="config" xsi:type="object">TnsConfig</argument>
-            <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
-        </arguments>
-    </type>
-
-    <type name="OnTap\Tns\Gateway\Plugin\VerifyTransaction">
-        <arguments>
-            <argument name="config" xsi:type="object">TnsConfig</argument>
-            <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
         </arguments>
     </type>
 

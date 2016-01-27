@@ -16,7 +16,8 @@ use Magento\Payment\Gateway\Helper\SubjectReader;
 
 class VerificationStrategyCommand implements CommandInterface
 {
-    const VERIFY = 'verify';
+    const VERIFY_AVS_CSC = 'verify';
+    const VERIFY_3DSECURE = '3ds_enrollment';
 
     /**
      * @var Command\CommandPoolInterface
@@ -64,12 +65,18 @@ class VerificationStrategyCommand implements CommandInterface
         ContextHelper::assertOrderPayment($paymentInfo);
 
         if (!$paymentInfo->getAuthorizationTransaction()) { // Only verify when auth transaction does not exist
+            if ($this->config->getValue('three_d_secure') === '1') {
+                $this->commandPool
+                    ->get(self::VERIFY_3DSECURE)
+                    ->execute($commandSubject);
+            }
+
             if (
                 $this->config->getValue('avs') === '1' ||
                 $this->config->getValue('csc_rules') === '1'
             ) {
                 $this->commandPool
-                    ->get(self::VERIFY)
+                    ->get(self::VERIFY_AVS_CSC)
                     ->execute($commandSubject);
             }
         }
