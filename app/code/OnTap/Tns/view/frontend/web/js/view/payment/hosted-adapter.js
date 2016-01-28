@@ -5,29 +5,52 @@
 /*browser:true*/
 /*global define*/
 define([
-    'jquery',
-    'tnshosted'
+    'jquery'
 ], function ($) {
     'use strict';
 
     return {
-        configureApi: function () {
+        amount: null,
+        currency: null,
+        title: null,
+        config: null,
+        onLoaded: null,
+        errorCallback: null,
+        cancelCallback: null,
+
+        configureApi: function (onLoadedCallback) {
+            this.onLoaded = onLoadedCallback;
+            window.errorCallback = $.proxy(this.errorCallback, this);
+            window.cancelCallback = $.proxy(this.cancelCallback, this);
+
+            var node = requirejs.load({
+                contextName: '_',
+                onScriptLoad: $.proxy(this.onLoad, this)
+            }, 'tnshosted', 'https://test-gateway.mastercard.com/checkout/version/32/checkout.js');
+
+            node.setAttribute('data-error', 'window.errorCallback');
+            node.setAttribute('data-cancel', 'window.cancelCallback');
+        },
+
+        onLoad: function () {
             Checkout.configure({
-                merchant: 'xxx',
+                merchant: this.config.merchant_username,
                 order: {
-                    amount: 100.00,
-                    currency: 'GBP',
-                    description: 'Ordered goods'
+                    amount: this.amount,
+                    currency: this.currency,
+                    description: 'Ordered items'
                 },
                 interaction: {
-                    //cancelUrl: 'http://xxx.local/xxx',
+                    //cancelUrl: 'https://www.local/xxx',
                     merchant: {
-                        name: 'Merchant X'
+                        name: this.title
                     }
                 }
             });
+            this.onLoaded(this);
         },
-        showLightbox: function () {
+
+        showPayment: function () {
             Checkout.showLightbox();
         }
     };

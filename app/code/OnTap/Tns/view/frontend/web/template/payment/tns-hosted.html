@@ -4,7 +4,7 @@
  * See COPYING.txt for license details.
  */
 -->
-<div class="payment-method" data-bind="css: {'_active': (getCode() == isChecked())}">
+<div class="payment-method" data-bind="css: {'_active': isActive()}">
     <div class="payment-method-title field choice">
         <input type="radio"
                name="payment[method]"
@@ -31,7 +31,7 @@
             <div class="primary">
                 <button data-role="review-save"
                         type="submit"
-                        data-bind="click: overlayEmerge, attr: {title: $t('Continue')}, css: {disabled: !isPlaceOrderActionAllowed()}"
+                        data-bind="click: showPayment, attr: {title: $t('Continue')}, css: {disabled: isCheckoutDisabled()}"
                         class="button action primary checkout">
                     <span data-bind="i18n: 'Pay'"></span>
                 </button>

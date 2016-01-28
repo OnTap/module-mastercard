@@ -6,64 +6,85 @@
 define(
     [
         'Magento_Checkout/js/view/payment/default',
+        'jquery',
         'ko',
+        'Magento_Checkout/js/model/quote',
         'Magento_Checkout/js/model/full-screen-loader',
+        'Magento_Ui/js/modal/alert',
         'OnTap_Tns/js/view/payment/hosted-adapter'
     ],
-    function (Component, ko, fullScreenLoader, paymentAdapter) {
+    function (Component, $, ko, quote, fullScreenLoader, alert, paymentAdapter) {
         'use strict';
 
         return Component.extend({
             defaults: {
                 template: 'OnTap_Tns/payment/tns-hosted',
-                paymentReady: false
+                adapterLoaded: false,
+                active: false,
+                imports: {
+                    onActiveChange: 'active'
+                }
             },
-            redirectAfterPlaceOrder: false,
-            isInAction: true,
 
-            /**
-             * @return {exports}
-             */
             initObservable: function () {
                 this._super()
-                    .observe('paymentReady');
-
-                paymentAdapter.configureApi();
+                    .observe('active adapterLoaded');
 
                 return this;
             },
 
-            overlayEmerge: function () {
-                paymentAdapter.showLightbox();
+            onActiveChange: function (isActive) {
+                if (isActive && !this.adapterLoaded()) {
+                    this.loadAdapter();
+                }
             },
 
-            /**
-             * @return {*}
-             */
-            isPaymentReady: function () {
-                return this.paymentReady();
+            isActive: function () {
+                var active = this.getCode() === this.isChecked();
+                this.active(active);
+                return active;
             },
 
-            /**
-             * Get action url for payment method iframe.
-             * @returns {String}
-             */
-            getActionUrl: function () {
-                return this.isInAction() ? 'http://www.ee' : '';
+            loadAdapter: function () {
+                paymentAdapter.errorCallback = $.proxy(this.errorCallback, this);
+                paymentAdapter.cancelCallback = $.proxy(this.cancelCallback, this);
+                paymentAdapter.config = this.getConfig();
+                paymentAdapter.currency = quote.totals().quote_currency_code;
+                paymentAdapter.amount = quote.totals().grand_total.toFixed(2);
+                paymentAdapter.title = this.getTitle();
+
+                paymentAdapter.configureApi($.proxy(this.paymentAdapterLoaded, this));
             },
 
-            /**
-             * After place order callback
-             */
-            afterPlaceOrder: function () {
-                this.paymentReady(true);
+            paymentAdapterLoaded: function (adapter) {
+                this.adapterLoaded(true);
             },
 
-            /**
-             * Hide loader when iframe is fully loaded.
-             */
-            iframeLoaded: function () {
+            isCheckoutDisabled: function () {
+                return !this.adapterLoaded() || !this.isPlaceOrderActionAllowed();
+            },
+
+            getConfig: function () {
+                return window.checkoutConfig.payment[this.getCode()];
+            },
+
+            showPayment: function () {
+                fullScreenLoader.startLoader();
+                paymentAdapter.showPayment();
+            },
+
+            errorCallback: function (error) {
                 fullScreenLoader.stopLoader();
+                alert({
+                    content: error.cause + ': ' + error.explanation
+                });
+            },
+
+            cancelCallback: function () {
+                fullScreenLoader.stopLoader();
+                alert({
+                    content: 'Payment cancelled.'
+                });
             }
         });
     }

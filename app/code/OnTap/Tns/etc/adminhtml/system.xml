@@ -61,22 +61,52 @@
                         <source_model>OnTap\Tns\Model\Adminhtml\Source\PaymentAction</source_model>
                         <config_path>payment/tns_hosted/payment_action</config_path>
                     </field>
-                    <field id="currency" translate="label" type="select" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="title" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Title</label>
+                        <config_path>payment/tns_hosted/title</config_path>
+                    </field>
+                    <field id="api_username" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>API Username</label>
+                        <config_path>payment/tns_hosted/api_username</config_path>
+                    </field>
+                    <field id="api_password" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>API Password</label>
+                        <config_path>payment/tns_hosted/api_password</config_path>
+                    </field>
+                    <field id="api_test_username" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Test API Username</label>
+                        <config_path>payment/tns_hosted/api_test_username</config_path>
+                    </field>
+                    <field id="api_test_password" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Test API Password</label>
+                        <config_path>payment/tns_hosted/api_test_password</config_path>
+                    </field>
+                    <field id="test" translate="label" type="select" sortOrder="71" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Test Mode</label>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <config_path>payment/tns_hosted/test</config_path>
+                    </field>
+                    <field id="debug" translate="label" type="select" sortOrder="72" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Debug</label>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <config_path>payment/tns_hosted/debug</config_path>
+                    </field>
+                    <field id="currency" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Accepted Currency</label>
                         <source_model>Magento\Config\Model\Config\Source\Locale\Currency</source_model>
                         <config_path>payment/tns_hosted/currency</config_path>
                     </field>
-                    <field id="allowspecific" translate="label" type="allowspecific" sortOrder="170" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="allowspecific" translate="label" type="allowspecific" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Payment from Applicable Countries</label>
                         <source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
                         <config_path>payment/tns_hosted/allowspecific</config_path>
                     </field>
-                    <field id="specificcountry" translate="label" type="multiselect" sortOrder="180" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="specificcountry" translate="label" type="multiselect" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Payment from Specific Countries</label>
                         <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
                         <config_path>payment/tns_hosted/specificcountry</config_path>
                     </field>
-                    <field id="sort_order" translate="label" type="text" sortOrder="210" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="sort_order" translate="label" type="text" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Sort Order</label>
                         <frontend_class>validate-number</frontend_class>
                         <config_path>payment/tns_hosted/sort_order</config_path>
