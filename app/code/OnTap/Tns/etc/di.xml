@@ -50,6 +50,8 @@
                 <item name="create_session" xsi:type="string">TnsHostedCreateSessionCommand</item>
                 <item name="authorize" xsi:type="string">TnsHostedRetrieveOrderCommand</item>
                 <item name="capture" xsi:type="string">TnsHostedPreAuthCaptureCommand</item>
+                <item name="refund" xsi:type="string">TnsHostedRefundCommand</item>
+                <item name="void" xsi:type="string">TnsHostedVoidCommand</item>
             </argument>
         </arguments>
     </virtualType>
@@ -243,8 +245,18 @@
     <!-- Refund -->
     <virtualType name="TnsDirectRefundCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
         <arguments>
-            <argument name="requestBuilder" xsi:type="object">TnsDirectRefundDataBuilder</argument>
+            <argument name="requestBuilder" xsi:type="object">TnsRefundDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">OnTap\Tns\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">OnTap\Tns\Gateway\Http\Client\Rest</argument>
+            <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\ResponseValidator</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Refund (HC) -->
+    <virtualType name="TnsHostedRefundCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">TnsRefundDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">HostedTransferFactory</argument>
             <argument name="client" xsi:type="object">OnTap\Tns\Gateway\Http\Client\Rest</argument>
             <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\ResponseValidator</argument>
         </arguments>
@@ -253,8 +265,18 @@
     <!-- Void -->
     <virtualType name="TnsDirectVoidCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
         <arguments>
-            <argument name="requestBuilder" xsi:type="object">TnsDirectVoidDataBuilder</argument>
+            <argument name="requestBuilder" xsi:type="object">TnsVoidDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">OnTap\Tns\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">OnTap\Tns\Gateway\Http\Client\Rest</argument>
+            <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\ResponseValidator</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Void (HC) -->
+    <virtualType name="TnsHostedVoidCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">TnsVoidDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">HostedTransferFactory</argument>
             <argument name="client" xsi:type="object">OnTap\Tns\Gateway\Http\Client\Rest</argument>
             <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\ResponseValidator</argument>
         </arguments>
@@ -451,16 +473,16 @@
         </arguments>
     </virtualType>
 
-    <virtualType name="TnsDirectVoidDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
+    <virtualType name="TnsVoidDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
         <arguments>
             <argument name="builders" xsi:type="array">
                 <item name="operation" xsi:type="string">VoidOperationDataBuilder</item>
-                <item name="void" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\VoidDataBuilder</item>
+                <item name="void" xsi:type="string">OnTap\Tns\Gateway\Request\VoidDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
 
-    <virtualType name="TnsDirectRefundDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
+    <virtualType name="TnsRefundDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
         <arguments>
             <argument name="builders" xsi:type="array">
                 <item name="operation" xsi:type="string">RefundOperationDataBuilder</item>
