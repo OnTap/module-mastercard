@@ -6,7 +6,7 @@
 
 namespace OnTap\Tns\Test\Unit\Gateway\Request\Direct;
 
-use OnTap\Tns\Gateway\Request\Direct\TransactionDataBuilder;
+use OnTap\Tns\Gateway\Request\TransactionDataBuilder;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use Magento\Payment\Gateway\Data\OrderAdapterInterface;
 
