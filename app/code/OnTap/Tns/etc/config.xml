@@ -49,9 +49,28 @@
                 <title>Hosted (TNS)</title>
                 <model>TnsHostedFacade</model>
                 <payment_action>authorize</payment_action>
+
+                <api_version>32</api_version>
+                <api_url>https://eu-gateway.mastercard.com/api/rest/</api_url>
+                <api_test_url>https://test-gateway.mastercard.com/api/rest/</api_test_url>
+
+                <component_url>https://eu-gateway.mastercard.com/checkout/version/32/checkout.js</component_url>
+                <component_test_url>https://test-gateway.mastercard.com/checkout/version/32/checkout.js</component_test_url>
+
                 <debug>0</debug>
                 <test>0</test>
                 <allowspecific>0</allowspecific>
+                <can_initialize>0</can_initialize>
+                <can_use_checkout>1</can_use_checkout>
+                <can_use_internal>0</can_use_internal>
+
+                <can_order>1</can_order>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_capture_partial>1</can_capture_partial>
+
+                <paymentInfoKeys>gateway_code,txn_result,card_scheme,card_number,card_expiry_date,cvv_validation</paymentInfoKeys>
+                <!--<privateInfoKeys></privateInfoKeys>-->
             </tns_hosted>
             <tns_hpf>
                 <active>0</active>

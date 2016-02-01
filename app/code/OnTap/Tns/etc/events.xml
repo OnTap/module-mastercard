@@ -8,6 +8,9 @@
 
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
     <event name="payment_method_assign_data_tns_direct">
-        <observer name="tns_direct_gateway_data_assign" instance="OnTap\Tns\Observer\DataAssignObserver" />
+        <observer name="tns_direct_gateway_data_assign" instance="OnTap\Tns\Observer\Direct\DataAssignObserver" />
+    </event>
+    <event name="payment_method_assign_data_tns_hosted">
+        <observer name="tns_hosted_gateway_data_assign" instance="OnTap\Tns\Observer\Hosted\DataAssignObserver" />
     </event>
 </config>

@@ -10,46 +10,46 @@ define([
     'use strict';
 
     return {
-        amount: null,
-        currency: null,
-        title: null,
-        config: null,
-        onLoaded: null,
-        errorCallback: null,
-        cancelCallback: null,
-
-        configureApi: function (onLoadedCallback) {
-            this.onLoaded = onLoadedCallback;
-            window.errorCallback = $.proxy(this.errorCallback, this);
-            window.cancelCallback = $.proxy(this.cancelCallback, this);
+        loadApi: function (componentUrl, onLoadedCallback, onError, onCancel, onComplete) {
+            window.tnsErrorCallback = $.proxy(onError, this);
+            window.tnsCancelCallback = $.proxy(onCancel, this);
+            window.tnsCompletedCallback = $.proxy(onComplete, this);
 
             var node = requirejs.load({
                 contextName: '_',
-                onScriptLoad: $.proxy(this.onLoad, this)
-            }, 'tnshosted', 'https://test-gateway.mastercard.com/checkout/version/32/checkout.js');
+                onScriptLoad: $.proxy(onLoadedCallback, this)
+            }, 'tnshosted', componentUrl);
 
-            node.setAttribute('data-error', 'window.errorCallback');
-            node.setAttribute('data-cancel', 'window.cancelCallback');
+            node.setAttribute('data-error', 'window.tnsErrorCallback');
+            node.setAttribute('data-cancel', 'window.tnsCancelCallback');
+            node.setAttribute('data-complete', 'window.tnsCompletedCallback');
         },
-
-        onLoad: function () {
+        configureApi: function (merchant, amount, currency, sessionId, sessionVersion) {
             Checkout.configure({
-                merchant: this.config.merchant_username,
+                merchant: merchant,
                 order: {
-                    amount: this.amount,
-                    currency: this.currency,
+                    amount: amount,
+                    currency: currency,
                     description: 'Ordered items'
                 },
                 interaction: {
-                    //cancelUrl: 'https://www.local/xxx',
                     merchant: {
-                        name: this.title
+                        name: 'Magento'
+                    },
+                    displayControl: {
+                        customerEmail: 'HIDE',
+                        billingAddress: 'HIDE',
+                        orderSummary: 'HIDE',
+                        paymentTerms: 'HIDE',
+                        shipping: 'HIDE'
                     }
+                },
+                session: {
+                    id: sessionId,
+                    version: sessionVersion
                 }
             });
-            this.onLoaded(this);
         },
-
         showPayment: function () {
             Checkout.showLightbox();
         }

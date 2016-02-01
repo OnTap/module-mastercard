@@ -8,26 +8,19 @@ namespace OnTap\Tns\Observer;
 
 use Magento\Framework\Event\Observer;
 use Magento\Payment\Observer\AbstractDataAssignObserver;
-use OnTap\Tns\Gateway\Request\Direct\CardDataBuilder;
 
-class DataAssignObserver extends AbstractDataAssignObserver
+class DataAssignAbstract extends AbstractDataAssignObserver
 {
     /**
      * @var array
      */
-    protected $additionalInformationList = [
-        CardDataBuilder::CC_TYPE,
-        CardDataBuilder::CC_EXP_YEAR,
-        CardDataBuilder::CC_EXP_MONTH,
-        CardDataBuilder::CC_NUMBER,
-        CardDataBuilder::CC_CID
-    ];
+    protected $additionalInformationList = [];
 
     /**
      * @param Observer $observer
      * @return void
      */
-    public function execute(Observer $observer)
+    public function execute(\Magento\Framework\Event\Observer $observer)
     {
         $data = $this->readDataArgument($observer);
 

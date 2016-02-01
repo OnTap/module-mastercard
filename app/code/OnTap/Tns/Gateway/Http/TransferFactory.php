@@ -24,6 +24,11 @@ class TransferFactory implements TransferFactoryInterface
     protected $config;
 
     /**
+     * @var string
+     */
+    protected $httpMethod = Rest::PUT;
+
+    /**
      * @var TransferBuilder
      */
     private $transferBuilder;
@@ -103,7 +108,7 @@ class TransferFactory implements TransferFactoryInterface
     public function create(array $request, PaymentDataObjectInterface $payment)
     {
         return $this->transferBuilder
-            ->setMethod(Rest::PUT)
+            ->setMethod($this->httpMethod)
             ->setHeaders(['Content-Type' => 'application/json;charset=UTF-8'])
             ->setBody($request)
             ->setAuthUsername($this->getMerchantUsername())

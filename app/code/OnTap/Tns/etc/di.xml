@@ -6,6 +6,9 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <preference for="OnTap\Tns\Api\SessionInformationManagementInterface" type="OnTap\Tns\Model\SessionInformationManagement" />
+
     <virtualType name="TnsConfig" type="Magento\Payment\Gateway\Config\Config">
         <arguments>
             <argument name="methodCode" xsi:type="const">OnTap\Tns\Model\Ui\Direct\ConfigProvider::METHOD_CODE</argument>
@@ -41,11 +44,26 @@
         </arguments>
     </virtualType>
 
+    <virtualType name="TnsHostedCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="create_session" xsi:type="string">TnsHostedCreateSessionCommand</item>
+                <item name="authorize" xsi:type="string">TnsHostedRetrieveOrderCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <type name="OnTap\Tns\Model\SessionInformationManagement">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">TnsHostedCommandPool</argument>
+        </arguments>
+    </type>
+
     <virtualType name="TnsDirectFacade" type="Magento\Payment\Model\Method\Adapter">
         <arguments>
             <argument name="code" xsi:type="const">OnTap\Tns\Model\Ui\Direct\ConfigProvider::METHOD_CODE</argument>
             <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form\Cc</argument>
-            <argument name="infoBlockType" xsi:type="string">OnTap\Tns\Block\Direct\Info</argument>
+            <argument name="infoBlockType" xsi:type="string">TnsDirectInfoBlock</argument>
             <argument name="valueHandlerPool" xsi:type="object">TnsValueHandlerPool</argument>
             <argument name="validatorPool" xsi:type="object">Magento\Payment\Gateway\Validator\ValidatorPool</argument>
             <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
@@ -56,10 +74,10 @@
         <arguments>
             <argument name="code" xsi:type="const">OnTap\Tns\Model\Ui\Hosted\ConfigProvider::METHOD_CODE</argument>
             <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form\Cc</argument>
-            <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\Info\Cc</argument>
+            <argument name="infoBlockType" xsi:type="string">TnsHostedInfoBlock</argument>
             <argument name="valueHandlerPool" xsi:type="object">TnsHostedValueHandlerPool</argument>
             <argument name="validatorPool" xsi:type="object">Magento\Payment\Gateway\Validator\ValidatorPool</argument>
-            <!--<argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>-->
+            <argument name="commandPool" xsi:type="object">TnsHostedCommandPool</argument>
         </arguments>
     </virtualType>
 
@@ -67,7 +85,7 @@
         <arguments>
             <argument name="code" xsi:type="const">OnTap\Tns\Model\Ui\Hpf\ConfigProvider::METHOD_CODE</argument>
             <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form\Cc</argument>
-            <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\Info\Cc</argument>
+            <argument name="infoBlockType" xsi:type="string">TnsHostedInfoBlock</argument>
             <argument name="valueHandlerPool" xsi:type="object">TnsHpfValueHandlerPool</argument>
             <argument name="validatorPool" xsi:type="object">Magento\Payment\Gateway\Validator\ValidatorPool</argument>
             <!--<argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>-->
@@ -114,14 +132,36 @@
         </arguments>
     </virtualType>
 
+    <!-- Create a HC session -->
+    <virtualType name="TnsHostedCreateSessionCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">TnsHostedSessionDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">OnTap\Tns\Gateway\Http\Hosted\TransferFactorySession</argument>
+            <argument name="client" xsi:type="object">OnTap\Tns\Gateway\Http\Client\Rest</argument>
+            <argument name="handler" xsi:type="object">OnTap\Tns\Gateway\Response\Hosted\SessionHandler</argument>
+            <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\ResponseValidator</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Verify HC payment -->
+    <virtualType name="TnsHostedRetrieveOrderCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">OnTap\Tns\Gateway\Request\Hosted\RetrieveOrderDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">OnTap\Tns\Gateway\Http\Hosted\TransferFactoryOrder</argument>
+            <argument name="client" xsi:type="object">OnTap\Tns\Gateway\Http\Client\Rest</argument>
+            <argument name="handler" xsi:type="object">TnsHostedOrderResponseHandler</argument>
+            <argument name="validator" xsi:type="object">TnsHostedOrderValidator</argument>
+        </arguments>
+    </virtualType>
+
     <!-- Pure authorize command -->
     <virtualType name="AuthorizeCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
         <arguments>
             <argument name="requestBuilder" xsi:type="object">TnsDirectAuthorizeDataBuilder</argument>
-            <argument name="transferFactory" xsi:type="object">TnsDirectTransferFactory</argument>
+            <argument name="transferFactory" xsi:type="object">OnTap\Tns\Gateway\Http\TransferFactory</argument>
             <argument name="client" xsi:type="object">OnTap\Tns\Gateway\Http\Client\Rest</argument>
             <argument name="handler" xsi:type="object">TnsDirectAuthorizeResponseHandler</argument>
-            <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\Direct\ResponseValidator</argument>
+            <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\ResponseValidator</argument>
         </arguments>
     </virtualType>
 
@@ -170,10 +210,10 @@
     <virtualType name="TnsDirectSaleCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
         <arguments>
             <argument name="requestBuilder" xsi:type="object">TnsDirectSaleDataBuilder</argument>
-            <argument name="transferFactory" xsi:type="object">TnsDirectTransferFactory</argument>
+            <argument name="transferFactory" xsi:type="object">OnTap\Tns\Gateway\Http\TransferFactory</argument>
             <argument name="client" xsi:type="object">OnTap\Tns\Gateway\Http\Client\Rest</argument>
             <argument name="handler" xsi:type="object">TnsDirectSaleResponseHandler</argument>
-            <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\Direct\ResponseValidator</argument>
+            <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\ResponseValidator</argument>
         </arguments>
     </virtualType>
 
@@ -181,10 +221,10 @@
     <virtualType name="TnsPreAuthCaptureCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
         <arguments>
             <argument name="requestBuilder" xsi:type="object">TnsDirectCaptureDataBuilder</argument>
-            <argument name="transferFactory" xsi:type="object">TnsDirectTransferFactory</argument>
+            <argument name="transferFactory" xsi:type="object">OnTap\Tns\Gateway\Http\TransferFactory</argument>
             <argument name="client" xsi:type="object">OnTap\Tns\Gateway\Http\Client\Rest</argument>
             <argument name="handler" xsi:type="object">OnTap\Tns\Gateway\Response\Direct\TransactionIdHandler</argument>
-            <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\Direct\ResponseValidator</argument>
+            <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\ResponseValidator</argument>
         </arguments>
     </virtualType>
 
@@ -192,9 +232,9 @@
     <virtualType name="TnsDirectRefundCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
         <arguments>
             <argument name="requestBuilder" xsi:type="object">TnsDirectRefundDataBuilder</argument>
-            <argument name="transferFactory" xsi:type="object">TnsDirectTransferFactory</argument>
+            <argument name="transferFactory" xsi:type="object">OnTap\Tns\Gateway\Http\TransferFactory</argument>
             <argument name="client" xsi:type="object">OnTap\Tns\Gateway\Http\Client\Rest</argument>
-            <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\Direct\ResponseValidator</argument>
+            <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\ResponseValidator</argument>
         </arguments>
     </virtualType>
 
@@ -202,9 +242,9 @@
     <virtualType name="TnsDirectVoidCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
         <arguments>
             <argument name="requestBuilder" xsi:type="object">TnsDirectVoidDataBuilder</argument>
-            <argument name="transferFactory" xsi:type="object">TnsDirectTransferFactory</argument>
+            <argument name="transferFactory" xsi:type="object">OnTap\Tns\Gateway\Http\TransferFactory</argument>
             <argument name="client" xsi:type="object">OnTap\Tns\Gateway\Http\Client\Rest</argument>
-            <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\Direct\ResponseValidator</argument>
+            <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\ResponseValidator</argument>
         </arguments>
     </virtualType>
 
@@ -222,7 +262,7 @@
     <virtualType name="TnsDirectVerifyCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
         <arguments>
             <argument name="requestBuilder" xsi:type="object">TnsDirectVerifyDataBuilder</argument>
-            <argument name="transferFactory" xsi:type="object">TnsDirectTransferFactory</argument>
+            <argument name="transferFactory" xsi:type="object">OnTap\Tns\Gateway\Http\TransferFactory</argument>
             <argument name="client" xsi:type="object">OnTap\Tns\Gateway\Http\Client\Rest</argument>
             <argument name="validator" xsi:type="object">TnsDirectVerifyResponse</argument>
             <argument name="handler" xsi:type="object">OnTap\Tns\Gateway\Response\Direct\FraudHandler</argument>
@@ -232,7 +272,8 @@
     <virtualType name="TnsDirectVerifyResponse" type="Magento\Payment\Gateway\Validator\ValidatorComposite">
         <arguments>
             <argument name="validators" xsi:type="array">
-                <item name="response" xsi:type="string">OnTap\Tns\Gateway\Validator\Direct\ResponseValidator</item>
+                <item name="response" xsi:type="string">OnTap\Tns\Gateway\Validator\ResponseValidator</item>
+                <item name="order" xsi:type="string">OnTap\Tns\Gateway\Validator\Direct\OrderValidator</item>
                 <item name="csc" xsi:type="string">OnTap\Tns\Gateway\Validator\Direct\CscResponseValidator</item>
                 <item name="avs" xsi:type="string">OnTap\Tns\Gateway\Validator\Direct\AvsResponseValidator</item>
                 <!--<item name="3ds" xsi:type="string">OnTap\Tns\Gateway\Validator\Direct\ThreeDSecureValidator</item>-->
@@ -240,11 +281,14 @@
         </arguments>
     </virtualType>
 
-    <type name="OnTap\Tns\Gateway\Validator\Direct\ResponseValidator">
+    <virtualType name="TnsHostedOrderValidator" type="Magento\Payment\Gateway\Validator\ValidatorComposite">
         <arguments>
-            <argument name="config" xsi:type="object">TnsConfig</argument>
+            <argument name="validators" xsi:type="array">
+                <item name="response" xsi:type="string">OnTap\Tns\Gateway\Validator\ResponseValidator</item>
+                <item name="session" xsi:type="string">OnTap\Tns\Gateway\Validator\Hosted\SessionIndicatorValidator</item>
+            </argument>
         </arguments>
-    </type>
+    </virtualType>
 
     <type name="OnTap\Tns\Gateway\Validator\Direct\AvsResponseValidator">
         <arguments>
@@ -266,11 +310,24 @@
         </arguments>
     </type>
 
-    <virtualType name="TnsDirectTransferFactory" type="OnTap\Tns\Gateway\Http\TransferFactory">
+    <type name="OnTap\Tns\Gateway\Http\TransferFactory">
         <arguments>
             <argument name="config" xsi:type="object">TnsConfig</argument>
         </arguments>
-    </virtualType>
+    </type>
+
+    <type name="OnTap\Tns\Gateway\Http\Hosted\TransferFactorySession">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsHostedConfig</argument>
+        </arguments>
+    </type>
+
+    <type name="OnTap\Tns\Gateway\Http\Hosted\TransferFactoryOrder">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsHostedConfig</argument>
+        </arguments>
+    </type>
+
     <virtualType name="TransferFactory3DS" type="OnTap\Tns\Gateway\Http\TransferFactory3DS">
         <arguments>
             <argument name="config" xsi:type="object">TnsConfig</argument>
@@ -280,6 +337,18 @@
     <virtualType name="TnsLogger" type="Magento\Payment\Model\Method\Logger">
         <arguments>
             <argument name="config" xsi:type="object">TnsConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="TnsHostedSessionDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="operation" xsi:type="string">CreateSessionOperationDataBuilder</item>
+                <item name="order" xsi:type="string">OnTap\Tns\Gateway\Request\Hosted\OrderDataBuilder</item>
+                <!--<item name="billing" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\BillingDataBuilder</item>-->
+                <!--<item name="shipping" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\ShippingDataBuilder</item>-->
+                <!--<item name="customer" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\CustomerDataBuilder</item>-->
+            </argument>
         </arguments>
     </virtualType>
 
@@ -331,6 +400,11 @@
     <virtualType name="AuthorizeOperationDataBuilder" type="OnTap\Tns\Gateway\Request\Direct\OperationBuilder">
         <arguments>
             <argument name="operation" xsi:type="string">AUTHORIZE</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="CreateSessionOperationDataBuilder" type="OnTap\Tns\Gateway\Request\Direct\OperationBuilder">
+        <arguments>
+            <argument name="operation" xsi:type="string">CREATE_CHECKOUT_SESSION</argument>
         </arguments>
     </virtualType>
     <virtualType name="CaptureOperationDataBuilder" type="OnTap\Tns\Gateway\Request\Direct\OperationBuilder">
@@ -395,12 +469,20 @@
         </arguments>
     </virtualType>
 
+    <virtualType name="TnsHostedOrderResponseHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="transaction" xsi:type="string">OnTap\Tns\Gateway\Response\Hosted\TransactionHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
     <virtualType name="TnsDirectAuthorizeResponseHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
         <arguments>
             <argument name="handlers" xsi:type="array">
                 <item name="transaction" xsi:type="string">OnTap\Tns\Gateway\Response\Direct\TransactionIdHandler</item>
                 <item name="authorize" xsi:type="string">OnTap\Tns\Gateway\Response\Direct\AuthorizeHandler</item>
-                <item name="payment" xsi:type="string">OnTap\Tns\Gateway\Response\Direct\PaymentHandler</item>
+                <item name="payment" xsi:type="string">OnTap\Tns\Gateway\Response\PaymentHandler</item>
             </argument>
         </arguments>
     </virtualType>
@@ -409,7 +491,7 @@
         <arguments>
             <argument name="handlers" xsi:type="array">
                 <item name="transaction" xsi:type="string">OnTap\Tns\Gateway\Response\Direct\TransactionIdHandler</item>
-                <item name="payment" xsi:type="string">OnTap\Tns\Gateway\Response\Direct\PaymentHandler</item>
+                <item name="payment" xsi:type="string">OnTap\Tns\Gateway\Response\PaymentHandler</item>
             </argument>
         </arguments>
     </virtualType>

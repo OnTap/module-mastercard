@@ -4,7 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-namespace OnTap\Tns\Gateway\Response\Direct;
+namespace OnTap\Tns\Gateway\Response;
 
 use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
@@ -28,6 +28,16 @@ class PaymentHandler implements HandlerInterface
         $payment = $paymentDO->getPayment();
         ContextHelper::assertOrderPayment($payment);
 
+        static::importPaymentResponse($payment, $response);
+    }
+
+    /**
+     * @param Payment $payment
+     * @param array $response
+     * @return void
+     */
+    public static function importPaymentResponse(Payment $payment, $response)
+    {
         $payment->setAdditionalInformation('gateway_code', $response['response']['gatewayCode']);
         $payment->setAdditionalInformation('txn_result', $response['result']);
 

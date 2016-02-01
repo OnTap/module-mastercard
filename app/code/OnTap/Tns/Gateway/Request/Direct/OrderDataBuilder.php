@@ -8,7 +8,7 @@ namespace OnTap\Tns\Gateway\Request\Direct;
 
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
-use \Magento\Sales\Model\Order\Payment;
+use Magento\Sales\Model\Order\Payment;
 
 class OrderDataBuilder implements BuilderInterface
 {

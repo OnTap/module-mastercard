@@ -11,9 +11,10 @@ define(
         'Magento_Checkout/js/model/quote',
         'Magento_Checkout/js/model/full-screen-loader',
         'Magento_Ui/js/modal/alert',
-        'OnTap_Tns/js/view/payment/hosted-adapter'
+        'OnTap_Tns/js/view/payment/hosted-adapter',
+        'OnTap_Tns/js/action/create-session'
     ],
-    function (Component, $, ko, quote, fullScreenLoader, alert, paymentAdapter) {
+    function (Component, $, ko, quote, fullScreenLoader, alert, paymentAdapter, createSessionAction) {
         'use strict';
 
         return Component.extend({
@@ -25,6 +26,8 @@ define(
                     onActiveChange: 'active'
                 }
             },
+            resultIndicator: null,
+            sessionVersion: null,
 
             initObservable: function () {
                 this._super()
@@ -45,19 +48,54 @@ define(
                 return active;
             },
 
-            loadAdapter: function () {
-                paymentAdapter.errorCallback = $.proxy(this.errorCallback, this);
-                paymentAdapter.cancelCallback = $.proxy(this.cancelCallback, this);
-                paymentAdapter.config = this.getConfig();
-                paymentAdapter.currency = quote.totals().quote_currency_code;
-                paymentAdapter.amount = quote.totals().grand_total.toFixed(2);
-                paymentAdapter.title = this.getTitle();
+            loadAdapter: function (sessionId) {
+                var config = this.getConfig();
 
-                paymentAdapter.configureApi($.proxy(this.paymentAdapterLoaded, this));
+                paymentAdapter.loadApi(
+                    config.component_url,
+                    $.proxy(this.paymentAdapterLoaded, this),
+                    $.proxy(this.errorCallback, this),
+                    $.proxy(this.cancelCallback, this),
+                    $.proxy(this.completedCallback, this)
+                );
             },
 
             paymentAdapterLoaded: function (adapter) {
                 this.adapterLoaded(true);
+            },
+
+            createPaymentSession: function () {
+                this.isPlaceOrderActionAllowed(false);
+
+                var action = createSessionAction(
+                    this.getData(),
+                    this.messageContainer
+                );
+
+                $.when(action).fail($.proxy(function () {
+                    // Failed creating session
+                    this.isPlaceOrderActionAllowed(true);
+                }, this)).done($.proxy(function (session) {
+                    // Session creation succeeded
+                    if (this.active() && this.adapterLoaded()) {
+                        fullScreenLoader.startLoader();
+
+                        var config = this.getConfig();
+
+                        paymentAdapter.configureApi(
+                            config.merchant_username,
+                            quote.totals().grand_total.toFixed(2),
+                            quote.totals().quote_currency_code,
+                            session[0],
+                            session[1]
+                        );
+
+                        paymentAdapter.showPayment();
+                    } else {
+                        this.isPlaceOrderActionAllowed(true);
+                        this.messageContainer.addErrorMessage({message: "Payment Adapter failed to load"});
+                    }
+                }, this));
             },
 
             isCheckoutDisabled: function () {
@@ -68,12 +106,9 @@ define(
                 return window.checkoutConfig.payment[this.getCode()];
             },
 
-            showPayment: function () {
-                fullScreenLoader.startLoader();
-                paymentAdapter.showPayment();
-            },
-
             errorCallback: function (error) {
+                console.log('errorCallback');
+                this.isPlaceOrderActionAllowed(true);
                 fullScreenLoader.stopLoader();
                 alert({
                     content: error.cause + ': ' + error.explanation
@@ -81,10 +116,33 @@ define(
             },
 
             cancelCallback: function () {
+                this.isPlaceOrderActionAllowed(true);
                 fullScreenLoader.stopLoader();
                 alert({
                     content: 'Payment cancelled.'
                 });
+            },
+
+            completedCallback: function(resultIndicator, sessionVersion) {
+                console.log('payment lightbox returned');
+                console.log(resultIndicator, sessionVersion);
+
+                this.resultIndicator = resultIndicator;
+                this.sessionVersion = sessionVersion;
+
+                this.placeOrder();
+            },
+
+            /**
+             * Get payment method data
+             */
+            getData: function() {
+                var data = this._super();
+                data['additional_data'] = {
+                    resultIndicator: this.resultIndicator,
+                    sessionVersion: this.sessionVersion
+                };
+                return data;
             }
         });
     }

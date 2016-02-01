@@ -4,15 +4,10 @@
  * See COPYING.txt for license details.
  */
 
-namespace OnTap\Tns\Gateway\Validator\Direct;
+namespace OnTap\Tns\Gateway\Validator;
 
 use Magento\Payment\Gateway\Validator\AbstractValidator;
 use Magento\Payment\Gateway\Validator\ResultInterface;
-use Magento\Framework\App\Request;
-use Magento\Payment\Gateway\ConfigInterface;
-use Magento\Sales\Api\OrderRepositoryInterface;
-use Magento\Framework\HTTP\PhpEnvironment\RemoteAddress;
-use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 
 class ResponseValidator extends AbstractValidator
@@ -98,59 +93,14 @@ class ResponseValidator extends AbstractValidator
     ];
 
     /**
-     * @var Request\Http
-     */
-    private $request;
-
-    /**
-     * @var ConfigInterface
-     */
-    private $config;
-
-    /**
-     * @var OrderRepositoryInterface
-     */
-    private $orderRepository;
-
-    /**
-     * @var RemoteAddress
-     */
-    private $remoteAddress;
-
-    /**
-     * @param ResultInterfaceFactory $resultFactory
-     * @param Request\Http $request
-     * @param RemoteAddress $remoteAddress
-     * @param ConfigInterface $config
-     * @param OrderRepositoryInterface $orderRepository
-     */
-    public function __construct(
-        ResultInterfaceFactory $resultFactory,
-        Request\Http $request,
-        RemoteAddress $remoteAddress,
-        ConfigInterface $config,
-        OrderRepositoryInterface $orderRepository
-    ) {
-        parent::__construct($resultFactory);
-
-        $this->request = $request;
-        $this->config = $config;
-        $this->orderRepository = $orderRepository;
-        $this->remoteAddress = $remoteAddress;
-    }
-
-    /**
      * Performs domain-related validation for business object
      *
      * @param array $validationSubject
      * @return ResultInterface
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function validate(array $validationSubject)
     {
         $response = SubjectReader::readResponse($validationSubject);
-        //$amount = SubjectReader::readAmount($validationSubject);
-        $payment = SubjectReader::readPayment($validationSubject);
 
         if (!isset($response['result'])) {
             return $this->createResult(false, [__("Response does not contain a body.")]);
@@ -177,21 +127,6 @@ class ResponseValidator extends AbstractValidator
                 $errors[] = $this->resultCode[$response['result']];
                 $errors[] = $this->gatewayCode[$response['response']['gatewayCode']];
                 break;
-        }
-
-        //order.totalAuthorizedAmount
-        //order.totalCapturedAmount
-        //order.totalRefundedAmount
-        //if (number_format((float)$amount, 2) !== number_format($response['order']['amount'], 2)) {
-        //    $errors[] = "Amount mismatch";
-        //}
-
-        if ($payment->getOrder()->getOrderIncrementId() !== $response['order']['id']) {
-            $errors[] = __("OrderID mismatch");
-        }
-
-        if ($payment->getOrder()->getCurrencyCode() !== $response['order']['currency']) {
-            $errors[] = __("Currency mismatch");
         }
 
         if (count($errors) > 0) {
