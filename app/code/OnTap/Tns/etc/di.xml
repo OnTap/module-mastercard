@@ -33,7 +33,7 @@
                 <item name="capture" xsi:type="string">CaptureStrategyCommand</item>
                 <item name="capture_simple" xsi:type="string">OnTap\Tns\Gateway\Command\SaleStrategyCommand</item>
                 <item name="sale" xsi:type="string">TnsDirectSaleCommand</item>
-                <item name="pre_auth_capture" xsi:type="string">TnsPreAuthCaptureCommand</item>
+                <item name="pre_auth_capture" xsi:type="string">TnsDirectPreAuthCaptureCommand</item>
                 <item name="refund" xsi:type="string">TnsDirectRefundCommand</item>
                 <item name="void" xsi:type="string">TnsDirectVoidCommand</item>
                 <item name="3ds_enrollment" xsi:type="string">TnsDirect3dsEnrollmentCommand</item>
@@ -49,6 +49,7 @@
             <argument name="commands" xsi:type="array">
                 <item name="create_session" xsi:type="string">TnsHostedCreateSessionCommand</item>
                 <item name="authorize" xsi:type="string">TnsHostedRetrieveOrderCommand</item>
+                <item name="capture" xsi:type="string">TnsHostedPreAuthCaptureCommand</item>
             </argument>
         </arguments>
     </virtualType>
@@ -217,13 +218,24 @@
         </arguments>
     </virtualType>
 
-    <!-- Capture a pre-authorized payment -->
-    <virtualType name="TnsPreAuthCaptureCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
+    <!-- Capture a pre-authorized payment (DIRECT) -->
+    <virtualType name="TnsDirectPreAuthCaptureCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
         <arguments>
-            <argument name="requestBuilder" xsi:type="object">TnsDirectCaptureDataBuilder</argument>
+            <argument name="requestBuilder" xsi:type="object">TnsCaptureDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">OnTap\Tns\Gateway\Http\TransferFactory</argument>
             <argument name="client" xsi:type="object">OnTap\Tns\Gateway\Http\Client\Rest</argument>
-            <argument name="handler" xsi:type="object">OnTap\Tns\Gateway\Response\Direct\TransactionIdHandler</argument>
+            <argument name="handler" xsi:type="object">OnTap\Tns\Gateway\Response\TransactionIdHandler</argument>
+            <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\ResponseValidator</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Capture a pre-authorized payment (HC) -->
+    <virtualType name="TnsHostedPreAuthCaptureCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">TnsCaptureDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">HostedTransferFactory</argument>
+            <argument name="client" xsi:type="object">OnTap\Tns\Gateway\Http\Client\Rest</argument>
+            <argument name="handler" xsi:type="object">OnTap\Tns\Gateway\Response\TransactionIdHandler</argument>
             <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\ResponseValidator</argument>
         </arguments>
     </virtualType>
@@ -321,6 +333,12 @@
             <argument name="config" xsi:type="object">TnsHostedConfig</argument>
         </arguments>
     </type>
+
+    <virtualType name="HostedTransferFactory" type="OnTap\Tns\Gateway\Http\TransferFactory">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsHostedConfig</argument>
+        </arguments>
+    </virtualType>
 
     <type name="OnTap\Tns\Gateway\Http\Hosted\TransferFactoryOrder">
         <arguments>
@@ -446,16 +464,16 @@
         <arguments>
             <argument name="builders" xsi:type="array">
                 <item name="operation" xsi:type="string">RefundOperationDataBuilder</item>
-                <item name="refund" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\TransactionDataBuilder</item>
+                <item name="refund" xsi:type="string">OnTap\Tns\Gateway\Request\TransactionDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
 
-    <virtualType name="TnsDirectCaptureDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
+    <virtualType name="TnsCaptureDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
         <arguments>
             <argument name="builders" xsi:type="array">
                 <item name="operation" xsi:type="string">CaptureOperationDataBuilder</item>
-                <item name="capture" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\TransactionDataBuilder</item>
+                <item name="capture" xsi:type="string">OnTap\Tns\Gateway\Request\TransactionDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -480,7 +498,7 @@
     <virtualType name="TnsDirectAuthorizeResponseHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
         <arguments>
             <argument name="handlers" xsi:type="array">
-                <item name="transaction" xsi:type="string">OnTap\Tns\Gateway\Response\Direct\TransactionIdHandler</item>
+                <item name="transaction" xsi:type="string">OnTap\Tns\Gateway\Response\TransactionIdHandler</item>
                 <item name="authorize" xsi:type="string">OnTap\Tns\Gateway\Response\Direct\AuthorizeHandler</item>
                 <item name="payment" xsi:type="string">OnTap\Tns\Gateway\Response\PaymentHandler</item>
             </argument>
@@ -490,7 +508,7 @@
     <virtualType name="TnsDirectSaleResponseHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
         <arguments>
             <argument name="handlers" xsi:type="array">
-                <item name="transaction" xsi:type="string">OnTap\Tns\Gateway\Response\Direct\TransactionIdHandler</item>
+                <item name="transaction" xsi:type="string">OnTap\Tns\Gateway\Response\TransactionIdHandler</item>
                 <item name="payment" xsi:type="string">OnTap\Tns\Gateway\Response\PaymentHandler</item>
             </argument>
         </arguments>
