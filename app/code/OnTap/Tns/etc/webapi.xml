@@ -16,4 +16,10 @@
             <parameter name="cartId" force="true">%cart_id%</parameter>
         </data>
     </route>
+    <route url="/V1/tns/hc/session/:cartId/create" method="POST">
+        <service class="OnTap\Tns\Api\SessionInformationManagementInterface" method="createNewGuestPaymentSession"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
 </routes>

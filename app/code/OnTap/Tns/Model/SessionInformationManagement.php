@@ -10,6 +10,8 @@ use OnTap\Tns\Api\SessionInformationManagementInterface;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
 use Magento\Payment\Gateway\Command\CommandPoolInterface;
+use Magento\Quote\Model\QuoteIdMaskFactory;
+use Magento\Quote\Api\GuestBillingAddressManagementInterface;
 
 class SessionInformationManagement implements SessionInformationManagementInterface
 {
@@ -31,6 +33,16 @@ class SessionInformationManagement implements SessionInformationManagementInterf
     protected $paymentDataObjectFactory;
 
     /**
+     * @var QuoteIdMaskFactory
+     */
+    protected $quoteIdMaskFactory;
+
+    /**
+     * @var GuestBillingAddressManagementInterface
+     */
+    protected $billingAddressManagement;
+
+    /**
      * SessionInformationManagement constructor.
      * @param CommandPoolInterface $commandPool
      * @param CartRepositoryInterface $quoteRepository
@@ -39,11 +51,15 @@ class SessionInformationManagement implements SessionInformationManagementInterf
     public function __construct(
         CommandPoolInterface $commandPool,
         CartRepositoryInterface $quoteRepository,
-        PaymentDataObjectFactory $paymentDataObjectFactory
+        PaymentDataObjectFactory $paymentDataObjectFactory,
+        QuoteIdMaskFactory $quoteIdMaskFactory,
+        GuestBillingAddressManagementInterface $billingAddressManagement
     ) {
         $this->commandPool = $commandPool;
         $this->quoteRepository = $quoteRepository;
         $this->paymentDataObjectFactory = $paymentDataObjectFactory;
+        $this->quoteIdMaskFactory = $quoteIdMaskFactory;
+        $this->billingAddressManagement = $billingAddressManagement;
     }
 
     /**
@@ -74,5 +90,25 @@ class SessionInformationManagement implements SessionInformationManagementInterf
             'id' => (string) $session['id'],
             'version' => (string) $session['version']
         ];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function createNewGuestPaymentSession(
+        $cartId,
+        $email,
+        \Magento\Quote\Api\Data\PaymentInterface $paymentMethod,
+        \Magento\Quote\Api\Data\AddressInterface $billingAddress = null
+    ) {
+//        if ($billingAddress) {
+//            $billingAddress->setEmail($email);
+//            $this->billingAddressManagement->assign($cartId, $billingAddress);
+//        }
+        $quoteIdMask = $this->quoteIdMaskFactory
+            ->create()
+            ->load($cartId, 'masked_id');
+
+        return $this->createNewPaymentSession($quoteIdMask->getQuoteId(), $paymentMethod, $billingAddress);
     }
 }

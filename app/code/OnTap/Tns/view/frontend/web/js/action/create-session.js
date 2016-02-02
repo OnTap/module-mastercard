@@ -8,24 +8,34 @@ define(
         'Magento_Checkout/js/model/url-builder',
         'mage/storage',
         'mage/url',
-        'Magento_Checkout/js/model/error-processor'
+        'Magento_Checkout/js/model/error-processor',
+        'Magento_Customer/js/model/customer'
     ],
-    function (quote, urlBuilder, storage, url, errorProcessor) {
+    function (quote, urlBuilder, storage, url, errorProcessor, customer) {
         'use strict';
 
         return function (paymentData, messageContainer) {
             var serviceUrl,
                 payload;
 
-            serviceUrl = urlBuilder.createUrl('/tns/hc/session/create', {
-                quoteId: quote.getQuoteId()
-            });
-            payload = {
-                cartId: quote.getQuoteId(),
-                email: quote.guestEmail,
-                paymentMethod: paymentData,
-                billingAddress: quote.billingAddress()
-            };
+            if (customer.isLoggedIn()) {
+                serviceUrl = urlBuilder.createUrl('/tns/hc/session/create', {});
+                payload = {
+                    cartId: quote.getQuoteId(),
+                    paymentMethod: paymentData,
+                    billingAddress: quote.billingAddress()
+                };
+            } else {
+                serviceUrl = urlBuilder.createUrl('/tns/hc/session/:quoteId/create', {
+                    quoteId: quote.getQuoteId()
+                });
+                payload = {
+                    cartId: quote.getQuoteId(),
+                    email: quote.guestEmail,
+                    paymentMethod: paymentData,
+                    billingAddress: quote.billingAddress()
+                };
+            }
 
             return storage.post(
                 serviceUrl, JSON.stringify(payload)

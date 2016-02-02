@@ -107,7 +107,6 @@ define(
             },
 
             errorCallback: function (error) {
-                console.log('errorCallback');
                 this.isPlaceOrderActionAllowed(true);
                 fullScreenLoader.stopLoader();
                 alert({
@@ -124,12 +123,8 @@ define(
             },
 
             completedCallback: function(resultIndicator, sessionVersion) {
-                console.log('payment lightbox returned');
-                console.log(resultIndicator, sessionVersion);
-
                 this.resultIndicator = resultIndicator;
                 this.sessionVersion = sessionVersion;
-
                 this.placeOrder();
             },
 
