@@ -45,5 +45,14 @@
                 </button>
             </div>
         </div>
+        <!-- ko if: is3DsEnabled() -->
+        <div id="threedsecure_window" data-bind="mageInit: {
+            'OnTap_Tns/js/view/payment/threedsecure': {
+                'context': context(),
+                'formLoaded': iframeFormLoaded
+            }}">
+            <!-- ko template: 'OnTap_Tns/threedsecure/iframe' --><!-- /ko -->
+        </div>
+        <!-- /ko-->
     </div>
 </div>

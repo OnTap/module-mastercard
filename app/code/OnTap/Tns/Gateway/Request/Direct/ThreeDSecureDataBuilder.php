@@ -8,12 +8,11 @@ namespace OnTap\Tns\Gateway\Request\Direct;
 
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
-use Magento\Payment\Gateway\Helper\ContextHelper;
 use Magento\Framework\UrlInterface;
 
 class ThreeDSecureDataBuilder extends CardDataBuilder implements BuilderInterface
 {
-    const PAGE_GENERATION_MODE = 'SIMPLE';
+    const PAGE_GENERATION_MODE = 'CUSTOMIZED';
     const PAGE_ENCODING = 'UTF_8';
     const RESPONSE_URL = 'tns/threedsecure/reponse';
 
@@ -42,16 +41,15 @@ class ThreeDSecureDataBuilder extends CardDataBuilder implements BuilderInterfac
         $paymentDO = SubjectReader::readPayment($buildSubject);
         $order = $paymentDO->getOrder();
         $payment = $paymentDO->getPayment();
-        ContextHelper::assertOrderPayment($payment);
 
         return [
             '3DSecure' => [
                 'authenticationRedirect' => [
-                    'pageGenerationMode' => self::PAGE_GENERATION_MODE,
-                    'responseUrl' => $this->urlHelper->getUrl(self::RESPONSE_URL),
-                    'simple' => [
+                    'pageGenerationMode' => static::PAGE_GENERATION_MODE,
+                    'responseUrl' => $this->urlHelper->getUrl(static::RESPONSE_URL),
+                    /*'simple' => [
                         'expectedHtmlEncoding' => self::PAGE_ENCODING
-                    ]
+                    ]*/
                 ]
             ],
             'order' => [

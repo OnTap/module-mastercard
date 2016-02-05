@@ -7,9 +7,14 @@ define(
     [
         'jquery',
         'Magento_Payment/js/view/payment/cc-form',
-        'Magento_Checkout/js/model/payment/additional-validators'
+        'Magento_Checkout/js/model/payment/additional-validators',
+        'Magento_Checkout/js/action/set-payment-information',
+        'OnTap_Tns/js/action/check-enrolment',
+        'mage/url',
+        'Magento_Ui/js/modal/modal',
+        'Magento_Checkout/js/model/full-screen-loader'
     ],
-    function ($, ccFormComponent, additionalValidators) {
+    function ($, ccFormComponent, additionalValidators, setPaymentInformationAction, checkEnrolmentAction, url, modal, fullScreenLoader) {
         'use strict';
 
         return ccFormComponent.extend({
@@ -23,12 +28,22 @@ define(
             },
             placeOrderHandler: null,
             validateHandler: null,
+            modalWindow: null,
+            onModalOpen: null,
 
             initObservable: function () {
                 this._super()
                     .observe('active scriptLoaded');
 
                 return this;
+            },
+
+            is3DsEnabled: function () {
+                return this.getConfig()['three_d_secure'];
+            },
+
+            getConfig: function () {
+                return window.checkoutConfig.payment[this.getCode()];
             },
 
             setPlaceOrderHandler: function (handler) {
@@ -82,10 +97,70 @@ define(
                 //});
             },
 
+            check3DsEnrolment: function () {
+
+            },
+
+            openModal: function () {
+                this.modalWindow = '#threedsecure_window';
+
+                modal({
+                    type: 'slide',
+                    title: $.mage.__('3D-Secure'),
+                    opened: $.proxy(this.onModalOpen, this),
+                    closed: $.proxy(this.onModalClose, this),
+                    buttons: [],
+                    clickableOverlay: false
+                }, $(this.modalWindow));
+
+                $(this.modalWindow).modal('openModal');
+            },
+
+            setModalOpenCallback: function (callback) {
+                this.onModalOpen = callback;
+            },
+
+            onModalClose: function () {
+                this.isPlaceOrderActionAllowed(true);
+            },
+
+            iframeFormLoaded: function () {
+                fullScreenLoader.stopLoader();
+            },
+
             placeOrder: function () {
                 if (this.validateHandler() && additionalValidators.validate()) {
+
                     this.isPlaceOrderActionAllowed(false);
-                    this._super();
+
+                    if (this.is3DsEnabled()) {
+                        var action = setPaymentInformationAction(this.messageContainer, this.getData());
+
+                        $.when(action).done($.proxy(function() {
+                            fullScreenLoader.startLoader();
+
+                            $.when(checkEnrolmentAction()).fail($.proxy(function() {
+
+                                this.isPlaceOrderActionAllowed(true);
+                                console.log('fail', arguments);
+
+                            }, this)).done($.proxy(function() {
+
+                                this.isPlaceOrderActionAllowed(false);
+                                console.log('success', arguments);
+
+                                this.openModal();
+
+                            }, this));
+
+                        }, this)).fail($.proxy(function(){
+
+                            this.isPlaceOrderActionAllowed(true);
+
+                        }, this));
+                    } else {
+                        this._super();
+                    }
                 }
             }
         });

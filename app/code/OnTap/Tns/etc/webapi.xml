@@ -7,7 +7,7 @@
 -->
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
     <!-- Create payment session -->
-    <route url="/V1/tns/hc/session/create" method="POST">
+    <route method="POST" url="/V1/tns/hc/session/create">
         <service class="OnTap\Tns\Api\SessionInformationManagementInterface" method="createNewPaymentSession"/>
         <resources>
             <resource ref="self" />
@@ -16,7 +16,7 @@
             <parameter name="cartId" force="true">%cart_id%</parameter>
         </data>
     </route>
-    <route url="/V1/tns/hc/session/:cartId/create" method="POST">
+    <route method="POST" url="/V1/tns/hc/session/:cartId/create">
         <service class="OnTap\Tns\Api\SessionInformationManagementInterface" method="createNewGuestPaymentSession"/>
         <resources>
             <resource ref="anonymous" />

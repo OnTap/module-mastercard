@@ -24,12 +24,16 @@ class ThreeDSecureValidator extends AbstractValidator
 
         if (isset($response['error'])) {
             $msg = sprintf(
-                '%s: %s (%s)',
+                '%s: %s %s',
                 $response['error']['cause'],
                 $response['error']['explanation'],
-                $response['error']['supportCode']
+                isset($response['error']['supportCode']) ? $response['error']['supportCode'] : ''
             );
             return $this->createResult(false, [$msg, ]);
+        }
+
+        if (!isset($response['3DSecure'])) {
+            return $this->createResult(false, ['No 3Ds data was provided.', ]);
         }
 
         return $this->createResult(true);

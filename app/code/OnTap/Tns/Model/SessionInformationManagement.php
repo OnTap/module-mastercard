@@ -47,6 +47,8 @@ class SessionInformationManagement implements SessionInformationManagementInterf
      * @param CommandPoolInterface $commandPool
      * @param CartRepositoryInterface $quoteRepository
      * @param PaymentDataObjectFactory $paymentDataObjectFactory
+     * @param QuoteIdMaskFactory $quoteIdMaskFactory
+     * @param GuestBillingAddressManagementInterface $billingAddressManagement
      */
     public function __construct(
         CommandPoolInterface $commandPool,
@@ -101,10 +103,6 @@ class SessionInformationManagement implements SessionInformationManagementInterf
         \Magento\Quote\Api\Data\PaymentInterface $paymentMethod,
         \Magento\Quote\Api\Data\AddressInterface $billingAddress = null
     ) {
-//        if ($billingAddress) {
-//            $billingAddress->setEmail($email);
-//            $this->billingAddressManagement->assign($cartId, $billingAddress);
-//        }
         $quoteIdMask = $this->quoteIdMaskFactory
             ->create()
             ->load($cartId, 'masked_id');

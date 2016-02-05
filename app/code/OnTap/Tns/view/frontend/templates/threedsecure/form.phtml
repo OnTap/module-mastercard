@@ -1,0 +1,37 @@
+<?php
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+// @codingStandardsIgnoreFile
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <title>
+        Process Secure Payment
+    </title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="description" content="Process Secure Payment">
+    <meta name="robots" content="noindex">
+    <style type="text/css">
+        body {font-family:"Trebuchet MS",sans-serif; background-color: #FFFFFF; }#msg {border:5px solid #666; background-color:#fff; margin:20px; padding:25px; max-width:40em; -webkit-border-radius: 10px; -khtml-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px;}#submitButton { text-align: center ; }#footnote {font-size:0.8em;}
+    </style>
+</head>
+<body onload="return window.document.echoForm.submit()">
+    <?php $threedsecure = $block->getData('3DSecure'); ?>
+    <form name="echoForm" method="post" action="<?php echo $threedsecure['authenticationRedirect']['customized']['acsUrl'] ?>" accept-charset="UTF-8" id="echoForm">
+        <input type="hidden" name="PaReq" value="<?php echo $threedsecure['authenticationRedirect']['customized']['paReq'] ?>" />
+        <input type="hidden" name="TermUrl" value="http://kristjan.local/datacash/tns/term-url/" />
+        <input type="hidden" name="MD" value="" />
+        <noscript>
+            <div id="msg">
+                <div id="submitButton">
+                    <input type="submit" value="Click here to continue" class="button">
+                </div>
+            </div>
+        </noscript>
+    </form>
+</body>
+</html>
