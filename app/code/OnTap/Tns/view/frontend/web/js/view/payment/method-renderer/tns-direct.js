@@ -97,10 +97,6 @@ define(
                 //});
             },
 
-            check3DsEnrolment: function () {
-
-            },
-
             openModal: function () {
                 this.modalWindow = '#threedsecure_window';
 
@@ -114,6 +110,8 @@ define(
                 }, $(this.modalWindow));
 
                 $(this.modalWindow).modal('openModal');
+
+                window.tnsThreeDSecureClose = $.proxy(this.iframeFormCompleted, this);
             },
 
             setModalOpenCallback: function (callback) {
@@ -128,7 +126,14 @@ define(
                 fullScreenLoader.stopLoader();
             },
 
-            placeOrder: function () {
+            iframeFormCompleted: function () {
+                $(this.modalWindow).modal('closeModal');
+                this.isPlaceOrderActionAllowed(false);
+                fullScreenLoader.startLoader();
+                this.placeOrder();
+            },
+
+            startPlaceOrder: function () {
                 if (this.validateHandler() && additionalValidators.validate()) {
 
                     this.isPlaceOrderActionAllowed(false);
@@ -142,13 +147,10 @@ define(
                             $.when(checkEnrolmentAction()).fail($.proxy(function() {
 
                                 this.isPlaceOrderActionAllowed(true);
-                                console.log('fail', arguments);
+                                console.log('fail in 3ds check', arguments);
 
                             }, this)).done($.proxy(function() {
-
                                 this.isPlaceOrderActionAllowed(false);
-                                console.log('success', arguments);
-
                                 this.openModal();
 
                             }, this));
@@ -156,10 +158,11 @@ define(
                         }, this)).fail($.proxy(function(){
 
                             this.isPlaceOrderActionAllowed(true);
+                            console.log('fail in savePayment', arguments);
 
                         }, this));
                     } else {
-                        this._super();
+                        this.placeOrder();
                     }
                 }
             }

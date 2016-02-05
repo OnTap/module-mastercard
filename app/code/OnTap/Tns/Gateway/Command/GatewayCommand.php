@@ -77,7 +77,7 @@ class GatewayCommand extends BaseGatewayCommand implements CommandInterface
      */
     public function execute(array $commandSubject)
     {
-        $payment = isset($commandSubject['payment']) ? $commandSubject['payment'] : null;
+        $payment = SubjectReader::readPayment($commandSubject);
 
         // @TODO implement exceptions catching
         $transferO = $this->transferFactory->create(

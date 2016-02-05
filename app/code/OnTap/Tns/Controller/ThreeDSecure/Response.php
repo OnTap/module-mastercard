@@ -18,5 +18,7 @@ class Response extends \Magento\Framework\App\Action\Action
      */
     public function execute()
     {
+        print "<script>window.parent.tnsThreeDSecureClose();</script>";
+        die();
     }
 }

@@ -65,12 +65,6 @@ class VerificationStrategyCommand implements CommandInterface
         ContextHelper::assertOrderPayment($paymentInfo);
 
         if (!$paymentInfo->getAuthorizationTransaction()) { // Only verify when auth transaction does not exist
-            if ($this->config->getValue('three_d_secure') === '1') {
-                $this->commandPool
-                    ->get(self::VERIFY_3DSECURE)
-                    ->execute($commandSubject);
-            }
-
             if (
                 $this->config->getValue('avs') === '1' ||
                 $this->config->getValue('csc_rules') === '1'

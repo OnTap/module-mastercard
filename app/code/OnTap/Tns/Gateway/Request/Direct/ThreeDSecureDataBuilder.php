@@ -14,7 +14,7 @@ class ThreeDSecureDataBuilder extends CardDataBuilder implements BuilderInterfac
 {
     const PAGE_GENERATION_MODE = 'CUSTOMIZED';
     const PAGE_ENCODING = 'UTF_8';
-    const RESPONSE_URL = 'tns/threedsecure/reponse';
+    const RESPONSE_URL = 'tns/threedsecure/response';
 
     /**
      * @var UrlInterface
@@ -47,9 +47,6 @@ class ThreeDSecureDataBuilder extends CardDataBuilder implements BuilderInterfac
                 'authenticationRedirect' => [
                     'pageGenerationMode' => static::PAGE_GENERATION_MODE,
                     'responseUrl' => $this->urlHelper->getUrl(static::RESPONSE_URL),
-                    /*'simple' => [
-                        'expectedHtmlEncoding' => self::PAGE_ENCODING
-                    ]*/
                 ]
             ],
             'order' => [

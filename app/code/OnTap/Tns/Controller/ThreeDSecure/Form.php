@@ -60,7 +60,7 @@ class Form extends Action
         /* @var \Magento\Framework\View\Element\Template $block */
         $block = $this->layoutFactory
             ->create()
-            ->createBlock('\Magento\Framework\View\Element\Template');
+            ->createBlock('\OnTap\Tns\Block\Threedsecure\Form');
 
         $payment = $this->session->getQuote()->getPayment();
 
