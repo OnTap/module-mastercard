@@ -7,7 +7,7 @@
 namespace OnTap\Tns\Block\Threedsecure;
 
 use Magento\Framework\View\Element\Template;
-use OnTap\Tns\Gateway\Request\Direct\ThreeDSecureDataBuilder;
+use OnTap\Tns\Gateway\Request\Direct\ThreeDSecure\CheckDataBuilder;
 
 class Form extends Template
 {
@@ -16,6 +16,6 @@ class Form extends Template
      */
     public function getReturnUrl()
     {
-        return $this->_urlBuilder->getUrl(ThreeDSecureDataBuilder::RESPONSE_URL);
+        return $this->_urlBuilder->getUrl(CheckDataBuilder::RESPONSE_URL);
     }
 }

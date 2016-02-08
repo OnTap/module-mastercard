@@ -209,6 +209,31 @@
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                             <config_path>payment/tns_direct/three_d_secure</config_path>
                         </field>
+                        <field id="tds_auth_not_available" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>An internal error occurred and Authentication is not currently available</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_direct/tds_auth_not_available</config_path>
+                        </field>
+                        <field id="tds_auth_successful" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>The cardholder was successfully authenticated</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_direct/tds_auth_successful</config_path>
+                        </field>
+                        <field id="tds_auth_failed" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>The cardholder failed the authentication</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_direct/tds_auth_failed</config_path>
+                        </field>
+                        <field id="tds_auth_attempted" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Authentication was attempted but the card issuer did not perform the authentication</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_direct/tds_auth_attempted</config_path>
+                        </field>
+                        <field id="tds_no_support" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>The card does not support 3DS authentication</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_direct/tds_no_support</config_path>
+                        </field>
                     </group>
 
                     <!-- AVS -->

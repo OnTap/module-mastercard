@@ -4,14 +4,16 @@
  * See COPYING.txt for license details.
  */
 
-namespace OnTap\Tns\Gateway\Response\Direct;
+namespace OnTap\Tns\Gateway\Response\Direct\ThreeDSecure;
 
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Sales\Model\Order\Payment;
 
-class ThreeDSecureHandler implements HandlerInterface
+class ProcessHandler implements HandlerInterface
 {
+    const THREEDSECURE_RESULT = '3DSecureResult';
+
     /**
      * Handles response
      *
@@ -26,8 +28,12 @@ class ThreeDSecureHandler implements HandlerInterface
         /** @var Payment $payment */
         $payment = $paymentDO->getPayment();
 
-        $payment->setAdditionalInformation('3DSecure', $response['3DSecure']);
-        $payment->setAdditionalInformation('3DSecureId', $response['3DSecureId']);
-        $payment->save();
+        // @todo: remove these params when done with them
+        $payment->setAdditionalInformation(static::THREEDSECURE_RESULT, [
+            'acsEci' => $response['3DSecure']['acsEci'],
+            'authenticationToken' => $response['3DSecure']['authenticationToken'],
+            'status' => $response['3DSecure']['summaryStatus'],
+            'xid' => $response['3DSecure']['xid'],
+        ]);
     }
 }

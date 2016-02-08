@@ -12,6 +12,7 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\View\LayoutFactory;
 use Magento\Checkout\Model\Session;
+use OnTap\Tns\Gateway\Response\Direct\ThreeDSecure\CheckHandler;
 
 class Form extends Action
 {
@@ -66,7 +67,7 @@ class Form extends Action
 
         $block
             ->setTemplate('OnTap_Tns::threedsecure/form.phtml')
-            ->setData($payment->getAdditionalInformation());
+            ->setData($payment->getAdditionalInformation(CheckHandler::THREEDSECURE_CHECK));
 
         $resultRaw = $this->resultRawFactory->create();
         return $resultRaw->setContents(

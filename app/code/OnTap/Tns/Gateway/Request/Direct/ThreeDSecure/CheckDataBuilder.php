@@ -4,13 +4,14 @@
  * See COPYING.txt for license details.
  */
 
-namespace OnTap\Tns\Gateway\Request\Direct;
+namespace OnTap\Tns\Gateway\Request\Direct\ThreeDSecure;
 
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Framework\UrlInterface;
+use OnTap\Tns\Gateway\Request\Direct\CardDataBuilder;
 
-class ThreeDSecureDataBuilder extends CardDataBuilder implements BuilderInterface
+class CheckDataBuilder extends CardDataBuilder implements BuilderInterface
 {
     const PAGE_GENERATION_MODE = 'CUSTOMIZED';
     const PAGE_ENCODING = 'UTF_8';
