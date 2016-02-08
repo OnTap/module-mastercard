@@ -4,16 +4,10 @@
  * See COPYING.txt for license details.
  */
 
-namespace OnTap\Tns\Model\Adminhtml\Source;
+namespace OnTap\Tns\Model\Adminhtml\Source\ThreeDSecure;
 
-use Magento\Framework\Option\ArrayInterface;
-
-class ValidatorBehaviour implements ArrayInterface
+class ValidatorBehaviour extends \OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour
 {
-    const ACCEPT = 'ACCEPT';
-    const REJECT = 'REJECT';
-    const FRAUD = 'FRAUD';
-
     /**
      * {@inheritdoc}
      */
@@ -28,10 +22,7 @@ class ValidatorBehaviour implements ArrayInterface
                 'value' => static::REJECT,
                 'label' => __('Reject')
             ],
-            [
-                'value' => static::FRAUD,
-                'label' => __('Suspected fraud')
-            ]
         ];
     }
 }
+
