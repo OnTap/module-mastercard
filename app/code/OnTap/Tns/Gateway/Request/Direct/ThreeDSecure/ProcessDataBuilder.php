@@ -8,7 +8,6 @@ namespace OnTap\Tns\Gateway\Request\Direct\ThreeDSecure;
 
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
-use OnTap\Tns\Gateway\Response\Direct\ThreeDSecure\ProcessHandler;
 
 class ProcessDataBuilder implements BuilderInterface
 {

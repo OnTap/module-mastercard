@@ -133,6 +133,21 @@ define(
                 this.placeOrder();
             },
 
+            threeDSecureCheckCompleted: function (response) {
+                if (response.result == "CARD_ENROLLED") {
+                    this.isPlaceOrderActionAllowed(false);
+                    this.openModal();
+                } else {
+                    fullScreenLoader.stopLoader();
+                    this.placeOrder();
+                }
+            },
+
+            threeDSecureCheckFailed: function () {
+                this.isPlaceOrderActionAllowed(true);
+                fullScreenLoader.stopLoader();
+            },
+
             startPlaceOrder: function () {
                 if (this.validateHandler() && additionalValidators.validate()) {
 
@@ -143,24 +158,14 @@ define(
 
                         $.when(action).done($.proxy(function() {
                             fullScreenLoader.startLoader();
-
-                            $.when(checkEnrolmentAction()).fail($.proxy(function() {
-
-                                this.isPlaceOrderActionAllowed(true);
-                                console.log('fail in 3ds check', arguments);
-
-                            }, this)).done($.proxy(function() {
-                                this.isPlaceOrderActionAllowed(false);
-                                this.openModal();
-
-                            }, this));
-
-                        }, this)).fail($.proxy(function(){
-
-                            this.isPlaceOrderActionAllowed(true);
-                            console.log('fail in savePayment', arguments);
-
-                        }, this));
+                            $.when(checkEnrolmentAction()).fail(
+                                $.proxy(this.threeDSecureCheckFailed, this)
+                            ).done(
+                                $.proxy(this.threeDSecureCheckCompleted, this)
+                            );
+                        }, this)).fail(
+                            $.proxy(this.threeDSecureCheckFailed, this)
+                        );
                     } else {
                         this.placeOrder();
                     }

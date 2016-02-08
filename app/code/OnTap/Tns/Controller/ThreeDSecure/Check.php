@@ -12,6 +12,8 @@ use Magento\Payment\Gateway\Command\CommandPoolInterface;
 use Magento\Checkout\Model\Session;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
 use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\TestFramework\Inspection\Exception;
+use OnTap\Tns\Gateway\Response\Direct\ThreeDSecure\CheckHandler;
 
 class Check extends \Magento\Framework\App\Action\Action
 {
@@ -68,16 +70,28 @@ class Check extends \Magento\Framework\App\Action\Action
     public function execute()
     {
         $quote = $this->checkoutSession->getQuote();
-        $paymentDataObject = $this->paymentDataObjectFactory->create($quote->getPayment());
-
-        $this->commandPool
-            ->get(static::CHECK_ENROLMENT)
-            ->execute([
-                'payment' => $paymentDataObject,
-                'amount' => $quote->getGrandTotal(),
-            ]);
-
         $jsonResult = $this->jsonFactory->create();
+        try {
+            $paymentDataObject = $this->paymentDataObjectFactory->create($quote->getPayment());
+
+            $this->commandPool
+                ->get(static::CHECK_ENROLMENT)
+                ->execute([
+                    'payment' => $paymentDataObject,
+                    'amount' => $quote->getGrandTotal(),
+                ]);
+
+            $checkData = $paymentDataObject->getPayment()->getAdditionalInformation(CheckHandler::THREEDSECURE_CHECK);
+            $jsonResult->setData([
+                'result' => $checkData['status']
+            ]);
+        } catch(\Exception $e) {
+            $jsonResult->setHttpResponseCode(400);
+            $jsonResult->setData([
+                'message' => $e->getMessage()
+            ]);
+        }
+
         return $jsonResult;
     }
 }

@@ -313,7 +313,7 @@
             <argument name="transferFactory" xsi:type="object">OnTap\Tns\Gateway\Http\ThreeDSecure\TransferFactoryProcess</argument>
             <argument name="client" xsi:type="object">OnTap\Tns\Gateway\Http\Client\Rest</argument>
             <argument name="validator" xsi:type="object">TnsDirectThreeDSecureProcessValidator</argument>
-            <argument name="handler" xsi:type="object">OnTap\Tns\Gateway\Response\Direct\ThreeDSecure\ProcessHandler</argument>
+            <argument name="handler" xsi:type="object">OnTap\Tns\Gateway\Response\Direct\ThreeDSecure\ResultHandler</argument>
         </arguments>
     </virtualType>
     <virtualType name="TnsDirect3DSecureVerifyDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">

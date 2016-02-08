@@ -10,7 +10,7 @@ use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Sales\Model\Order\Payment;
 
-class ProcessHandler implements HandlerInterface
+class ResultHandler implements HandlerInterface
 {
     const THREEDSECURE_RESULT = '3DSecureResult';
 
@@ -35,5 +35,7 @@ class ProcessHandler implements HandlerInterface
             'status' => $response['3DSecure']['summaryStatus'],
             'xid' => $response['3DSecure']['xid'],
         ]);
+
+        $payment->unsAdditionalInformation('PaRes');
     }
 }

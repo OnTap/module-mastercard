@@ -13,6 +13,7 @@ use Magento\Sales\Model\Order\Payment;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use Magento\Payment\Gateway\Helper\ContextHelper;
 use Magento\Payment\Gateway\Helper\SubjectReader;
+use OnTap\Tns\Gateway\Response\Direct\ThreeDSecure\CheckHandler;
 
 class VerificationStrategyCommand implements CommandInterface
 {
@@ -50,6 +51,20 @@ class VerificationStrategyCommand implements CommandInterface
     }
 
     /**
+     * @param PaymentDataObjectInterface $paymentDO
+     * @return bool
+     */
+    public function isThreeDSSupported(PaymentDataObjectInterface $paymentDO)
+    {
+        $isEnabled = $this->config->getValue('three_d_secure') === '1';
+
+        $data = $paymentDO->getPayment()->getAdditionalInformation(CheckHandler::THREEDSECURE_CHECK);
+        $isEnrolled = $data['status'] === "CARD_ENROLLED";
+
+        return ($isEnabled && $isEnrolled);
+    }
+
+    /**
      * Executes command basing on business object
      *
      * @param array $commandSubject
@@ -65,7 +80,7 @@ class VerificationStrategyCommand implements CommandInterface
         ContextHelper::assertOrderPayment($paymentInfo);
 
         if (!$paymentInfo->getAuthorizationTransaction()) { // Only verify when auth transaction does not exist
-            if ($this->config->getValue('three_d_secure') === '1') {
+            if ($this->isThreeDSSupported($paymentDO)) {
                 $this->commandPool
                     ->get(static::PROCESS_3DS_RESULT)
                     ->execute($commandSubject);

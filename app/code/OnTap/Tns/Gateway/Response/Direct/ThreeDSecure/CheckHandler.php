@@ -28,15 +28,22 @@ class CheckHandler implements HandlerInterface
         /** @var Payment $payment */
         $payment = $paymentDO->getPayment();
 
-        // @todo: remove these params when done with them
-        $tdsAuth = $response['3DSecure']['authenticationRedirect']['customized'];
-
-        $payment->setAdditionalInformation(static::THREEDSECURE_CHECK, [
-            'acsUrl' =>  $tdsAuth['acsUrl'],
-            'paReq' => $tdsAuth['paReq'],
+        $data = [
             'status' => $response['3DSecure']['summaryStatus'],
             'xid' => $response['3DSecure']['xid'],
-        ]);
+        ];
+
+        if (isset($response['3DSecure']['authenticationRedirect'])) {
+            // @todo: remove these params when done with them
+            $tdsAuth = $response['3DSecure']['authenticationRedirect']['customized'];
+
+            $data = array_merge($data, [
+                'acsUrl' => $tdsAuth['acsUrl'],
+                'paReq' => $tdsAuth['paReq'],
+            ]);
+        }
+
+        $payment->setAdditionalInformation(static::THREEDSECURE_CHECK, $data);
         $payment->setAdditionalInformation('3DSecureId', $response['3DSecureId']);
         $payment->save();
     }
