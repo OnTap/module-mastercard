@@ -24,6 +24,9 @@ class TransferFactoryProcess extends TransferFactory
     protected function getUri(PaymentDataObjectInterface $payment)
     {
         $threeDSId = $payment->getPayment()->getAdditionalInformation('3DSecureId');
+        if (!$threeDSId) {
+            throw new \InvalidArgumentException("3D-Secure ID not provided");
+        }
         return $this->getGatewayUri() . '3DSecureId/' . $threeDSId;
     }
 }

@@ -4,7 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-namespace OnTap\Tns\Gateway\Validator\Direct\ThreeDSecure;
+namespace OnTap\Tns\Gateway\Validator\ThreeDSecure;
 
 use Magento\Payment\Gateway\Validator\AbstractValidator;
 use Magento\Payment\Gateway\Validator\ResultInterface;
@@ -70,6 +70,10 @@ class ProcessValidator extends AbstractValidator
      */
     public function validateGatewayCode(array $response, $code)
     {
+        if (!isset($response['3DSecure']['summaryStatus'])) {
+            return false;
+        }
+
         $tds = $response['3DSecure']['summaryStatus'];
         $configPath = $this->responseCodeConfig[$tds];
 

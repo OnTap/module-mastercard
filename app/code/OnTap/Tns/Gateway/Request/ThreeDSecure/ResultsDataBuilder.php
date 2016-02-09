@@ -4,7 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-namespace OnTap\Tns\Gateway\Request\Direct\ThreeDSecure;
+namespace OnTap\Tns\Gateway\Request\ThreeDSecure;
 
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
