@@ -6,7 +6,6 @@
 
 namespace OnTap\Tns\Observer\Direct;
 
-use Magento\Framework\Event\Observer;
 use OnTap\Tns\Gateway\Request\Direct\CardDataBuilder;
 use OnTap\Tns\Observer\DataAssignAbstract;
 

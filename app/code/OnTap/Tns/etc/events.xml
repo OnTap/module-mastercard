@@ -13,4 +13,7 @@
     <event name="payment_method_assign_data_tns_hosted">
         <observer name="tns_hosted_gateway_data_assign" instance="OnTap\Tns\Observer\Hosted\DataAssignObserver" />
     </event>
+    <event name="payment_method_assign_data_tns_hpf">
+        <observer name="tns_hpf_gateway_data_assign" instance="OnTap\Tns\Observer\Hpf\DataAssignObserver" />
+    </event>
 </config>

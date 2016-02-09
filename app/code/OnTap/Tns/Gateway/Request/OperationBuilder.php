@@ -4,7 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-namespace OnTap\Tns\Gateway\Request\Direct;
+namespace OnTap\Tns\Gateway\Request;
 
 use Magento\Payment\Gateway\Request\BuilderInterface;
 

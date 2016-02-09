@@ -12,7 +12,6 @@ use Magento\Payment\Gateway\Command\CommandPoolInterface;
 use Magento\Checkout\Model\Session;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
 use Magento\Framework\Controller\Result\JsonFactory;
-use Magento\TestFramework\Inspection\Exception;
 use OnTap\Tns\Gateway\Response\Direct\ThreeDSecure\CheckHandler;
 
 /**

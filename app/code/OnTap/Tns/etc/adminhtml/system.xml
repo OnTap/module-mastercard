@@ -57,6 +57,143 @@
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <config_path>payment/tns_hpf/debug</config_path>
                     </field>
+
+                    <!-- CCV/CSC Rules -->
+                    <group id="csc_rules" translate="label" type="text" sortOrder="121" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>CCV/CSC Rules</label>
+                        <field id="csc" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Enable CSC Rules</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <config_path>payment/tns_hpf/csc_rules</config_path>
+                        </field>
+                        <field id="csc_rules_match" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Valid or matched</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_hpf/csc_rules_match</config_path>
+                        </field>
+                        <field id="csc_rules_not_present" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Merchant indicated CSC not present on card</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_hpf/csc_rules_not_present</config_path>
+                        </field>
+                        <field id="csc_rules_not_processed" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Not processed</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_hpf/csc_rules_not_processed</config_path>
+                        </field>
+                        <field id="csc_rules_not_supported" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Card issuer is not registered and/or certified</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_hpf/csc_rules_not_supported</config_path>
+                        </field>
+                        <field id="csc_rules_no_match" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Invalid or not matched</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_hpf/csc_rules_no_match</config_path>
+                        </field>
+                    </group>
+
+                    <!-- 3-D Secure -->
+                    <group id="tds_rules" translate="label" type="text" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>3-D Secure Rules</label>
+                        <field id="three_d_secure" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Enable 3-D Secure</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <config_path>payment/tns_hpf/three_d_secure</config_path>
+                        </field>
+                        <field id="tds_auth_not_available" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>An internal error occurred and Authentication is not currently available</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ThreeDSecure\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_hpf/tds_auth_not_available</config_path>
+                        </field>
+                        <field id="tds_auth_successful" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>The cardholder was successfully authenticated</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ThreeDSecure\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_hpf/tds_auth_successful</config_path>
+                        </field>
+                        <field id="tds_auth_failed" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>The cardholder failed the authentication</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ThreeDSecure\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_hpf/tds_auth_failed</config_path>
+                        </field>
+                        <field id="tds_auth_attempted" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Authentication was attempted but the card issuer did not perform the authentication</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ThreeDSecure\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_hpf/tds_auth_attempted</config_path>
+                        </field>
+                        <field id="tds_no_support" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>The card does not support 3DS authentication</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ThreeDSecure\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_hpf/tds_no_support</config_path>
+                        </field>
+                    </group>
+
+                    <!-- AVS -->
+                    <group id="avs_rules" translate="label" type="text" sortOrder="141" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>AVS Rules</label>
+                        <field id="avs" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Enable AVS</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <config_path>payment/tns_hpf/avs</config_path>
+                        </field>
+                        <field id="avs_rules_address_zip_match" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Street address and zip/postcode were matched</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_hpf/avs_rules_address_zip_match</config_path>
+                        </field>
+                        <field id="avs_rules_zip_match" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Zip/postcode matched. Street address not matched</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_hpf/avs_rules_zip_match</config_path>
+                        </field>
+                        <field id="avs_rules_address_match" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Street address matched</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_hpf/avs_rules_address_match</config_path>
+                        </field>
+                        <field id="avs_rules_name_match" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Card holder name matched</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_hpf/avs_rules_name_match</config_path>
+                        </field>
+                        <field id="avs_rules_name_zip_match" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Card holder name and zip/postcode matched</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_hpf/avs_rules_name_zip_match</config_path>
+                        </field>
+                        <field id="avs_rules_name_address_match" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Card holder name and street address matched</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_hpf/avs_rules_name_address_match</config_path>
+                        </field>
+                        <field id="avs_rules_no_match" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>No match</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_hpf/avs_rules_no_match</config_path>
+                        </field>
+                        <field id="avs_rules_service_not_supported" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Service currently not supported by acquirer or merchant</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_hpf/avs_rules_service_not_supported</config_path>
+                        </field>
+                        <!--SERVICE_NOT_AVAILABLE_RETRY Issuer system is unavailable. Retry can be attempted-->
+                        <field id="avs_rules_not_requested" translate="label" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>AVS not requested</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_hpf/avs_rules_not_requested</config_path>
+                        </field>
+                        <field id="avs_rules_not_available" translate="label" type="select" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>No data available from issuer or AVS data not supported for transaction</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_hpf/avs_rules_not_available</config_path>
+                        </field>
+                        <field id="avs_rules_not_verified" translate="label" type="select" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>AVS could not be verified for an international transaction</label>
+                            <source_model>OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour</source_model>
+                            <config_path>payment/tns_hpf/avs_rules_not_verified</config_path>
+                        </field>
+                    </group>                    
+                    
                     <field id="currency" translate="label" type="select" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Accepted Currency</label>
                         <source_model>Magento\Config\Model\Config\Source\Locale\Currency</source_model>

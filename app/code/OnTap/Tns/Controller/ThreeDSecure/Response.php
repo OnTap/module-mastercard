@@ -9,7 +9,6 @@ namespace OnTap\Tns\Controller\Threedsecure;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\App\Action\Context;
 use Magento\Checkout\Model\Session;
-use Magento\Framework\Controller\Result\Raw;
 use Magento\Framework\Controller\Result\RawFactory;
 
 class Response extends \Magento\Framework\App\Action\Action

@@ -80,6 +80,10 @@
                 <model>TnsHpfFacade</model>
                 <payment_action>authorize</payment_action>
 
+                <api_version>32</api_version>
+                <api_url>https://eu-gateway.mastercard.com/api/rest/</api_url>
+                <api_test_url>https://test-gateway.mastercard.com/api/rest/</api_test_url>
+
                 <cctypes>VI,MC,MI</cctypes>
                 <date_delim>-</date_delim>
                 <cc_year_length>4</cc_year_length>
@@ -99,7 +103,7 @@
                 <can_capture>1</can_capture>
                 <can_capture_partial>1</can_capture_partial>
 
-                <paymentInfoKeys>gateway_code,txn_result,card_scheme,card_number,card_expiry_date,cvv_validation</paymentInfoKeys>
+                <paymentInfoKeys>gateway_code,txn_result,card_scheme,card_number,card_expiry_date,cvv_validation,session</paymentInfoKeys>
                 <!--<privateInfoKeys></privateInfoKeys>-->
             </tns_hpf>
         </payment>

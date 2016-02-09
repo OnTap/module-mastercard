@@ -4,7 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-namespace OnTap\Tns\Gateway\Validator\Direct;
+namespace OnTap\Tns\Gateway\Validator;
 
 use Magento\Payment\Gateway\Validator\AbstractValidator;
 use Magento\Payment\Gateway\Validator\ResultInterface;
@@ -13,7 +13,7 @@ use Magento\Payment\Gateway\ConfigInterface;
 use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
 use OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour;
 
-class AvsResponseValidator extends AbstractValidator
+class CscResponseValidator extends AbstractValidator
 {
     /**
      * @var ConfigInterface
@@ -24,31 +24,24 @@ class AvsResponseValidator extends AbstractValidator
      * @var array
      */
     protected $responseCodeConfig = [
-        'ADDRESS_ZIP_MATCH' => 'avs_rules_address_zip_match',
-        'ZIP_MATCH' => 'avs_rules_zip_match',
-        'ADDRESS_MATCH' => 'avs_rules_address_match',
-        'NAME_MATCH' => 'avs_rules_name_match',
-        'NAME_ZIP_MATCH' => 'avs_rules_name_zip_match',
-        'NAME_ADDRESS_MATCH' => 'avs_rules_name_address_match',
-        'NO_MATCH' => 'avs_rules_no_match',
-        'SERVICE_NOT_SUPPORTED' => 'avs_rules_service_not_supported',
-        'SERVICE_NOT_AVAILABLE_RETRY' => 'avs_rules_service_not_supported',
-        'NOT_REQUESTED' => 'avs_rules_not_requested',
-        'NOT_AVAILABLE' => 'avs_rules_not_available',
-        'NOT_VERIFIED' => 'avs_rules_not_verified',
+        'MATCH' => 'csc_rules_match',
+        'NOT_PRESENT' => 'csc_rules_not_present',
+        'NOT_PROCESSED' => 'csc_rules_not_processed',
+        'NOT_SUPPORTED' => 'csc_rules_not_supported',
+        'NO_MATCH' => 'csc_rules_no_match'
     ];
 
     /**
-     * AvsResponseValidator constructor.
-     * @param ResultInterfaceFactory $resultFactory
+     * CscResponseValidator constructor.
      * @param ConfigInterface $config
+     * @param ResultInterfaceFactory $resultFactory
      */
     public function __construct(
-        ResultInterfaceFactory $resultFactory,
-        ConfigInterface $config
+        ConfigInterface $config,
+        ResultInterfaceFactory $resultFactory
     ) {
-        $this->config = $config;
         parent::__construct($resultFactory);
+        $this->config = $config;
     }
 
     /**
@@ -61,16 +54,16 @@ class AvsResponseValidator extends AbstractValidator
     {
         $response = SubjectReader::readResponse($validationSubject);
 
-        if ($this->config->getValue('avs') !== '1' || isset($response['error'])) {
+        if ($this->config->getValue('csc_rules') !== '1' || isset($response['error'])) {
             return $this->createResult(true);
         }
 
-        if (!isset($response['response']['cardholderVerification']['avs'])) {
-            return $this->createResult(false, [__('AVS validator error.')]);
+        if (!isset($response['response']['cardSecurityCode'])) {
+            return $this->createResult(false, [__('CSC validator error.')]);
         }
 
         if ($this->validateGatewayCode($response, ValidatorBehaviour::REJECT)) {
-            return $this->createResult(false, [__('Transaction declined by AVS validation.')]);
+            return $this->createResult(false, [__('Transaction declined by CSC validation.')]);
         }
 
         return $this->createResult(true);
@@ -83,8 +76,8 @@ class AvsResponseValidator extends AbstractValidator
      */
     public function validateGatewayCode(array $response, $code)
     {
-        $avs = $response['response']['cardholderVerification']['avs'];
-        $configPath = $this->responseCodeConfig[$avs['gatewayCode']];
+        $csc = $response['response']['cardSecurityCode'];
+        $configPath = $this->responseCodeConfig[$csc['gatewayCode']];
 
         return $this->config->getValue($configPath) === $code;
     }

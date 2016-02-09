@@ -56,6 +56,7 @@ class VerificationStrategyCommand implements CommandInterface
      */
     public function isThreeDSSupported(PaymentDataObjectInterface $paymentDO)
     {
+        // @todo: make more robust, 3DS has to have an answer
         $isEnabled = $this->config->getValue('three_d_secure') === '1';
 
         $data = $paymentDO->getPayment()->getAdditionalInformation(CheckHandler::THREEDSECURE_CHECK);

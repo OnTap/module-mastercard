@@ -4,17 +4,17 @@
  * See COPYING.txt for license details.
  */
 
-namespace OnTap\Tns\Gateway\Response\Direct;
+namespace OnTap\Tns\Gateway\Response;
 
 use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Sales\Model\Order\Payment;
 use Magento\Payment\Gateway\Helper\ContextHelper;
 use OnTap\Tns\Model\Adminhtml\Source\ValidatorBehaviour;
-use OnTap\Tns\Gateway\Validator\Direct\CscResponseValidatorFactory;
-use OnTap\Tns\Gateway\Validator\Direct\CscResponseValidator;
-use OnTap\Tns\Gateway\Validator\Direct\AvsResponseValidatorFactory;
-use OnTap\Tns\Gateway\Validator\Direct\AvsResponseValidator;
+use OnTap\Tns\Gateway\Validator\CscResponseValidatorFactory;
+use OnTap\Tns\Gateway\Validator\CscResponseValidator;
+use OnTap\Tns\Gateway\Validator\AvsResponseValidatorFactory;
+use OnTap\Tns\Gateway\Validator\AvsResponseValidator;
 use Magento\Payment\Gateway\ConfigInterface;
 
 class FraudHandler implements HandlerInterface
@@ -37,7 +37,7 @@ class FraudHandler implements HandlerInterface
     /**
      * FraudHandler constructor.
      * @param ConfigInterface $config
-     * @param CscResponseValidatorFactory $validator
+     * @param CscResponseValidatorFactory $cscResponseValidatorFactory
      * @param AvsResponseValidatorFactory $avsResponseValidatorFactory
      */
     public function __construct(
@@ -45,9 +45,13 @@ class FraudHandler implements HandlerInterface
         CscResponseValidatorFactory $cscResponseValidatorFactory,
         AvsResponseValidatorFactory $avsResponseValidatorFactory
     ) {
-        $this->cscValidator = $cscResponseValidatorFactory->create();
-        $this->avsValidator = $avsResponseValidatorFactory->create();
         $this->config = $config;
+        $this->cscValidator = $cscResponseValidatorFactory->create([
+            'config' => $this->config
+        ]);
+        $this->avsValidator = $avsResponseValidatorFactory->create([
+            'config' => $this->config
+        ]);
     }
 
     /**

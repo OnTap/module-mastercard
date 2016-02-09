@@ -85,6 +85,8 @@ class ReviewStrategyCommand implements CommandInterface
                 ->get(self::CAPTURE)
                 ->execute($commandSubject);
         }
+
+        return null;
     }
 
     /**

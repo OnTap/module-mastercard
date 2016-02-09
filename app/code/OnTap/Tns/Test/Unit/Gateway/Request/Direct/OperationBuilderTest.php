@@ -6,7 +6,7 @@
 
 namespace OnTap\Tns\Test\Unit\Gateway\Request\Direct;
 
-use OnTap\Tns\Gateway\Request\Direct\OperationBuilder;
+use OnTap\Tns\Gateway\Request\OperationBuilder;
 
 class OperationBuilderTest extends \PHPUnit_Framework_TestCase
 {

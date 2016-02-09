@@ -4,7 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-namespace OnTap\Tns\Gateway\Response\Direct;
+namespace OnTap\Tns\Gateway\Response;
 
 use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
