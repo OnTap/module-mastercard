@@ -10,7 +10,7 @@
         <payment>
             <tns_direct>
                 <active>0</active>
-                <title>Credit or Debit Card (TNS)</title>
+                <title>Credit or Debit Card</title>
                 <model>TnsDirectFacade</model>
                 <payment_action>authorize</payment_action>
 
@@ -46,7 +46,7 @@
             </tns_direct>
             <tns_hosted>
                 <active>0</active>
-                <title>Hosted (TNS)</title>
+                <title>Hosted Checkout</title>
                 <model>TnsHostedFacade</model>
                 <payment_action>authorize</payment_action>
 
@@ -76,12 +76,31 @@
             </tns_hosted>
             <tns_hpf>
                 <active>0</active>
-                <title>Hosted Payment Session (TNS)</title>
+                <title>Hosted Payment Session</title>
                 <model>TnsHpfFacade</model>
                 <payment_action>authorize</payment_action>
+
+                <cctypes>VI,MC,MI</cctypes>
+                <date_delim>-</date_delim>
+                <cc_year_length>4</cc_year_length>
+                <ccfields>card_cvn,card_expiry_date,card_number</ccfields>
+
                 <debug>0</debug>
                 <test>0</test>
                 <allowspecific>0</allowspecific>
+                <can_initialize>0</can_initialize>
+                <can_use_checkout>1</can_use_checkout>
+                <can_use_internal>0</can_use_internal>
+
+                <can_refund>1</can_refund>
+                <can_void>1</can_void>
+                <can_order>0</can_order>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_capture_partial>1</can_capture_partial>
+
+                <paymentInfoKeys>gateway_code,txn_result,card_scheme,card_number,card_expiry_date,cvv_validation</paymentInfoKeys>
+                <!--<privateInfoKeys></privateInfoKeys>-->
             </tns_hpf>
         </payment>
     </default>

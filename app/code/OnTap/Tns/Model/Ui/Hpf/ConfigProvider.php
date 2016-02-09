@@ -46,6 +46,7 @@ class ConfigProvider implements ConfigProviderInterface
         return [
             'payment' => [
                 self::METHOD_CODE => [
+                    'merchant_username' => $this->config->getValue('api_test_username'),
                 ]
             ]
         ];

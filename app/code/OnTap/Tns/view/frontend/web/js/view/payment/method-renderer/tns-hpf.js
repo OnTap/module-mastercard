@@ -8,43 +8,40 @@ define(
         'jquery',
         'Magento_Payment/js/view/payment/cc-form',
         'Magento_Checkout/js/model/payment/additional-validators',
-        'OnTap_Tns/js/view/payment/hpf-adapter'
+        'OnTap_Tns/js/view/payment/hpf-adapter',
+        'Magento_Ui/js/modal/alert',
+        'mage/translate'
     ],
-    function ($, ccFormComponent, additionalValidators, paymentAdapter) {
+    function ($, ccFormComponent, additionalValidators, paymentAdapter, alert, $t) {
         'use strict';
 
         return ccFormComponent.extend({
             defaults: {
                 template: 'OnTap_Tns/payment/tns-hpf',
                 active: false,
-                scriptLoaded: false,
+                adapterLoaded: false,
                 imports: {
                     onActiveChange: 'active'
                 }
             },
             placeOrderHandler: null,
             validateHandler: null,
-
-            hasSsCardType: function () {
-                return false;
-            },
+            sessionId: null,
 
             initObservable: function () {
                 this._super()
-                    .observe('active scriptLoaded');
+                    .observe('active adapterLoaded');
 
                 return this;
             },
-
-            setPlaceOrderHandler: function (handler) {
-                this.placeOrderHandler = handler;
-            },
-
 
             setValidateHandler: function (handler) {
                 this.validateHandler = handler;
             },
 
+            setPlaceOrderHandler: function (handler) {
+                this.placeOrderHandler = handler;
+            },
 
             context: function () {
                 return this;
@@ -60,37 +57,43 @@ define(
                 return 'tns_hpf';
             },
 
-
-            isActive: function () {
-                var active = this.getCode() === this.isChecked();
-
-                this.active(active);
-
-                return active;
-            },
-
-
             onActiveChange: function (isActive) {
-                if (isActive && !this.scriptLoaded()) {
-                    this.loadScript();
+                if (isActive && !this.adapterLoaded()) {
+                    this.loadAdapter();
                 }
             },
 
+            isActive: function () {
+                var active = this.getCode() === this.isChecked();
+                this.active(active);
+                return active;
+            },
 
-            loadScript: function () {
-                var state = this.scriptLoaded;
+            loadAdapter: function () {
+                paymentAdapter.configureApi(this.getConfig());
+                this.adapterLoaded(true);
+            },
 
-                $('body').trigger('processStart');
-                //require([this.getUrl()], function () {
-                paymentAdapter.configureApi();
-                state(true);
-                $('body').trigger('processStop');
-                //});
+            errorMap: function () {
+                return {
+                    'cardNumber': $t('Invalid card number'),
+                    'cardSecurityCode': $t('Invalid security code'),
+                    'cardExpiryMonth': $t('Invalid expiry month'),
+                    'cardExpiryYear': $t('Invalid expiry year')
+                };
             },
 
             getData: function () {
                 return {
-                    //'method': this.item.method,
+                    'method': this.item.method,
+                    'additional_data': {
+                        'session': this.sessionId
+                    }
+                };
+            },
+
+            getCardData: function () {
+                return {
                     'cardNumber': this.creditCardNumber(),
                     'cardSecurityCode': this.creditCardVerificationNumber(),
                     'cardExpiryMonth': this.creditCardExpMonth(),
@@ -98,20 +101,39 @@ define(
                 };
             },
 
+            getConfig: function () {
+                return window.checkoutConfig.payment[this.getCode()];
+            },
 
-            placeOrder: function () {
-                if (this.validateHandler() && additionalValidators.validate()) {
-                    this.isPlaceOrderActionAllowed(false);
-
-                    console.log('request data: %o', this.getData());
-                    paymentAdapter.startSession(this.getData(), function(response){
-                        console.log('scope %o', this);
-                        console.log('response data %o', response);
-                    });
-
-                    this.isPlaceOrderActionAllowed(true);
-                    //this._super();
+            startHpfSession: function () {
+                if (!this.validateHandler() || !additionalValidators.validate()) {
+                    return;
                 }
+
+                this.isPlaceOrderActionAllowed(false);
+
+                paymentAdapter.startSession(this.getCardData(), $.proxy(function(response) {
+
+                    if (response.status === "fields_in_error") {
+                        if (response.fieldsInError) {
+                            var errors = this.errorMap();
+                            for (var err in response.fieldsInError) {
+                                if (!response.fieldsInError.hasOwnProperty(err)) {
+                                    continue;
+                                }
+                                alert({
+                                    content: errors[err]
+                                });
+                            }
+                        }
+                    }
+                    if (response.status === "ok") {
+                        this.sessionId = response.session;
+                        this.placeOrder();
+                        return;
+                    }
+                    this.isPlaceOrderActionAllowed(true);
+                }, this));
             }
         });
     }

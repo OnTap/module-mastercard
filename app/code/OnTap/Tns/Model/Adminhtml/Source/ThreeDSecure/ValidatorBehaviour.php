@@ -25,4 +25,3 @@ class ValidatorBehaviour extends \OnTap\Tns\Model\Adminhtml\Source\ValidatorBeha
         ];
     }
 }
-

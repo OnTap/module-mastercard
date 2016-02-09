@@ -15,6 +15,10 @@ use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\TestFramework\Inspection\Exception;
 use OnTap\Tns\Gateway\Response\Direct\ThreeDSecure\CheckHandler;
 
+/**
+ * Class Check
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class Check extends \Magento\Framework\App\Action\Action
 {
     const CHECK_ENROLMENT = '3ds_enrollment';
@@ -85,11 +89,12 @@ class Check extends \Magento\Framework\App\Action\Action
             $jsonResult->setData([
                 'result' => $checkData['status']
             ]);
-        } catch(\Exception $e) {
-            $jsonResult->setHttpResponseCode(400);
-            $jsonResult->setData([
-                'message' => $e->getMessage()
-            ]);
+        } catch (\Exception $e) {
+            $jsonResult
+                ->setHttpResponseCode(400)
+                ->setData([
+                    'message' => $e->getMessage()
+                ]);
         }
 
         return $jsonResult;

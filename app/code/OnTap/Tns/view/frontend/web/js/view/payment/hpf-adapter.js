@@ -11,8 +11,8 @@ define([
     'use strict';
 
     return {
-        configureApi: function () {
-            HostedForm.setMerchant('xxx');
+        configureApi: function (config) {
+            HostedForm.setMerchant(config.merchant_username);
         },
 
         startSession: function (sessionDetails, callback) {
