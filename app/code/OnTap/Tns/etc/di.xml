@@ -604,7 +604,49 @@
                 <item name="capture_simple" xsi:type="string">TnsHpfSaleStrategyCommand</item>
                 <item name="sale" xsi:type="string">TnsHpfSaleCommand</item>
                 <item name="pre_auth_capture" xsi:type="string">TnsHpfPreAuthCaptureCommand</item>
+                <item name="refund" xsi:type="string">TnsHpfRefundCommand</item>
+                <item name="void" xsi:type="string">TnsHpfVoidCommand</item>
+                <item name="accept_payment" xsi:type="string">TnsHpfAcceptReviewCommand</item>
+                <item name="deny_payment" xsi:type="string">TnsHpfDenyReviewCommand</item>
             </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Accept a payment that is in review -->
+    <virtualType name="TnsHpfAcceptReviewCommand" type="OnTap\Tns\Gateway\Command\ReviewStrategyCommand">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">TnsHpfCommandPool</argument>
+            <argument name="config" xsi:type="object">TnsHpfConfig</argument>
+            <argument name="solution" xsi:type="string">accept</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Deny a payment that is in review -->
+    <virtualType name="TnsHpfDenyReviewCommand" type="OnTap\Tns\Gateway\Command\ReviewStrategyCommand">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">TnsHpfCommandPool</argument>
+            <argument name="config" xsi:type="object">TnsHpfConfig</argument>
+            <argument name="solution" xsi:type="string">deny</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Void -->
+    <virtualType name="TnsHpfVoidCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">TnsVoidDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">TnsHpfTransferFactory</argument>
+            <argument name="client" xsi:type="object">OnTap\Tns\Gateway\Http\Client\Rest</argument>
+            <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\ResponseValidator</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Refund -->
+    <virtualType name="TnsHpfRefundCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">TnsRefundDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">TnsHpfTransferFactory</argument>
+            <argument name="client" xsi:type="object">OnTap\Tns\Gateway\Http\Client\Rest</argument>
+            <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\ResponseValidator</argument>
         </arguments>
     </virtualType>
 
@@ -637,10 +679,6 @@
                 <item name="shipping" xsi:type="string">OnTap\Tns\Gateway\Request\ShippingDataBuilder</item>
                 <item name="customer" xsi:type="string">OnTap\Tns\Gateway\Request\CustomerDataBuilder</item>
                 <item name="3ds_results" xsi:type="string">TnsHpfThreeDSecureResultDataBuilder</item>
-                <!--<item name="refund" xsi:type="string">TnsDirectRefundCommand</item>-->
-                <!--<item name="void" xsi:type="string">TnsDirectVoidCommand</item>-->
-                <!--<item name="accept_payment" xsi:type="string">AcceptReviewCommand</item>-->
-                <!--<item name="deny_payment" xsi:type="string">DenyReviewCommand</item>-->
             </argument>
         </arguments>
     </virtualType>

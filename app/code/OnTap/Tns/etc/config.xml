@@ -102,6 +102,10 @@
                 <can_authorize>1</can_authorize>
                 <can_capture>1</can_capture>
                 <can_capture_partial>1</can_capture_partial>
+                <can_deny_payment>1</can_deny_payment>
+                <can_accept_payment>1</can_accept_payment>
+                <can_review_payment>1</can_review_payment>
+                <is_gateway>1</is_gateway>
 
                 <paymentInfoKeys>gateway_code,txn_result,card_scheme,card_number,card_expiry_date,cvv_validation,session</paymentInfoKeys>
                 <!--<privateInfoKeys></privateInfoKeys>-->
