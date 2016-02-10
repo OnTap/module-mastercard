@@ -10,7 +10,7 @@ use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\ConfigInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
-use OnTap\Tns\Gateway\Response\Direct\ThreeDSecure\CheckHandler;
+use OnTap\Tns\Gateway\Response\ThreeDSecure\CheckHandler;
 
 class ResultsDataBuilder implements BuilderInterface
 {

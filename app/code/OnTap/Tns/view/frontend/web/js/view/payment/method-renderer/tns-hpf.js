@@ -10,9 +10,12 @@ define(
         'Magento_Checkout/js/model/payment/additional-validators',
         'OnTap_Tns/js/view/payment/hpf-adapter',
         'Magento_Ui/js/modal/alert',
-        'mage/translate'
+        'mage/translate',
+        'Magento_Checkout/js/action/set-payment-information',
+        'uiLayout',
+        'Magento_Checkout/js/model/full-screen-loader'
     ],
-    function ($, ccFormComponent, additionalValidators, paymentAdapter, alert, $t) {
+    function ($, ccFormComponent, additionalValidators, paymentAdapter, alert, $t, setPaymentInformationAction, layout, fullScreenLoader) {
         'use strict';
 
         return ccFormComponent.extend({
@@ -105,6 +108,44 @@ define(
                 return window.checkoutConfig.payment[this.getCode()];
             },
 
+            is3DsEnabled: function () {
+                return this.getConfig()['three_d_secure'];
+            },
+
+            initChildren: function () {
+                this._super();
+
+                var threeDSecureComponent = {
+                    parent: this.name,
+                    name: this.name + '.threedsecure',
+                    displayArea: 'threedsecure',
+                    component: 'OnTap_Tns/js/view/payment/threedsecure',
+                    config: {
+                        id: this.item.method,
+                        messages: this.messageContainer,
+                        onComplete: $.proxy(this.threeDSecureCheckSuccess, this),
+                        onError: $.proxy(this.threeDSecureCheckFailed, this),
+                        onCancel: $.proxy(this.threeDSecureCancelled, this)
+                    }
+                };
+                layout([threeDSecureComponent]);
+
+                return this;
+            },
+
+            threeDSecureCheckSuccess: function () {
+                this.placeOrder();
+            },
+
+            threeDSecureCheckFailed: function () {
+                fullScreenLoader.stopLoader();
+            },
+
+            threeDSecureCancelled: function () {
+                fullScreenLoader.stopLoader();
+                this.isPlaceOrderActionAllowed(true);
+            },
+
             startHpfSession: function () {
                 if (!this.validateHandler() || !additionalValidators.validate()) {
                     return;
@@ -113,6 +154,7 @@ define(
                 this.isPlaceOrderActionAllowed(false);
 
                 paymentAdapter.startSession(this.getCardData(), $.proxy(function(response) {
+                    this.sessionId = response.session;
 
                     if (response.status === "fields_in_error") {
                         if (response.fieldsInError) {
@@ -128,9 +170,21 @@ define(
                         }
                     }
                     if (response.status === "ok") {
-                        this.sessionId = response.session;
-                        this.placeOrder();
-                        return;
+                        if (this.is3DsEnabled()) {
+                            fullScreenLoader.startLoader();
+
+                            var action = setPaymentInformationAction(this.messageContainer, this.getData());
+
+                            $.when(action).done($.proxy(function() {
+                                fullScreenLoader.stopLoader();
+                                this.delegate('threeDSecureOpen', this);
+                            }, this)).fail(
+                                $.proxy(this.threeDSecureCheckFailed, this)
+                            );
+                        } else {
+                            this.placeOrder();
+                            return;
+                        }
                     }
                     this.isPlaceOrderActionAllowed(true);
                 }, this));

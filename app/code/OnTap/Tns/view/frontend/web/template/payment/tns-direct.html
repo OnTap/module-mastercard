@@ -4,7 +4,7 @@
  * See COPYING.txt for license details.
  */
 -->
-<div class="payment-method" data-bind="css: {'_active': isActive() && scriptLoaded()}">
+<div class="payment-method" data-bind="css: {'_active': isActive()}">
     <div class="payment-method-title field choice">
         <input type="radio"
                name="payment[method]"
@@ -45,14 +45,8 @@
                 </button>
             </div>
         </div>
-        <!-- ko if: is3DsEnabled() -->
-        <div id="threedsecure_window" data-bind="mageInit: {
-            'OnTap_Tns/js/view/payment/threedsecure': {
-                'context': context(),
-                'formLoaded': iframeFormLoaded
-            }}">
-            <!-- ko template: 'OnTap_Tns/threedsecure/iframe' --><!-- /ko -->
-        </div>
-        <!-- /ko-->
+        <!-- ko foreach: getRegion('threedsecure') -->
+        <!-- ko template: getTemplate() --><!-- /ko -->
+        <!--/ko-->
     </div>
 </div>

@@ -13,11 +13,6 @@
             <argument name="commandPool" xsi:type="object">TnsHostedCommandPool</argument>
         </arguments>
     </type>
-    <type name="OnTap\Tns\Controller\Threedsecure\Check">
-        <arguments>
-            <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
-        </arguments>
-    </type>
 
     <virtualType name="TnsConfig" type="Magento\Payment\Gateway\Config\Config">
         <arguments>
@@ -41,7 +36,7 @@
                 <item name="pre_auth_capture" xsi:type="string">TnsDirectPreAuthCaptureCommand</item>
                 <item name="refund" xsi:type="string">TnsDirectRefundCommand</item>
                 <item name="void" xsi:type="string">TnsDirectVoidCommand</item>
-                <item name="3ds_enrollment" xsi:type="string">TnsDirect3dsEnrollmentCommand</item>
+                <item name="3ds_enrollment" xsi:type="string">TnsThreeDSecureEnrollmentCommand</item>
                 <item name="3ds_process" xsi:type="string">TnsDirect3dsProcessCommand</item>
                 <item name="verify" xsi:type="string">TnsDirectVerifyCommand</item>
                 <item name="accept_payment" xsi:type="string">AcceptReviewCommand</item>
@@ -259,20 +254,20 @@
     </virtualType>
 
     <!-- Check 3D-Secure enrollment -->
-    <virtualType name="TnsDirect3dsEnrollmentCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
+    <virtualType name="TnsThreeDSecureEnrollmentCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
         <arguments>
-            <argument name="requestBuilder" xsi:type="object">TnsDirect3DSecureDataBuilder</argument>
+            <argument name="requestBuilder" xsi:type="object">TnsThreeDSecureDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">OnTap\Tns\Gateway\Http\ThreeDSecure\TransferFactoryEnrolment</argument>
             <argument name="client" xsi:type="object">OnTap\Tns\Gateway\Http\Client\Rest</argument>
-            <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\Direct\ThreeDSecureValidator</argument>
-            <argument name="handler" xsi:type="object">OnTap\Tns\Gateway\Response\Direct\ThreeDSecure\CheckHandler</argument>
+            <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\ThreeDSecureValidator</argument>
+            <argument name="handler" xsi:type="object">OnTap\Tns\Gateway\Response\ThreeDSecure\CheckHandler</argument>
         </arguments>
     </virtualType>
-    <virtualType name="TnsDirect3DSecureDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
+    <virtualType name="TnsThreeDSecureDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
         <arguments>
             <argument name="builders" xsi:type="array">
                 <item name="operation" xsi:type="string">ThreeDSecureCheckOperationDataBuilder</item>
-                <item name="3ds_check" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\ThreeDSecure\CheckDataBuilder</item>
+                <item name="3ds_check" xsi:type="string">OnTap\Tns\Gateway\Request\ThreeDSecure\CheckDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>

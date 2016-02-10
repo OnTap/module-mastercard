@@ -13,7 +13,7 @@ use Magento\Sales\Model\Order\Payment;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use Magento\Payment\Gateway\Helper\ContextHelper;
 use Magento\Payment\Gateway\Helper\SubjectReader;
-use OnTap\Tns\Gateway\Response\Direct\ThreeDSecure\CheckHandler;
+use OnTap\Tns\Gateway\Response\ThreeDSecure\CheckHandler;
 
 class VerificationStrategyCommand implements CommandInterface
 {

@@ -11,29 +11,26 @@ define(
         'Magento_Checkout/js/action/set-payment-information',
         'OnTap_Tns/js/action/check-enrolment',
         'mage/url',
-        'Magento_Ui/js/modal/modal',
+        'uiLayout',
         'Magento_Checkout/js/model/full-screen-loader'
     ],
-    function ($, ccFormComponent, additionalValidators, setPaymentInformationAction, checkEnrolmentAction, url, modal, fullScreenLoader) {
+    function ($, ccFormComponent, additionalValidators, setPaymentInformationAction, checkEnrolmentAction, url, layout, fullScreenLoader) {
         'use strict';
 
         return ccFormComponent.extend({
             defaults: {
                 template: 'OnTap_Tns/payment/tns-direct',
                 active: false,
-                scriptLoaded: false,
                 imports: {
                     onActiveChange: 'active'
                 }
             },
             placeOrderHandler: null,
             validateHandler: null,
-            modalWindow: null,
-            onModalOpen: null,
 
             initObservable: function () {
                 this._super()
-                    .observe('active scriptLoaded');
+                    .observe('active');
 
                 return this;
             },
@@ -70,7 +67,6 @@ define(
                 return 'tns_direct';
             },
 
-
             isActive: function () {
                 var active = this.getCode() === this.isChecked();
 
@@ -79,72 +75,37 @@ define(
                 return active;
             },
 
+            initChildren: function () {
+                this._super();
 
-            onActiveChange: function (isActive) {
-                if (isActive && !this.scriptLoaded()) {
-                    this.loadScript();
-                }
+                var threeDSecureComponent = {
+                    parent: this.name,
+                    name: this.name + '.threedsecure',
+                    displayArea: 'threedsecure',
+                    component: 'OnTap_Tns/js/view/payment/threedsecure',
+                    config: {
+                        id: this.item.method,
+                        messages: this.messageContainer,
+                        onComplete: $.proxy(this.threeDSecureCheckSuccess, this),
+                        onError: $.proxy(this.threeDSecureCheckFailed, this),
+                        onCancel: $.proxy(this.threeDSecureCancelled, this)
+                    }
+                };
+                layout([threeDSecureComponent]);
+
+                return this;
             },
 
-
-            loadScript: function () {
-                var state = this.scriptLoaded;
-
-                $('body').trigger('processStart');
-                //require([this.getUrl()], function () {
-                    state(true);
-                    $('body').trigger('processStop');
-                //});
-            },
-
-            openModal: function () {
-                this.modalWindow = '#threedsecure_window';
-
-                modal({
-                    type: 'slide',
-                    title: $.mage.__('3D-Secure'),
-                    opened: $.proxy(this.onModalOpen, this),
-                    closed: $.proxy(this.onModalClose, this),
-                    buttons: [],
-                    clickableOverlay: false
-                }, $(this.modalWindow));
-
-                $(this.modalWindow).modal('openModal');
-
-                window.tnsThreeDSecureClose = $.proxy(this.iframeFormCompleted, this);
-            },
-
-            setModalOpenCallback: function (callback) {
-                this.onModalOpen = callback;
-            },
-
-            onModalClose: function () {
+            threeDSecureCancelled: function () {
+                fullScreenLoader.stopLoader();
                 this.isPlaceOrderActionAllowed(true);
             },
 
-            iframeFormLoaded: function () {
-                fullScreenLoader.stopLoader();
-            },
-
-            iframeFormCompleted: function () {
-                $(this.modalWindow).modal('closeModal');
-                this.isPlaceOrderActionAllowed(false);
-                fullScreenLoader.startLoader();
+            threeDSecureCheckSuccess: function () {
                 this.placeOrder();
             },
 
-            threeDSecureCheckCompleted: function (response) {
-                if (response.result == "CARD_ENROLLED") {
-                    this.isPlaceOrderActionAllowed(false);
-                    this.openModal();
-                } else {
-                    fullScreenLoader.stopLoader();
-                    this.placeOrder();
-                }
-            },
-
             threeDSecureCheckFailed: function () {
-                this.isPlaceOrderActionAllowed(true);
                 fullScreenLoader.stopLoader();
             },
 
@@ -154,15 +115,13 @@ define(
                     this.isPlaceOrderActionAllowed(false);
 
                     if (this.is3DsEnabled()) {
+                        fullScreenLoader.startLoader();
+
                         var action = setPaymentInformationAction(this.messageContainer, this.getData());
 
                         $.when(action).done($.proxy(function() {
-                            fullScreenLoader.startLoader();
-                            $.when(checkEnrolmentAction()).fail(
-                                $.proxy(this.threeDSecureCheckFailed, this)
-                            ).done(
-                                $.proxy(this.threeDSecureCheckCompleted, this)
-                            );
+                            fullScreenLoader.stopLoader();
+                            this.delegate('threeDSecureOpen', this);
                         }, this)).fail(
                             $.proxy(this.threeDSecureCheckFailed, this)
                         );

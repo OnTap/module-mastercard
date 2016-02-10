@@ -4,7 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-namespace OnTap\Tns\Gateway\Request\Direct\ThreeDSecure;
+namespace OnTap\Tns\Gateway\Request\ThreeDSecure;
 
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
@@ -43,7 +43,7 @@ class CheckDataBuilder extends CardDataBuilder implements BuilderInterface
         $order = $paymentDO->getOrder();
         $payment = $paymentDO->getPayment();
 
-        return [
+        $data = [
             '3DSecure' => [
                 'authenticationRedirect' => [
                     'pageGenerationMode' => static::PAGE_GENERATION_MODE,
@@ -54,21 +54,32 @@ class CheckDataBuilder extends CardDataBuilder implements BuilderInterface
                 'amount' => sprintf('%.2F', SubjectReader::readAmount($buildSubject)),
                 'currency' => $order->getCurrencyCode(),
             ],
-            'sourceOfFunds' => [
-                'provided' => [
-                    'card' => [
-                        'expiry' => [
-                            'month' => $this->formatMonth(
-                                $payment->getAdditionalInformation(CardDataBuilder::CC_EXP_MONTH)
-                            ),
-                            'year' => $this->formatYear(
-                                $payment->getAdditionalInformation(CardDataBuilder::CC_EXP_YEAR)
-                            ),
+        ];
+
+        if ($payment->getAdditionalInformation('session')) {
+            return array_merge($data, [
+                'session' => [
+                    'id' => $payment->getAdditionalInformation('session')
+                ]
+            ]);
+        } else {
+            return array_merge($data, [
+                'sourceOfFunds' => [
+                    'provided' => [
+                        'card' => [
+                            'expiry' => [
+                                'month' => $this->formatMonth(
+                                    $payment->getAdditionalInformation(CardDataBuilder::CC_EXP_MONTH)
+                                ),
+                                'year' => $this->formatYear(
+                                    $payment->getAdditionalInformation(CardDataBuilder::CC_EXP_YEAR)
+                                ),
+                            ],
+                            'number' => $payment->getAdditionalInformation(CardDataBuilder::CC_NUMBER),
                         ],
-                        'number' => $payment->getAdditionalInformation(CardDataBuilder::CC_NUMBER),
                     ],
                 ],
-            ],
-        ];
+            ]);
+        }
     }
 }

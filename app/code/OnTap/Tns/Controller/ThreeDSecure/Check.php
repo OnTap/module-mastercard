@@ -12,7 +12,8 @@ use Magento\Payment\Gateway\Command\CommandPoolInterface;
 use Magento\Checkout\Model\Session;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
 use Magento\Framework\Controller\Result\JsonFactory;
-use OnTap\Tns\Gateway\Response\Direct\ThreeDSecure\CheckHandler;
+use OnTap\Tns\Gateway\Response\ThreeDSecure\CheckHandler;
+use Magento\Payment\Gateway\Command\CommandPoolFactory;
 
 /**
  * Class Check
@@ -21,11 +22,7 @@ use OnTap\Tns\Gateway\Response\Direct\ThreeDSecure\CheckHandler;
 class Check extends \Magento\Framework\App\Action\Action
 {
     const CHECK_ENROLMENT = '3ds_enrollment';
-
-    /**
-     * @var CommandPoolInterface
-     */
-    private $commandPool;
+    const CHECK_ENROLMENT_TYPE = 'TnsThreeDSecureEnrollmentCommand';
 
     /**
      * @var Session
@@ -43,7 +40,13 @@ class Check extends \Magento\Framework\App\Action\Action
     private $jsonFactory;
 
     /**
+     * @var CommandPoolFactory
+     */
+    private $commandPoolFactory;
+
+    /**
      * Check constructor.
+     * @param CommandPoolFactory $commandPoolFactory
      * @param CommandPoolInterface $commandPool
      * @param Session $checkoutSession
      * @param PaymentDataObjectFactory $paymentDataObjectFactory
@@ -51,14 +54,14 @@ class Check extends \Magento\Framework\App\Action\Action
      * @param Context $context
      */
     public function __construct(
-        CommandPoolInterface $commandPool,
+        CommandPoolFactory $commandPoolFactory,
         Session $checkoutSession,
         PaymentDataObjectFactory $paymentDataObjectFactory,
         JsonFactory $jsonFactory,
         Context $context
     ) {
         parent::__construct($context);
-        $this->commandPool = $commandPool;
+        $this->commandPoolFactory = $commandPoolFactory;
         $this->checkoutSession = $checkoutSession;
         $this->paymentDataObjectFactory = $paymentDataObjectFactory;
         $this->jsonFactory = $jsonFactory;
@@ -75,16 +78,26 @@ class Check extends \Magento\Framework\App\Action\Action
         $quote = $this->checkoutSession->getQuote();
         $jsonResult = $this->jsonFactory->create();
         try {
+            // @todo: maybe can be done with virtualTypes at di.xml somehow
+            $commandPool = $this->commandPoolFactory->create([
+                'commands' => [
+                    static::CHECK_ENROLMENT => static::CHECK_ENROLMENT_TYPE
+                ]
+            ]);
+
             $paymentDataObject = $this->paymentDataObjectFactory->create($quote->getPayment());
 
-            $this->commandPool
+            $commandPool
                 ->get(static::CHECK_ENROLMENT)
                 ->execute([
                     'payment' => $paymentDataObject,
                     'amount' => $quote->getGrandTotal(),
                 ]);
 
-            $checkData = $paymentDataObject->getPayment()->getAdditionalInformation(CheckHandler::THREEDSECURE_CHECK);
+            $checkData = $paymentDataObject
+                ->getPayment()
+                ->getAdditionalInformation(CheckHandler::THREEDSECURE_CHECK);
+
             $jsonResult->setData([
                 'result' => $checkData['status']
             ]);

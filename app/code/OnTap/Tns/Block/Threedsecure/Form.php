@@ -7,7 +7,7 @@
 namespace OnTap\Tns\Block\Threedsecure;
 
 use Magento\Framework\View\Element\Template;
-use OnTap\Tns\Gateway\Request\Direct\ThreeDSecure\CheckDataBuilder;
+use OnTap\Tns\Gateway\Request\ThreeDSecure\CheckDataBuilder;
 
 class Form extends Template
 {

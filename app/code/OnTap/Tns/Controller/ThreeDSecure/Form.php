@@ -12,7 +12,7 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\View\LayoutFactory;
 use Magento\Checkout\Model\Session;
-use OnTap\Tns\Gateway\Response\Direct\ThreeDSecure\CheckHandler;
+use OnTap\Tns\Gateway\Response\ThreeDSecure\CheckHandler;
 
 class Form extends Action
 {
