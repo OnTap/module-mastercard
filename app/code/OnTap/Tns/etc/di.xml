@@ -36,8 +36,7 @@
                 <item name="pre_auth_capture" xsi:type="string">TnsDirectPreAuthCaptureCommand</item>
                 <item name="refund" xsi:type="string">TnsDirectRefundCommand</item>
                 <item name="void" xsi:type="string">TnsDirectVoidCommand</item>
-                <item name="3ds_enrollment" xsi:type="string">TnsThreeDSecureEnrollmentCommand</item>
-                <item name="3ds_process" xsi:type="string">TnsDirect3dsProcessCommand</item>
+                <item name="3ds_process" xsi:type="string">TnsDirectThreeDSecureProcessCommand</item>
                 <item name="verify" xsi:type="string">TnsDirectVerifyCommand</item>
                 <item name="accept_payment" xsi:type="string">AcceptReviewCommand</item>
                 <item name="deny_payment" xsi:type="string">DenyReviewCommand</item>
@@ -273,7 +272,7 @@
     </virtualType>
 
     <!-- Verify 3D-Secure results -->
-    <virtualType name="TnsDirect3dsProcessCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
+    <virtualType name="TnsDirectThreeDSecureProcessCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
         <arguments>
             <argument name="requestBuilder" xsi:type="object">Tns3DSecureVerifyDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">OnTap\Tns\Gateway\Http\ThreeDSecure\TransferFactoryProcess</argument>

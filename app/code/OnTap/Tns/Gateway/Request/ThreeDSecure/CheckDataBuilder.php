@@ -56,14 +56,10 @@ class CheckDataBuilder extends CardDataBuilder implements BuilderInterface
             ],
         ];
 
-        if ($payment->getAdditionalInformation('session')) {
-            return array_merge($data, [
-                'session' => [
-                    'id' => $payment->getAdditionalInformation('session')
-                ]
-            ]);
-        } else {
-            return array_merge($data, [
+        $code = $payment->getMethodInstance()->getCode();
+
+        if ($code === \OnTap\Tns\Model\Ui\Direct\ConfigProvider::METHOD_CODE) {
+            $data = array_merge($data, [
                 'sourceOfFunds' => [
                     'provided' => [
                         'card' => [
@@ -81,5 +77,15 @@ class CheckDataBuilder extends CardDataBuilder implements BuilderInterface
                 ],
             ]);
         }
+
+        if ($code === \OnTap\Tns\Model\Ui\Hpf\ConfigProvider::METHOD_CODE) {
+            $data = array_merge($data, [
+                'session' => [
+                    'id' => $payment->getAdditionalInformation('session')
+                ]
+            ]);
+        }
+
+        return $data;
     }
 }
