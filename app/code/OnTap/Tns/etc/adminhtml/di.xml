@@ -11,7 +11,7 @@
             <argument name="data" xsi:type="array">
                 <item xsi:type="string" name="is_secure_mode">0</item>
             </argument>
-            <argument name="config" xsi:type="object">TnsConfig</argument>
+            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
         </arguments>
     </virtualType>
 
