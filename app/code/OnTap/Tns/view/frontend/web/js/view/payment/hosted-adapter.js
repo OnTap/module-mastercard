@@ -24,13 +24,34 @@ define([
             node.setAttribute('data-cancel', 'window.tnsCancelCallback');
             node.setAttribute('data-complete', 'window.tnsCompletedCallback');
         },
-        configureApi: function (merchant, amount, currency, sessionId, sessionVersion) {
+        getItems: function (items) {
+            var data = [];
+            $(items).each($.proxy(function(i, item) {
+                data.push({
+                    name: item.name,
+                    description: item.description,
+                    sku: item.sku,
+                    unitPrice: this.safeNumber(item.price),
+                    quantity: item.qty,
+                    unitTaxAmount: this.safeNumber(item.tax_amount)
+                });
+            }, this));
+            return data;
+        },
+        safeNumber: function (num) {
+            return parseFloat(num).toFixed(2);
+        },
+        configureApi: function (merchant, quote, sessionId, sessionVersion) {
+            var totals = quote.totals();
             Checkout.configure({
                 merchant: merchant,
                 order: {
-                    amount: amount,
-                    currency: currency,
-                    description: 'Ordered items'
+                    amount: this.safeNumber(totals.grand_total),
+                    currency: totals.quote_currency_code,
+                    description: 'Ordered items',
+                    item: this.getItems(quote.getItems()),
+                    shippingAndHandlingAmount: this.safeNumber(totals.shipping_amount),
+                    taxAmount: this.safeNumber(totals.tax_amount)
                 },
                 interaction: {
                     merchant: {

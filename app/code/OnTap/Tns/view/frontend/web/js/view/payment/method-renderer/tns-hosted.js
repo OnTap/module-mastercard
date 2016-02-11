@@ -84,8 +84,7 @@ define(
 
                         paymentAdapter.configureApi(
                             config.merchant_username,
-                            quote.totals().grand_total.toFixed(2),
-                            quote.totals().quote_currency_code,
+                            quote,
                             session[0],
                             session[1]
                         );
