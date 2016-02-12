@@ -24,16 +24,22 @@ define([
             node.setAttribute('data-cancel', 'window.tnsCancelCallback');
             node.setAttribute('data-complete', 'window.tnsCompletedCallback');
         },
+        // XXX: this does not work, 2 decimal places is not enough
+        // XXX: method is not used
         getItems: function (items) {
             var data = [];
             $(items).each($.proxy(function(i, item) {
+                var lineDiscount = Math.abs(item.discount_amount) / item.qty;
+                var unitPrice = item.price - lineDiscount;
+                var unitTaxAmount = item.tax_amount / item.qty;
+
                 data.push({
                     name: item.name,
                     description: item.description,
                     sku: item.sku,
-                    unitPrice: this.safeNumber(item.price),
+                    unitPrice: this.safeNumber(unitPrice),
                     quantity: item.qty,
-                    unitTaxAmount: this.safeNumber(item.tax_amount)
+                    unitTaxAmount: this.safeNumber(unitTaxAmount)
                 });
             }, this));
             return data;
@@ -46,12 +52,13 @@ define([
             Checkout.configure({
                 merchant: merchant,
                 order: {
-                    amount: this.safeNumber(totals.grand_total),
+                    amount: this.safeNumber(totals.base_grand_total),
                     currency: totals.quote_currency_code,
-                    description: 'Ordered items',
-                    item: this.getItems(quote.getItems()),
-                    shippingAndHandlingAmount: this.safeNumber(totals.shipping_amount),
-                    taxAmount: this.safeNumber(totals.tax_amount)
+                    description: 'Ordered items'
+                    //item: this.getItems(quote.getItems()),
+                    //itemAmount: this.safeNumber(totals.base_subtotal_with_discount),
+                    //shippingAndHandlingAmount: this.safeNumber(totals.shipping_amount),
+                    //taxAmount: this.safeNumber(totals.tax_amount)
                 },
                 interaction: {
                     merchant: {

@@ -15,7 +15,6 @@ use OnTap\Tns\Gateway\Response\PaymentHandler;
 class TransactionHandler implements HandlerInterface
 {
     const TYPE_AUTHORIZE = 'AUTHORIZATION';
-    const TYPE_CAPTURE = 'CAPTURE';
     const TYPE_PAYMENT = 'PAYMENT';
 
     /**
@@ -29,10 +28,6 @@ class TransactionHandler implements HandlerInterface
 
         if ($type === static::TYPE_AUTHORIZE) {
             $this->authorize($txn, $payment);
-            return;
-        }
-        if ($type === static::TYPE_CAPTURE) {
-            $this->capture($txn, $payment);
             return;
         }
         if ($type === static::TYPE_PAYMENT) {
@@ -64,22 +59,12 @@ class TransactionHandler implements HandlerInterface
      * @return void
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    protected function capture(array $txn, Payment $payment)
-    {
-        // @todo
-        throw new \InvalidArgumentException("'Capture' model not implemented for HC");
-    }
-
-    /**
-     * @param array $txn
-     * @param Payment $payment
-     * @return void
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
     protected function payment(array $txn, Payment $payment)
     {
-        // @todo
-        throw new \InvalidArgumentException("'Pay' model not implemented for HC");
+        $payment->setTransactionId($txn['transaction']['id']);
+        $payment->setIsTransactionClosed(true);
+
+        PaymentHandler::importPaymentResponse($payment, $txn);
     }
 
     /**
