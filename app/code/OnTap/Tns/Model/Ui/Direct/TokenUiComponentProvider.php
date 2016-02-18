@@ -46,7 +46,7 @@ class TokenUiComponentProvider implements TokenUiComponentProviderInterface
      */
     public function getComponentForToken(PaymentTokenInterface $paymentToken)
     {
-        $jsonDetails = json_decode($paymentToken->getTokenDetails() ?: '{}', true);
+        $jsonDetails = \Zend_Json_Decoder::decode($paymentToken->getTokenDetails() ?: '{}', true);
         $component = $this->componentFactory->create(
             [
                 'config' => [
