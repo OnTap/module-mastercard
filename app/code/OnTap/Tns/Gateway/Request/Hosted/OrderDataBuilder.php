@@ -29,11 +29,14 @@ class OrderDataBuilder implements BuilderInterface
         $this->cart = $cartFactory->create();
     }
 
+    /**
+     * @return array
+     */
     protected function getItemData()
     {
         $data = [];
         /** @var \Magento\Quote\Model\Quote\Item $item */
-        foreach($this->cart->getItems() as $item) {
+        foreach ($this->cart->getItems() as $item) {
             $data[] = [
                 'name' => $item->getName(),
                 'description' => $item->getDescription(),

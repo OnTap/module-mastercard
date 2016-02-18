@@ -12,9 +12,10 @@ define(
         'OnTap_Tns/js/action/check-enrolment',
         'mage/url',
         'uiLayout',
-        'Magento_Checkout/js/model/full-screen-loader'
+        'Magento_Checkout/js/model/full-screen-loader',
+        'Magento_Vault/js/view/payment/vault-enabler'
     ],
-    function ($, ccFormComponent, additionalValidators, setPaymentInformationAction, checkEnrolmentAction, url, layout, fullScreenLoader) {
+    function ($, ccFormComponent, additionalValidators, setPaymentInformationAction, checkEnrolmentAction, url, layout, fullScreenLoader, vaultEnabler) {
         'use strict';
 
         return ccFormComponent.extend({
@@ -27,6 +28,18 @@ define(
             },
             placeOrderHandler: null,
             validateHandler: null,
+
+            initialize: function () {
+                this._super();
+                this.vaultEnabler = vaultEnabler();
+                this.vaultEnabler.setPaymentCode(this.getCode());
+
+                return this;
+            },
+
+            isVaultEnabled: function () {
+                return this.vaultEnabler.isVaultEnabled();
+            },
 
             initObservable: function () {
                 this._super()
@@ -107,6 +120,12 @@ define(
 
             threeDSecureCheckFailed: function () {
                 fullScreenLoader.stopLoader();
+            },
+
+            getData: function () {
+                var data = this._super();
+                this.vaultEnabler.visitAdditionalData(data);
+                return data;
             },
 
             startPlaceOrder: function () {

@@ -5,7 +5,8 @@
 var config = {
     map: {
         '*': {
-            'tnshpf': 'https://test-gateway.mastercard.com/form/v3/hpf.js'
+            'tnshpf': 'https://test-gateway.mastercard.com/form/v3/hpf.js',
+            'Magento_Checkout/js/view/payment/list': 'OnTap_Tns/js/view/payment/list' // @todo: Remove this when Vault released
         }
     }
 };

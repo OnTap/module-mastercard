@@ -1,0 +1,142 @@
+<?php
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+namespace OnTap\Tns\Gateway\Response;
+
+use Magento\Payment\Gateway\Response\HandlerInterface;
+use Magento\Vault\Model\VaultPaymentInterface;
+use Magento\Payment\Gateway\Helper\SubjectReader;
+use Magento\Payment\Gateway\Command;
+use Magento\Vault\Api\Data\PaymentTokenInterfaceFactory;
+use Magento\Vault\Api\Data\PaymentTokenInterface;
+use Magento\Sales\Api\Data\OrderPaymentExtensionInterface;
+use Magento\Sales\Api\Data\OrderPaymentExtensionInterfaceFactory;
+use Magento\Payment\Model\InfoInterface;
+
+class TokenCreateHandler implements HandlerInterface
+{
+    /**
+     * @var VaultPaymentInterface
+     */
+    private $vaultPayment;
+
+    /**
+     * @var PaymentTokenInterfaceFactory
+     */
+    private $paymentTokenFactory;
+
+    /**
+     * TokenCreateHandler constructor.
+     * @param VaultPaymentInterface $vaultPayment
+     * @param PaymentTokenInterfaceFactory $paymentTokenFactory
+     * @param OrderPaymentExtensionInterfaceFactory $paymentExtensionFactory
+     */
+    public function __construct(
+        VaultPaymentInterface $vaultPayment,
+        PaymentTokenInterfaceFactory $paymentTokenFactory,
+        OrderPaymentExtensionInterfaceFactory $paymentExtensionFactory
+    ) {
+        $this->vaultPayment = $vaultPayment;
+        $this->paymentTokenFactory = $paymentTokenFactory;
+        $this->paymentExtensionFactory = $paymentExtensionFactory;
+    }
+
+    /**
+     * @param array $response
+     * @return string
+     */
+    protected function getToken(array $response)
+    {
+        if (!isset($response['token'])) {
+            throw new \InvalidArgumentException('Token not present in response');
+        }
+        return $response['token'];
+    }
+
+    /**
+     * Convert payment token details to JSON
+     * @param array $details
+     * @return string
+     */
+    private function convertDetailsToJSON($details)
+    {
+        $json = \Zend_Json::encode($details);
+        return $json ? $json : '{}';
+    }
+
+    /**
+     * Handles response
+     *
+     * @param array $handlingSubject
+     * @param array $response
+     * @return void
+     */
+    public function handle(array $handlingSubject, array $response)
+    {
+        $paymentDO = SubjectReader::readPayment($handlingSubject);
+        $paymentInfo = $paymentDO->getPayment();
+
+        $isActiveVaultModule = $this->vaultPayment->isActiveForPayment($paymentInfo->getMethodInstance()->getCode());
+        if ($isActiveVaultModule) {
+            $paymentToken = $this->getPaymentToken($response);
+            if ($paymentToken !== null) {
+                $extensionAttributes = $this->getExtensionAttributes($paymentInfo);
+                $extensionAttributes->setVaultPaymentToken($paymentToken);
+            }
+        }
+    }
+
+    /**
+     * Get payment extension attributes
+     * @param InfoInterface $payment
+     * @return OrderPaymentExtensionInterface
+     */
+    private function getExtensionAttributes(InfoInterface $payment)
+    {
+        $extensionAttributes = $payment->getExtensionAttributes();
+        if (null === $extensionAttributes) {
+            $extensionAttributes = $this->paymentExtensionFactory->create();
+            $payment->setExtensionAttributes($extensionAttributes);
+        }
+        return $extensionAttributes;
+    }
+
+    /**
+     * @param array $response
+     * @return PaymentTokenInterface
+     */
+    protected function getPaymentToken(array $response)
+    {
+        $token = $this->getToken($response);
+        if (empty($token)) {
+            return null;
+        }
+
+        /** @var PaymentTokenInterface $paymentToken */
+        $paymentToken = $this->paymentTokenFactory->create();
+        $paymentToken->setGatewayToken($token);
+
+        if (!isset($response['sourceOfFunds']['provided']['card'])) {
+            throw new \InvalidArgumentException(__("Card details not provided by tokenization"));
+        }
+
+        $m = [];
+        preg_match('/^(\d{2})(\d{2})$/', $response['sourceOfFunds']['provided']['card']['expiry'], $m);
+
+        $paymentToken->setTokenDetails($this->convertDetailsToJSON([
+            'repository_id' => $response['repositoryId'],
+            'verification_strategy' => $response['verificationStrategy'],
+            'cc_number' => $response['sourceOfFunds']['provided']['card']['number'],
+            'cc_expr_month' => $m[1],
+            'cc_expr_year' => $m[2],
+            'cc_type' => $response['sourceOfFunds']['provided']['card']['brand']
+        ]));
+
+        $paymentToken->setIsVisible(true);
+
+        return $paymentToken;
+    }
+}

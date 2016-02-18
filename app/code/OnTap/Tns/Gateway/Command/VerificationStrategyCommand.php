@@ -14,11 +14,14 @@ use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use Magento\Payment\Gateway\Helper\ContextHelper;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use OnTap\Tns\Gateway\Response\ThreeDSecure\CheckHandler;
+use Magento\Vault\Model\VaultPaymentInterface;
+use Magento\Sales\Api\Data\OrderPaymentInterface;
 
 class VerificationStrategyCommand implements CommandInterface
 {
     const VERIFY_AVS_CSC = 'verify';
     const PROCESS_3DS_RESULT = '3ds_process';
+    const CREATE_TOKEN = 'create_token';
 
     /**
      * @var Command\CommandPoolInterface
@@ -36,15 +39,24 @@ class VerificationStrategyCommand implements CommandInterface
     private $successCommand;
 
     /**
+     * @var VaultPaymentInterface
+     */
+    private $vaultPayment;
+
+    /**
+     * VerificationStrategyCommand constructor.
+     * @param VaultPaymentInterface $vaultPayment
      * @param Command\CommandPoolInterface $commandPool
-     * @param ConfigInterface $config $config
+     * @param ConfigInterface $config
      * @param string $successCommand
      */
     public function __construct(
+        VaultPaymentInterface $vaultPayment,
         Command\CommandPoolInterface $commandPool,
         ConfigInterface $config,
         $successCommand = ''
     ) {
+        $this->vaultPayment = $vaultPayment;
         $this->commandPool = $commandPool;
         $this->config = $config;
         $this->successCommand = $successCommand;
@@ -77,6 +89,18 @@ class VerificationStrategyCommand implements CommandInterface
 
         return true;
     }
+
+    /**
+     * Check if payment was used vault token
+     *
+     * @param OrderPaymentInterface $payment
+     * @return bool
+     */
+    //private function isExistsVaultToken(OrderPaymentInterface $payment)
+    //{
+    //    $extensionAttributes = $payment->getExtensionAttributes();
+    //    return (boolean) $extensionAttributes->getVaultPaymentToken();
+    //}
 
     /**
      * Executes command basing on business object
@@ -114,7 +138,14 @@ class VerificationStrategyCommand implements CommandInterface
             return null;
         }
 
-        return $this->commandPool
+        $isActiveVaultModule = $this->vaultPayment->isActiveForPayment($paymentInfo->getMethodInstance()->getCode());
+        if ($isActiveVaultModule) {
+            $this->commandPool
+                ->get(static::CREATE_TOKEN)
+                ->execute($commandSubject);
+        }
+
+        $this->commandPool
             ->get($this->successCommand)
             ->execute($commandSubject);
     }

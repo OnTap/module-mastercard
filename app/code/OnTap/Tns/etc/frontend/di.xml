@@ -6,33 +6,6 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <virtualType name="TnsDirectInfoBlock" type="OnTap\Tns\Block\Direct\Info">
-        <arguments>
-            <argument name="data" xsi:type="array">
-                <item xsi:type="string" name="is_secure_mode">0</item>
-            </argument>
-            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="TnsHostedInfoBlock" type="OnTap\Tns\Block\Direct\Info">
-        <arguments>
-            <argument name="data" xsi:type="array">
-                <item xsi:type="string" name="is_secure_mode">0</item>
-            </argument>
-            <argument name="config" xsi:type="object">TnsHostedConfig</argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="TnsHpfInfoBlock" type="OnTap\Tns\Block\Direct\Info">
-        <arguments>
-            <argument name="data" xsi:type="array">
-                <item xsi:type="string" name="is_secure_mode">0</item>
-            </argument>
-            <argument name="config" xsi:type="object">TnsHpfConfig</argument>
-        </arguments>
-    </virtualType>
-
     <type name="OnTap\Tns\Model\Ui\Direct\ConfigProvider">
         <arguments>
             <argument name="config" xsi:type="object">TnsDirectConfig</argument>
@@ -63,6 +36,15 @@
                 <item name="tns_direct" xsi:type="object">OnTap\Tns\Model\Ui\Direct\ConfigProvider</item>
                 <item name="tns_hosted" xsi:type="object">OnTap\Tns\Model\Ui\Hosted\ConfigProvider</item>
                 <item name="tns_hpf" xsi:type="object">OnTap\Tns\Model\Ui\Hpf\ConfigProvider</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- VAULT -->
+    <type name="Magento\Vault\Model\Ui\TokensConfigProvider">
+        <arguments>
+            <argument name="tokenUiComponentProviders" xsi:type="array">
+                <item name="tns_direct" xsi:type="object">OnTap\Tns\Model\Ui\Direct\TokenUiComponentProvider</item>
             </argument>
         </arguments>
     </type>
