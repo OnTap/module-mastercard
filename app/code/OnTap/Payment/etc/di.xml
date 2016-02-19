@@ -9,4 +9,5 @@
     <preference for="OnTap\Payment\Gateway\ConfigFactoryInterface" type="OnTap\Payment\Gateway\Config\ConfigFactory" />
     <preference for="OnTap\Payment\Gateway\Command\CommandManagerPoolInterface" type="OnTap\Payment\Gateway\Command\CommandManagerPool" />
     <preference for="Magento\Payment\Gateway\Data\PaymentDataObjectFactoryInterface" type="Magento\Payment\Gateway\Data\PaymentDataObjectFactory" />
+    <preference for="Magento\Payment\Gateway\Validator\ResultInterface" type="Magento\Payment\Gateway\Validator\Result"/>
 </config>

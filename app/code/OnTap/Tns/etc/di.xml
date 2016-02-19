@@ -175,6 +175,8 @@
                 <item name="accept_payment" xsi:type="string">AcceptReviewCommand</item>
                 <item name="deny_payment" xsi:type="string">DenyReviewCommand</item>
                 <item name="create_token" xsi:type="string">TnsDirectCreateTokenCommand</item>
+                <item name="vault_sale" xsi:type="string">TnsDirectVaultSaleCommand</item>
+                <item name="vault_authorize" xsi:type="string">TnsDirectVaultAuthorizeCommand</item>
             </argument>
         </arguments>
     </virtualType>
@@ -204,6 +206,21 @@
             <argument name="client" xsi:type="object">OnTap\Tns\Gateway\Http\Client\Rest</argument>
             <argument name="handler" xsi:type="object">OnTap\Tns\Gateway\Response\TokenCreateHandler</argument>
             <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\TokenCreateValidator</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Pure authorize command (VAULT) -->
+    <virtualType name="TnsDirectVaultAuthorizeCommand" type="AuthorizeCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">TnsDirectVaultAuthorizeDataBuilder</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="TnsDirectVaultAuthorizeDataBuilder" type="TnsDirectAuthorizeDataBuilder">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="card" xsi:type="string">OnTap\Tns\Gateway\Request\TokenDataBuilder</item>
+            </argument>
         </arguments>
     </virtualType>
 
@@ -256,6 +273,21 @@
     <virtualType name="TnsDirectSaleStrategyCommand" type="OnTap\Tns\Gateway\Command\SaleStrategyCommand">
         <arguments>
             <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Sale (VAULT) -->
+    <virtualType name="TnsDirectVaultSaleCommand" type="TnsDirectSaleCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">TnsDirectVaultSaleDataBuilder</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="TnsDirectVaultSaleDataBuilder" type="TnsDirectSaleDataBuilder">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="card" xsi:type="string">OnTap\Tns\Gateway\Request\TokenDataBuilder</item>
+            </argument>
         </arguments>
     </virtualType>
 
