@@ -16,6 +16,11 @@ use Magento\Sales\Api\Data\OrderPaymentExtensionInterface;
 use Magento\Sales\Api\Data\OrderPaymentExtensionInterfaceFactory;
 use Magento\Payment\Model\InfoInterface;
 
+/**
+ * Class TokenCreateHandler
+ * @package OnTap\Tns\Gateway\Response
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class TokenCreateHandler implements HandlerInterface
 {
     /**
@@ -142,8 +147,8 @@ class TokenCreateHandler implements HandlerInterface
     }
 
     /**
-     * @param $exprMonth
-     * @param $exprYear
+     * @param string $exprMonth
+     * @param string $exprYear
      * @return string
      */
     private function getExpirationDate($exprMonth, $exprYear)
@@ -163,7 +168,7 @@ class TokenCreateHandler implements HandlerInterface
     }
 
     /**
-     * @param $brand
+     * @param string $brand
      * @return string
      */
     public static function getCcTypeFromBrand($brand)
