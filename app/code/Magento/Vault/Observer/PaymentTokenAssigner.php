@@ -6,7 +6,7 @@
 namespace Magento\Vault\Observer;
 
 use Magento\Framework\Event\Observer;
-use Magento\Payment\Observer\AbstractDataAssignObserver;
+use OnTap\Payment\Observer\AbstractDataAssignObserver;
 use Magento\Quote\Model\Quote\Payment;
 use Magento\Vault\Api\Data\PaymentTokenInterface;
 use Magento\Vault\Api\PaymentTokenManagementInterface;

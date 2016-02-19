@@ -8,7 +8,7 @@ namespace Magento\Vault\Block;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Payment\Model\Config;
 use Magento\Vault\Model\Ui\Adminhtml\TokensConfigProvider;
-use Magento\Payment\Model\CcConfigProvider;
+use OnTap\Payment\Model\CcConfigProvider;
 
 /**
  * Class Form
@@ -58,13 +58,17 @@ class Form extends \Magento\Payment\Block\Form
      */
     protected function createVaultBlocks()
     {
-        $icons = $this->cardConfigProvider->getConfig()['payment']['ccform']['icons'];
-        $payments = $this->tokensProvider->getConfig();
+        $icons = $this->cardConfigProvider->getIcons();
+        $payments = $this->tokensProvider->getTokensComponents();
         foreach ($payments as $key => $payment) {
-            $data = $payment['config'];
-            $data['id'] = $key;
-            $data['icons'] = $icons;
-            $this->addChild($key, $payment['component'], $data);
+            $this->addChild(
+                $key,
+                $payment->getName(),
+                array_merge(
+                    ['id' => $key, 'icons' => $icons],
+                    $payment->getConfig()
+                )
+            );
         }
     }
 }

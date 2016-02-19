@@ -18,7 +18,6 @@ define([
         },
 
         /**
-         * Get current Braintree vault id
          * @returns {String}
          */
         getId: function () {
@@ -26,7 +25,6 @@ define([
         },
 
         /**
-         * Get last 4 digits of card
          * @returns {String}
          */
         getMaskedCard: function () {
@@ -46,7 +44,7 @@ define([
          * @returns {String}
          */
         getCardType: function () {
-            return this.details.cc_type;
+            return this.details.type;
         },
 
         /**
@@ -54,15 +52,6 @@ define([
          */
         placeOrder: function () {
             //this.getPaymentMethodNonce();
-        },
-
-        getIcons: function (icon) {
-            var map = {
-                MASTERCARD: 'MC',
-                VISA: 'VI'
-                // @todo: add more icons
-            };
-            return this._super(map[icon] ? map[icon] : icon);
         }
 
         /**

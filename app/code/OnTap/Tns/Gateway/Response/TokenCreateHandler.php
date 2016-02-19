@@ -132,11 +132,51 @@ class TokenCreateHandler implements HandlerInterface
             'cc_number' => $response['sourceOfFunds']['provided']['card']['number'],
             'cc_expr_month' => $m[1],
             'cc_expr_year' => $m[2],
-            'cc_type' => $response['sourceOfFunds']['provided']['card']['brand']
+            'type' => $this->getCcTypeFromBrand($response['sourceOfFunds']['provided']['card']['brand'])
         ]));
 
+        $paymentToken->setExpiresAt($this->getExpirationDate($m[1], $m[2]));
         $paymentToken->setIsVisible(true);
 
         return $paymentToken;
+    }
+
+    /**
+     * @param $exprMonth
+     * @param $exprYear
+     * @return string
+     */
+    private function getExpirationDate($exprMonth, $exprYear)
+    {
+        $expDate = new \DateTime(
+            $exprYear
+            . '-'
+            . $exprMonth
+            . '-'
+            . '01'
+            . ' '
+            . '00:00:00',
+            new \DateTimeZone('UTC')
+        );
+        $expDate->add(new \DateInterval('P1M'));
+        return $expDate->format('Y-m-d 00:00:00');
+    }
+
+    /**
+     * @param $brand
+     * @return string
+     */
+    public static function getCcTypeFromBrand($brand)
+    {
+        $brands = [
+            'MASTERCARD' => 'MC',
+            'VISA' => 'VI',
+            'AMEX' => 'AE',
+            'DINERS_CLUB' => 'DN',
+            'DISCOVER' => 'DI',
+            'JCB' => 'JCB',
+            'MAESTRO' => 'SM',
+        ];
+        return isset($brands[$brand]) ? $brands[$brand] : $brand;
     }
 }

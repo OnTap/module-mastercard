@@ -6,7 +6,7 @@
 namespace Magento\Vault\Observer;
 
 use Magento\Framework\Event\Observer;
-use Magento\Payment\Observer\AbstractDataAssignObserver;
+use OnTap\Payment\Observer\AbstractDataAssignObserver;
 use Magento\Vault\Model\Ui\VaultConfigProvider;
 
 class VaultEnableAssigner extends AbstractDataAssignObserver

@@ -16,7 +16,7 @@ use OnTap\Payment\Gateway\ConfigFactoryInterface;
 use Magento\Payment\Gateway\ConfigInterface;
 use Magento\Payment\Model\InfoInterface;
 use Magento\Payment\Model\MethodInterface;
-use Magento\Payment\Observer\AbstractDataAssignObserver;
+use OnTap\Payment\Observer\AbstractDataAssignObserver;
 use Magento\Sales\Api\Data\OrderPaymentInterface;
 use Magento\Sales\Model\Order\Payment;
 use Magento\Vault\Api\Data\PaymentTokenInterface;
@@ -181,7 +181,7 @@ final class Vault implements VaultPaymentInterface
      */
     public function getTitle()
     {
-        return $this->getVaultProvider()->getTitle();
+        return 'Stored Cards';
     }
 
     /**
