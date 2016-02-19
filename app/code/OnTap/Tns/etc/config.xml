@@ -41,6 +41,9 @@
                 <can_use_checkout>1</can_use_checkout>
                 <is_gateway>1</is_gateway>
 
+                <can_authorize_vault>1</can_authorize_vault>
+                <can_capture_vault>1</can_capture_vault>
+
                 <paymentInfoKeys>gateway_code,txn_result,card_scheme,card_number,card_expiry_date,cvv_validation</paymentInfoKeys>
                 <!--<privateInfoKeys></privateInfoKeys>-->
             </tns_direct>

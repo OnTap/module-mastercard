@@ -6,10 +6,8 @@
 /*global define*/
 define([
     'jquery',
-    'Magento_Vault/js/view/payment/method-renderer/vault',
-    'Magento_Ui/js/model/messageList',
-    'Magento_Checkout/js/model/full-screen-loader'
-], function ($, VaultComponent, globalMessageList, fullScreenLoader) {
+    'Magento_Vault/js/view/payment/method-renderer/vault'
+], function ($, VaultComponent) {
     'use strict';
 
     return VaultComponent.extend({
@@ -48,39 +46,10 @@ define([
         },
 
         /**
-         * Place order
+         * @returns {String}
          */
-        placeOrder: function () {
-            //this.getPaymentMethodNonce();
+        getToken: function () {
+            return this.publicHash;
         }
-
-        /**
-         * Send request to get payment method nonce
-         */
-        //getPaymentMethodNonce: function () {
-        //    var self = this;
-        //
-        //    fullScreenLoader.startLoader();
-        //    $.get(self.nonceUrl, {
-        //            'public_hash': self.publicHash
-        //        })
-        //        .done(function (response) {
-        //            fullScreenLoader.stopLoader();
-        //            self.hostedFields(function (formComponent) {
-        //                formComponent.setPaymentMethodNonce(response.paymentMethodNonce);
-        //                formComponent.additionalData['public_hash'] = self.publicHash;
-        //                formComponent.code = 'vault';
-        //                formComponent.placeOrder();
-        //            });
-        //        })
-        //        .fail(function (response) {
-        //            var error = JSON.parse(response.responseText);
-        //
-        //            fullScreenLoader.stopLoader();
-        //            globalMessageList.addErrorMessage({
-        //                message: error.message
-        //            });
-        //        });
-        //}
     });
 });

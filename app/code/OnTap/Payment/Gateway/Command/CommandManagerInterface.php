@@ -8,6 +8,7 @@ namespace OnTap\Payment\Gateway\Command;
 use Magento\Payment\Gateway\CommandInterface;
 use Magento\Payment\Model\InfoInterface;
 use Magento\Payment\Gateway\Command\ResultInterface;
+use Magento\Payment\Gateway\Command\CommandPoolInterface;
 
 /**
  * Interface CommandManagerInterface

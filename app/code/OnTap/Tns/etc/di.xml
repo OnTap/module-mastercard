@@ -130,6 +130,20 @@
     <!-- ********** -->
     <!-- DIRECT API -->
     <!-- ********** -->
+    <virtualType name="TnsDirectCommandManager" type="OnTap\Payment\Gateway\Command\CommandManager">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="OnTap\Payment\Gateway\Command\CommandManagerPool">
+        <arguments>
+            <argument name="executors" xsi:type="array">
+                <item name="tns_direct" xsi:type="string">TnsDirectCommandManager</item>
+            </argument>
+        </arguments>
+    </type>
+
     <virtualType name="TnsDirectInfoBlock" type="OnTap\Tns\Block\Direct\Info">
         <arguments>
             <argument name="data" xsi:type="array">
@@ -138,14 +152,6 @@
             <argument name="config" xsi:type="object">TnsDirectConfig</argument>
         </arguments>
     </virtualType>
-
-    <type name="Magento\Vault\Model\PaymentTokenRepositoryProxy">
-        <arguments>
-            <argument name="repositories" xsi:type="array">
-                <item name="tns_direct" xsi:type="string">Magento\Vault\Model\PaymentTokenRepository</item>
-            </argument>
-        </arguments>
-    </type>
 
     <virtualType name="TnsDirectConfig" type="Magento\Payment\Gateway\Config\Config">
         <arguments>

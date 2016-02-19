@@ -73,7 +73,7 @@ final class Vault implements VaultPaymentInterface
     /**
      * @var CommandManagerPoolInterface
      */
-    private $commandManagerPool;
+    protected $commandManagerPool;
 
     /**
      * @var PaymentTokenManagementInterface
