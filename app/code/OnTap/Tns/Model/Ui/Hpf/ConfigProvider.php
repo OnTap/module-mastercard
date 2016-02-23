@@ -46,7 +46,7 @@ class ConfigProvider implements ConfigProviderInterface
         return [
             'payment' => [
                 self::METHOD_CODE => [
-                    'merchant_username' => $this->config->getValue('api_test_username'),
+                    'merchant_username' => $this->config->getMerchantId(),
                     'three_d_secure' => $this->config->getValue('three_d_secure') === "1",
                 ]
             ]

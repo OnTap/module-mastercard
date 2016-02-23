@@ -16,4 +16,22 @@ class Config extends \Magento\Payment\Gateway\Config\Config
         // @todo: sandbox switch
         return $this->getValue('api_test_username');
     }
+
+    /**
+     * @return string
+     */
+    public function getMerchantPassword()
+    {
+        // @todo: sandbox switch
+        return $this->getValue('api_test_password');
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiUrl()
+    {
+        // @todo: sandbox switch
+        return $this->getValue('api_test_url');
+    }
 }

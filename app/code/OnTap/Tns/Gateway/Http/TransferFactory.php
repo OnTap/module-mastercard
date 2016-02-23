@@ -51,7 +51,7 @@ class TransferFactory implements TransferFactoryInterface
      */
     protected function getMerchantUsername()
     {
-        return 'merchant.' . $this->config->getValue('api_test_username');
+        return 'merchant.' . $this->config->getMerchantId();
     }
 
     /**
@@ -67,7 +67,7 @@ class TransferFactory implements TransferFactoryInterface
      */
     protected function merchantUri()
     {
-        return 'merchant/' . $this->config->getValue('api_test_username') . '/';
+        return 'merchant/' . $this->config->getMerchantId() . '/';
     }
 
     /**
@@ -85,7 +85,7 @@ class TransferFactory implements TransferFactoryInterface
      */
     protected function getGatewayUri()
     {
-        return $this->config->getValue('api_test_url') . $this->apiVersionUri() . $this->merchantUri();
+        return $this->config->getApiUrl() . $this->apiVersionUri() . $this->merchantUri();
     }
 
     /**
@@ -112,7 +112,7 @@ class TransferFactory implements TransferFactoryInterface
             ->setHeaders(['Content-Type' => 'application/json;charset=UTF-8'])
             ->setBody($request)
             ->setAuthUsername($this->getMerchantUsername())
-            ->setAuthPassword($this->config->getValue('api_test_password'))
+            ->setAuthPassword($this->config->getMerchantPassword())
             ->setUri($this->getUri($payment))
             ->build();
     }
