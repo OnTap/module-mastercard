@@ -15,6 +15,7 @@ use Magento\Vault\Api\Data\PaymentTokenInterface;
 use Magento\Sales\Api\Data\OrderPaymentExtensionInterface;
 use Magento\Sales\Api\Data\OrderPaymentExtensionInterfaceFactory;
 use Magento\Payment\Model\InfoInterface;
+use Magento\Payment\Gateway\ConfigInterface;
 
 /**
  * Class TokenCreateHandler
@@ -26,24 +27,38 @@ class TokenCreateHandler implements HandlerInterface
     /**
      * @var VaultPaymentInterface
      */
-    private $vaultPayment;
+    protected $vaultPayment;
 
     /**
      * @var PaymentTokenInterfaceFactory
      */
-    private $paymentTokenFactory;
+    protected $paymentTokenFactory;
+
+    /**
+     * @var ConfigInterface
+     */
+    protected $config;
+
+    /**
+     * @var OrderPaymentExtensionInterfaceFactory
+     */
+    protected $paymentExtensionFactory;
 
     /**
      * TokenCreateHandler constructor.
+     * @param ConfigInterface $config
      * @param VaultPaymentInterface $vaultPayment
      * @param PaymentTokenInterfaceFactory $paymentTokenFactory
      * @param OrderPaymentExtensionInterfaceFactory $paymentExtensionFactory
      */
     public function __construct(
+        ConfigInterface $config,
         VaultPaymentInterface $vaultPayment,
         PaymentTokenInterfaceFactory $paymentTokenFactory,
         OrderPaymentExtensionInterfaceFactory $paymentExtensionFactory
     ) {
+        // @todo: fetch config generically from payment
+        $this->config = $config;
         $this->vaultPayment = $vaultPayment;
         $this->paymentTokenFactory = $paymentTokenFactory;
         $this->paymentExtensionFactory = $paymentExtensionFactory;
@@ -133,6 +148,7 @@ class TokenCreateHandler implements HandlerInterface
 
         $paymentToken->setTokenDetails($this->convertDetailsToJSON([
             'repository_id' => $response['repositoryId'],
+            'merchant_id' => $this->config->getMerchantId(),
             'verification_strategy' => $response['verificationStrategy'],
             'cc_number' => $response['sourceOfFunds']['provided']['card']['number'],
             'cc_expr_month' => $m[1],

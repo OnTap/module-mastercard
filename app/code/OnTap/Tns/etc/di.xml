@@ -153,7 +153,7 @@
         </arguments>
     </virtualType>
 
-    <virtualType name="TnsDirectConfig" type="Magento\Payment\Gateway\Config\Config">
+    <virtualType name="TnsDirectConfig" type="OnTap\Tns\Gateway\Config\Config">
         <arguments>
             <argument name="methodCode" xsi:type="const">OnTap\Tns\Model\Ui\Direct\ConfigProvider::METHOD_CODE</argument>
         </arguments>
@@ -204,8 +204,14 @@
             <argument name="requestBuilder" xsi:type="object">OnTap\Tns\Gateway\Request\Direct\CardDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">OnTap\Tns\Gateway\Http\Vault\TransferFactoryCreateToken</argument>
             <argument name="client" xsi:type="object">OnTap\Tns\Gateway\Http\Client\Rest</argument>
-            <argument name="handler" xsi:type="object">OnTap\Tns\Gateway\Response\TokenCreateHandler</argument>
+            <argument name="handler" xsi:type="object">TnsDirectTokenCreateHandler</argument>
             <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\TokenCreateValidator</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="TnsDirectTokenCreateHandler" type="OnTap\Tns\Gateway\Response\TokenCreateHandler">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
         </arguments>
     </virtualType>
 
@@ -501,7 +507,7 @@
         </arguments>
     </type>
 
-    <virtualType name="TnsHostedConfig" type="Magento\Payment\Gateway\Config\Config">
+    <virtualType name="TnsHostedConfig" type="OnTap\Tns\Gateway\Config\Config">
         <arguments>
             <argument name="methodCode" xsi:type="const">OnTap\Tns\Model\Ui\Hosted\ConfigProvider::METHOD_CODE</argument>
         </arguments>
@@ -656,7 +662,7 @@
             <argument name="config" xsi:type="object">TnsHpfConfig</argument>
         </arguments>
     </virtualType>
-    <virtualType name="TnsHpfConfig" type="Magento\Payment\Gateway\Config\Config">
+    <virtualType name="TnsHpfConfig" type="OnTap\Tns\Gateway\Config\Config">
         <arguments>
             <argument name="methodCode" xsi:type="const">OnTap\Tns\Model\Ui\Hpf\ConfigProvider::METHOD_CODE</argument>
         </arguments>

@@ -42,6 +42,10 @@ class TokenCreateValidator extends AbstractValidator
     {
         $response = SubjectReader::readResponse($validationSubject);
 
+        if (isset($response['error'])) {
+            return $this->createResult(false, [$response['error']['explanation']]);
+        }
+
         if ($response['status'] == static::STATUS_VALID) {
             return $this->createResult(true);
         }
