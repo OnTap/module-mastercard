@@ -50,7 +50,9 @@ class TransferFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->config = $this->getMock(ConfigInterface::class);
+        $this->config = $this->getMockBuilder(ConfigInterface::class)
+            ->setMethods(['getMerchantId', 'getMerchantPassword', 'getApiUrl'])
+            ->getMockForAbstractClass();
 
         $this->payment = $this->getMock(PaymentDataObjectInterface::class);
 
