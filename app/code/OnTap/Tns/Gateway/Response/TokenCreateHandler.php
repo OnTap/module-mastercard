@@ -157,7 +157,6 @@ class TokenCreateHandler implements HandlerInterface
         ]));
 
         $paymentToken->setExpiresAt($this->getExpirationDate($m[1], $m[2]));
-        $paymentToken->setIsVisible(true);
 
         return $paymentToken;
     }

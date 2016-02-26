@@ -38,7 +38,12 @@ abstract class AbstractDataAssignObserver extends \Magento\Payment\Observer\Abst
      */
     protected function readPaymentModelArgument(Observer $observer)
     {
-        return $this->readArgument($observer, static::MODEL_CODE, InfoInterface::class);
+        $method = $this->readMethodArgument($observer);
+        $info = $method->getInfoInstance();
+        if (!($info instanceof InfoInterface)) {
+            throw new \LogicException('Wrong argument type provided.');
+        }
+        return $info;
     }
 
     /**

@@ -16,6 +16,7 @@ use Magento\Payment\Gateway\Helper\SubjectReader;
 use OnTap\Tns\Gateway\Response\ThreeDSecure\CheckHandler;
 use Magento\Vault\Model\VaultPaymentInterface;
 use Magento\Sales\Api\Data\OrderPaymentInterface;
+use Magento\Vault\Model\Ui\VaultConfigProvider;
 
 class VerificationStrategyCommand implements CommandInterface
 {
@@ -139,10 +140,14 @@ class VerificationStrategyCommand implements CommandInterface
         }
 
         $isActiveVaultModule = $this->vaultPayment->isActiveForPayment($paymentInfo->getMethodInstance()->getCode());
+        // Vault enabled from admin
         if ($isActiveVaultModule) {
-            $this->commandPool
-                ->get(static::CREATE_TOKEN)
-                ->execute($commandSubject);
+            // 'Save for later use' checked on frontend
+            if ($paymentInfo->getAdditionalInformation(VaultConfigProvider::IS_ACTIVE_CODE)) {
+                $this->commandPool
+                    ->get(static::CREATE_TOKEN)
+                    ->execute($commandSubject);
+            }
         }
 
         $this->commandPool
