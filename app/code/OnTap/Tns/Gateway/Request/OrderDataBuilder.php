@@ -29,8 +29,8 @@ class OrderDataBuilder implements BuilderInterface
                 'name' => $item->getName(),
                 'description' => $item->getDescription(),
                 'sku' => $item->getSku(),
-                'unitPrice' => (float) $item->getBasePrice(),
-                'quantity' => (int) $item->getQtyOrdered(),
+                'unitPrice' => sprintf('%.2F', $item->getRowTotal() - $item->getDiscountAmount()),
+                'quantity' => 1,
                 //'unitTaxAmount' => $item->getBaseTaxAmount(),
             ];
         }
@@ -69,7 +69,7 @@ class OrderDataBuilder implements BuilderInterface
                 'currency' => $order->getCurrencyCode(),
                 'item' => $this->getOrderItems($order->getItems()),
                 'shippingAndHandlingAmount' => $payment->getShippingAmount(),
-                'discount' => $this->getDiscountData($payment),
+                //'discount' => $this->getDiscountData($payment),
                 'taxAmount' => $payment->getOrder()->getTaxAmount(),
             ]
         ];

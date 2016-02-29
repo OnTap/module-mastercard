@@ -41,9 +41,9 @@ class OrderDataBuilder implements BuilderInterface
                 'name' => $item->getName(),
                 'description' => $item->getDescription(),
                 'sku' => $item->getSku(),
-                'unitPrice' => $item->getBasePrice(),
-                'quantity' => (int) $item->getQty(),
-                'unitTaxAmount' => $item->getBaseTaxAmount() / (float) $item->getQty(),
+                'unitPrice' => sprintf('%.2F', $item->getRowTotal() - $item->getTotalDiscountAmount()),
+                'quantity' => 1,
+                //'unitTaxAmount' => 0,
             ];
         }
 
@@ -75,8 +75,9 @@ class OrderDataBuilder implements BuilderInterface
                 'amount' => sprintf('%.2F', $quote->getGrandTotal()),
                 'currency' => $order->getCurrencyCode(),
                 'id' => $order->getOrderIncrementId(),
-                //'item' => $this->getItemData(),
-                //'shippingAndHandlingAmount' => $quote->getShippingAmount(),
+                'item' => $this->getItemData(),
+                'shippingAndHandlingAmount' => $quote->getShippingAmount(),
+                'taxAmount' => $quote->getShippingAddress()->getTaxAmount(), // @todo: Virtual goods have no shippingad
             ]
         ];
     }
