@@ -14,7 +14,6 @@
             <argument name="config" xsi:type="object">TnsDirectConfig</argument>
         </arguments>
     </virtualType>
-
     <virtualType name="TnsHostedInfoBlock" type="OnTap\Tns\Block\Direct\Info">
         <arguments>
             <argument name="data" xsi:type="array">
@@ -23,7 +22,6 @@
             <argument name="config" xsi:type="object">TnsHostedConfig</argument>
         </arguments>
     </virtualType>
-
     <virtualType name="TnsHpfInfoBlock" type="OnTap\Tns\Block\Direct\Info">
         <arguments>
             <argument name="data" xsi:type="array">
@@ -41,5 +39,11 @@
             </argument>
         </arguments>
     </type>
-
+    <type name="Magento\Vault\Model\Ui\Adminhtml\TokensConfigProvider">
+        <arguments>
+            <argument name="tokenUiComponentProviders" xsi:type="array">
+                <item name="tns_direct" xsi:type="object">OnTap\Tns\Model\Ui\Adminhtml\TokenUiComponentProvider</item>
+            </argument>
+        </arguments>
+    </type>
 </config>
