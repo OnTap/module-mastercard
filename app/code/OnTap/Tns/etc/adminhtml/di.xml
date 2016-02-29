@@ -31,6 +31,19 @@
         </arguments>
     </virtualType>
 
+    <virtualType name="TnsDirectAuthorizeDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="operation" xsi:type="string">AuthorizeOperationDataBuilder</item>
+                <item name="card" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\CardDataBuilder</item>
+                <item name="order" xsi:type="string">OnTap\Tns\Gateway\Request\OrderDataBuilder</item>
+                <item name="billing" xsi:type="string">OnTap\Tns\Gateway\Request\BillingDataBuilder</item>
+                <item name="shipping" xsi:type="string">OnTap\Tns\Gateway\Request\ShippingDataBuilder</item>
+                <item name="customer" xsi:type="string">OnTap\Tns\Gateway\Request\CustomerDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
     <!-- VAULT -->
     <type name="Magento\Vault\Model\Adminhtml\Source\VaultProvidersMap">
         <arguments>

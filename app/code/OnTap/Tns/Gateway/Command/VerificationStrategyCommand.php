@@ -17,6 +17,7 @@ use OnTap\Tns\Gateway\Response\ThreeDSecure\CheckHandler;
 use Magento\Vault\Model\VaultPaymentInterface;
 use Magento\Sales\Api\Data\OrderPaymentInterface;
 use Magento\Vault\Model\Ui\VaultConfigProvider;
+use Magento\Framework\App\State;
 
 class VerificationStrategyCommand implements CommandInterface
 {
@@ -45,18 +46,26 @@ class VerificationStrategyCommand implements CommandInterface
     private $vaultPayment;
 
     /**
+     * @var State
+     */
+    private $state;
+
+    /**
      * VerificationStrategyCommand constructor.
+     * @param State $state
      * @param VaultPaymentInterface $vaultPayment
      * @param Command\CommandPoolInterface $commandPool
      * @param ConfigInterface $config
      * @param string $successCommand
      */
     public function __construct(
+        State $state,
         VaultPaymentInterface $vaultPayment,
         Command\CommandPoolInterface $commandPool,
         ConfigInterface $config,
         $successCommand = ''
     ) {
+        $this->state = $state;
         $this->vaultPayment = $vaultPayment;
         $this->commandPool = $commandPool;
         $this->config = $config;
@@ -69,6 +78,11 @@ class VerificationStrategyCommand implements CommandInterface
      */
     public function isThreeDSSupported(PaymentDataObjectInterface $paymentDO)
     {
+        // Don't use 3DS in admin
+        if ($this->state->getAreaCode() === \Magento\Framework\App\Area::AREA_ADMINHTML) {
+            return false;
+        }
+
         $isEnabled = $this->config->getValue('three_d_secure') === '1';
         if (!$isEnabled) {
             return false;
@@ -140,7 +154,7 @@ class VerificationStrategyCommand implements CommandInterface
         }
 
         $isActiveVaultModule = $this->vaultPayment->isActiveForPayment($paymentInfo->getMethodInstance()->getCode());
-        // Vault enabled from admin
+        // Vault enabled from configuration
         if ($isActiveVaultModule) {
             // 'Save for later use' checked on frontend
             if ($paymentInfo->getAdditionalInformation(VaultConfigProvider::IS_ACTIVE_CODE)) {
