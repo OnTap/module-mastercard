@@ -15,10 +15,14 @@ use Magento\Payment\Gateway\Helper\ContextHelper;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use OnTap\Tns\Gateway\Response\ThreeDSecure\CheckHandler;
 use Magento\Vault\Model\VaultPaymentInterface;
-use Magento\Sales\Api\Data\OrderPaymentInterface;
 use Magento\Vault\Model\Ui\VaultConfigProvider;
 use Magento\Framework\App\State;
 
+/**
+ * Class VerificationStrategyCommand
+ * @package OnTap\Tns\Gateway\Command
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class VerificationStrategyCommand implements CommandInterface
 {
     const VERIFY_AVS_CSC = 'verify';
@@ -104,18 +108,6 @@ class VerificationStrategyCommand implements CommandInterface
 
         return true;
     }
-
-    /**
-     * Check if payment was used vault token
-     *
-     * @param OrderPaymentInterface $payment
-     * @return bool
-     */
-    //private function isExistsVaultToken(OrderPaymentInterface $payment)
-    //{
-    //    $extensionAttributes = $payment->getExtensionAttributes();
-    //    return (boolean) $extensionAttributes->getVaultPaymentToken();
-    //}
 
     /**
      * Executes command basing on business object
