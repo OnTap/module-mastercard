@@ -25,7 +25,6 @@ use Magento\Framework\App\State;
  */
 class VerificationStrategyCommand implements CommandInterface
 {
-    const VERIFY_AVS_CSC = 'verify';
     const PROCESS_3DS_RESULT = '3ds_process';
     const CREATE_TOKEN = 'create_token';
 
@@ -82,8 +81,16 @@ class VerificationStrategyCommand implements CommandInterface
      */
     public function isThreeDSSupported(PaymentDataObjectInterface $paymentDO)
     {
+        /** @var Payment $paymentInfo */
+        $paymentInfo = $paymentDO->getPayment();
+
         // Don't use 3DS in admin
         if ($this->state->getAreaCode() === \Magento\Framework\App\Area::AREA_ADMINHTML) {
+            return false;
+        }
+
+        // Don't use 3DS with pre-authorized transactions
+        if ($paymentInfo->getAuthorizationTransaction()) {
             return false;
         }
 
@@ -92,7 +99,7 @@ class VerificationStrategyCommand implements CommandInterface
             return false;
         }
 
-        $data = $paymentDO->getPayment()->getAdditionalInformation(CheckHandler::THREEDSECURE_CHECK);
+        $data = $paymentInfo->getAdditionalInformation(CheckHandler::THREEDSECURE_CHECK);
 
         if (isset($data['status'])) {
             if ($data['status'] == "CARD_DOES_NOT_SUPPORT_3DS") {
@@ -124,36 +131,21 @@ class VerificationStrategyCommand implements CommandInterface
         $paymentInfo = $paymentDO->getPayment();
         ContextHelper::assertOrderPayment($paymentInfo);
 
-        if (!$paymentInfo->getAuthorizationTransaction()) { // Only verify when auth transaction does not exist
-            if ($this->isThreeDSSupported($paymentDO)) {
-                $this->commandPool
-                    ->get(static::PROCESS_3DS_RESULT)
-                    ->execute($commandSubject);
-            }
-
-            if (
-                $this->config->getValue('avs') === '1' ||
-                $this->config->getValue('csc_rules') === '1'
-            ) {
-                $this->commandPool
-                    ->get(static::VERIFY_AVS_CSC)
-                    ->execute($commandSubject);
-            }
+        if ($this->isThreeDSSupported($paymentDO)) {
+            $this->commandPool
+                ->get(static::PROCESS_3DS_RESULT)
+                ->execute($commandSubject);
         }
 
-        if ($paymentInfo->getIsFraudDetected()) {
-            return null;
-        }
+        $methodCode = $paymentInfo->getMethodInstance()->getCode();
+        $isActiveVaultModule = $this->vaultPayment->isActiveForPayment($methodCode);
 
-        $isActiveVaultModule = $this->vaultPayment->isActiveForPayment($paymentInfo->getMethodInstance()->getCode());
         // Vault enabled from configuration
-        if ($isActiveVaultModule) {
-            // 'Save for later use' checked on frontend
-            if ($paymentInfo->getAdditionalInformation(VaultConfigProvider::IS_ACTIVE_CODE)) {
-                $this->commandPool
-                    ->get(static::CREATE_TOKEN)
-                    ->execute($commandSubject);
-            }
+        // 'Save for later use' checked on frontend
+        if ($isActiveVaultModule && $paymentInfo->getAdditionalInformation(VaultConfigProvider::IS_ACTIVE_CODE)) {
+            $this->commandPool
+                ->get(static::CREATE_TOKEN)
+                ->execute($commandSubject);
         }
 
         $this->commandPool
