@@ -6,7 +6,7 @@
 define(
     [
         'jquery',
-        'Magento_Payment/js/view/payment/cc-form',
+        'Magento_Checkout/js/view/payment/default',
         'Magento_Checkout/js/model/payment/additional-validators',
         'OnTap_Tns/js/view/payment/hpf-adapter',
         'Magento_Ui/js/modal/alert',
@@ -25,7 +25,9 @@ define(
                 adapterLoaded: false,
                 imports: {
                     onActiveChange: 'active'
-                }
+                },
+                creditCardExpYear: '',
+                creditCardExpMonth: ''
             },
             placeOrderHandler: null,
             validateHandler: null,
@@ -33,7 +35,12 @@ define(
 
             initObservable: function () {
                 this._super()
-                    .observe('active adapterLoaded');
+                    .observe([
+                        'active',
+                        'adapterLoaded',
+                        'creditCardExpYear',
+                        'creditCardExpMonth'
+                    ]);
 
                 return this;
             },
@@ -46,15 +53,46 @@ define(
                 this.placeOrderHandler = handler;
             },
 
+            getCvvImageHtml: function() {
+                return '<img src="' + this.getCvvImageUrl()
+                    + '" alt="' + $t('Card Verification Number Visual Reference')
+                    + '" title="' + $t('Card Verification Number Visual Reference')
+                    + '" />';
+            },
+
+            getCcMonthsValues: function() {
+                return _.map(this.getCcMonths(), function(value, key) {
+                    return {
+                        'value': key,
+                        'month': value
+                    }
+                });
+            },
+
+            getCcYearsValues: function() {
+                return _.map(this.getCcYears(), function(value, key) {
+                    return {
+                        'value': key,
+                        'year': value
+                    }
+                });
+            },
+
+            getCcMonths: function() {
+                return window.checkoutConfig.payment.ccform.months[this.getCode()];
+            },
+
+            getCcYears: function() {
+                return window.checkoutConfig.payment.ccform.years[this.getCode()];
+            },
+
+            getCvvImageUrl: function() {
+                return window.checkoutConfig.payment.ccform.cvvImageUrl[this.getCode()];
+            },
+
             context: function () {
                 return this;
             },
-
-
-            isShowLegend: function () {
-                return true;
-            },
-
 
             getCode: function () {
                 return 'tns_hpf';
@@ -73,7 +111,21 @@ define(
             },
 
             loadAdapter: function () {
-                paymentAdapter.configureApi(this.getConfig());
+                var config = this.getConfig();
+
+                paymentAdapter.loadApi(
+                    config.component_url,
+                    config.merchant_username,
+                    $.proxy(this.paymentAdapterLoaded, this),
+                    config.debug
+                );
+            },
+
+            isCheckoutDisabled: function () {
+                return !this.adapterLoaded() || !this.isPlaceOrderActionAllowed();
+            },
+
+            paymentAdapterLoaded: function (adapter) {
                 this.adapterLoaded(true);
             },
 
@@ -97,10 +149,6 @@ define(
 
             getCardData: function () {
                 return {
-                    'cardNumber': this.creditCardNumber(),
-                    'cardSecurityCode': this.creditCardVerificationNumber(),
-                    'cardExpiryMonth': this.creditCardExpMonth(),
-                    'cardExpiryYear': this.creditCardExpYear()
                 };
             },
 
@@ -147,11 +195,11 @@ define(
             },
 
             startHpfSession: function () {
-                if (!this.validateHandler() || !additionalValidators.validate()) {
-                    return;
-                }
-
-                this.isPlaceOrderActionAllowed(false);
+                //if (!this.validateHandler() || !additionalValidators.validate()) {
+                //    return;
+                //}
+                //
+                //this.isPlaceOrderActionAllowed(false);
 
                 paymentAdapter.startSession(this.getCardData(), $.proxy(function(response) {
                     this.sessionId = response.session;

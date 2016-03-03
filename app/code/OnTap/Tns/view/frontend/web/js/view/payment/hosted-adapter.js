@@ -18,31 +18,11 @@ define([
             var node = requirejs.load({
                 contextName: '_',
                 onScriptLoad: $.proxy(onLoadedCallback, this)
-            }, 'tnshosted', componentUrl);
+            }, 'tns_hosted', componentUrl);
 
             node.setAttribute('data-error', 'window.tnsErrorCallback');
             node.setAttribute('data-cancel', 'window.tnsCancelCallback');
             node.setAttribute('data-complete', 'window.tnsCompletedCallback');
-        },
-        // XXX: this does not work, 2 decimal places is not enough
-        // XXX: method is not used
-        getItems: function (items) {
-            var data = [];
-            $(items).each($.proxy(function(i, item) {
-                var lineDiscount = Math.abs(item.discount_amount) / item.qty;
-                var unitPrice = item.price - lineDiscount;
-                var unitTaxAmount = item.tax_amount / item.qty;
-
-                data.push({
-                    name: item.name,
-                    description: item.description,
-                    sku: item.sku,
-                    unitPrice: this.safeNumber(unitPrice),
-                    quantity: item.qty,
-                    unitTaxAmount: this.safeNumber(unitTaxAmount)
-                });
-            }, this));
-            return data;
         },
         safeNumber: function (num) {
             return parseFloat(num).toFixed(2);
@@ -55,10 +35,6 @@ define([
                     amount: this.safeNumber(totals.base_grand_total),
                     currency: totals.quote_currency_code,
                     description: 'Ordered items'
-                    //item: this.getItems(quote.getItems()),
-                    //itemAmount: this.safeNumber(totals.base_subtotal_with_discount),
-                    //shippingAndHandlingAmount: this.safeNumber(totals.shipping_amount),
-                    //taxAmount: this.safeNumber(totals.tax_amount)
                 },
                 interaction: {
                     merchant: {

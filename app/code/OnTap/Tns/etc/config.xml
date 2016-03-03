@@ -87,6 +87,9 @@
                 <api_url>https://eu-gateway.mastercard.com/api/rest/</api_url>
                 <api_test_url>https://test-gateway.mastercard.com/api/rest/</api_test_url>
 
+                <component_url>https://eu-gateway.mastercard.com/form/version/34/merchant/</component_url>
+                <component_test_url>https://test-gateway.mastercard.com/form/version/34/merchant/</component_test_url>
+
                 <cctypes>VI,MC,MI</cctypes>
                 <date_delim>-</date_delim>
                 <cc_year_length>4</cc_year_length>

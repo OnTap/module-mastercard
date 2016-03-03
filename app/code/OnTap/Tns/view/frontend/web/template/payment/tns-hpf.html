@@ -21,17 +21,20 @@
             <!-- ko template: getTemplate() --><!-- /ko -->
             <!--/ko-->
         </div>
+
         <form class="form" id="co-transparent-form" action="#" method="post" data-bind="mageInit: {
             'transparent':{
                 'context': context()
             }, 'validation':[]}">
-            <!-- ko template: 'Magento_Payment/payment/cc-form' --><!-- /ko -->
+            <!-- ko template: 'OnTap_Tns/payment/cc-form' --><!-- /ko -->
         </form>
+
         <div class="checkout-agreements-block">
             <!-- ko foreach: $parent.getRegion('before-place-order') -->
             <!-- ko template: getTemplate() --><!-- /ko -->
             <!--/ko-->
         </div>
+
         <div class="actions-toolbar">
             <div class="primary">
                 <button class="action primary checkout"
@@ -39,7 +42,7 @@
                         data-bind="
                         click: startHpfSession,
                         attr: {title: $t('Continue')},
-                        css: {disabled: !isPlaceOrderActionAllowed()}
+                        css: {disabled: isCheckoutDisabled()}
                         ">
                     <span data-bind="text: $t('Place Order')"></span>
                 </button>
