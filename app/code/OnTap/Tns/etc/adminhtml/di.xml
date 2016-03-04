@@ -49,6 +49,7 @@
         <arguments>
             <argument name="options" xsi:type="array">
                 <item xsi:type="object" name="tns_direct">TnsDirectFacade</item>
+                <item xsi:type="object" name="tns_hpf">TnsHpfFacade</item>
             </argument>
         </arguments>
     </type>
@@ -56,6 +57,7 @@
         <arguments>
             <argument name="tokenUiComponentProviders" xsi:type="array">
                 <item name="tns_direct" xsi:type="object">OnTap\Tns\Model\Ui\Adminhtml\TokenUiComponentProvider</item>
+                <item name="tns_hpf" xsi:type="object">OnTap\Tns\Model\Ui\Adminhtml\TokenUiComponentProvider</item>
             </argument>
         </arguments>
     </type>

@@ -13,9 +13,10 @@ define(
         'mage/translate',
         'Magento_Checkout/js/action/set-payment-information',
         'uiLayout',
-        'Magento_Checkout/js/model/full-screen-loader'
+        'Magento_Checkout/js/model/full-screen-loader',
+        'Magento_Vault/js/view/payment/vault-enabler'
     ],
-    function ($, ccFormComponent, additionalValidators, paymentAdapter, alert, $t, setPaymentInformationAction, layout, fullScreenLoader) {
+    function ($, ccFormComponent, additionalValidators, paymentAdapter, alert, $t, setPaymentInformationAction, layout, fullScreenLoader, vaultEnabler) {
         'use strict';
 
         return ccFormComponent.extend({
@@ -45,6 +46,15 @@ define(
                         fullScreenLoader.startLoader();
                     }
                 }, this);
+
+                this.vaultEnabler = vaultEnabler();
+                this.vaultEnabler.setPaymentCode(this.getCode());
+
+                return this;
+            },
+
+            isVaultEnabled: function () {
+                return this.vaultEnabler.isVaultEnabled();
             },
 
             initObservable: function () {
@@ -158,22 +168,24 @@ define(
             },
 
             getData: function () {
-                return {
+                var data = {
                     'method': this.item.method,
                     'additional_data': {
                         'session': this.sessionId
                     }
                 };
+                this.vaultEnabler.visitAdditionalData(data);
+
+                return data;
             },
 
             getCardFields: function () {
-                var fields = {
+                return {
                     cardNumber: "#tns_hpf_cc_number",
                     expiryMonth: "#tns_hpf_expiration",
                     expiryYear: "#tns_hpf_expiration_yr",
                     securityCode: "#tns_hpf_cc_cid"
-                };
-                return fields;
+                }
             },
 
             getConfig: function () {
@@ -206,7 +218,6 @@ define(
             },
 
             threeDSecureCheckSuccess: function () {
-                fullScreenLoader.startLoader();
                 this.placeOrder();
             },
 

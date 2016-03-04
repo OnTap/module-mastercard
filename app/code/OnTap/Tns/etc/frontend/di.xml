@@ -44,7 +44,8 @@
     <type name="Magento\Vault\Model\Ui\TokensConfigProvider">
         <arguments>
             <argument name="tokenUiComponentProviders" xsi:type="array">
-                <item name="tns_direct" xsi:type="object">OnTap\Tns\Model\Ui\Direct\TokenUiComponentProvider</item>
+                <item name="tns_direct" xsi:type="object">OnTap\Tns\Model\Ui\TokenUiComponentProvider</item>
+                <item name="tns_hpf" xsi:type="object">OnTap\Tns\Model\Ui\TokenUiComponentProvider</item>
             </argument>
         </arguments>
     </type>

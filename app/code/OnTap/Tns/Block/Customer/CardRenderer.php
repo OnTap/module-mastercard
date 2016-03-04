@@ -6,11 +6,15 @@
 
 namespace OnTap\Tns\Block\Customer;
 
-use OnTap\Tns\Model\Ui\Direct\ConfigProvider;
 use Magento\Framework\View\Element\Template;
 use Magento\Vault\Api\Data\PaymentTokenInterface;
 use Magento\Vault\Block\AbstractCardRenderer;
 
+/**
+ * Class CardRenderer
+ * @package OnTap\Tns\Block\Customer
+ * @method array getAvailableProviders()
+ */
 class CardRenderer extends AbstractCardRenderer
 {
     /**
@@ -21,7 +25,7 @@ class CardRenderer extends AbstractCardRenderer
      */
     public function canRender(PaymentTokenInterface $token)
     {
-        return $token->getPaymentMethodCode() === ConfigProvider::METHOD_CODE;
+        return in_array($token->getPaymentMethodCode(), array_values($this->getAvailableProviders()));
     }
 
     /**
