@@ -166,8 +166,6 @@
                 <item name="pre_auth_capture" xsi:type="string">TnsDirectPreAuthCaptureCommand</item>
                 <item name="refund" xsi:type="string">TnsDirectRefundCommand</item>
                 <item name="void" xsi:type="string">TnsDirectVoidCommand</item>
-                <item name="accept_payment" xsi:type="string">AcceptReviewCommand</item>
-                <item name="deny_payment" xsi:type="string">DenyReviewCommand</item>
                 <item name="create_token" xsi:type="string">TnsDirectCreateTokenCommand</item>
                 <item name="vault_sale" xsi:type="string">TnsDirectVaultSaleCommand</item>
                 <item name="vault_authorize" xsi:type="string">TnsDirectVaultAuthorizeCommand</item>
@@ -252,23 +250,6 @@
             <argument name="successCommand" xsi:type="string">capture_simple</argument>
         </arguments>
     </virtualType>
-
-    <virtualType name="AcceptReviewCommand" type="OnTap\Tns\Gateway\Command\ReviewStrategyCommand">
-        <arguments>
-            <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
-            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
-            <argument name="solution" xsi:type="string">accept</argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="DenyReviewCommand" type="OnTap\Tns\Gateway\Command\ReviewStrategyCommand">
-        <arguments>
-            <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
-            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
-            <argument name="solution" xsi:type="string">deny</argument>
-        </arguments>
-    </virtualType>
-
 
     <virtualType name="TnsDirectSaleStrategyCommand" type="OnTap\Tns\Gateway\Command\SaleStrategyCommand">
         <arguments>
@@ -630,27 +611,7 @@
                 <item name="pre_auth_capture" xsi:type="string">TnsHpfPreAuthCaptureCommand</item>
                 <item name="refund" xsi:type="string">TnsHpfRefundCommand</item>
                 <item name="void" xsi:type="string">TnsHpfVoidCommand</item>
-                <item name="accept_payment" xsi:type="string">TnsHpfAcceptReviewCommand</item>
-                <item name="deny_payment" xsi:type="string">TnsHpfDenyReviewCommand</item>
             </argument>
-        </arguments>
-    </virtualType>
-
-    <!-- Accept a payment that is in review -->
-    <virtualType name="TnsHpfAcceptReviewCommand" type="OnTap\Tns\Gateway\Command\ReviewStrategyCommand">
-        <arguments>
-            <argument name="commandPool" xsi:type="object">TnsHpfCommandPool</argument>
-            <argument name="config" xsi:type="object">TnsHpfConfig</argument>
-            <argument name="solution" xsi:type="string">accept</argument>
-        </arguments>
-    </virtualType>
-
-    <!-- Deny a payment that is in review -->
-    <virtualType name="TnsHpfDenyReviewCommand" type="OnTap\Tns\Gateway\Command\ReviewStrategyCommand">
-        <arguments>
-            <argument name="commandPool" xsi:type="object">TnsHpfCommandPool</argument>
-            <argument name="config" xsi:type="object">TnsHpfConfig</argument>
-            <argument name="solution" xsi:type="string">deny</argument>
         </arguments>
     </virtualType>
 
