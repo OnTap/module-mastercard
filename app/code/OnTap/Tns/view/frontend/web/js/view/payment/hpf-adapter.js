@@ -11,16 +11,19 @@ define([
 
     return {
         onLoadedCallback: null,
+        sessionUpdatedCallback: null,
         debug: false,
+        fields: null,
 
         logDebug: function (s) {
             if (this.debug) {
                 console.info(s);
             }
         },
-        loadApi: function (componentUrl, merchantId, onLoadedCallback, debugMode) {
+        loadApi: function (fields, componentUrl, merchantId, onLoadedCallback, debugMode) {
             this.onLoadedCallback = onLoadedCallback;
             this.debug = debugMode;
+            this.fields = fields;
 
             this.logDebug("Loading HPF Api...");
 
@@ -37,24 +40,22 @@ define([
         scriptLoadedCallback: function () {
             this.logDebug("Script loaded, configuring session...");
             PaymentSession.configure({
-                fields: {
-                    cardNumber: "#tns_hpf_cc_number",
-                    securityCode: "#tns_hpf_cc_cid",
-                    expiryMonth: "#tns_hpf_expiration",
-                    expiryYear: "#tns_hpf_expiration_yr"
-                },
+                fields: this.fields,
                 frameEmbeddingMitigation: ["x-frame-options"],
                 callbacks: {
                     initialized: $.proxy(this.onLoadedCallback, this),
-                    formSessionUpdate: function(response) {
-                        console.log('formSessionUpdate %o', response);
-                    }
+                    formSessionUpdate: $.proxy(this.sessionUpdated, this)
                 }
             });
         },
-        startSession: function (sessionDetails, callback) {
+        startSession: function (callback) {
             this.logDebug("Starting payment session...");
+            this.sessionUpdatedCallback = callback;
             PaymentSession.updateSessionFromForm();
+        },
+        sessionUpdated: function (response) {
+            this.logDebug("Session response received");
+            this.sessionUpdatedCallback(response);
         }
     };
 });

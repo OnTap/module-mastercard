@@ -32,6 +32,20 @@ define(
             placeOrderHandler: null,
             validateHandler: null,
             sessionId: null,
+            inPayment: false,
+
+            initialize: function () {
+                this._super();
+                this.isPlaceOrderActionAllowed.subscribe(function (allowed) {
+                    if (allowed === true) {
+                        this.inPayment = false;
+                        fullScreenLoader.stopLoader();
+                    }
+                    if (allowed === false) {
+                        fullScreenLoader.startLoader();
+                    }
+                }, this);
+            },
 
             initObservable: function () {
                 this._super()
@@ -114,6 +128,7 @@ define(
                 var config = this.getConfig();
 
                 paymentAdapter.loadApi(
+                    this.getCardFields(),
                     config.component_url,
                     config.merchant_username,
                     $.proxy(this.paymentAdapterLoaded, this),
@@ -132,9 +147,9 @@ define(
             errorMap: function () {
                 return {
                     'cardNumber': $t('Invalid card number'),
-                    'cardSecurityCode': $t('Invalid security code'),
-                    'cardExpiryMonth': $t('Invalid expiry month'),
-                    'cardExpiryYear': $t('Invalid expiry year')
+                    'securityCode': $t('Invalid security code'),
+                    'expiryMonth': $t('Invalid expiry month'),
+                    'expiryYear': $t('Invalid expiry year')
                 };
             },
 
@@ -147,8 +162,12 @@ define(
                 };
             },
 
-            getCardData: function () {
+            getCardFields: function () {
                 return {
+                    cardNumber: "#tns_hpf_cc_number",
+                    securityCode: "#tns_hpf_cc_cid",
+                    expiryMonth: "#tns_hpf_expiration",
+                    expiryYear: "#tns_hpf_expiration_yr"
                 };
             },
 
@@ -182,59 +201,63 @@ define(
             },
 
             threeDSecureCheckSuccess: function () {
+                fullScreenLoader.startLoader();
                 this.placeOrder();
             },
 
             threeDSecureCheckFailed: function () {
                 fullScreenLoader.stopLoader();
+                this.isPlaceOrderActionAllowed(true);
             },
 
             threeDSecureCancelled: function () {
-                fullScreenLoader.stopLoader();
                 this.isPlaceOrderActionAllowed(true);
             },
 
             startHpfSession: function () {
-                //if (!this.validateHandler() || !additionalValidators.validate()) {
-                //    return;
-                //}
-                //
-                //this.isPlaceOrderActionAllowed(false);
+                this.isPlaceOrderActionAllowed(false);
+                this.inPayment = false;
 
-                paymentAdapter.startSession(this.getCardData(), $.proxy(function(response) {
-                    this.sessionId = response.session;
+                paymentAdapter.startSession($.proxy(function(response) {
+                    if (this.inPayment === true) {
+                        console.info("Duplicate response from session.updateSessionFromForm");
+                        return;
+                    }
+                    this.inPayment = true;
 
                     if (response.status === "fields_in_error") {
-                        if (response.fieldsInError) {
-                            var errors = this.errorMap();
-                            for (var err in response.fieldsInError) {
-                                if (!response.fieldsInError.hasOwnProperty(err)) {
+                        if (response.errors) {
+                            var errors = this.errorMap(),
+                                message = "";
+                            for (var err in response.errors) {
+                                if (!response.errors.hasOwnProperty(err)) {
                                     continue;
                                 }
-                                alert({
-                                    content: errors[err]
-                                });
+                                message += '<p>' + errors[err] + '</p>';
                             }
+                            alert({
+                                content: message,
+                                closed: $.proxy(function () {
+                                    this.isPlaceOrderActionAllowed(true);
+                                }, this)
+                            });
+                            fullScreenLoader.stopLoader();
                         }
                     }
                     if (response.status === "ok") {
+                        this.sessionId = response.session.id;
                         if (this.is3DsEnabled()) {
-                            fullScreenLoader.startLoader();
-
                             var action = setPaymentInformationAction(this.messageContainer, this.getData());
 
                             $.when(action).done($.proxy(function() {
-                                fullScreenLoader.stopLoader();
                                 this.delegate('threeDSecureOpen', this);
                             }, this)).fail(
                                 $.proxy(this.threeDSecureCheckFailed, this)
                             );
                         } else {
                             this.placeOrder();
-                            return;
                         }
                     }
-                    this.isPlaceOrderActionAllowed(true);
                 }, this));
             }
         });

@@ -356,22 +356,10 @@
         <arguments>
             <argument name="validators" xsi:type="array">
                 <item name="response" xsi:type="string">OnTap\Tns\Gateway\Validator\ThreeDSecureValidator</item>
-                <item name="session" xsi:type="string">TnsDirectThreeDSecureProcessValidator</item>
+                <item name="session" xsi:type="string">OnTap\Tns\Gateway\Validator\ThreeDSecure\ProcessValidator</item>
             </argument>
         </arguments>
     </virtualType>
-
-    <virtualType name="TnsDirectThreeDSecureProcessValidator" type="OnTap\Tns\Gateway\Validator\ThreeDSecure\ProcessValidator">
-        <arguments>
-            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
-        </arguments>
-    </virtualType>
-
-    <type name="OnTap\Tns\Gateway\Validator\ThreeDSecure\ProcessValidator">
-        <arguments>
-            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
-        </arguments>
-    </type>
 
     <virtualType name="TnsDirectThreeDSecureResultDataBuilder" type="OnTap\Tns\Gateway\Request\ThreeDSecure\ResultsDataBuilder">
         <arguments>
@@ -779,14 +767,8 @@
         <arguments>
             <argument name="validators" xsi:type="array">
                 <item name="response" xsi:type="string">OnTap\Tns\Gateway\Validator\ThreeDSecureValidator</item>
-                <item name="session" xsi:type="string">TnsHpfThreeDSecureProcessValidator</item>
+                <item name="session" xsi:type="string">OnTap\Tns\Gateway\Validator\ThreeDSecure\ProcessValidator</item>
             </argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="TnsHpfThreeDSecureProcessValidator" type="OnTap\Tns\Gateway\Validator\ThreeDSecure\ProcessValidator">
-        <arguments>
-            <argument name="config" xsi:type="object">TnsHpfConfig</argument>
         </arguments>
     </virtualType>
 
