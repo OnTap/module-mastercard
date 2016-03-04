@@ -104,6 +104,10 @@ define(
                 return window.checkoutConfig.payment.ccform.cvvImageUrl[this.getCode()];
             },
 
+            hasVerification: function() {
+                return window.checkoutConfig.payment.ccform.hasVerification[this.getCode()];
+            },
+
             context: function () {
                 return this;
             },
@@ -163,12 +167,13 @@ define(
             },
 
             getCardFields: function () {
-                return {
+                var fields = {
                     cardNumber: "#tns_hpf_cc_number",
-                    securityCode: "#tns_hpf_cc_cid",
                     expiryMonth: "#tns_hpf_expiration",
-                    expiryYear: "#tns_hpf_expiration_yr"
+                    expiryYear: "#tns_hpf_expiration_yr",
+                    securityCode: "#tns_hpf_cc_cid"
                 };
+                return fields;
             },
 
             getConfig: function () {

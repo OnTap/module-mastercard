@@ -40,6 +40,7 @@
                 <can_use_internal>1</can_use_internal>
                 <can_use_checkout>1</can_use_checkout>
                 <is_gateway>1</is_gateway>
+                <useccv>1</useccv>
 
                 <can_authorize_vault>1</can_authorize_vault>
                 <can_capture_vault>1</can_capture_vault>
@@ -93,7 +94,7 @@
                 <cctypes>VI,MC,MI</cctypes>
                 <date_delim>-</date_delim>
                 <cc_year_length>4</cc_year_length>
-                <ccfields>card_cvn,card_expiry_date,card_number</ccfields>
+                <ccfields>card_expiry_date</ccfields>
 
                 <debug>0</debug>
                 <test>0</test>
@@ -108,10 +109,11 @@
                 <can_authorize>1</can_authorize>
                 <can_capture>1</can_capture>
                 <can_capture_partial>1</can_capture_partial>
-                <can_deny_payment>1</can_deny_payment>
-                <can_accept_payment>1</can_accept_payment>
-                <can_review_payment>1</can_review_payment>
                 <is_gateway>1</is_gateway>
+                <useccv>1</useccv>
+
+                <can_authorize_vault>1</can_authorize_vault>
+                <can_capture_vault>1</can_capture_vault>
 
                 <paymentInfoKeys>gateway_code,txn_result,card_scheme,card_number,card_expiry_date,cvv_validation,session</paymentInfoKeys>
                 <!--<privateInfoKeys></privateInfoKeys>-->

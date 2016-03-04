@@ -49,7 +49,7 @@
             </div>
         </div>
     </div>
-    <div class="field cvv required" data-bind="attr: {id: getCode() + '_cc_type_cvv_div'}">
+    <div class="field cvv required" data-bind="attr: {id: getCode() + '_cc_type_cvv_div'}, visible: hasVerification()">
         <label data-bind="attr: {for: getCode() + '_cc_cid'}" class="label">
             <span><!-- ko i18n: 'Card Verification Number'--><!-- /ko --></span>
         </label>
