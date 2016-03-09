@@ -14,7 +14,7 @@
                 <model>TnsDirectFacade</model>
                 <payment_action>authorize</payment_action>
 
-                <api_version>32</api_version>
+                <api_version>34</api_version>
 
                 <api_url>https://eu-gateway.mastercard.com/api/rest/</api_url>
                 <api_test_url>https://test-gateway.mastercard.com/api/rest/</api_test_url>
@@ -55,8 +55,8 @@
                 <api_url>https://eu-gateway.mastercard.com/api/rest/</api_url>
                 <api_test_url>https://test-gateway.mastercard.com/api/rest/</api_test_url>
 
-                <component_url>https://eu-gateway.mastercard.com/checkout/version/32/checkout.js</component_url>
-                <component_test_url>https://test-gateway.mastercard.com/checkout/version/32/checkout.js</component_test_url>
+                <component_url>https://eu-gateway.mastercard.com/checkout/version/34/checkout.js</component_url>
+                <component_test_url>https://test-gateway.mastercard.com/checkout/version/34/checkout.js</component_test_url>
 
                 <debug>0</debug>
                 <test>0</test>
@@ -81,7 +81,7 @@
                 <model>TnsHpfFacade</model>
                 <payment_action>authorize</payment_action>
 
-                <api_version>32</api_version>
+                <api_version>34</api_version>
                 <api_url>https://eu-gateway.mastercard.com/api/rest/</api_url>
                 <api_test_url>https://test-gateway.mastercard.com/api/rest/</api_test_url>
 
