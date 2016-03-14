@@ -1,0 +1,97 @@
+<?php
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+/**
+ * @var \OnTap\Tns\Block\Adminhtml\Order\View\Info\Details $block
+ */
+?>
+
+<div class="admin__page-section-item-content">
+    <div class="order-payment-additional" data-mage-init='{"OnTap_Tns/js/order/view/info/details": {}}'>
+        <div class="primary">
+            <button data-role="tns-full-payment-details-button" type="button" class="button action secondary">
+                <span><?php echo __('Show Payment Details') ?></span>
+            </button>
+        </div>
+        <div data-role="tns-full-payment-details-content" style="display: none">
+            <table class="data-table admin__table-secondary">
+                <tbody>
+                    <?php $payment = $block->getPayment() ?>
+                    <tr>
+                        <th><?php echo __('gateway_code') ?></th>
+                        <td><?php echo $block->safeValue($payment->getAdditionalInformation('gateway_code')) ?></td>
+                    </tr>
+                    <tr>
+                        <th><?php echo __('txn_result') ?></th>
+                        <td><?php echo $block->safeValue($payment->getAdditionalInformation('txn_result')) ?></td>
+                    </tr>
+                    <tr>
+                        <th><?php echo __('card_scheme') ?></th>
+                        <td><?php echo $block->safeValue($payment->getAdditionalInformation('card_scheme')) ?></td>
+                    </tr>
+                    <tr>
+                        <th><?php echo __('card_number') ?></th>
+                        <td><?php echo $block->safeValue($payment->getAdditionalInformation('card_number')) ?></td>
+                    </tr>
+                    <tr>
+                        <th><?php echo __('card_expiry_date') ?></th>
+                        <td><?php echo $block->safeValue($payment->getAdditionalInformation('card_expiry_date')) ?></td>
+                    </tr>
+                    <tr>
+                        <th><?php echo __('auth_code') ?></th>
+                        <td><?php echo $block->safeValue($payment->getAdditionalInformation('auth_code')) ?></td>
+                    </tr>
+                    <tr>
+                        <td><?php echo __('funding_method') ?></td>
+                        <td><?php echo $block->safeValue($payment->getAdditionalInformation('fundingMethod')) ?></td>
+                    </tr>
+                    <tr>
+                        <td><?php echo __('issuer') ?></td>
+                        <td><?php echo $block->safeValue($payment->getAdditionalInformation('issuer')) ?></td>
+                    </tr>
+                    <tr>
+                        <td><?php echo __('name_on_card') ?></td>
+                        <td><?php echo $block->safeValue($payment->getAdditionalInformation('nameOnCard')) ?></td>
+                    </tr>
+                    <?php if (is_array($block->getRiskData())): ?>
+                        <?php $risk = $block->getRiskData()['response'] ?>
+                        <tr>
+                            <td><?php echo __('Risk Status') ?></td>
+                            <td><?php echo $block->escapeHtml($risk['gatewayCode']) ?></td>
+                        </tr>
+                        <tr>
+                            <td><?php echo __('Total Score') ?></td>
+                            <td><?php echo $block->safeValue($risk, 'totalScore') ?></td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+            <?php if (is_array($block->getRiskData())): ?>
+                <br />
+                <table class="data-table admin__table-secondary">
+                    <thead>
+                        <tr>
+                            <th><?php echo __('Rule') ?></th>
+                            <th><?php echo __('Recommendation') ?></th>
+                            <th><?php echo __('Score') ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach($risk['rule'] as $rule): ?>
+                            <tr>
+                                <td><?php echo $block->escapeHtml($rule['name']) ?></td>
+                                <td><?php echo $block->escapeHtml($rule['recommendation']) ?></td>
+                                <td><?php echo $block->safeValue($rule, 'score') ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>

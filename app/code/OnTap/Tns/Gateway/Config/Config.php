@@ -34,4 +34,13 @@ class Config extends \Magento\Payment\Gateway\Config\Config
         // @todo: sandbox switch
         return $this->getValue('api_test_url');
     }
+
+    /**
+     * @return string
+     */
+    public function getWebhookSecret()
+    {
+        // @todo: sandbox switch
+        return $this->getValue('webhook_test_secret');
+    }
 }

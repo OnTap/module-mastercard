@@ -9,9 +9,26 @@ namespace OnTap\Tns\Gateway\Request;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Sales\Model\Order\Payment;
+use Magento\Framework\UrlInterface;
 
 class OrderDataBuilder implements BuilderInterface
 {
+    const WEBHOOK_RESPONSE_URL = 'tns/webhook/response';
+
+    /**
+     * @var UrlInterface
+     */
+    protected $urlBuilder;
+
+    /**
+     * OrderDataBuilder constructor.
+     * @param UrlInterface $urlBuilder
+     */
+    public function __construct(UrlInterface $urlBuilder)
+    {
+        $this->urlBuilder = $urlBuilder;
+    }
+
     /**
      * @param \Magento\Sales\Api\Data\OrderItemInterface[]|null $items
      * @return array
@@ -71,6 +88,8 @@ class OrderDataBuilder implements BuilderInterface
                 'shippingAndHandlingAmount' => $payment->getShippingAmount(),
                 //'discount' => $this->getDiscountData($payment),
                 'taxAmount' => $payment->getOrder()->getTaxAmount(),
+                //'notificationUrl' => 'http://li301-231.members.linode.com/datacash/tns/webhook/response/',
+                'notificationUrl' => $this->urlBuilder->getUrl(static::WEBHOOK_RESPONSE_URL, ['_secure' => true])
             ]
         ];
     }

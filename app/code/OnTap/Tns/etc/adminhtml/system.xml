@@ -187,12 +187,22 @@
                         <label>Test API Password</label>
                         <config_path>payment/tns_direct/api_test_password</config_path>
                     </field>
-                    <field id="order_status" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="webhook_secret" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>WebHook Secret</label>
+                        <config_path>payment/tns_direct/webhook_secret</config_path>
+                        <comment>Be sure to enable the WebHook support in your MasterCard Merchant Administration</comment>
+                    </field>
+                    <field id="webhook_test_secret" translate="label" type="text" sortOrder="81" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Test WebHook Secret</label>
+                        <config_path>payment/tns_direct/webhook_test_secret</config_path>
+                        <comment>Be sure to enable the WebHook support in your MasterCard Merchant Administration</comment>
+                    </field>
+                    <field id="order_status" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>New Order Status</label>
                         <source_model>Magento\Sales\Model\Config\Source\Order\Status\Processing</source_model>
                         <config_path>payment/tns_direct/order_status</config_path>
                     </field>
-                    <field id="test" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="test" translate="label" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Test Mode</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <config_path>payment/tns_direct/test</config_path>

@@ -32,7 +32,17 @@ class PaymentHandler implements HandlerInterface
     }
 
     /**
-     * @param Payment $payment
+     * @param string $data
+     * @param string $field
+     * @return string|null
+     */
+    public static function safeValue($data, $field)
+    {
+        return isset($data[$field]) ? $data[$field] : null;
+    }
+
+    /**
+     * @param Payment|\Magento\Sales\Api\Data\OrderPaymentInterface $payment
      * @param array $response
      * @return void
      */
@@ -40,6 +50,15 @@ class PaymentHandler implements HandlerInterface
     {
         $payment->setAdditionalInformation('gateway_code', $response['response']['gatewayCode']);
         $payment->setAdditionalInformation('txn_result', $response['result']);
+
+        if (isset($response['transaction'])) {
+            $payment->setAdditionalInformation('transaction', $response['transaction']);
+            $payment->setAdditionalInformation('auth_code', $response['transaction']['authorizationCode']);
+        }
+
+        if (isset($response['risk'])) {
+            $payment->setAdditionalInformation('risk', $response['risk']);
+        }
 
         if (isset($response['sourceOfFunds']) && isset($response['sourceOfFunds']['provided']['card'])) {
             $cardDetails = $response['sourceOfFunds']['provided']['card'];
@@ -57,6 +76,9 @@ class PaymentHandler implements HandlerInterface
                     $cardDetails['expiry']['year']
                 )
             );
+            $payment->setAdditionalInformation('fundingMethod', static::safeValue($cardDetails, 'fundingMethod'));
+            $payment->setAdditionalInformation('issuer', static::safeValue($cardDetails, 'issuer'));
+            $payment->setAdditionalInformation('nameOnCard', static::safeValue($cardDetails, 'nameOnCard'));
         }
 
         if (isset($response['response']['cardSecurityCode'])) {
