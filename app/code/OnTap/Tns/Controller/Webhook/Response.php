@@ -23,6 +23,8 @@ use OnTap\Tns\Gateway\Response\PaymentHandler;
  */
 class Response extends \Magento\Framework\App\Action\Action
 {
+    const X_HEADER_SECRET = 'X-Notification-Secret';
+
     /**
      * @var RawFactory
      */
@@ -67,7 +69,7 @@ class Response extends \Magento\Framework\App\Action\Action
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param FilterBuilder $filterBuilder
      * @param LoggerFactory $loggerFactory
-     * @param array $configProviders
+     * @param \OnTap\Tns\Gateway\Config\Config[] $configProviders
      */
     public function __construct(
         Context $context,
@@ -93,44 +95,61 @@ class Response extends \Magento\Framework\App\Action\Action
      * Dispatch request
      *
      * @return \Magento\Framework\Controller\ResultInterface|ResponseInterface
-     * @throws \Magento\Framework\Exception\NotFoundException
+     * @throws \Exception
      */
     public function execute()
     {
-        $page = $this->rawFactory->create();
+        // @todo: implement tns_webhook.log log for generic logging
 
         /* @var \Magento\Framework\App\Request\Http $request */
         $request = $this->getRequest();
+
+        $page = $this->rawFactory->create();
+
         $data = \Zend_Json_Decoder::decode($request->getContent(), \Zend_Json::TYPE_ARRAY);
 
-        $filters[] = $this->filterBuilder
-            ->setField('txn_id')
-            ->setValue($data['transaction']['id'])
-            ->create();
-
-        $searchCriteria = $this->searchCriteriaBuilder
-            ->addFilters($filters)
-            ->create();
-
-        $txns = $this->transactionRepository
-            ->getList($searchCriteria)
-            ->getItems();
-
         try {
-            if (count($txns) < 1 || count($txns) > 1) {
-                throw new NoSuchEntityException("Could not find transaction");
+            $responseSecret = $request->getHeader(static::X_HEADER_SECRET);
+            if ($responseSecret === false) {
+                throw new \Exception(__("Not authorized"));
             }
-        } catch (NoSuchEntityException $e) {
+
+            if (!isset($data['transaction']) || !isset($data['transaction']['id'])) {
+                throw new \Exception(__("Invalid data received"));
+            }
+
+            $filters[] = $this->filterBuilder
+                ->setField('txn_id')
+                ->setValue($data['transaction']['id'])
+                ->create();
+
+            $searchCriteria = $this->searchCriteriaBuilder
+                ->addFilters($filters)
+                ->create();
+
+            $txns = $this->transactionRepository
+                ->getList($searchCriteria)
+                ->getItems();
+
+            if (count($txns) < 1 || count($txns) > 1) {
+                throw new NoSuchEntityException(__("Could not find transaction"));
+            }
+
+            /* @var \Magento\Sales\Api\Data\TransactionInterface $txn */
+            $txn = array_values($txns)[0];
+
+            $order = $this->orderRepository->get($txn->getOrderId());
+            $payment = $order->getPayment();
+
+            $config = $this->configProviders[$payment->getMethod()];
+
+            if ($config->getWebhookSecret() !== $responseSecret) {
+                throw new \Exception(__("Authorisation failed"));
+            }
+        } catch (\Exception $e) {
             $page->setStatusHeader(400);
-            $page->setContents($e->getMessage());
+            return $page->setContents($e->getMessage());
         }
-
-        /* @var \Magento\Sales\Api\Data\TransactionInterface $txn */
-        $txn = array_values($txns)[0];
-
-        $order = $this->orderRepository->get($txn->getOrderId());
-        $payment = $order->getPayment();
-        $config = $this->configProviders[$payment->getMethod()];
 
         PaymentHandler::importPaymentResponse($payment, $data);
 
