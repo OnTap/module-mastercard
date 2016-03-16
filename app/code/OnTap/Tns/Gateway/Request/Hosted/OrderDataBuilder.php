@@ -77,7 +77,7 @@ class OrderDataBuilder implements BuilderInterface
                 'id' => $order->getOrderIncrementId(),
                 'item' => $this->getItemData(),
                 'shippingAndHandlingAmount' => $quote->getShippingAmount(),
-                'taxAmount' => $quote->getShippingAddress()->getTaxAmount(), // @todo: Virtual goods have no shippingad
+                'taxAmount' => $quote->getShippingAddress()->getTaxAmount(), // @todo: Virtual goods have no shipping
             ]
         ];
     }

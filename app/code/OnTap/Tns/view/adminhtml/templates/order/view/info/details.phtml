@@ -10,7 +10,9 @@
  * @var \OnTap\Tns\Block\Adminhtml\Order\View\Info\Details $block
  */
 ?>
-
+<?php
+    $risk = null;
+?>
 <div class="admin__page-section-item-content">
     <div class="order-payment-additional" data-mage-init='{"OnTap_Tns/js/order/view/info/details": {}}'>
         <div class="primary">
@@ -58,7 +60,7 @@
                         <td><?php echo __('name_on_card') ?></td>
                         <td><?php echo $block->safeValue($payment->getAdditionalInformation('nameOnCard')) ?></td>
                     </tr>
-                    <?php if (is_array($block->getRiskData())): ?>
+                    <?php if (is_array($block->getRiskData()) && isset($block->getRiskData()['response'])): ?>
                         <?php $risk = $block->getRiskData()['response'] ?>
                         <tr>
                             <td><?php echo __('Risk Status') ?></td>
@@ -71,7 +73,7 @@
                     <?php endif; ?>
                 </tbody>
             </table>
-            <?php if (is_array($block->getRiskData())): ?>
+            <?php if ($risk !== null): ?>
                 <br />
                 <table class="data-table admin__table-secondary">
                     <thead>
@@ -84,8 +86,8 @@
                     <tbody>
                         <?php foreach($risk['rule'] as $rule): ?>
                             <tr>
-                                <td><?php echo $block->escapeHtml($rule['name']) ?></td>
-                                <td><?php echo $block->escapeHtml($rule['recommendation']) ?></td>
+                                <td><?php echo $block->safeValue($rule, 'name') ?></td>
+                                <td><?php echo $block->safeValue($rule, 'recommendation') ?></td>
                                 <td><?php echo $block->safeValue($rule, 'score') ?></td>
                             </tr>
                         <?php endforeach; ?>
