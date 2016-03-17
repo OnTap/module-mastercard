@@ -79,7 +79,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config
         if ($this->getWebhookSecret() === "") {
             return null;
         }
-        if ($this->getValue('webhook_url') !== "") {
+        if ($this->getValue('webhook_url') && $this->getValue('webhook_url') !== "") {
             return $this->getValue('webhook_url');
         }
         return $this->urlBuilder->getUrl(static::WEB_HOOK_RESPONSE_URL, ['_secure' => true]);
