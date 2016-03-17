@@ -10,4 +10,9 @@
     <preference for="OnTap\Payment\Gateway\Command\CommandManagerPoolInterface" type="OnTap\Payment\Gateway\Command\CommandManagerPool" />
     <preference for="Magento\Payment\Gateway\Data\PaymentDataObjectFactoryInterface" type="Magento\Payment\Gateway\Data\PaymentDataObjectFactory" />
     <preference for="Magento\Payment\Gateway\Validator\ResultInterface" type="Magento\Payment\Gateway\Validator\Result"/>
+    <type name="Magento\Framework\App\Config\DataFactory">
+        <arguments>
+            <argument name="instanceName" xsi:type="string">OnTap\Payment\App\Config\Data</argument>
+        </arguments>
+    </type>
 </config>

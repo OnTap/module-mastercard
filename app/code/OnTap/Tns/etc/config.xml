@@ -15,9 +15,12 @@
                 <payment_action>authorize</payment_action>
 
                 <api_version>34</api_version>
-
                 <api_url>https://eu-gateway.mastercard.com/api/rest/</api_url>
                 <api_test_url>https://test-gateway.mastercard.com/api/rest/</api_test_url>
+                <api_password backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+                <api_test_password backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+                <webhook_secret backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+                <webhook_test_secret backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
 
                 <cctypes>VI,MC,MI</cctypes>
                 <date_delim>-</date_delim>
@@ -54,9 +57,12 @@
                 <api_version>34</api_version>
                 <api_url>https://eu-gateway.mastercard.com/api/rest/</api_url>
                 <api_test_url>https://test-gateway.mastercard.com/api/rest/</api_test_url>
-
                 <component_url>https://eu-gateway.mastercard.com/checkout/version/34/checkout.js</component_url>
                 <component_test_url>https://test-gateway.mastercard.com/checkout/version/34/checkout.js</component_test_url>
+                <api_password backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+                <api_test_password backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+                <webhook_secret backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+                <webhook_test_secret backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
 
                 <debug>0</debug>
                 <test>0</test>
@@ -84,9 +90,12 @@
                 <api_version>34</api_version>
                 <api_url>https://eu-gateway.mastercard.com/api/rest/</api_url>
                 <api_test_url>https://test-gateway.mastercard.com/api/rest/</api_test_url>
-
                 <component_url>https://eu-gateway.mastercard.com/form/version/34/merchant/</component_url>
                 <component_test_url>https://test-gateway.mastercard.com/form/version/34/merchant/</component_test_url>
+                <api_password backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+                <api_test_password backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+                <webhook_secret backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+                <webhook_test_secret backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
 
                 <cctypes>VI,MC,MI</cctypes>
                 <date_delim>-</date_delim>
