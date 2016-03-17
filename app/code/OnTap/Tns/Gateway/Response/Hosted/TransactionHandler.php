@@ -16,6 +16,7 @@ class TransactionHandler implements HandlerInterface
 {
     const TYPE_AUTHORIZE = 'AUTHORIZATION';
     const TYPE_PAYMENT = 'PAYMENT';
+    const TYPE_VERIFICATION = 'VERIFICATION';
 
     /**
      * @param array $txn
@@ -26,6 +27,10 @@ class TransactionHandler implements HandlerInterface
     {
         $type = $txn['transaction']['type'];
 
+        if ($type === static::TYPE_VERIFICATION) {
+            // noop
+            return;
+        }
         if ($type === static::TYPE_AUTHORIZE) {
             $this->authorize($txn, $payment);
             return;

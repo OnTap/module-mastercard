@@ -45,6 +45,7 @@ class PaymentHandler implements HandlerInterface
      * @param Payment|\Magento\Sales\Api\Data\OrderPaymentInterface $payment
      * @param array $response
      * @return void
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public static function importPaymentResponse(Payment $payment, $response)
     {

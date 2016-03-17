@@ -106,32 +106,56 @@ class Response extends \Magento\Framework\App\Action\Action
      * Fetch a order object by transaction ID
      *
      * @param string $txnId
+     * @param string $orderId
      * @return \Magento\Sales\Api\Data\OrderInterface
      * @throws NoSuchEntityException
      */
-    protected function getOrderByTransactionId($txnId)
+    protected function getOrderByTransactionId($txnId, $orderId)
     {
+        // Find the order
+        $orderFilters[] = $this->filterBuilder
+            ->setField('increment_id')
+            ->setValue($orderId)
+            ->create();
+
+        $orderSearchCriteria = $this->searchCriteriaBuilder
+            ->addFilters($orderFilters)
+            ->create();
+
+        $orders = $this->orderRepository
+            ->getList($orderSearchCriteria)
+            ->getItems();
+
+        if (count($orders) < 1 || count($orders) > 1) {
+            throw new NoSuchEntityException(__("Could not find order"));
+        }
+
+        $order = array_values($orders)[0];
+
+        // Find the transaction
         $filters[] = $this->filterBuilder
             ->setField('txn_id')
             ->setValue($txnId)
+            ->create();
+
+        $filters[] = $this->filterBuilder
+            ->setField('order_id')
+            ->setValue($order->getEntityId())
             ->create();
 
         $searchCriteria = $this->searchCriteriaBuilder
             ->addFilters($filters)
             ->create();
 
-        $transactions = $this->transactionRepository
+        $transactionsCount = $this->transactionRepository
             ->getList($searchCriteria)
-            ->getItems();
+            ->getTotalCount();
 
-        if (count($transactions) < 1 || count($transactions) > 1) {
+        if ($transactionsCount < 1 || $transactionsCount > 1) {
             throw new NoSuchEntityException(__("Could not find transaction"));
         }
 
-        /* @var \Magento\Sales\Api\Data\TransactionInterface $txn */
-        $txn = array_values($transactions)[0];
-
-        return $this->orderRepository->get($txn->getOrderId());
+        return $order;
     }
 
     /**
@@ -165,10 +189,22 @@ class Response extends \Magento\Framework\App\Action\Action
 
         $logData = [
             'type' => static::LOG_TYPE,
-            'headers' => $request->getHeaders()->toArray(),
         ];
+        if ($callable == 'critical') {
+            $logData['headers'] = $request->getHeaders()->toArray();
+            $logData['data'] = $this->getData();
+        }
 
         call_user_func_array([$this->logger, $callable], [$message, $logData]);
+    }
+
+    /**
+     * @return array
+     * @throws \Zend_Json_Exception
+     */
+    protected function getData()
+    {
+        return \Zend_Json_Decoder::decode($this->getRequest()->getContent(), \Zend_Json::TYPE_ARRAY);
     }
 
     /**
@@ -176,6 +212,7 @@ class Response extends \Magento\Framework\App\Action\Action
      *
      * @return \Magento\Framework\Controller\ResultInterface|ResponseInterface
      * @throws \Exception
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function execute()
     {
@@ -184,11 +221,11 @@ class Response extends \Magento\Framework\App\Action\Action
 
         $page = $this->rawFactory->create();
 
-        $data = \Zend_Json_Decoder::decode($request->getContent(), \Zend_Json::TYPE_ARRAY);
-
         $responseSecret = $request->getHeader(static::X_HEADER_SECRET);
         $responseAttempt = $request->getHeader(static::X_HEADER_ATTEMPT);
         $responseId = $request->getHeader(static::X_HEADER_ID);
+
+        $data = $this->getData();
 
         try {
             if ($request->isSecure() && $responseSecret === false) {
@@ -196,10 +233,13 @@ class Response extends \Magento\Framework\App\Action\Action
             }
 
             if (!isset($data['transaction']) || !isset($data['transaction']['id'])) {
-                throw new \Exception(__("Invalid data received"));
+                throw new \Exception(__("Invalid data received (Transaction ID)"));
+            }
+            if (!isset($data['order']) || !isset($data['order']['id'])) {
+                throw new \Exception(__("Invalid data received (Order ID)"));
             }
 
-            $order = $this->getOrderByTransactionId($data['transaction']['id']);
+            $order = $this->getOrderByTransactionId($data['transaction']['id'], $data['order']['id']);
 
             $config = $this->configProviders[$order->getPayment()->getMethod()];
 
