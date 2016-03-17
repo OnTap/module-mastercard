@@ -12,6 +12,7 @@ use Magento\Sales\Model\Order\Payment;
 use Magento\Payment\Gateway\Data\Quote\QuoteAdapter;
 use Magento\Checkout\Model\CartFactory;
 use Magento\Checkout\Model\Cart;
+use Magento\Payment\Gateway\ConfigInterface;
 
 class OrderDataBuilder implements BuilderInterface
 {
@@ -21,12 +22,21 @@ class OrderDataBuilder implements BuilderInterface
     private $cart;
 
     /**
+     * @var ConfigInterface
+     */
+    protected $config;
+
+    /**
      * OrderDataBuilder constructor.
      * @param CartFactory $cartFactory
+     * @param ConfigInterface $config
      */
-    public function __construct(CartFactory $cartFactory)
+    public function __construct(CartFactory $cartFactory, ConfigInterface $config)
     {
         $this->cart = $cartFactory->create();
+
+        /* @var \OnTap\Tns\Gateway\Config\Config $config */
+        $this->config = $config;
     }
 
     /**
@@ -78,6 +88,7 @@ class OrderDataBuilder implements BuilderInterface
                 'item' => $this->getItemData(),
                 'shippingAndHandlingAmount' => $quote->getShippingAmount(),
                 'taxAmount' => $quote->getShippingAddress()->getTaxAmount(), // @todo: Virtual goods have no shipping
+                'notificationUrl' => $this->config->getWebhookNotificationUrl(),
             ]
         ];
     }

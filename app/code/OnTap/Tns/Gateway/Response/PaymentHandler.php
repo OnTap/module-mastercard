@@ -53,7 +53,9 @@ class PaymentHandler implements HandlerInterface
 
         if (isset($response['transaction'])) {
             $payment->setAdditionalInformation('transaction', $response['transaction']);
-            $payment->setAdditionalInformation('auth_code', $response['transaction']['authorizationCode']);
+            if (isset($response['transaction']['authorizationCode'])) {
+                $payment->setAdditionalInformation('auth_code', $response['transaction']['authorizationCode']);
+            }
         }
 
         if (isset($response['risk'])) {
@@ -76,9 +78,15 @@ class PaymentHandler implements HandlerInterface
                     $cardDetails['expiry']['year']
                 )
             );
-            $payment->setAdditionalInformation('fundingMethod', static::safeValue($cardDetails, 'fundingMethod'));
-            $payment->setAdditionalInformation('issuer', static::safeValue($cardDetails, 'issuer'));
-            $payment->setAdditionalInformation('nameOnCard', static::safeValue($cardDetails, 'nameOnCard'));
+            if (isset($cardDetails['fundingMethod'])) {
+                $payment->setAdditionalInformation('fundingMethod', static::safeValue($cardDetails, 'fundingMethod'));
+            }
+            if (isset($cardDetails['issuer'])) {
+                $payment->setAdditionalInformation('issuer', static::safeValue($cardDetails, 'issuer'));
+            }
+            if (isset($cardDetails['nameOnCard'])) {
+                $payment->setAdditionalInformation('nameOnCard', static::safeValue($cardDetails, 'nameOnCard'));
+            }
         }
 
         if (isset($response['response']['cardSecurityCode'])) {

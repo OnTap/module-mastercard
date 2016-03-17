@@ -366,7 +366,7 @@
             <argument name="builders" xsi:type="array">
                 <item name="operation" xsi:type="string">AuthorizeOperationDataBuilder</item>
                 <item name="card" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\CardDataBuilder</item>
-                <item name="order" xsi:type="string">OnTap\Tns\Gateway\Request\OrderDataBuilder</item>
+                <item name="order" xsi:type="string">TnsDirectOrderDataBuilder</item>
                 <item name="billing" xsi:type="string">OnTap\Tns\Gateway\Request\BillingDataBuilder</item>
                 <item name="shipping" xsi:type="string">OnTap\Tns\Gateway\Request\ShippingDataBuilder</item>
                 <item name="customer" xsi:type="string">OnTap\Tns\Gateway\Request\CustomerDataBuilder</item>
@@ -380,7 +380,7 @@
             <argument name="builders" xsi:type="array">
                 <item name="operation" xsi:type="string">SaleOperationDataBuilder</item>
                 <item name="card" xsi:type="string">OnTap\Tns\Gateway\Request\Direct\CardDataBuilder</item>
-                <item name="order" xsi:type="string">OnTap\Tns\Gateway\Request\OrderDataBuilder</item>
+                <item name="order" xsi:type="string">TnsDirectOrderDataBuilder</item>
                 <item name="billing" xsi:type="string">OnTap\Tns\Gateway\Request\BillingDataBuilder</item>
                 <item name="shipping" xsi:type="string">OnTap\Tns\Gateway\Request\ShippingDataBuilder</item>
                 <item name="customer" xsi:type="string">OnTap\Tns\Gateway\Request\CustomerDataBuilder</item>
@@ -396,6 +396,12 @@
                 <item name="capture" xsi:type="string">OnTap\Tns\Gateway\Response\CaptureHandler</item>
                 <item name="payment" xsi:type="string">OnTap\Tns\Gateway\Response\PaymentHandler</item>
             </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="TnsDirectOrderDataBuilder" type="OnTap\Tns\Gateway\Request\OrderDataBuilder">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
         </arguments>
     </virtualType>
 
@@ -561,6 +567,12 @@
         </arguments>
     </virtualType>
 
+    <type name="OnTap\Tns\Gateway\Request\Hosted\OrderDataBuilder">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsHostedConfig</argument>
+        </arguments>
+    </type>
+
     <!-- ******************* -->
     <!-- HOSTED PAYMENT FORM -->
     <!-- ******************* -->
@@ -716,7 +728,7 @@
             <argument name="builders" xsi:type="array">
                 <item name="operation" xsi:type="string">SaleOperationDataBuilder</item>
                 <item name="card" xsi:type="string">OnTap\Tns\Gateway\Request\Hpf\SessionDataBuilder</item>
-                <item name="order" xsi:type="string">OnTap\Tns\Gateway\Request\OrderDataBuilder</item>
+                <item name="order" xsi:type="string">TnsHpfOrderDataBuilder</item>
                 <item name="billing" xsi:type="string">OnTap\Tns\Gateway\Request\BillingDataBuilder</item>
                 <item name="shipping" xsi:type="string">OnTap\Tns\Gateway\Request\ShippingDataBuilder</item>
                 <item name="customer" xsi:type="string">OnTap\Tns\Gateway\Request\CustomerDataBuilder</item>
@@ -795,7 +807,7 @@
             <argument name="builders" xsi:type="array">
                 <item name="operation" xsi:type="string">AuthorizeOperationDataBuilder</item>
                 <item name="session" xsi:type="string">OnTap\Tns\Gateway\Request\Hpf\SessionDataBuilder</item>
-                <item name="order" xsi:type="string">OnTap\Tns\Gateway\Request\OrderDataBuilder</item>
+                <item name="order" xsi:type="string">TnsHpfOrderDataBuilder</item>
                 <item name="billing" xsi:type="string">OnTap\Tns\Gateway\Request\BillingDataBuilder</item>
                 <item name="shipping" xsi:type="string">OnTap\Tns\Gateway\Request\ShippingDataBuilder</item>
                 <item name="customer" xsi:type="string">OnTap\Tns\Gateway\Request\CustomerDataBuilder</item>
@@ -809,7 +821,14 @@
             <argument name="config" xsi:type="object">TnsHpfConfig</argument>
         </arguments>
     </virtualType>
+
     <virtualType name="TnsHpfThreeDSecureResultDataBuilder" type="OnTap\Tns\Gateway\Request\ThreeDSecure\ResultsDataBuilder">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsHpfConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="TnsHpfOrderDataBuilder" type="OnTap\Tns\Gateway\Request\OrderDataBuilder">
         <arguments>
             <argument name="config" xsi:type="object">TnsHpfConfig</argument>
         </arguments>

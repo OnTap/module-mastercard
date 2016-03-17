@@ -8,3 +8,6 @@
 "card_expiry_date", "Expiry"
 "auth_code", "Auth Code"
 "session", "Payment Session ID"
+"name_on_card", "Name On Card"
+"issuer", "Issuer"
+"funding_method", "Funding Method"

@@ -163,12 +163,9 @@ class Response extends \Magento\Framework\App\Action\Action
         /* @var \Magento\Framework\App\Request\Http $request */
         $request = $this->getRequest();
 
-        $responseAttempt = $request->getHeader(static::X_HEADER_ATTEMPT);
-        $responseId = $request->getHeader(static::X_HEADER_ID);
         $logData = [
             'type' => static::LOG_TYPE,
-            'attempt' => $responseAttempt,
-            'id' => $responseId,
+            'headers' => $request->getHeaders()->toArray(),
         ];
 
         call_user_func_array([$this->logger, $callable], [$message, $logData]);
@@ -194,7 +191,7 @@ class Response extends \Magento\Framework\App\Action\Action
         $responseId = $request->getHeader(static::X_HEADER_ID);
 
         try {
-            if ($responseSecret === false) {
+            if ($request->isSecure() && $responseSecret === false) {
                 throw new \Exception(__("Authorization not provided"));
             }
 
@@ -206,8 +203,8 @@ class Response extends \Magento\Framework\App\Action\Action
 
             $config = $this->configProviders[$order->getPayment()->getMethod()];
 
-            if ($config->getWebhookSecret() !== $responseSecret) {
-                throw new \Exception(__("Authorisation failed"));
+            if ($request->isSecure() && $config->getWebhookSecret() !== $responseSecret) {
+                throw new \Exception(__("Authorization failed"));
             }
 
             // Update payment and order
