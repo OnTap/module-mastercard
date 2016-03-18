@@ -40,24 +40,9 @@
                         <config_path>payment/tns_hpf/api_password</config_path>
                         <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                     </field>
-                    <field id="api_test_username" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="0">
-                        <label>Test API Username</label>
-                        <config_path>payment/tns_hpf/api_test_username</config_path>
-                    </field>
-                    <field id="api_test_password" translate="label" type="obscure" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="0">
-                        <label>Test API Password</label>
-                        <config_path>payment/tns_hpf/api_test_password</config_path>
-                        <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
-                    </field>
                     <field id="webhook_secret" translate="label comment" type="obscure" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>WebHook Secret</label>
                         <config_path>payment/tns_hpf/webhook_secret</config_path>
-                        <comment>Be sure to enable the WebHook support in your MasterCard Merchant Administration</comment>
-                        <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
-                    </field>
-                    <field id="webhook_test_secret" translate="label comment" type="obscure" sortOrder="81" showInDefault="1" showInWebsite="1" showInStore="0">
-                        <label>Test WebHook Secret</label>
-                        <config_path>payment/tns_hpf/webhook_test_secret</config_path>
                         <comment>Be sure to enable the WebHook support in your MasterCard Merchant Administration</comment>
                         <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                     </field>
@@ -135,24 +120,9 @@
                         <config_path>payment/tns_hosted/api_password</config_path>
                         <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                     </field>
-                    <field id="api_test_username" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="0">
-                        <label>Test API Username</label>
-                        <config_path>payment/tns_hosted/api_test_username</config_path>
-                    </field>
-                    <field id="api_test_password" translate="label" type="obscure" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="0">
-                        <label>Test API Password</label>
-                        <config_path>payment/tns_hosted/api_test_password</config_path>
-                        <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
-                    </field>
                     <field id="webhook_secret" translate="label comment" type="obscure" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>WebHook Secret</label>
                         <config_path>payment/tns_hosted/webhook_secret</config_path>
-                        <comment>Be sure to enable the WebHook support in your MasterCard Merchant Administration</comment>
-                        <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
-                    </field>
-                    <field id="webhook_test_secret" translate="label comment" type="obscure" sortOrder="81" showInDefault="1" showInWebsite="1" showInStore="0">
-                        <label>Test WebHook Secret</label>
-                        <config_path>payment/tns_hosted/webhook_test_secret</config_path>
                         <comment>Be sure to enable the WebHook support in your MasterCard Merchant Administration</comment>
                         <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                     </field>
@@ -218,24 +188,9 @@
                         <config_path>payment/tns_direct/api_password</config_path>
                         <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                     </field>
-                    <field id="api_test_username" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="0">
-                        <label>Test API Username</label>
-                        <config_path>payment/tns_direct/api_test_username</config_path>
-                    </field>
-                    <field id="api_test_password" translate="label" type="obscure" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="0">
-                        <label>Test API Password</label>
-                        <config_path>payment/tns_direct/api_test_password</config_path>
-                        <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
-                    </field>
                     <field id="webhook_secret" translate="label comment" type="obscure" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>WebHook Secret</label>
                         <config_path>payment/tns_direct/webhook_secret</config_path>
-                        <comment>Be sure to enable the WebHook support in your MasterCard Merchant Administration</comment>
-                        <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
-                    </field>
-                    <field id="webhook_test_secret" translate="label comment" type="obscure" sortOrder="81" showInDefault="1" showInWebsite="1" showInStore="0">
-                        <label>Test WebHook Secret</label>
-                        <config_path>payment/tns_direct/webhook_test_secret</config_path>
                         <comment>Be sure to enable the WebHook support in your MasterCard Merchant Administration</comment>
                         <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                     </field>

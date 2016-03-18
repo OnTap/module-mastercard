@@ -46,7 +46,7 @@ class ConfigProvider implements ConfigProviderInterface
         return [
             'payment' => [
                 self::METHOD_CODE => [
-                    'three_d_secure' => $this->config->getValue('three_d_secure') === "1",
+                    'three_d_secure' => (bool) $this->config->getValue('three_d_secure'),
                 ]
             ]
         ];

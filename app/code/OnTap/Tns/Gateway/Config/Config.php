@@ -41,7 +41,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     public function getMerchantId()
     {
         // @todo: sandbox switch
-        return $this->getValue('api_test_username');
+        return $this->getValue('api_username');
     }
 
     /**
@@ -50,7 +50,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     public function getMerchantPassword()
     {
         // @todo: sandbox switch
-        return $this->getValue('api_test_password');
+        return $this->getValue('api_password');
     }
 
     /**
@@ -59,7 +59,16 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     public function getApiUrl()
     {
         // @todo: sandbox switch
-        return $this->getValue('api_test_url');
+        return $this->getValue('api_url_test');
+    }
+
+    /**
+     * @return string
+     */
+    public function getComponentUrl()
+    {
+        // @todo: sandbox switch
+        return $this->getValue('component_url_test');
     }
 
     /**
@@ -68,7 +77,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     public function getWebhookSecret()
     {
         // @todo: sandbox switch
-        return $this->getValue('webhook_test_secret');
+        return $this->getValue('webhook_secret');
     }
 
     /**

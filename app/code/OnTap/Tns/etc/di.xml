@@ -50,14 +50,6 @@
         </arguments>
     </virtualType>
 
-    <virtualType name="TnsValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
-        <arguments>
-            <argument name="handlers" xsi:type="array">
-                <item name="default" xsi:type="string">TnsConfigValueHandler</item>
-            </argument>
-        </arguments>
-    </virtualType>
-
     <type name="OnTap\Tns\Gateway\Http\Client\Rest">
         <arguments>
             <argument name="logger" xsi:type="object">TnsLogger</argument>
@@ -188,6 +180,14 @@
     <virtualType name="TnsConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
         <arguments>
             <argument name="configInterface" xsi:type="object">TnsDirectConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="TnsValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">TnsConfigValueHandler</item>
+            </argument>
         </arguments>
     </virtualType>
 

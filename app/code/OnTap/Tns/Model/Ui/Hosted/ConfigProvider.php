@@ -47,7 +47,7 @@ class ConfigProvider implements ConfigProviderInterface
             'payment' => [
                 self::METHOD_CODE => [
                     'merchant_username' => $this->config->getMerchantId(),
-                    'component_url' => $this->config->getValue('component_test_url'),
+                    'component_url' => $this->config->getComponentUrl(),
                 ]
             ]
         ];
