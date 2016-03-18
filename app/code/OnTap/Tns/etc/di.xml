@@ -172,8 +172,29 @@
             <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form\Cc</argument>
             <argument name="infoBlockType" xsi:type="string">TnsDirectInfoBlock</argument>
             <argument name="valueHandlerPool" xsi:type="object">TnsValueHandlerPool</argument>
-            <argument name="validatorPool" xsi:type="object">Magento\Payment\Gateway\Validator\ValidatorPool</argument>
+            <argument name="validatorPool" xsi:type="object">TnsDirectValidatorPool</argument>
             <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="TnsDirectValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="country" xsi:type="string">TnsDirectCountryValidator</item>
+                <item name="currency" xsi:type="string">TnsDirectCurrencyValidator</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="TnsDirectCurrencyValidator" type="OnTap\Tns\Gateway\Validator\CurrencyValidator">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="TnsDirectCountryValidator" type="Magento\Payment\Gateway\Validator\CountryValidator">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
         </arguments>
     </virtualType>
 
@@ -442,8 +463,29 @@
             <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form\Cc</argument>
             <argument name="infoBlockType" xsi:type="string">TnsHostedInfoBlock</argument>
             <argument name="valueHandlerPool" xsi:type="object">TnsHostedValueHandlerPool</argument>
-            <argument name="validatorPool" xsi:type="object">Magento\Payment\Gateway\Validator\ValidatorPool</argument>
+            <argument name="validatorPool" xsi:type="object">TnsHostedValidatorPool</argument>
             <argument name="commandPool" xsi:type="object">TnsHostedCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="TnsHostedValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="country" xsi:type="string">TnsHostedCountryValidator</item>
+                <item name="currency" xsi:type="string">TnsHostedCurrencyValidator</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="TnsHostedCurrencyValidator" type="OnTap\Tns\Gateway\Validator\CurrencyValidator">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsHostedConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="TnsHostedCountryValidator" type="Magento\Payment\Gateway\Validator\CountryValidator">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsHostedConfig</argument>
         </arguments>
     </virtualType>
 
@@ -601,8 +643,29 @@
             <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form\Cc</argument>
             <argument name="infoBlockType" xsi:type="string">TnsHpfInfoBlock</argument>
             <argument name="valueHandlerPool" xsi:type="object">TnsHpfValueHandlerPool</argument>
-            <argument name="validatorPool" xsi:type="object">Magento\Payment\Gateway\Validator\ValidatorPool</argument>
+            <argument name="validatorPool" xsi:type="object">TnsHpfValidatorPool</argument>
             <argument name="commandPool" xsi:type="object">TnsHpfCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="TnsHpfValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="country" xsi:type="string">TnsHpfCountryValidator</item>
+                <item name="currency" xsi:type="string">TnsHpfCurrencyValidator</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="TnsHpfCurrencyValidator" type="OnTap\Tns\Gateway\Validator\CurrencyValidator">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsHpfConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="TnsHpfCountryValidator" type="Magento\Payment\Gateway\Validator\CountryValidator">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsHpfConfig</argument>
         </arguments>
     </virtualType>
 
