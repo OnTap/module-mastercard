@@ -16,6 +16,6 @@ class Form extends Template
      */
     public function getReturnUrl()
     {
-        return $this->_urlBuilder->getUrl(CheckDataBuilder::RESPONSE_URL);
+        return $this->_urlBuilder->getUrl(CheckDataBuilder::RESPONSE_URL, ['_secure' => true]);
     }
 }
