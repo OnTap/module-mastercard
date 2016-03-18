@@ -9,23 +9,22 @@ namespace OnTap\Tns\Gateway\Request;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Sales\Model\Order\Payment;
-use Magento\Payment\Gateway\ConfigInterface;
+use OnTap\Tns\Gateway\Config\ConfigFactory;
 
 class OrderDataBuilder implements BuilderInterface
 {
     /**
-     * @var \OnTap\Tns\Gateway\Config\Config
+     * @var ConfigFactory
      */
-    protected $config;
+    protected $configFactory;
 
     /**
      * OrderDataBuilder constructor.
-     * @param ConfigInterface $config
+     * @param ConfigFactory $configFactory
      */
-    public function __construct(ConfigInterface $config)
+    public function __construct(ConfigFactory $configFactory)
     {
-        /* @var \OnTap\Tns\Gateway\Config\Config $config */
-        $this->config = $config;
+        $this->configFactory = $configFactory;
     }
 
     /**
@@ -79,6 +78,9 @@ class OrderDataBuilder implements BuilderInterface
         /** @var Payment $payment */
         $payment = $paymentDO->getPayment();
 
+        $config = $this->configFactory->create();
+        $config->setMethodCode($payment->getMethod());
+
         return [
             'order' => [
                 'amount' => sprintf('%.2F', SubjectReader::readAmount($buildSubject)),
@@ -87,7 +89,7 @@ class OrderDataBuilder implements BuilderInterface
                 'shippingAndHandlingAmount' => $payment->getShippingAmount(),
                 //'discount' => $this->getDiscountData($payment),
                 'taxAmount' => $payment->getOrder()->getTaxAmount(),
-                'notificationUrl' => $this->config->getWebhookNotificationUrl(),
+                'notificationUrl' => $config->getWebhookNotificationUrl(),
             ]
         ];
     }

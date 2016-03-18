@@ -12,7 +12,7 @@ use Magento\Sales\Model\Order\Payment;
 use Magento\Payment\Gateway\Data\Quote\QuoteAdapter;
 use Magento\Checkout\Model\CartFactory;
 use Magento\Checkout\Model\Cart;
-use Magento\Payment\Gateway\ConfigInterface;
+use OnTap\Tns\Gateway\Config\ConfigFactory;
 
 class OrderDataBuilder implements BuilderInterface
 {
@@ -22,21 +22,19 @@ class OrderDataBuilder implements BuilderInterface
     private $cart;
 
     /**
-     * @var ConfigInterface
+     * @var ConfigFactory
      */
-    protected $config;
+    protected $configFactory;
 
     /**
      * OrderDataBuilder constructor.
      * @param CartFactory $cartFactory
-     * @param ConfigInterface $config
+     * @param ConfigFactory $configFactory
      */
-    public function __construct(CartFactory $cartFactory, ConfigInterface $config)
+    public function __construct(CartFactory $cartFactory, ConfigFactory $configFactory)
     {
         $this->cart = $cartFactory->create();
-
-        /* @var \OnTap\Tns\Gateway\Config\Config $config */
-        $this->config = $config;
+        $this->configFactory = $configFactory;
     }
 
     /**
@@ -80,6 +78,9 @@ class OrderDataBuilder implements BuilderInterface
         $quote = $payment->getQuote();
         $quote->collectTotals();
 
+        $config = $this->configFactory->create();
+        $config->setMethodCode($payment->getMethod());
+
         return [
             'order' => [
                 'amount' => sprintf('%.2F', $quote->getGrandTotal()),
@@ -88,7 +89,7 @@ class OrderDataBuilder implements BuilderInterface
                 'item' => $this->getItemData(),
                 'shippingAndHandlingAmount' => $quote->getShippingAmount(),
                 'taxAmount' => $quote->getShippingAddress()->getTaxAmount(), // @todo: Virtual goods have no shipping
-                'notificationUrl' => $this->config->getWebhookNotificationUrl(),
+                'notificationUrl' => $config->getWebhookNotificationUrl(),
             ]
         ];
     }
