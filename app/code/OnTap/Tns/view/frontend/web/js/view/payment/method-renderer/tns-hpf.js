@@ -24,6 +24,9 @@ define(
                 template: 'OnTap_Tns/payment/tns-hpf',
                 active: false,
                 adapterLoaded: false,
+                buttonTitle: null,
+                buttonTitleEnabled: $t('Place Order'),
+                buttonTitleDisabled: $t('Please wait...'),
                 imports: {
                     onActiveChange: 'active'
                 },
@@ -63,10 +66,19 @@ define(
                         'active',
                         'adapterLoaded',
                         'creditCardExpYear',
-                        'creditCardExpMonth'
+                        'creditCardExpMonth',
+                        'buttonTitle'
                     ]);
 
+                this.buttonTitle(this.buttonTitleDisabled);
+                this.isPlaceOrderActionAllowed.subscribe($.proxy(this.buttonTitleHandler, this));
+                this.adapterLoaded.subscribe($.proxy(this.buttonTitleHandler, this));
+
                 return this;
+            },
+
+            buttonTitleHandler: function (isButtonEnabled) {
+                this.buttonTitle(isButtonEnabled ? this.buttonTitleEnabled : this.buttonTitleDisabled);
             },
 
             setValidateHandler: function (handler) {

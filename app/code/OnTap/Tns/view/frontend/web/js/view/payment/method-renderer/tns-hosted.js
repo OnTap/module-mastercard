@@ -12,9 +12,10 @@ define(
         'Magento_Checkout/js/model/full-screen-loader',
         'Magento_Ui/js/modal/alert',
         'OnTap_Tns/js/view/payment/hosted-adapter',
-        'OnTap_Tns/js/action/create-session'
+        'OnTap_Tns/js/action/create-session',
+        'mage/translate'
     ],
-    function (Component, $, ko, quote, fullScreenLoader, alert, paymentAdapter, createSessionAction) {
+    function (Component, $, ko, quote, fullScreenLoader, alert, paymentAdapter, createSessionAction, $t) {
         'use strict';
 
         return Component.extend({
@@ -22,6 +23,9 @@ define(
                 template: 'OnTap_Tns/payment/tns-hosted',
                 adapterLoaded: false,
                 active: false,
+                buttonTitle: null,
+                buttonTitleEnabled: $t('Pay'),
+                buttonTitleDisabled: $t('Please wait...'),
                 imports: {
                     onActiveChange: 'active'
                 }
@@ -31,9 +35,17 @@ define(
 
             initObservable: function () {
                 this._super()
-                    .observe('active adapterLoaded');
+                    .observe('active adapterLoaded buttonTitle');
+
+                this.buttonTitle(this.buttonTitleDisabled);
+                this.isPlaceOrderActionAllowed.subscribe($.proxy(this.buttonTitleHandler, this));
+                this.adapterLoaded.subscribe($.proxy(this.buttonTitleHandler, this));
 
                 return this;
+            },
+
+            buttonTitleHandler: function (isButtonEnabled) {
+                this.buttonTitle(isButtonEnabled ? this.buttonTitleEnabled : this.buttonTitleDisabled);
             },
 
             onActiveChange: function (isActive) {

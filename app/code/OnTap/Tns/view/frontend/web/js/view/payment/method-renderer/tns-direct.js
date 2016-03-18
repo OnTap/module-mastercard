@@ -13,17 +13,22 @@ define(
         'mage/url',
         'uiLayout',
         'Magento_Checkout/js/model/full-screen-loader',
-        'Magento_Vault/js/view/payment/vault-enabler'
+        'Magento_Vault/js/view/payment/vault-enabler',
+        'mage/translate'
     ],
-    function ($, ccFormComponent, additionalValidators, setPaymentInformationAction, checkEnrolmentAction, url, layout, fullScreenLoader, vaultEnabler) {
+    function ($, ccFormComponent, additionalValidators, setPaymentInformationAction, checkEnrolmentAction, url, layout, fullScreenLoader, vaultEnabler, $t) {
         'use strict';
 
         return ccFormComponent.extend({
             defaults: {
                 template: 'OnTap_Tns/payment/tns-direct',
                 active: false,
+                buttonTitle: null,
+                buttonTitleEnabled: $t('Place Order'),
+                buttonTitleDisabled: $t('Please wait...'),
                 imports: {
-                    onActiveChange: 'active'
+                    onActiveChange: 'active',
+                    onButtonTitleChange: 'buttonTitle'
                 }
             },
             placeOrderHandler: null,
@@ -34,7 +39,14 @@ define(
                 this.vaultEnabler = vaultEnabler();
                 this.vaultEnabler.setPaymentCode(this.getCode());
 
+                this.buttonTitle(this.buttonTitleEnabled);
+                this.isPlaceOrderActionAllowed.subscribe($.proxy(this.buttonTitleHandler, this));
+
                 return this;
+            },
+
+            buttonTitleHandler: function (isButtonEnabled) {
+                this.buttonTitle(isButtonEnabled ? this.buttonTitleEnabled : this.buttonTitleDisabled);
             },
 
             isVaultEnabled: function () {
@@ -43,7 +55,7 @@ define(
 
             initObservable: function () {
                 this._super()
-                    .observe('active');
+                    .observe('active buttonTitle');
 
                 return this;
             },
