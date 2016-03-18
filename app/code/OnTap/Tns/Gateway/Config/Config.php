@@ -40,7 +40,6 @@ class Config extends \Magento\Payment\Gateway\Config\Config
      */
     public function getMerchantId()
     {
-        // @todo: sandbox switch
         return $this->getValue('api_username');
     }
 
@@ -49,7 +48,6 @@ class Config extends \Magento\Payment\Gateway\Config\Config
      */
     public function getMerchantPassword()
     {
-        // @todo: sandbox switch
         return $this->getValue('api_password');
     }
 
@@ -58,8 +56,11 @@ class Config extends \Magento\Payment\Gateway\Config\Config
      */
     public function getApiUrl()
     {
-        // @todo: sandbox switch
-        return $this->getValue('api_url_test');
+        if ((bool) $this->getValue('test')) {
+            return $this->getValue('api_url_test');
+        } else {
+            return $this->getValue('api_url');
+        }
     }
 
     /**
@@ -67,8 +68,11 @@ class Config extends \Magento\Payment\Gateway\Config\Config
      */
     public function getComponentUrl()
     {
-        // @todo: sandbox switch
-        return $this->getValue('component_url_test');
+        if ((bool) $this->getValue('test')) {
+            return $this->getValue('component_url_test');
+        } else {
+            return $this->getValue('component_url');
+        }
     }
 
     /**
@@ -76,7 +80,6 @@ class Config extends \Magento\Payment\Gateway\Config\Config
      */
     public function getWebhookSecret()
     {
-        // @todo: sandbox switch
         return $this->getValue('webhook_secret');
     }
 
@@ -85,7 +88,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config
      */
     public function getWebhookNotificationUrl()
     {
-        if ($this->getWebhookSecret() === "") {
+        if ($this->getWebhookSecret() && $this->getWebhookSecret() === "") {
             return null;
         }
         if ($this->getValue('webhook_url') && $this->getValue('webhook_url') !== "") {
