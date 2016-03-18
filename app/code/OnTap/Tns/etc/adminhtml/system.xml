@@ -61,6 +61,11 @@
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <config_path>payment/tns_hpf/debug</config_path>
                     </field>
+                    <field id="order_status" translate="label" type="select" sortOrder="101" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>New Order Status</label>
+                        <source_model>Magento\Sales\Model\Config\Source\Order\Status\Processing</source_model>
+                        <config_path>payment/tns_hpf/order_status</config_path>
+                    </field>
                     <field id="three_d_secure" translate="label comment" type="select" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Enable 3-D Secure</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -141,6 +146,11 @@
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <config_path>payment/tns_hosted/debug</config_path>
                     </field>
+                    <field id="order_status" translate="label" type="select" sortOrder="101" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>New Order Status</label>
+                        <source_model>Magento\Sales\Model\Config\Source\Order\Status\Processing</source_model>
+                        <config_path>payment/tns_hosted/order_status</config_path>
+                    </field>
                     <field id="currency" translate="label" type="select" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Accepted Currency</label>
                         <source_model>Magento\Config\Model\Config\Source\Locale\Currency</source_model>
@@ -199,15 +209,15 @@
                         <config_path>payment/tns_direct/webhook_url</config_path>
                         <comment>If left blank, will be chosen automatically</comment>
                     </field>
-                    <field id="order_status" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="0">
-                        <label>New Order Status</label>
-                        <source_model>Magento\Sales\Model\Config\Source\Order\Status\Processing</source_model>
-                        <config_path>payment/tns_direct/order_status</config_path>
-                    </field>
-                    <field id="test" translate="label" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="test" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Test Mode</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <config_path>payment/tns_direct/test</config_path>
+                    </field>
+                    <field id="order_status" translate="label" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>New Order Status</label>
+                        <source_model>Magento\Sales\Model\Config\Source\Order\Status\Processing</source_model>
+                        <config_path>payment/tns_direct/order_status</config_path>
                     </field>
                     <field id="currency" translate="label" type="select" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Accepted Currency</label>
@@ -229,12 +239,6 @@
                         <label>Credit Card Types</label>
                         <source_model>Magento\Payment\Model\Source\Cctype</source_model>
                         <config_path>payment/tns_direct/cctypes</config_path>
-                    </field>
-                    <field id="useccv" translate="label comment" type="select" sortOrder="150" showInDefault="1" showInWebsite="1" showInStore="0">
-                        <label>Credit Card Verification</label>
-                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                        <config_path>payment/tns_direct/useccv</config_path>
-                        <comment>Be sure to Enable CVV in your MasterCard account</comment>
                     </field>
                     <field id="allowspecific" translate="label" type="allowspecific" sortOrder="160" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Payment from Applicable Countries</label>

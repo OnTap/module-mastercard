@@ -13,6 +13,7 @@
                 <title>Credit or Debit Card</title>
                 <model>TnsDirectFacade</model>
                 <payment_action>authorize</payment_action>
+                <order_status>processing</order_status>
 
                 <api_version>34</api_version>
                 <api_url>https://eu-gateway.mastercard.com/api/rest/</api_url>
@@ -51,6 +52,7 @@
                 <title>Hosted Checkout</title>
                 <model>TnsHostedFacade</model>
                 <payment_action>authorize</payment_action>
+                <order_status>processing</order_status>
 
                 <api_version>34</api_version>
                 <api_url>https://eu-gateway.mastercard.com/api/rest/</api_url>
@@ -79,9 +81,10 @@
             </tns_hosted>
             <tns_hpf>
                 <active>0</active>
-                <title>Hosted Payment Session</title>
+                <title>Hosted Payment Form</title>
                 <model>TnsHpfFacade</model>
                 <payment_action>authorize</payment_action>
+                <order_status>processing</order_status>
 
                 <api_version>34</api_version>
                 <api_url>https://eu-gateway.mastercard.com/api/rest/</api_url>
