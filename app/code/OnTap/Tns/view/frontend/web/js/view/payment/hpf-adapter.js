@@ -27,9 +27,13 @@ define([
 
             this.logDebug("Loading HPF Api...");
 
-            var url = componentUrl + merchantId + '/session.js';
+            var url = componentUrl + merchantId + '/session.js',
+                cacheBust = new Date().getTime();
+
             if (this.debug) {
-                url += '?debug=1';
+                url += '?debug=1&_=' + cacheBust;
+            } else {
+                url += '?_=' + cacheBust;
             }
             requirejs.load({
                 contextName: '_',
