@@ -73,8 +73,35 @@
                     <?php endif; ?>
                 </tbody>
             </table>
+
+            <?php if ($risk !== null && isset($risk['review'])): ?>
+                <br />
+                <h3><?php echo __('Decision') ?></h3>
+                <table class="data-table admin__table-secondary">
+                    <tbody>
+                        <tr>
+                            <td><?php echo __('Decision') ?></td>
+                            <td><?php echo $block->safeValue($risk['review'], 'decision') ?></td>
+                        </tr>
+                        <tr>
+                            <td><?php echo __('Decision Reason') ?></td>
+                            <td><?php echo $block->safeValue($risk['review'], 'decisionReason') ?></td>
+                        </tr>
+                        <tr>
+                            <td><?php echo __('Note') ?></td>
+                            <td><?php echo $block->safeValue($risk['review'], 'note') ?></td>
+                        </tr>
+                        <tr>
+                            <td><?php echo __('Time Of Decision') ?></td>
+                            <td><?php echo $block->safeValue($risk['review'], 'timeOfDecision') ?></td>
+                        </tr>
+                    </tbody>
+                </table>
+            <?php endif; ?>
+
             <?php if ($risk !== null): ?>
                 <br />
+                <h3><?php echo __('Rules') ?></h3>
                 <table class="data-table admin__table-secondary">
                     <thead>
                         <tr>
