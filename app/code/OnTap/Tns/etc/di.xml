@@ -392,6 +392,7 @@
                 <item name="shipping" xsi:type="string">OnTap\Tns\Gateway\Request\ShippingDataBuilder</item>
                 <item name="customer" xsi:type="string">OnTap\Tns\Gateway\Request\CustomerDataBuilder</item>
                 <item name="3ds_results" xsi:type="string">TnsDirectThreeDSecureResultDataBuilder</item>
+                <item name="source" xsi:type="string">OnTap\Tns\Gateway\Request\SourceDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -406,6 +407,7 @@
                 <item name="shipping" xsi:type="string">OnTap\Tns\Gateway\Request\ShippingDataBuilder</item>
                 <item name="customer" xsi:type="string">OnTap\Tns\Gateway\Request\CustomerDataBuilder</item>
                 <item name="3ds_results" xsi:type="string">TnsDirectThreeDSecureResultDataBuilder</item>
+                <item name="source" xsi:type="string">OnTap\Tns\Gateway\Request\SourceDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -599,6 +601,7 @@
                 <item name="billing" xsi:type="string">OnTap\Tns\Gateway\Request\BillingDataBuilder</item>
                 <item name="shipping" xsi:type="string">OnTap\Tns\Gateway\Request\ShippingDataBuilder</item>
                 <item name="customer" xsi:type="string">OnTap\Tns\Gateway\Request\CustomerDataBuilder</item>
+                <item name="source" xsi:type="string">OnTap\Tns\Gateway\Request\SourceDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -784,6 +787,7 @@
                 <item name="shipping" xsi:type="string">OnTap\Tns\Gateway\Request\ShippingDataBuilder</item>
                 <item name="customer" xsi:type="string">OnTap\Tns\Gateway\Request\CustomerDataBuilder</item>
                 <item name="3ds_results" xsi:type="string">TnsHpfThreeDSecureResultDataBuilder</item>
+                <item name="source" xsi:type="string">OnTap\Tns\Gateway\Request\SourceDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -863,6 +867,7 @@
                 <item name="shipping" xsi:type="string">OnTap\Tns\Gateway\Request\ShippingDataBuilder</item>
                 <item name="customer" xsi:type="string">OnTap\Tns\Gateway\Request\CustomerDataBuilder</item>
                 <item name="3ds_results" xsi:type="string">TnsHpfThreeDSecureResultDataBuilder</item>
+                <item name="source" xsi:type="string">OnTap\Tns\Gateway\Request\SourceDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>

@@ -40,6 +40,7 @@
                 <item name="billing" xsi:type="string">OnTap\Tns\Gateway\Request\BillingDataBuilder</item>
                 <item name="shipping" xsi:type="string">OnTap\Tns\Gateway\Request\ShippingDataBuilder</item>
                 <item name="customer" xsi:type="string">OnTap\Tns\Gateway\Request\CustomerDataBuilder</item>
+                <item name="source" xsi:type="string">OnTap\Tns\Gateway\Request\SourceDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
