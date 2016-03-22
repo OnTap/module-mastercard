@@ -46,7 +46,9 @@ define(
             },
 
             buttonTitleHandler: function (isButtonEnabled) {
-                this.buttonTitle(isButtonEnabled ? this.buttonTitleEnabled : this.buttonTitleDisabled);
+                if (isButtonEnabled && this.isActive()) {
+                    this.buttonTitle(this.buttonTitleEnabled);
+                }
             },
 
             isVaultEnabled: function () {
@@ -143,6 +145,7 @@ define(
             startPlaceOrder: function () {
                 if (this.validateHandler() && additionalValidators.validate()) {
 
+                    this.buttonTitle(this.buttonTitleDisabled);
                     this.isPlaceOrderActionAllowed(false);
 
                     if (this.is3DsEnabled()) {

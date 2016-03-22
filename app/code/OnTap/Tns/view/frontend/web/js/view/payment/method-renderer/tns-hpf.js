@@ -40,16 +40,6 @@ define(
 
             initialize: function () {
                 this._super();
-                this.isPlaceOrderActionAllowed.subscribe(function (allowed) {
-                    if (allowed === true) {
-                        this.inPayment = false;
-                        fullScreenLoader.stopLoader();
-                    }
-                    if (allowed === false) {
-                        fullScreenLoader.startLoader();
-                    }
-                }, this);
-
                 this.vaultEnabler = vaultEnabler();
                 this.vaultEnabler.setPaymentCode(this.getCode());
 
@@ -71,14 +61,19 @@ define(
                     ]);
 
                 this.buttonTitle(this.buttonTitleDisabled);
-                this.isPlaceOrderActionAllowed.subscribe($.proxy(this.buttonTitleHandler, this));
-                this.adapterLoaded.subscribe($.proxy(this.buttonTitleHandler, this));
+                this.isPlaceOrderActionAllowed.subscribe(function (allowed) {
+                    if (allowed === true && this.isActive()) {
+                        this.inPayment = false;
+                        this.buttonTitle(this.buttonTitleEnabled);
+                    }
+                }, this);
+                this.adapterLoaded.subscribe($.proxy(function (loaded) {
+                    if (loaded === true && this.isActive()) {
+                        this.buttonTitle(this.buttonTitleEnabled);
+                    }
+                }, this));
 
                 return this;
-            },
-
-            buttonTitleHandler: function (isButtonEnabled) {
-                this.buttonTitle(isButtonEnabled ? this.buttonTitleEnabled : this.buttonTitleDisabled);
             },
 
             setValidateHandler: function (handler) {
@@ -244,6 +239,7 @@ define(
 
             startHpfSession: function () {
                 this.isPlaceOrderActionAllowed(false);
+                this.buttonTitle(this.buttonTitleDisabled);
                 this.inPayment = false;
 
                 paymentAdapter.startSession($.proxy(function(response) {

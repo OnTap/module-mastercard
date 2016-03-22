@@ -45,7 +45,9 @@ define(
             },
 
             buttonTitleHandler: function (isButtonEnabled) {
-                this.buttonTitle(isButtonEnabled ? this.buttonTitleEnabled : this.buttonTitleDisabled);
+                if (isButtonEnabled && this.isActive()) {
+                    this.buttonTitle(this.buttonTitleEnabled);
+                }
             },
 
             onActiveChange: function (isActive) {
@@ -78,6 +80,7 @@ define(
 
             createPaymentSession: function () {
                 this.isPlaceOrderActionAllowed(false);
+                this.buttonTitle(this.buttonTitleDisabled);
 
                 var action = createSessionAction(
                     this.getData(),
