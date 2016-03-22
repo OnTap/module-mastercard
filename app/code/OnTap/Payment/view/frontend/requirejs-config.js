@@ -5,7 +5,7 @@
 var config = {
     map: {
         '*': {
-            'Magento_Checkout/js/view/payment/list': 'OnTap_Payment/js/view/payment/list' // @todo: Remove this when Vault released
+            'Magento_Checkout/js/view/payment/list': 'OnTap_Payment/js/view/payment/list'
         }
     }
 };
