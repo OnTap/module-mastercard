@@ -15,7 +15,8 @@ class Config extends \OnTap\Tns\Gateway\Config\Config
      */
     public function getComponentUrl()
     {
-        return sprintf(static::COMPONENT_URI,
+        return sprintf(
+            static::COMPONENT_URI,
             $this->getApiAreaUrl(),
             $this->getValue('api_version')
         );
