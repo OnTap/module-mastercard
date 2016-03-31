@@ -27,7 +27,7 @@ define([
 
             this.logDebug("Loading HPF Api...");
 
-            var url = componentUrl + merchantId + '/session.js',
+            var url = componentUrl,
                 cacheBust = new Date().getTime();
 
             if (this.debug) {

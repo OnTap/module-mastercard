@@ -12,6 +12,11 @@ use Magento\Framework\UrlInterface;
 class Config extends \Magento\Payment\Gateway\Config\Config
 {
     const WEB_HOOK_RESPONSE_URL = 'tns/webhook/response';
+    const API_EUROPE = 'api_eu';
+    const API_AMERICA = 'api_na';
+    const API_ASIA = 'api_as';
+    const API_UAT = 'api_uat';
+    const TEST_PREFIX = 'TEST';
 
     /**
      * @var UrlInterface
@@ -40,7 +45,11 @@ class Config extends \Magento\Payment\Gateway\Config\Config
      */
     public function getMerchantId()
     {
-        return $this->getValue('api_username');
+        if ((bool) $this->getValue('test')) {
+            return static::TEST_PREFIX . $this->getValue('api_username');
+        } else {
+            return $this->getValue('api_username');
+        }
     }
 
     /**
@@ -54,25 +63,17 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     /**
      * @return string
      */
-    public function getApiUrl()
+    public function getApiAreaUrl()
     {
-        if ((bool) $this->getValue('test')) {
-            return $this->getValue('api_url_test');
-        } else {
-            return $this->getValue('api_url');
-        }
+        return $this->getValue($this->getValue('api_gateway'));
     }
 
     /**
      * @return string
      */
-    public function getComponentUrl()
+    public function getApiUrl()
     {
-        if ((bool) $this->getValue('test')) {
-            return $this->getValue('component_url_test');
-        } else {
-            return $this->getValue('component_url');
-        }
+        return $this->getApiAreaUrl() . 'api/rest/';
     }
 
     /**

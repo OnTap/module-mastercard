@@ -47,7 +47,6 @@ class Check extends \Magento\Framework\App\Action\Action
     /**
      * Check constructor.
      * @param CommandPoolFactory $commandPoolFactory
-     * @param CommandPoolInterface $commandPool
      * @param Session $checkoutSession
      * @param PaymentDataObjectFactory $paymentDataObjectFactory
      * @param JsonFactory $jsonFactory

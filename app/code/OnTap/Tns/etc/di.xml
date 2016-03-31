@@ -440,7 +440,7 @@
         </arguments>
     </type>
 
-    <virtualType name="TnsHostedConfig" type="OnTap\Tns\Gateway\Config\Config">
+    <virtualType name="TnsHostedConfig" type="OnTap\Tns\Gateway\Config\Hosted\Config">
         <arguments>
             <argument name="methodCode" xsi:type="const">OnTap\Tns\Model\Ui\Hosted\ConfigProvider::METHOD_CODE</argument>
         </arguments>
@@ -623,7 +623,7 @@
             <argument name="config" xsi:type="object">TnsHpfConfig</argument>
         </arguments>
     </virtualType>
-    <virtualType name="TnsHpfConfig" type="OnTap\Tns\Gateway\Config\Config">
+    <virtualType name="TnsHpfConfig" type="OnTap\Tns\Gateway\Config\Hpf\Config">
         <arguments>
             <argument name="methodCode" xsi:type="const">OnTap\Tns\Model\Ui\Hpf\ConfigProvider::METHOD_CODE</argument>
         </arguments>

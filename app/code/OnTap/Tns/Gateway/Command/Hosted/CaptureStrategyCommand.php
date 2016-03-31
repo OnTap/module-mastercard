@@ -32,7 +32,6 @@ class CaptureStrategyCommand implements CommandInterface
     /**
      * @param Command\CommandPoolInterface $commandPool
      * @param ConfigInterface $config $config
-     * @param string $successCommand
      */
     public function __construct(
         Command\CommandPoolInterface $commandPool,

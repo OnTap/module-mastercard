@@ -51,6 +51,11 @@
                         <config_path>payment/tns_hpf/webhook_url</config_path>
                         <comment>If left blank, will be chosen automatically</comment>
                     </field>
+                    <field id="api_gateway" translate="label" type="select" sortOrder="89" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Gateway</label>
+                        <source_model>OnTap\Tns\Model\Adminhtml\Source\Gateway</source_model>
+                        <config_path>payment/tns_hpf/api_gateway</config_path>
+                    </field>
                     <field id="test" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Test Mode</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -136,6 +141,11 @@
                         <config_path>payment/tns_hosted/webhook_url</config_path>
                         <comment>If left blank, will be chosen automatically</comment>
                     </field>
+                    <field id="api_gateway" translate="label" type="select" sortOrder="89" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Gateway</label>
+                        <source_model>OnTap\Tns\Model\Adminhtml\Source\Gateway</source_model>
+                        <config_path>payment/tns_hosted/api_gateway</config_path>
+                    </field>
                     <field id="test" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Test Mode</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -208,6 +218,11 @@
                         <label>WebHook URL</label>
                         <config_path>payment/tns_direct/webhook_url</config_path>
                         <comment>If left blank, will be chosen automatically</comment>
+                    </field>
+                    <field id="api_gateway" translate="label" type="select" sortOrder="89" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Gateway</label>
+                        <source_model>OnTap\Tns\Model\Adminhtml\Source\Gateway</source_model>
+                        <config_path>payment/tns_direct/api_gateway</config_path>
                     </field>
                     <field id="test" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Test Mode</label>

@@ -45,6 +45,9 @@ class OrderDataBuilder implements BuilderInterface
         $data = [];
         /** @var \Magento\Quote\Model\Quote\Item $item */
         foreach ($this->cart->getItems() as $item) {
+            if ($item->getParentItemId() !== null) {
+                continue;
+            }
             $data[] = [
                 'name' => $item->getName(),
                 'description' => $item->getDescription(),

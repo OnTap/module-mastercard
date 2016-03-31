@@ -16,8 +16,12 @@
                 <order_status>processing</order_status>
 
                 <api_version>34</api_version>
-                <api_url>https://eu-gateway.mastercard.com/api/rest/</api_url>
-                <api_url_test>https://test-gateway.mastercard.com/api/rest/</api_url_test>
+                <api_gateway>api_eu</api_gateway>
+                <api_eu>https://eu-gateway.mastercard.com/</api_eu>
+                <api_as>https://ap-gateway.mastercard.com/</api_as>
+                <api_na>https://na-gateway.mastercard.com/</api_na>
+                <api_uat>https://secure.uat.tnspayments.com/</api_uat>
+
                 <api_password backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
                 <webhook_secret backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
 
@@ -28,6 +32,7 @@
                 <allowspecific>0</allowspecific>
                 <debug>0</debug>
                 <test>0</test>
+                <api_gateway>api_eu</api_gateway>
                 <three_d_secure>0</three_d_secure>
 
                 <!--<can_initialize>1</can_initialize>-->
@@ -55,15 +60,18 @@
                 <order_status>processing</order_status>
 
                 <api_version>34</api_version>
-                <api_url>https://eu-gateway.mastercard.com/api/rest/</api_url>
-                <api_url_test>https://test-gateway.mastercard.com/api/rest/</api_url_test>
-                <component_url>https://eu-gateway.mastercard.com/checkout/version/34/checkout.js</component_url>
-                <component_url_test>https://test-gateway.mastercard.com/checkout/version/34/checkout.js</component_url_test>
+                <api_gateway>api_eu</api_gateway>
+                <api_eu>https://eu-gateway.mastercard.com/</api_eu>
+                <api_as>https://ap-gateway.mastercard.com/</api_as>
+                <api_na>https://na-gateway.mastercard.com/</api_na>
+                <api_uat>https://secure.uat.tnspayments.com/</api_uat>
+
                 <api_password backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
                 <webhook_secret backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
 
                 <debug>0</debug>
                 <test>0</test>
+                <api_gateway>api_eu</api_gateway>
                 <allowspecific>0</allowspecific>
                 <can_initialize>0</can_initialize>
                 <can_use_checkout>1</can_use_checkout>
@@ -87,10 +95,12 @@
                 <order_status>processing</order_status>
 
                 <api_version>34</api_version>
-                <api_url>https://eu-gateway.mastercard.com/api/rest/</api_url>
-                <api_url_test>https://test-gateway.mastercard.com/api/rest/</api_url_test>
-                <component_url>https://eu-gateway.mastercard.com/form/version/34/merchant/</component_url>
-                <component_url_test>https://test-gateway.mastercard.com/form/version/34/merchant/</component_url_test>
+                <api_gateway>api_eu</api_gateway>
+                <api_eu>https://eu-gateway.mastercard.com/</api_eu>
+                <api_as>https://ap-gateway.mastercard.com/</api_as>
+                <api_na>https://na-gateway.mastercard.com/</api_na>
+                <api_uat>https://secure.uat.tnspayments.com/</api_uat>
+
                 <api_password backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
                 <webhook_secret backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
 
