@@ -82,6 +82,7 @@
             <argument name="builders" xsi:type="array">
                 <item name="operation" xsi:type="string">VoidOperationDataBuilder</item>
                 <item name="void" xsi:type="string">OnTap\Tns\Gateway\Request\VoidDataBuilder</item>
+                <item name="version" xsi:type="string">OnTap\Tns\Gateway\Request\VersionDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -91,6 +92,7 @@
             <argument name="builders" xsi:type="array">
                 <item name="operation" xsi:type="string">RefundOperationDataBuilder</item>
                 <item name="refund" xsi:type="string">OnTap\Tns\Gateway\Request\TransactionDataBuilder</item>
+                <item name="version" xsi:type="string">OnTap\Tns\Gateway\Request\VersionDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -100,6 +102,16 @@
             <argument name="builders" xsi:type="array">
                 <item name="operation" xsi:type="string">CaptureOperationDataBuilder</item>
                 <item name="capture" xsi:type="string">OnTap\Tns\Gateway\Request\TransactionDataBuilder</item>
+                <item name="version" xsi:type="string">OnTap\Tns\Gateway\Request\VersionDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="Tns3DSecureVerifyDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="operation" xsi:type="string">ThreeDSecureProcessOperationDataBuilder</item>
+                <item name="3ds_process" xsi:type="string">OnTap\Tns\Gateway\Request\ThreeDSecure\ProcessDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -240,6 +252,7 @@
         <arguments>
             <argument name="builders" xsi:type="array">
                 <item name="card" xsi:type="string">OnTap\Tns\Gateway\Request\TokenDataBuilder</item>
+                <item name="version" xsi:type="string">OnTap\Tns\Gateway\Request\VersionDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -255,6 +268,7 @@
         <arguments>
             <argument name="builders" xsi:type="array">
                 <item name="card" xsi:type="string">OnTap\Tns\Gateway\Request\TokenDataBuilder</item>
+                <item name="version" xsi:type="string">OnTap\Tns\Gateway\Request\VersionDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -346,14 +360,6 @@
             <argument name="handler" xsi:type="object">OnTap\Tns\Gateway\Response\ThreeDSecure\ResultHandler</argument>
         </arguments>
     </virtualType>
-    <virtualType name="Tns3DSecureVerifyDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
-        <arguments>
-            <argument name="builders" xsi:type="array">
-                <item name="operation" xsi:type="string">ThreeDSecureProcessOperationDataBuilder</item>
-                <item name="3ds_process" xsi:type="string">OnTap\Tns\Gateway\Request\ThreeDSecure\ProcessDataBuilder</item>
-            </argument>
-        </arguments>
-    </virtualType>
 
     <virtualType name="TnsDirectThreeDSecureResultValidator" type="Magento\Payment\Gateway\Validator\ValidatorComposite">
         <arguments>
@@ -393,6 +399,7 @@
                 <item name="customer" xsi:type="string">OnTap\Tns\Gateway\Request\CustomerDataBuilder</item>
                 <item name="3ds_results" xsi:type="string">TnsDirectThreeDSecureResultDataBuilder</item>
                 <item name="source" xsi:type="string">OnTap\Tns\Gateway\Request\SourceDataBuilder</item>
+                <item name="version" xsi:type="string">OnTap\Tns\Gateway\Request\VersionDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -408,6 +415,7 @@
                 <item name="customer" xsi:type="string">OnTap\Tns\Gateway\Request\CustomerDataBuilder</item>
                 <item name="3ds_results" xsi:type="string">TnsDirectThreeDSecureResultDataBuilder</item>
                 <item name="source" xsi:type="string">OnTap\Tns\Gateway\Request\SourceDataBuilder</item>
+                <item name="version" xsi:type="string">OnTap\Tns\Gateway\Request\VersionDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -602,6 +610,7 @@
                 <item name="shipping" xsi:type="string">OnTap\Tns\Gateway\Request\ShippingDataBuilder</item>
                 <item name="customer" xsi:type="string">OnTap\Tns\Gateway\Request\CustomerDataBuilder</item>
                 <item name="source" xsi:type="string">OnTap\Tns\Gateway\Request\SourceDataBuilder</item>
+                <item name="version" xsi:type="string">OnTap\Tns\Gateway\Request\VersionDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -702,6 +711,7 @@
         <arguments>
             <argument name="builders" xsi:type="array">
                 <item name="card" xsi:type="string">OnTap\Tns\Gateway\Request\TokenDataBuilder</item>
+                <item name="version" xsi:type="string">OnTap\Tns\Gateway\Request\VersionDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -717,6 +727,7 @@
         <arguments>
             <argument name="builders" xsi:type="array">
                 <item name="card" xsi:type="string">OnTap\Tns\Gateway\Request\TokenDataBuilder</item>
+                <item name="version" xsi:type="string">OnTap\Tns\Gateway\Request\VersionDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -788,6 +799,7 @@
                 <item name="customer" xsi:type="string">OnTap\Tns\Gateway\Request\CustomerDataBuilder</item>
                 <item name="3ds_results" xsi:type="string">TnsHpfThreeDSecureResultDataBuilder</item>
                 <item name="source" xsi:type="string">OnTap\Tns\Gateway\Request\SourceDataBuilder</item>
+                <item name="version" xsi:type="string">OnTap\Tns\Gateway\Request\VersionDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -868,6 +880,7 @@
                 <item name="customer" xsi:type="string">OnTap\Tns\Gateway\Request\CustomerDataBuilder</item>
                 <item name="3ds_results" xsi:type="string">TnsHpfThreeDSecureResultDataBuilder</item>
                 <item name="source" xsi:type="string">OnTap\Tns\Gateway\Request\SourceDataBuilder</item>
+                <item name="version" xsi:type="string">OnTap\Tns\Gateway\Request\VersionDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>

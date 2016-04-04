@@ -41,6 +41,7 @@
                 <item name="shipping" xsi:type="string">OnTap\Tns\Gateway\Request\ShippingDataBuilder</item>
                 <item name="customer" xsi:type="string">OnTap\Tns\Gateway\Request\CustomerDataBuilder</item>
                 <item name="source" xsi:type="string">OnTap\Tns\Gateway\Request\SourceDataBuilder</item>
+                <item name="version" xsi:type="string">OnTap\Tns\Gateway\Request\VersionDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
