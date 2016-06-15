@@ -11,7 +11,7 @@ use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
 use Magento\Payment\Gateway\Command\CommandPoolInterface;
 use Magento\Quote\Model\QuoteIdMaskFactory;
-use Magento\Quote\Api\GuestBillingAddressManagementInterface;
+use Magento\Quote\Api\BillingAddressManagementInterface;
 
 class SessionInformationManagement implements SessionInformationManagementInterface
 {
@@ -38,7 +38,7 @@ class SessionInformationManagement implements SessionInformationManagementInterf
     protected $quoteIdMaskFactory;
 
     /**
-     * @var GuestBillingAddressManagementInterface
+     * @var BillingAddressManagementInterface
      */
     protected $billingAddressManagement;
 
@@ -48,14 +48,14 @@ class SessionInformationManagement implements SessionInformationManagementInterf
      * @param CartRepositoryInterface $quoteRepository
      * @param PaymentDataObjectFactory $paymentDataObjectFactory
      * @param QuoteIdMaskFactory $quoteIdMaskFactory
-     * @param GuestBillingAddressManagementInterface $billingAddressManagement
+     * @param BillingAddressManagementInterface $billingAddressManagement
      */
     public function __construct(
         CommandPoolInterface $commandPool,
         CartRepositoryInterface $quoteRepository,
         PaymentDataObjectFactory $paymentDataObjectFactory,
         QuoteIdMaskFactory $quoteIdMaskFactory,
-        GuestBillingAddressManagementInterface $billingAddressManagement
+        BillingAddressManagementInterface $billingAddressManagement
     ) {
         $this->commandPool = $commandPool;
         $this->quoteRepository = $quoteRepository;
@@ -72,6 +72,10 @@ class SessionInformationManagement implements SessionInformationManagementInterf
         \Magento\Quote\Api\Data\PaymentInterface $paymentMethod,
         \Magento\Quote\Api\Data\AddressInterface $billingAddress = null
     ) {
+        if ($billingAddress) {
+            $this->billingAddressManagement->assign($cartId, $billingAddress);
+        }
+
         /* @var \Magento\Quote\Model\Quote $quote */
         $quote = $this->quoteRepository->getActive($cartId);
 
