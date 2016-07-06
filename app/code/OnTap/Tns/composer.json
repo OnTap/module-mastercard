@@ -4,7 +4,7 @@
     "require": {
         "php": "~5.5.22|~5.6.0|~7.0.0",
         "magento/framework": "*",
-        "magento/magento-composer-installer": "*",
+        "magento/magento-composer-installer": "~100.0.0|100.0.6",
         "magento/module-config": "*",
         "magento/module-directory": "*",
         "magento/module-payment": "*",

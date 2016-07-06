@@ -251,7 +251,7 @@ class Response extends \Magento\Framework\App\Action\Action
             $this->updateOrderPaymentDetails($order, $data);
 
         } catch (\Exception $e) {
-            $errorMessage = sprintf(__("Mastercard TNS WebHook Exception: '%s'"), $e->getMessage());
+            $errorMessage = sprintf(__("MasterCard Payment Gateway Services WebHook Exception: '%s'"), $e->getMessage());
             $this->logWebHookRequest($errorMessage, 'critical');
             $page->setStatusHeader(400);
             return $page->setContents($e->getMessage());
@@ -266,7 +266,7 @@ class Response extends \Magento\Framework\App\Action\Action
         ];
         $logger->debug($log);
 
-        $logMessage = __("Mastercard TNS WebHook Success");
+        $logMessage = __("MasterCard Payment Gateway Services WebHook Success");
         $this->logWebHookRequest($logMessage, 'info');
 
         $page->setStatusHeader(200);
