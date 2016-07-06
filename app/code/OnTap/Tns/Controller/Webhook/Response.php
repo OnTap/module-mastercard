@@ -251,7 +251,10 @@ class Response extends \Magento\Framework\App\Action\Action
             $this->updateOrderPaymentDetails($order, $data);
 
         } catch (\Exception $e) {
-            $errorMessage = sprintf(__("MasterCard Payment Gateway Services WebHook Exception: '%s'"), $e->getMessage());
+            $errorMessage = sprintf(
+                __("MasterCard Payment Gateway Services WebHook Exception: '%s'"),
+                $e->getMessage()
+            );
             $this->logWebHookRequest($errorMessage, 'critical');
             $page->setStatusHeader(400);
             return $page->setContents($e->getMessage());
