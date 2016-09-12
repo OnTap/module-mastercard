@@ -32,10 +32,11 @@ class DataAssignAbstract extends AbstractDataAssignObserver
         //$paymentInfo = $this->readPaymentModelArgument($observer);
 
         foreach ($this->additionalInformationList as $additionalInformationKey) {
-            if ($data->getDataByKey($additionalInformationKey) !== null) {
+            $path = sprintf('additional_data/%s', $additionalInformationKey);
+            if ($data->getDataByPath($path) !== null) {
                 $paymentInfo->setAdditionalInformation(
                     $additionalInformationKey,
-                    $data->getDataByKey($additionalInformationKey)
+                    $data->getDataByPath($path)
                 );
             }
         }
