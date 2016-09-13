@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="payment_method_assign_data_tns_direct">
+        <observer name="tns_direct_gateway_data_assign" instance="OnTap\MasterCard\Observer\Direct\DataAssignObserver" />
+    </event>
+    <event name="payment_method_assign_data_tns_hosted">
+        <observer name="tns_hosted_gateway_data_assign" instance="OnTap\MasterCard\Observer\Hosted\DataAssignObserver" />
+    </event>
+    <event name="payment_method_assign_data_tns_hpf">
+        <observer name="tns_hpf_gateway_data_assign" instance="OnTap\MasterCard\Observer\Hpf\DataAssignObserver" />
+    </event>
+</config>

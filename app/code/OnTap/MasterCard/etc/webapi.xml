@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <!-- Create payment session -->
+    <route method="POST" url="/V1/tns/hc/session/create">
+        <service class="OnTap\MasterCard\Api\SessionInformationManagementInterface" method="createNewPaymentSession"/>
+        <resources>
+            <resource ref="self" />
+        </resources>
+        <data>
+            <parameter name="cartId" force="true">%cart_id%</parameter>
+        </data>
+    </route>
+    <route method="POST" url="/V1/tns/hc/session/:cartId/create">
+        <service class="OnTap\MasterCard\Api\SessionInformationManagementInterface" method="createNewGuestPaymentSession"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+</routes>
