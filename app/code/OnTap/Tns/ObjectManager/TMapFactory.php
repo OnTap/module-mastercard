@@ -4,7 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-namespace OnTap\Payment\ObjectManager;
+namespace OnTap\Tns\ObjectManager;
 
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\ObjectManager\TMap;

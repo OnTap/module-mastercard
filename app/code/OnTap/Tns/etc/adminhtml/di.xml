@@ -30,7 +30,6 @@
             <argument name="config" xsi:type="object">TnsHpfConfig</argument>
         </arguments>
     </virtualType>
-
     <virtualType name="TnsDirectAuthorizeDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
         <arguments>
             <argument name="builders" xsi:type="array">
@@ -45,22 +44,4 @@
             </argument>
         </arguments>
     </virtualType>
-
-    <!-- VAULT -->
-    <type name="Magento\Vault\Model\Adminhtml\Source\VaultProvidersMap">
-        <arguments>
-            <argument name="options" xsi:type="array">
-                <item xsi:type="object" name="tns_direct">TnsDirectFacade</item>
-                <item xsi:type="object" name="tns_hpf">TnsHpfFacade</item>
-            </argument>
-        </arguments>
-    </type>
-    <type name="Magento\Vault\Model\Ui\Adminhtml\TokensConfigProvider">
-        <arguments>
-            <argument name="tokenUiComponentProviders" xsi:type="array">
-                <item name="tns_direct" xsi:type="object">OnTap\Tns\Model\Ui\Adminhtml\TokenUiComponentProvider</item>
-                <item name="tns_hpf" xsi:type="object">OnTap\Tns\Model\Ui\Adminhtml\TokenUiComponentProvider</item>
-            </argument>
-        </arguments>
-    </type>
 </config>

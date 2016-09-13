@@ -14,8 +14,6 @@ use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use Magento\Payment\Gateway\Helper\ContextHelper;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use OnTap\Tns\Gateway\Response\ThreeDSecure\CheckHandler;
-use Magento\Vault\Model\VaultPaymentInterface;
-use Magento\Vault\Model\Ui\VaultConfigProvider;
 use Magento\Framework\App\State;
 
 /**
@@ -26,7 +24,6 @@ use Magento\Framework\App\State;
 class VerificationStrategyCommand implements CommandInterface
 {
     const PROCESS_3DS_RESULT = '3ds_process';
-    const CREATE_TOKEN = 'create_token';
 
     /**
      * @var Command\CommandPoolInterface
@@ -44,11 +41,6 @@ class VerificationStrategyCommand implements CommandInterface
     private $successCommand;
 
     /**
-     * @var VaultPaymentInterface
-     */
-    private $vaultPayment;
-
-    /**
      * @var State
      */
     private $state;
@@ -56,20 +48,17 @@ class VerificationStrategyCommand implements CommandInterface
     /**
      * VerificationStrategyCommand constructor.
      * @param State $state
-     * @param VaultPaymentInterface $vaultPayment
      * @param Command\CommandPoolInterface $commandPool
      * @param ConfigInterface $config
      * @param string $successCommand
      */
     public function __construct(
         State $state,
-        VaultPaymentInterface $vaultPayment,
         Command\CommandPoolInterface $commandPool,
         ConfigInterface $config,
         $successCommand = ''
     ) {
         $this->state = $state;
-        $this->vaultPayment = $vaultPayment;
         $this->commandPool = $commandPool;
         $this->config = $config;
         $this->successCommand = $successCommand;
@@ -134,17 +123,6 @@ class VerificationStrategyCommand implements CommandInterface
         if ($this->isThreeDSSupported($paymentDO)) {
             $this->commandPool
                 ->get(static::PROCESS_3DS_RESULT)
-                ->execute($commandSubject);
-        }
-
-        $methodCode = $paymentInfo->getMethodInstance()->getCode();
-        $isActiveVaultModule = $this->vaultPayment->isActiveForPayment($methodCode);
-
-        // Vault enabled from configuration
-        // 'Save for later use' checked on frontend
-        if ($isActiveVaultModule && $paymentInfo->getAdditionalInformation(VaultConfigProvider::IS_ACTIVE_CODE)) {
-            $this->commandPool
-                ->get(static::CREATE_TOKEN)
                 ->execute($commandSubject);
         }
 

@@ -3,7 +3,7 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace OnTap\Payment\Gateway\Command;
+namespace OnTap\Tns\Gateway\Command;
 
 use Magento\Payment\Gateway\CommandInterface;
 use Magento\Payment\Model\InfoInterface;

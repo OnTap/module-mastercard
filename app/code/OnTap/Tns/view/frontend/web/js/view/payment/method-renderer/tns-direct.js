@@ -13,10 +13,9 @@ define(
         'mage/url',
         'uiLayout',
         'Magento_Checkout/js/model/full-screen-loader',
-        'Magento_Vault/js/view/payment/vault-enabler',
         'mage/translate'
     ],
-    function ($, ccFormComponent, additionalValidators, setPaymentInformationAction, checkEnrolmentAction, url, layout, fullScreenLoader, vaultEnabler, $t) {
+    function ($, ccFormComponent, additionalValidators, setPaymentInformationAction, checkEnrolmentAction, url, layout, fullScreenLoader, $t) {
         'use strict';
 
         return ccFormComponent.extend({
@@ -36,8 +35,6 @@ define(
 
             initialize: function () {
                 this._super();
-                this.vaultEnabler = vaultEnabler();
-                this.vaultEnabler.setPaymentCode(this.getCode());
 
                 this.buttonTitle(this.buttonTitleEnabled);
                 this.isPlaceOrderActionAllowed.subscribe($.proxy(this.buttonTitleHandler, this));
@@ -49,10 +46,6 @@ define(
                 if (isButtonEnabled && this.isActive()) {
                     this.buttonTitle(this.buttonTitleEnabled);
                 }
-            },
-
-            isVaultEnabled: function () {
-                return this.vaultEnabler.isVaultEnabled();
             },
 
             initObservable: function () {
@@ -134,12 +127,6 @@ define(
 
             threeDSecureCheckFailed: function () {
                 fullScreenLoader.stopLoader();
-            },
-
-            getData: function () {
-                var data = this._super();
-                this.vaultEnabler.visitAdditionalData(data);
-                return data;
             },
 
             startPlaceOrder: function () {

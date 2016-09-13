@@ -126,7 +126,7 @@
         </arguments>
     </virtualType>
 
-    <type name="OnTap\Payment\Gateway\Command\CommandManagerPool">
+    <type name="OnTap\Tns\Gateway\Command\CommandManagerPool">
         <arguments>
             <argument name="executors" xsi:type="array">
                 <item name="tns_direct" xsi:type="string">TnsDirectCommandManager</item>
@@ -138,7 +138,7 @@
     <!-- ********** -->
     <!-- DIRECT API -->
     <!-- ********** -->
-    <virtualType name="TnsDirectCommandManager" type="OnTap\Payment\Gateway\Command\CommandManager">
+    <virtualType name="TnsDirectCommandManager" type="OnTap\Tns\Gateway\Command\CommandManager">
         <arguments>
             <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
         </arguments>
@@ -171,9 +171,6 @@
                 <item name="pre_auth_capture" xsi:type="string">TnsDirectPreAuthCaptureCommand</item>
                 <item name="refund" xsi:type="string">TnsDirectRefundCommand</item>
                 <item name="void" xsi:type="string">TnsDirectVoidCommand</item>
-                <item name="create_token" xsi:type="string">TnsDirectCreateTokenCommand</item>
-                <item name="vault_sale" xsi:type="string">TnsDirectVaultSaleCommand</item>
-                <item name="vault_authorize" xsi:type="string">TnsDirectVaultAuthorizeCommand</item>
             </argument>
         </arguments>
     </virtualType>
@@ -220,55 +217,6 @@
         <arguments>
             <argument name="handlers" xsi:type="array">
                 <item name="default" xsi:type="string">TnsConfigValueHandler</item>
-            </argument>
-        </arguments>
-    </virtualType>
-
-    <!-- Create a token in gateway -->
-    <virtualType name="TnsDirectCreateTokenCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
-        <arguments>
-            <argument name="requestBuilder" xsi:type="object">OnTap\Tns\Gateway\Request\Direct\CardDataBuilder</argument>
-            <argument name="transferFactory" xsi:type="object">OnTap\Tns\Gateway\Http\Vault\TransferFactoryCreateToken</argument>
-            <argument name="client" xsi:type="object">OnTap\Tns\Gateway\Http\Client\Rest</argument>
-            <argument name="handler" xsi:type="object">TnsDirectTokenCreateHandler</argument>
-            <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\TokenCreateValidator</argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="TnsDirectTokenCreateHandler" type="OnTap\Tns\Gateway\Response\TokenCreateHandler">
-        <arguments>
-            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
-        </arguments>
-    </virtualType>
-
-    <!-- Pure authorize command (VAULT) -->
-    <virtualType name="TnsDirectVaultAuthorizeCommand" type="AuthorizeCommand">
-        <arguments>
-            <argument name="requestBuilder" xsi:type="object">TnsDirectVaultAuthorizeDataBuilder</argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="TnsDirectVaultAuthorizeDataBuilder" type="TnsDirectAuthorizeDataBuilder">
-        <arguments>
-            <argument name="builders" xsi:type="array">
-                <item name="card" xsi:type="string">OnTap\Tns\Gateway\Request\TokenDataBuilder</item>
-                <item name="version" xsi:type="string">OnTap\Tns\Gateway\Request\VersionDataBuilder</item>
-            </argument>
-        </arguments>
-    </virtualType>
-
-    <!-- Sale (VAULT) -->
-    <virtualType name="TnsDirectVaultSaleCommand" type="TnsDirectSaleCommand">
-        <arguments>
-            <argument name="requestBuilder" xsi:type="object">TnsDirectVaultSaleDataBuilder</argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="TnsDirectVaultSaleDataBuilder" type="TnsDirectSaleDataBuilder">
-        <arguments>
-            <argument name="builders" xsi:type="array">
-                <item name="card" xsi:type="string">OnTap\Tns\Gateway\Request\TokenDataBuilder</item>
-                <item name="version" xsi:type="string">OnTap\Tns\Gateway\Request\VersionDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -618,7 +566,7 @@
     <!-- ******************* -->
     <!-- HOSTED PAYMENT FORM -->
     <!-- ******************* -->
-    <virtualType name="TnsHpfCommandManager" type="OnTap\Payment\Gateway\Command\CommandManager">
+    <virtualType name="TnsHpfCommandManager" type="OnTap\Tns\Gateway\Command\CommandManager">
         <arguments>
             <argument name="commandPool" xsi:type="object">TnsHpfCommandPool</argument>
         </arguments>
@@ -693,59 +641,7 @@
                 <item name="pre_auth_capture" xsi:type="string">TnsHpfPreAuthCaptureCommand</item>
                 <item name="refund" xsi:type="string">TnsHpfRefundCommand</item>
                 <item name="void" xsi:type="string">TnsHpfVoidCommand</item>
-                <item name="create_token" xsi:type="string">TnsHpfCreateTokenCommand</item>
-                <item name="vault_sale" xsi:type="string">TnsHpfVaultSaleCommand</item>
-                <item name="vault_authorize" xsi:type="string">TnsHpfVaultAuthorizeCommand</item>
             </argument>
-        </arguments>
-    </virtualType>
-
-    <!-- Pure authorize command (VAULT) -->
-    <virtualType name="TnsHpfVaultAuthorizeCommand" type="TnsHpfAuthorizeCommand">
-        <arguments>
-            <argument name="requestBuilder" xsi:type="object">TnsHpfVaultAuthorizeDataBuilder</argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="TnsHpfVaultAuthorizeDataBuilder" type="TnsHpfAuthorizeDataBuilder">
-        <arguments>
-            <argument name="builders" xsi:type="array">
-                <item name="card" xsi:type="string">OnTap\Tns\Gateway\Request\TokenDataBuilder</item>
-                <item name="version" xsi:type="string">OnTap\Tns\Gateway\Request\VersionDataBuilder</item>
-            </argument>
-        </arguments>
-    </virtualType>
-
-    <!-- Sale (VAULT) -->
-    <virtualType name="TnsHpfVaultSaleCommand" type="TnsHpfSaleCommand">
-        <arguments>
-            <argument name="requestBuilder" xsi:type="object">TnsHpfVaultSaleDataBuilder</argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="TnsHpfVaultSaleDataBuilder" type="TnsHpfSaleDataBuilder">
-        <arguments>
-            <argument name="builders" xsi:type="array">
-                <item name="card" xsi:type="string">OnTap\Tns\Gateway\Request\TokenDataBuilder</item>
-                <item name="version" xsi:type="string">OnTap\Tns\Gateway\Request\VersionDataBuilder</item>
-            </argument>
-        </arguments>
-    </virtualType>
-
-    <!-- Create a token in gateway -->
-    <virtualType name="TnsHpfCreateTokenCommand" type="OnTap\Tns\Gateway\Command\GatewayCommand">
-        <arguments>
-            <argument name="requestBuilder" xsi:type="object">OnTap\Tns\Gateway\Request\Hpf\SessionDataBuilder</argument>
-            <argument name="transferFactory" xsi:type="object">OnTap\Tns\Gateway\Http\Vault\TransferFactoryCreateToken</argument>
-            <argument name="client" xsi:type="object">OnTap\Tns\Gateway\Http\Client\Rest</argument>
-            <argument name="handler" xsi:type="object">TnsHpfTokenCreateHandler</argument>
-            <argument name="validator" xsi:type="object">OnTap\Tns\Gateway\Validator\TokenCreateValidator</argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="TnsHpfTokenCreateHandler" type="OnTap\Tns\Gateway\Response\TokenCreateHandler">
-        <arguments>
-            <argument name="config" xsi:type="object">TnsHpfConfig</argument>
         </arguments>
     </virtualType>
 

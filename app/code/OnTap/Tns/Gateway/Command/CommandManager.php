@@ -4,10 +4,9 @@
  * See COPYING.txt for license details.
  */
 
-namespace OnTap\Payment\Gateway\Command;
+namespace OnTap\Tns\Gateway\Command;
 
 use Magento\Framework\Exception\NotFoundException;
-use Magento\Payment\Gateway\Command;
 use Magento\Payment\Gateway\CommandInterface;
 use Magento\Payment\Gateway\Command\CommandPoolInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactoryInterface;

@@ -3,11 +3,10 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace OnTap\Payment\Gateway\Command;
+namespace OnTap\Tns\Gateway\Command;
 
 use Magento\Framework\Exception\NotFoundException;
-use Magento\Framework\ObjectManager\TMap;
-use OnTap\Payment\ObjectManager\TMapFactory;
+use OnTap\Tns\ObjectManager\TMapFactory;
 
 /**
  * Class CommandManagerPool
@@ -16,7 +15,7 @@ use OnTap\Payment\ObjectManager\TMapFactory;
 class CommandManagerPool implements CommandManagerPoolInterface
 {
     /**
-     * @var CommandManagerInterface[] | TMap
+     * @var CommandManagerInterface[] | \Magento\Framework\ObjectManager\TMap
      */
     private $executors;
 
