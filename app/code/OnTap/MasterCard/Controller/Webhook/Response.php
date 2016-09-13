@@ -15,7 +15,8 @@ use Magento\Sales\Api\TransactionRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\FilterBuilder;
 use Magento\Payment\Model\Method\LoggerFactory;
-use OnTap\MasterCard\Gateway\Response\PaymentHandler;
+use OnTap\MasterCard\Gateway\Command\UpdateOrderCommand;
+use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
 
 /**
  * Class Response
@@ -69,6 +70,16 @@ class Response extends \Magento\Framework\App\Action\Action
     protected $logger;
 
     /**
+     * @var UpdateOrderCommand
+     */
+    protected $updateOrderCommand;
+
+    /**
+     * @var PaymentDataObjectFactory
+     */
+    protected $paymentDataObjectFactory;
+
+    /**
      * Response constructor.
      * @param Context $context
      * @param RawFactory $rawFactory
@@ -78,6 +89,8 @@ class Response extends \Magento\Framework\App\Action\Action
      * @param FilterBuilder $filterBuilder
      * @param LoggerFactory $loggerFactory
      * @param \Psr\Log\LoggerInterface $logger
+     * @param UpdateOrderCommand $updateOrderCommand
+     * @param PaymentDataObjectFactory $paymentDataObjectFactory
      * @param \OnTap\MasterCard\Gateway\Config\Config[] $configProviders
      */
     public function __construct(
@@ -89,6 +102,8 @@ class Response extends \Magento\Framework\App\Action\Action
         FilterBuilder $filterBuilder,
         LoggerFactory $loggerFactory,
         \Psr\Log\LoggerInterface $logger,
+        UpdateOrderCommand $updateOrderCommand,
+        PaymentDataObjectFactory $paymentDataObjectFactory,
         array $configProviders = []
     ) {
         parent::__construct($context);
@@ -100,6 +115,8 @@ class Response extends \Magento\Framework\App\Action\Action
         $this->loggerFactory = $loggerFactory;
         $this->logger = $logger;
         $this->configProviders = $configProviders;
+        $this->updateOrderCommand = $updateOrderCommand;
+        $this->paymentDataObjectFactory = $paymentDataObjectFactory;
     }
 
     /**
@@ -159,25 +176,6 @@ class Response extends \Magento\Framework\App\Action\Action
     }
 
     /**
-     * @param \Magento\Sales\Api\Data\OrderInterface $order
-     * @param array $data
-     * @return void
-     */
-    protected function updateOrderPaymentDetails(\Magento\Sales\Api\Data\OrderInterface $order, array $data)
-    {
-        $payment = $order->getPayment();
-
-        PaymentHandler::importPaymentResponse($payment, $data);
-
-        /* @var \Magento\Sales\Model\Order $order */
-        $order->addStatusHistoryComment(sprintf(
-            __("Order updated by gateway [ID: %s]"),
-            $this->getRequest()->getHeader(static::X_HEADER_ID)
-        ));
-        $order->save();
-    }
-
-    /**
      * @param string $message
      * @param string $callable
      * @return void
@@ -228,13 +226,18 @@ class Response extends \Magento\Framework\App\Action\Action
         $data = $this->getData();
 
         try {
-            if ($request->isSecure() && $responseSecret === false) {
+            if (!$request->isSecure()) {
+                throw new \Exception(__("Failed - Connection not secure"));
+            }
+
+            if ($responseSecret === false) {
                 throw new \Exception(__("Authorization not provided"));
             }
 
             if (!isset($data['transaction']) || !isset($data['transaction']['id'])) {
                 throw new \Exception(__("Invalid data received (Transaction ID)"));
             }
+
             if (!isset($data['order']) || !isset($data['order']['id'])) {
                 throw new \Exception(__("Invalid data received (Order ID)"));
             }
@@ -243,12 +246,18 @@ class Response extends \Magento\Framework\App\Action\Action
 
             $config = $this->configProviders[$order->getPayment()->getMethod()];
 
-            if ($request->isSecure() && $config->getWebhookSecret() !== $responseSecret) {
+            if ($config->getWebhookSecret() !== $responseSecret) {
                 throw new \Exception(__("Authorization failed"));
             }
 
+            $paymentData = $this->paymentDataObjectFactory->create($order->getPayment());
+
             // Update payment and order
-            $this->updateOrderPaymentDetails($order, $data);
+            $this->updateOrderCommand->execute([
+                'payment' => $paymentData,
+                'transaction_id' => $data['transaction']['id'],
+                'order_id' => $data['order']['id']
+            ]);
 
         } catch (\Exception $e) {
             $errorMessage = sprintf(

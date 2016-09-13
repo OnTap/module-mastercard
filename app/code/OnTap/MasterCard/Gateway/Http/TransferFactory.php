@@ -31,7 +31,7 @@ class TransferFactory implements TransferFactoryInterface
     /**
      * @var TransferBuilder
      */
-    private $transferBuilder;
+    protected $transferBuilder;
 
     /**
      * TransferFactory constructor.
@@ -89,10 +89,10 @@ class TransferFactory implements TransferFactoryInterface
     }
 
     /**
-     * @param PaymentDataObjectInterface $payment
+     * @param PaymentDataObjectInterface|array $payment
      * @return string
      */
-    protected function getUri(PaymentDataObjectInterface $payment)
+    protected function getUri($payment)
     {
         $orderId = $payment->getOrder()->getOrderIncrementId();
         $txnId = $this->createTxnId($payment);

@@ -126,6 +126,16 @@
         </arguments>
     </virtualType>
 
+    <type name="OnTap\MasterCard\Gateway\Command\UpdateOrderCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">OnTap\MasterCard\Gateway\Request\RequestParamsBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">OnTap\MasterCard\Gateway\Http\GetTransferFactory</argument>
+            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
+            <argument name="handler" xsi:type="object">OnTap\MasterCard\Gateway\Response\UpdateOrderHandler</argument>
+            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\ResponseValidator</argument>
+        </arguments>
+    </type>
+
     <type name="OnTap\MasterCard\Gateway\Command\CommandManagerPool">
         <arguments>
             <argument name="executors" xsi:type="array">
