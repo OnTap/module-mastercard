@@ -136,7 +136,7 @@
         </arguments>
     </type>
 
-    <type name="OnTap\MasterCard\Gateway\Command\CommandManagerPool">
+    <type name="Magento\Payment\Gateway\Command\CommandManagerPool">
         <arguments>
             <argument name="executors" xsi:type="array">
                 <item name="tns_direct" xsi:type="string">TnsDirectCommandManager</item>
@@ -148,7 +148,7 @@
     <!-- ********** -->
     <!-- DIRECT API -->
     <!-- ********** -->
-    <virtualType name="TnsDirectCommandManager" type="OnTap\MasterCard\Gateway\Command\CommandManager">
+    <virtualType name="TnsDirectCommandManager" type="Magento\Payment\Gateway\Command\CommandManager">
         <arguments>
             <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
         </arguments>
@@ -576,7 +576,7 @@
     <!-- ******************* -->
     <!-- HOSTED PAYMENT FORM -->
     <!-- ******************* -->
-    <virtualType name="TnsHpfCommandManager" type="OnTap\MasterCard\Gateway\Command\CommandManager">
+    <virtualType name="TnsHpfCommandManager" type="Magento\Payment\Gateway\Command\CommandManager">
         <arguments>
             <argument name="commandPool" xsi:type="object">TnsHpfCommandPool</argument>
         </arguments>

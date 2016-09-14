@@ -84,13 +84,15 @@ class OrderDataBuilder implements BuilderInterface
         $config = $this->configFactory->create();
         $config->setMethodCode($payment->getMethod());
 
+        $shipping = $quote->getShippingAddress();
+
         return [
             'order' => [
                 'amount' => sprintf('%.2F', $quote->getGrandTotal()),
                 'currency' => $order->getCurrencyCode(),
                 'id' => $order->getOrderIncrementId(),
                 'item' => $this->getItemData(),
-                'shippingAndHandlingAmount' => $quote->getShippingAmount(),
+                'shippingAndHandlingAmount' => $shipping->getShippingAmount(),
                 'taxAmount' => $quote->getShippingAddress()->getTaxAmount(), // @todo: Virtual goods have no shipping
                 'notificationUrl' => $config->getWebhookNotificationUrl(),
             ]

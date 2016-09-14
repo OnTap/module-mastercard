@@ -43,8 +43,6 @@ class BillingDataBuilder implements BuilderInterface
             return [];
         }
 
-        // @todo: getCountriesInfo should not be needed, but is because first request to getCountryInfo will cache it
-        $this->countryInfo->getCountriesInfo();
         $country = $this->countryInfo->getCountryInfo($billingAddress->getCountryId());
 
         return [

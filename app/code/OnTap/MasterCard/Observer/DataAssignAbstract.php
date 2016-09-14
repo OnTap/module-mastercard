@@ -23,13 +23,7 @@ class DataAssignAbstract extends AbstractDataAssignObserver
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
         $data = $this->readDataArgument($observer);
-
-        // @todo:
-        // remove this when magento releases readPaymentModelArgument()
-        $paymentInfo = $this->readMethodArgument($observer)->getInfoInstance();
-
-        // @todo: not released yet
-        //$paymentInfo = $this->readPaymentModelArgument($observer);
+        $paymentInfo = $this->readPaymentModelArgument($observer);
 
         foreach ($this->additionalInformationList as $additionalInformationKey) {
             $path = sprintf('additional_data/%s', $additionalInformationKey);

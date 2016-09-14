@@ -6,14 +6,15 @@
 
 namespace OnTap\MasterCard\Gateway\Request;
 
-use Magento\Framework\AppInterface;
 use Magento\Framework\Module\ModuleListInterface;
 use Magento\Payment\Gateway\Request\BuilderInterface;
+use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\Composer\ComposerJsonFinder;
 
 class VersionDataBuilder implements BuilderInterface
 {
     const MODULE_NAME = 'OnTap_MasterCard';
-    const VERSION_PATTERN = 'MAGENTO_%s_ONTAP_%s';
+    const VERSION_PATTERN = '%s_%s_%s__OnTap_%s';
 
     /**
      * @var ModuleListInterface
@@ -38,8 +39,18 @@ class VersionDataBuilder implements BuilderInterface
      */
     public function build(array $buildSubject)
     {
+        $directoryList = new DirectoryList(BP);
+        $composerJsonFinder = new ComposerJsonFinder($directoryList);
+        $productMetadata = new \Magento\Framework\App\ProductMetadata($composerJsonFinder);
+
         $moduleInfo = $this->moduleList->getOne(static::MODULE_NAME);
-        $versionString = sprintf(static::VERSION_PATTERN, AppInterface::VERSION, $moduleInfo['setup_version']);
+        $versionString = sprintf(
+            static::VERSION_PATTERN,
+            $productMetadata->getName(),
+            $productMetadata->getEdition(),
+            $productMetadata->getVersion(),
+            $moduleInfo['setup_version']
+        );
         return [
             'partnerSolutionId' => $versionString
         ];
