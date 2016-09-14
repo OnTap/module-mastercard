@@ -92,6 +92,8 @@ class Response extends \Magento\Framework\App\Action\Action
      * @param UpdateOrderCommand $updateOrderCommand
      * @param PaymentDataObjectFactory $paymentDataObjectFactory
      * @param \OnTap\MasterCard\Gateway\Config\Config[] $configProviders
+     *
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         Context $context,
