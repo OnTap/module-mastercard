@@ -92,7 +92,7 @@ class TransferFactory implements TransferFactoryInterface
      * @param PaymentDataObjectInterface|array $payment
      * @return string
      */
-    protected function getUri($payment)
+    protected function getUri(PaymentDataObjectInterface $payment)
     {
         $orderId = $payment->getOrder()->getOrderIncrementId();
         $txnId = $this->createTxnId($payment);

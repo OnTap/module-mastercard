@@ -20,7 +20,7 @@ class GetTransferFactory extends TransferFactory
      * @param array $request
      * @return string
      */
-    protected function getUri($request)
+    protected function getRequestUri($request)
     {
         $orderId = $request['order_id'];
         $txnId = $request['transaction_id'];
@@ -40,7 +40,7 @@ class GetTransferFactory extends TransferFactory
             ->setBody((new \stdClass))
             ->setAuthUsername($this->getMerchantUsername())
             ->setAuthPassword($this->config->getMerchantPassword())
-            ->setUri($this->getUri($request))
+            ->setUri($this->getRequestUri($request))
             ->build();
     }
 }
