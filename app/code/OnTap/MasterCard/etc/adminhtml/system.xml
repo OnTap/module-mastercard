@@ -56,7 +56,14 @@
                         <source_model>OnTap\MasterCard\Model\Adminhtml\Source\Gateway</source_model>
                         <config_path>payment/tns_hpf/api_gateway</config_path>
                     </field>
-                    <field id="test" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="api_gateway_other" translate="label" type="text" sortOrder="93" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Custom Gateway URL</label>
+                        <config_path>payment/tns_hpf/api_gateway_other</config_path>
+                        <depends>
+                            <field id="api_gateway">api_other</field>
+                        </depends>
+                    </field>
+                    <field id="test" translate="label" type="select" sortOrder="95" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Test Mode</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <config_path>payment/tns_hpf/test</config_path>
@@ -146,7 +153,14 @@
                         <source_model>OnTap\MasterCard\Model\Adminhtml\Source\Gateway</source_model>
                         <config_path>payment/tns_hosted/api_gateway</config_path>
                     </field>
-                    <field id="test" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="api_gateway_other" translate="label" type="text" sortOrder="93" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Custom Gateway URL</label>
+                        <config_path>payment/tns_hosted/api_gateway_other</config_path>
+                        <depends>
+                            <field id="api_gateway">api_other</field>
+                        </depends>
+                    </field>
+                    <field id="test" translate="label" type="select" sortOrder="95" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Test Mode</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <config_path>payment/tns_hosted/test</config_path>
@@ -224,7 +238,14 @@
                         <source_model>OnTap\MasterCard\Model\Adminhtml\Source\Gateway</source_model>
                         <config_path>payment/tns_direct/api_gateway</config_path>
                     </field>
-                    <field id="test" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="api_gateway_other" translate="label" type="text" sortOrder="93" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Custom Gateway URL</label>
+                        <config_path>payment/tns_direct/api_gateway_other</config_path>
+                        <depends>
+                            <field id="api_gateway">api_other</field>
+                        </depends>
+                    </field>
+                    <field id="test" translate="label" type="select" sortOrder="95" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Test Mode</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <config_path>payment/tns_direct/test</config_path>

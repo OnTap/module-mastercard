@@ -16,6 +16,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     const API_AMERICA = 'api_na';
     const API_ASIA = 'api_as';
     const API_UAT = 'api_uat';
+    const API_OTHER = 'api_other';
     const TEST_PREFIX = 'TEST';
 
     /**
@@ -65,6 +66,16 @@ class Config extends \Magento\Payment\Gateway\Config\Config
      */
     public function getApiAreaUrl()
     {
+        if ($this->getValue('api_gateway') == self::API_OTHER) {
+            $url = $this->getValue('api_gateway_other');
+            if (empty($url)) {
+                return '';
+            }
+            if (substr($url, -1) !== '/') {
+                $url = $url . '/';
+            }
+            return $url;
+        }
         return $this->getValue($this->getValue('api_gateway'));
     }
 

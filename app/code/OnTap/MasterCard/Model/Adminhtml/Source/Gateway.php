@@ -35,6 +35,10 @@ class Gateway implements ArrayInterface
                 'value' => Config::API_UAT,
                 'label' => __('UAT')
             ],
+            [
+                'value' => Config::API_OTHER,
+                'label' => __('Other')
+            ],
         ];
     }
 }
