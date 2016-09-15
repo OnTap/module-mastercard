@@ -1,7 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
- * See COPYING.txt for license details.
+ * Copyright (c) 2016. On Tap Networks Limited.
  */
 
 namespace OnTap\MasterCard\Observer\Hpf;
