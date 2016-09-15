@@ -13,9 +13,10 @@ define(
         'mage/url',
         'uiLayout',
         'Magento_Checkout/js/model/full-screen-loader',
-        'mage/translate'
+        'mage/translate',
+        'Magento_Vault/js/view/payment/vault-enabler'
     ],
-    function ($, ccFormComponent, additionalValidators, setPaymentInformationAction, checkEnrolmentAction, url, layout, fullScreenLoader, $t) {
+    function ($, ccFormComponent, additionalValidators, setPaymentInformationAction, checkEnrolmentAction, url, layout, fullScreenLoader, $t, VaultEnabler) {
         'use strict';
 
         return ccFormComponent.extend({
@@ -39,7 +40,14 @@ define(
                 this.buttonTitle(this.buttonTitleEnabled);
                 this.isPlaceOrderActionAllowed.subscribe($.proxy(this.buttonTitleHandler, this));
 
+                this.vaultEnabler = new VaultEnabler();
+                this.vaultEnabler.setPaymentCode(this.getVaultCode());
+
                 return this;
+            },
+
+            getVaultCode: function () {
+                return window.checkoutConfig.payment[this.getCode()].ccVaultCode;
             },
 
             buttonTitleHandler: function (isButtonEnabled) {
@@ -129,6 +137,12 @@ define(
                 fullScreenLoader.stopLoader();
             },
 
+            getData: function () {
+                var data = this._super();
+                this.vaultEnabler.visitAdditionalData(data);
+                return data;
+            },
+
             startPlaceOrder: function () {
                 if (this.validateHandler() && additionalValidators.validate()) {
 
@@ -150,6 +164,10 @@ define(
                         this.placeOrder();
                     }
                 }
+            },
+
+            isVaultEnabled: function () {
+                return this.vaultEnabler.isVaultEnabled();
             }
         });
     }

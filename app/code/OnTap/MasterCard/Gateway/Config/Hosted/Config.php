@@ -21,4 +21,12 @@ class Config extends \OnTap\MasterCard\Gateway\Config\Config
             $this->getValue('api_version')
         );
     }
+
+    /**
+     * @return bool
+     */
+    public function isVaultEnabled()
+    {
+        return false;
+    }
 }

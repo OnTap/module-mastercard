@@ -13,6 +13,7 @@ use Magento\Checkout\Model\ConfigProviderInterface;
 class ConfigProvider implements ConfigProviderInterface
 {
     const METHOD_CODE = 'tns_direct';
+    const CC_VAULT_CODE = 'tns_direct_vault';
 
     /**
      * @var ConfigInterface
@@ -47,6 +48,7 @@ class ConfigProvider implements ConfigProviderInterface
             'payment' => [
                 self::METHOD_CODE => [
                     'three_d_secure' => (bool) $this->config->getValue('three_d_secure'),
+                    'ccVaultCode' => static::CC_VAULT_CODE
                 ]
             ]
         ];

@@ -13,9 +13,10 @@ define(
         'mage/translate',
         'Magento_Checkout/js/action/set-payment-information',
         'uiLayout',
-        'Magento_Checkout/js/model/full-screen-loader'
+        'Magento_Checkout/js/model/full-screen-loader',
+        'Magento_Vault/js/view/payment/vault-enabler'
     ],
-    function ($, ccFormComponent, additionalValidators, paymentAdapter, alert, $t, setPaymentInformationAction, layout, fullScreenLoader) {
+    function ($, ccFormComponent, additionalValidators, paymentAdapter, alert, $t, setPaymentInformationAction, layout, fullScreenLoader, VaultEnabler) {
         'use strict';
 
         return ccFormComponent.extend({
@@ -36,6 +37,22 @@ define(
             validateHandler: null,
             sessionId: null,
             inPayment: false,
+
+            initialize: function () {
+                this._super();
+                this.vaultEnabler = VaultEnabler();
+                this.vaultEnabler.setPaymentCode(this.getVaultCode());
+
+                return this;
+            },
+
+            getVaultCode: function () {
+                return window.checkoutConfig.payment[this.getCode()].ccVaultCode;
+            },
+
+            isVaultEnabled: function () {
+                return this.vaultEnabler.isVaultEnabled();
+            },
 
             initObservable: function () {
                 this._super()
@@ -168,6 +185,7 @@ define(
                         'session': this.sessionId
                     }
                 };
+                this.vaultEnabler.visitAdditionalData(data);
                 return data;
             },
 

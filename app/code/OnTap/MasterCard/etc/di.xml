@@ -181,6 +181,76 @@
                 <item name="pre_auth_capture" xsi:type="string">TnsDirectPreAuthCaptureCommand</item>
                 <item name="refund" xsi:type="string">TnsDirectRefundCommand</item>
                 <item name="void" xsi:type="string">TnsDirectVoidCommand</item>
+                <item name="create_token" xsi:type="string">MpgsDirectCreateTokenCommand</item>
+                <item name="vault_sale" xsi:type="string">MpgsDirectVaultSaleCommand</item>
+                <item name="vault_authorize" xsi:type="string">MpgsDirectVaultAuthorizeCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- MPGS Direct Vault -->
+    <virtualType name="MpgsDirectVaultFacade" type="Magento\Vault\Model\Method\Vault">
+        <arguments>
+            <argument name="config" xsi:type="object">MpgsDirectVaultPaymentConfig</argument>
+            <argument name="valueHandlerPool" xsi:type="object">MpgsDirectVaultPaymentValueHandlerPool</argument>
+            <argument name="vaultProvider" xsi:type="object">TnsDirectFacade</argument>
+            <argument name="code" xsi:type="const">OnTap\MasterCard\Model\Ui\Direct\ConfigProvider::CC_VAULT_CODE</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsDirectVaultPaymentConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">OnTap\MasterCard\Model\Ui\Direct\ConfigProvider::CC_VAULT_CODE</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsDirectVaultPaymentValueHandlerPool" type="VaultPaymentValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">MpgsDirectVaultPaymentValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsDirectVaultPaymentValueHandler" type="VaultPaymentDefaultValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">MpgsDirectVaultPaymentConfig</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsDirectCreateTokenCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">OnTap\MasterCard\Gateway\Request\Direct\CardDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">OnTap\MasterCard\Gateway\Http\Vault\TransferFactoryCreateToken</argument>
+            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
+            <argument name="handler" xsi:type="object">MpgsDirectTokenCreateHandler</argument>
+            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\TokenCreateValidator</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsDirectTokenCreateHandler" type="OnTap\MasterCard\Gateway\Response\TokenCreateHandler">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsDirectVaultAuthorizeCommand" type="AuthorizeCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">MpgsDirectVaultAuthorizeDataBuilder</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsDirectVaultAuthorizeDataBuilder" type="TnsDirectAuthorizeDataBuilder">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\TokenDataBuilder</item>
+                <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsDirectVaultSaleCommand" type="TnsDirectSaleCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">MpgsDirectVaultSaleDataBuilder</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsDirectVaultSaleDataBuilder" type="TnsDirectSaleDataBuilder">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\TokenDataBuilder</item>
+                <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -651,6 +721,76 @@
                 <item name="pre_auth_capture" xsi:type="string">TnsHpfPreAuthCaptureCommand</item>
                 <item name="refund" xsi:type="string">TnsHpfRefundCommand</item>
                 <item name="void" xsi:type="string">TnsHpfVoidCommand</item>
+                <item name="create_token" xsi:type="string">MpgsHpfCreateTokenCommand</item>
+                <item name="vault_sale" xsi:type="string">MpgsHpfVaultSaleCommand</item>
+                <item name="vault_authorize" xsi:type="string">MpgsHpfVaultAuthorizeCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- HPF Vault -->
+    <virtualType name="MpgsHpfVaultFacade" type="Magento\Vault\Model\Method\Vault">
+        <arguments>
+            <argument name="config" xsi:type="object">MpgsHpfVaultPaymentConfig</argument>
+            <argument name="valueHandlerPool" xsi:type="object">MpgsHpfVaultPaymentValueHandlerPool</argument>
+            <argument name="vaultProvider" xsi:type="object">TnsHpfFacade</argument>
+            <argument name="code" xsi:type="const">OnTap\MasterCard\Model\Ui\Hpf\ConfigProvider::CC_VAULT_CODE</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsHpfVaultPaymentConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">OnTap\MasterCard\Model\Ui\Hpf\ConfigProvider::CC_VAULT_CODE</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsHpfVaultPaymentValueHandlerPool" type="VaultPaymentValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">MpgsHpfVaultPaymentValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsHpfVaultPaymentValueHandler" type="VaultPaymentDefaultValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">MpgsHpfVaultPaymentConfig</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsHpfCreateTokenCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">OnTap\MasterCard\Gateway\Request\Hpf\SessionDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">OnTap\MasterCard\Gateway\Http\Vault\TransferFactoryCreateToken</argument>
+            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
+            <argument name="handler" xsi:type="object">MpgsHpfTokenCreateHandler</argument>
+            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\TokenCreateValidator</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsHpfTokenCreateHandler" type="OnTap\MasterCard\Gateway\Response\TokenCreateHandler">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsHpfConfig</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsHpfVaultSaleCommand" type="TnsHpfSaleCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">MpgsHpfVaultSaleDataBuilder</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsHpfVaultSaleDataBuilder" type="TnsHpfSaleDataBuilder">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\TokenDataBuilder</item>
+                <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsHpfVaultAuthorizeCommand" type="TnsHpfAuthorizeCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">MpgsHpfVaultAuthorizeDataBuilder</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsHpfVaultAuthorizeDataBuilder" type="TnsHpfAuthorizeDataBuilder">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\TokenDataBuilder</item>
+                <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>

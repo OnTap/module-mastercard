@@ -15,6 +15,7 @@ use Magento\Payment\Gateway\Helper\ContextHelper;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use OnTap\MasterCard\Gateway\Response\ThreeDSecure\CheckHandler;
 use Magento\Framework\App\State;
+use Magento\Vault\Model\Ui\VaultConfigProvider;
 
 /**
  * Class VerificationStrategyCommand
@@ -24,6 +25,7 @@ use Magento\Framework\App\State;
 class VerificationStrategyCommand implements CommandInterface
 {
     const PROCESS_3DS_RESULT = '3ds_process';
+    const CREATE_TOKEN = 'create_token';
 
     /**
      * @var Command\CommandPoolInterface
@@ -123,6 +125,15 @@ class VerificationStrategyCommand implements CommandInterface
         if ($this->isThreeDSSupported($paymentDO)) {
             $this->commandPool
                 ->get(static::PROCESS_3DS_RESULT)
+                ->execute($commandSubject);
+        }
+
+        // Vault enabled from configuration
+        // 'Save for later use' checked on frontend
+        if ($this->config->isVaultEnabled() &&
+            $paymentInfo->getAdditionalInformation(VaultConfigProvider::IS_ACTIVE_CODE)) {
+            $this->commandPool
+                ->get(static::CREATE_TOKEN)
                 ->execute($commandSubject);
         }
 

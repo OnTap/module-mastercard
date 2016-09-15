@@ -8,6 +8,10 @@ namespace OnTap\MasterCard\Gateway\Config;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\UrlInterface;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Payment\Helper\Data;
+use Magento\Framework\App\ObjectManager;
+use OnTap\MasterCard\Model\Ui\Direct\ConfigProvider;
 
 class Config extends \Magento\Payment\Gateway\Config\Config
 {
@@ -25,13 +29,25 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     protected $urlBuilder;
 
     /**
+     * @var StoreManagerInterface
+     */
+    protected $storeManager;
+
+    /**
+     * @var Data
+     */
+    protected $paymentDataHelper;
+
+    /**
      * Config constructor.
+     * @param StoreManagerInterface $storeManager
      * @param UrlInterface $urlBuilder
      * @param ScopeConfigInterface $scopeConfig
      * @param string $methodCode
      * @param string $pathPattern
      */
     public function __construct(
+        StoreManagerInterface $storeManager,
         UrlInterface $urlBuilder,
         ScopeConfigInterface $scopeConfig,
         $methodCode = '',
@@ -39,6 +55,36 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     ) {
         parent::__construct($scopeConfig, $methodCode, $pathPattern);
         $this->urlBuilder = $urlBuilder;
+        $this->storeManager = $storeManager;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isVaultEnabled()
+    {
+        $storeId = $this->storeManager->getStore()->getId();
+        $vaultPayment = $this->getVaultPayment();
+        return $vaultPayment->isActive($storeId);
+    }
+
+    /**
+     * @return \Magento\Payment\Model\MethodInterface
+     */
+    protected function getVaultPayment()
+    {
+        return $this->getPaymentDataHelper()->getMethodInstance(ConfigProvider::CC_VAULT_CODE);
+    }
+
+    /**
+     * @return Data
+     */
+    protected function getPaymentDataHelper()
+    {
+        if ($this->paymentDataHelper === null) {
+            $this->paymentDataHelper = ObjectManager::getInstance()->get(Data::class);
+        }
+        return $this->paymentDataHelper;
     }
 
     /**
