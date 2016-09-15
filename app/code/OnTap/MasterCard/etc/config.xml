@@ -131,11 +131,11 @@
             </tns_hpf>
             <tns_direct_vault>
                 <model>MpgsDirectVaultFacade</model>
-                <title>Stored Cards (MasterCard)</title>
+                <title>Stored Cards (MasterCard Direct)</title>
             </tns_direct_vault>
             <tns_hpf_vault>
                 <model>MpgsHpfVaultFacade</model>
-                <title>Stored Cards (MasterCard)</title>
+                <title>Stored Cards (MasterCard HPF)</title>
             </tns_hpf_vault>
         </payment>
     </default>

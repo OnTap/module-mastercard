@@ -45,6 +45,11 @@ class BillingDataBuilder implements BuilderInterface
 
         $country = $this->countryInfo->getCountryInfo($billingAddress->getCountryId());
 
+        $regionCode = $billingAddress->getRegionCode();
+        if (empty($regionCode)) {
+            $regionCode = null;
+        }
+
         return [
             'billing' => [
                 'address' => [
@@ -52,7 +57,7 @@ class BillingDataBuilder implements BuilderInterface
                     'company' => $billingAddress->getCompany() != "" ? $billingAddress->getCompany() : null,
                     'country' => $country->getThreeLetterAbbreviation(),
                     'postcodeZip' => $billingAddress->getPostcode(),
-                    'stateProvince' => $billingAddress->getRegionCode(),
+                    'stateProvince' => $regionCode,
                     'street' => $billingAddress->getStreetLine1(),
                     'street2' => $billingAddress->getStreetLine2() != "" ? $billingAddress->getStreetLine2() : null
                 ]

@@ -44,4 +44,11 @@
             </argument>
         </arguments>
     </virtualType>
+    <type name="Magento\Vault\Model\Ui\Adminhtml\TokensConfigProvider">
+        <arguments>
+            <argument name="tokenUiComponentProviders" xsi:type="array">
+                <item name="tns_direct" xsi:type="object">OnTap\MasterCard\Model\Ui\Adminhtml\TokenUiComponentProvider</item>
+            </argument>
+        </arguments>
+    </type>
 </config>

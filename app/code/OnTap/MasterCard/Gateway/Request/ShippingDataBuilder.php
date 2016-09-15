@@ -43,9 +43,12 @@ class ShippingDataBuilder implements BuilderInterface
             return [];
         }
 
-        // @todo: getCountriesInfo should not be needed, but is because first request to getCountryInfo will cache it
-        $this->countryInfo->getCountriesInfo();
         $country = $this->countryInfo->getCountryInfo($shippingAddress->getCountryId());
+
+        $regionCode = $shippingAddress->getRegionCode();
+        if (empty($regionCode)) {
+            $regionCode = null;
+        }
 
         return [
             'shipping' => [
@@ -54,7 +57,7 @@ class ShippingDataBuilder implements BuilderInterface
                     'company' => $shippingAddress->getCompany() != "" ? $shippingAddress->getCompany() : null,
                     'country' => $country->getThreeLetterAbbreviation(),
                     'postcodeZip' => $shippingAddress->getPostcode(),
-                    'stateProvince' => $shippingAddress->getRegionCode(),
+                    'stateProvince' => $regionCode,
                     'street' => $shippingAddress->getStreetLine1(),
                     'street2' => $shippingAddress->getStreetLine2() != "" ? $shippingAddress->getStreetLine2() : null
                 ],

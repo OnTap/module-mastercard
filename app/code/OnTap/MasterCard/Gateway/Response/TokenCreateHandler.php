@@ -17,8 +17,6 @@ use Magento\Payment\Model\InfoInterface;
 use Magento\Payment\Gateway\ConfigInterface;
 
 /**
- * Class TokenCreateHandler
- * @package OnTap\Tns\Gateway\Response
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class TokenCreateHandler implements HandlerInterface
