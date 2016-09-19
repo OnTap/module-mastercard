@@ -12,6 +12,11 @@ class Config extends \OnTap\MasterCard\Gateway\Config\Config
     const COMPONENT_URI = '%sform/version/%s/merchant/%s/session.js';
 
     /**
+     * @var string
+     */
+    protected $method = 'tns_hpf';
+
+    /**
      * @return \Magento\Payment\Model\MethodInterface
      */
     protected function getVaultPayment()

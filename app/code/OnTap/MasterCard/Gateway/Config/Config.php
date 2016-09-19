@@ -38,6 +38,11 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     protected $paymentDataHelper;
 
     /**
+     * @var string
+     */
+    protected $method = 'tns_direct';
+
+    /**
      * Config constructor.
      * @param StoreManagerInterface $storeManager
      * @param UrlInterface $urlBuilder
@@ -55,6 +60,14 @@ class Config extends \Magento\Payment\Gateway\Config\Config
         parent::__construct($scopeConfig, $methodCode, $pathPattern);
         $this->urlBuilder = $urlBuilder;
         $this->storeManager = $storeManager;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMethod()
+    {
+        return $this->method;
     }
 
     /**
@@ -141,10 +154,9 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     }
 
     /**
-     * @param string $method
      * @return mixed|null|string
      */
-    public function getWebhookNotificationUrl($method = '')
+    public function getWebhookNotificationUrl()
     {
         if ($this->getWebhookSecret() && $this->getWebhookSecret() === "") {
             return null;
@@ -152,12 +164,6 @@ class Config extends \Magento\Payment\Gateway\Config\Config
         if ($this->getValue('webhook_url') && $this->getValue('webhook_url') !== "") {
             return $this->getValue('webhook_url');
         }
-        return $this->urlBuilder->getUrl(
-            static::WEB_HOOK_RESPONSE_URL,
-            [
-                'method' => $method,
-                '_secure' => true
-            ]
-        );
+        return $this->urlBuilder->getUrl(static::WEB_HOOK_RESPONSE_URL, ['_secure' => true]);
     }
 }

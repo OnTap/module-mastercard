@@ -10,6 +10,11 @@ class Config extends \OnTap\MasterCard\Gateway\Config\Config
     const COMPONENT_URI = '%scheckout/version/%s/checkout.js';
 
     /**
+     * @var string
+     */
+    protected $method = 'tns_hosted';
+
+    /**
      * @return string
      */
     public function getComponentUrl()

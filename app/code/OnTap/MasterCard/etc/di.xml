@@ -175,6 +175,20 @@
             <argument name="config" xsi:type="object">TnsHostedConfig</argument>
         </arguments>
     </virtualType>
+    <type name="OnTap\MasterCard\Controller\Webhook\Response">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">WebhookCommandPool</argument>
+        </arguments>
+    </type>
+    <virtualType name="WebhookCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="tns_direct" xsi:type="string">MpgsDirectUpdateOrderCommand</item>
+                <item name="tns_hpf" xsi:type="string">MpgsHpfUpdateOrderCommand</item>
+                <item name="tns_hosted" xsi:type="string">MpgsHostedUpdateOrderCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
 
     <type name="Magento\Payment\Gateway\Command\CommandManagerPool">
         <arguments>
