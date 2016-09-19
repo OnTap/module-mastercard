@@ -5,13 +5,12 @@ define(
     [
         'Magento_Checkout/js/model/quote',
         'mage/storage',
-        'mage/url',
         'Magento_Checkout/js/model/error-processor'
     ],
-    function (quote, storage, url, errorProcessor) {
+    function (quote, storage, errorProcessor) {
         'use strict';
-        return function (messageContainer) {
-            return storage.post(url.build('tns/threedsecure/check/'), []).fail(
+        return function (messageContainer, checkUrl) {
+            return storage.post(checkUrl, []).fail(
                 function (response) {
                     errorProcessor.process(response, messageContainer);
                 }

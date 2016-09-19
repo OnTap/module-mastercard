@@ -50,7 +50,8 @@ class ConfigProvider implements ConfigProviderInterface
                     'component_url' => $this->config->getComponentUrl(),
                     'debug' => (bool) $this->config->getValue('debug'),
                     'three_d_secure' => (bool) $this->config->getValue('three_d_secure'),
-                    'ccVaultCode' => static::CC_VAULT_CODE
+                    'ccVaultCode' => static::CC_VAULT_CODE,
+                    'check_url' => $this->urlBuilder->getUrl('tns/threedsecure/check', ['method' => 'hpf', '_secure' => 1]),
                 ]
             ]
         ];

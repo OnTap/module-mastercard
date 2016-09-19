@@ -7,7 +7,6 @@ namespace OnTap\MasterCard\Controller\Threedsecure;
 
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\App\Action\Context;
-use Magento\Payment\Gateway\Command\CommandPoolInterface;
 use Magento\Checkout\Model\Session;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
 use Magento\Framework\Controller\Result\JsonFactory;
@@ -21,7 +20,8 @@ use Magento\Payment\Gateway\Command\CommandPoolFactory;
 class Check extends \Magento\Framework\App\Action\Action
 {
     const CHECK_ENROLMENT = '3ds_enrollment';
-    const CHECK_ENROLMENT_TYPE = 'TnsThreeDSecureEnrollmentCommand';
+    const CHECK_ENROLMENT_TYPE_DIRECT = 'TnsThreeDSecureEnrollmentCommand';
+    const CHECK_ENROLMENT_TYPE_HPF = 'TnsHpfThreeDSecureEnrollmentCommand';
 
     /**
      * @var Session
@@ -76,17 +76,18 @@ class Check extends \Magento\Framework\App\Action\Action
         $quote = $this->checkoutSession->getQuote();
         $jsonResult = $this->jsonFactory->create();
         try {
-            // @todo: maybe can be done with virtualTypes at di.xml somehow
+            // @todo: Commands require specific config, so they need to be defined separately in the di.xml
             $commandPool = $this->commandPoolFactory->create([
                 'commands' => [
-                    static::CHECK_ENROLMENT => static::CHECK_ENROLMENT_TYPE
+                    'hpf' => static::CHECK_ENROLMENT_TYPE_HPF,
+                    'direct' => static::CHECK_ENROLMENT_TYPE_DIRECT,
                 ]
             ]);
 
             $paymentDataObject = $this->paymentDataObjectFactory->create($quote->getPayment());
 
             $commandPool
-                ->get(static::CHECK_ENROLMENT)
+                ->get($this->getRequest()->getParam('method'))
                 ->execute([
                     'payment' => $paymentDataObject,
                     'amount' => $quote->getGrandTotal(),

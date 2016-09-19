@@ -14,8 +14,9 @@ use Magento\Sales\Api\TransactionRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\FilterBuilder;
 use Magento\Payment\Model\Method\LoggerFactory;
-use OnTap\MasterCard\Gateway\Command\UpdateOrderCommand;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
+use Magento\Payment\Gateway\Command\CommandPoolFactory;
+
 
 /**
  * Class Response
@@ -27,6 +28,10 @@ class Response extends \Magento\Framework\App\Action\Action
     const X_HEADER_ATTEMPT = 'X-Notification-Attempt';
     const X_HEADER_ID = 'X-Notification-Id';
     const LOG_TYPE = 'webhook';
+
+    const DIRECT_ORDER_UPDATE_COMMAND = 'MpgsDirectUpdateOrderCommand';
+    const HPF_ORDER_UPDATE_COMMAND = 'MpgsHpfUpdateOrderCommand';
+    const HOSTED_ORDER_UPDATE_COMMAND = 'MpgsHostedUpdateOrderCommand';
 
     /**
      * @var RawFactory
@@ -69,14 +74,14 @@ class Response extends \Magento\Framework\App\Action\Action
     protected $logger;
 
     /**
-     * @var UpdateOrderCommand
-     */
-    protected $updateOrderCommand;
-
-    /**
      * @var PaymentDataObjectFactory
      */
     protected $paymentDataObjectFactory;
+
+    /**
+     * @var CommandPoolFactory
+     */
+    protected $commandPoolFactory;
 
     /**
      * Response constructor.
@@ -88,8 +93,8 @@ class Response extends \Magento\Framework\App\Action\Action
      * @param FilterBuilder $filterBuilder
      * @param LoggerFactory $loggerFactory
      * @param \Psr\Log\LoggerInterface $logger
-     * @param UpdateOrderCommand $updateOrderCommand
      * @param PaymentDataObjectFactory $paymentDataObjectFactory
+     * @param CommandPoolFactory $commandPoolFactory
      * @param \OnTap\MasterCard\Gateway\Config\Config[] $configProviders
      *
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
@@ -103,8 +108,8 @@ class Response extends \Magento\Framework\App\Action\Action
         FilterBuilder $filterBuilder,
         LoggerFactory $loggerFactory,
         \Psr\Log\LoggerInterface $logger,
-        UpdateOrderCommand $updateOrderCommand,
         PaymentDataObjectFactory $paymentDataObjectFactory,
+        CommandPoolFactory $commandPoolFactory,
         array $configProviders = []
     ) {
         parent::__construct($context);
@@ -116,8 +121,8 @@ class Response extends \Magento\Framework\App\Action\Action
         $this->loggerFactory = $loggerFactory;
         $this->logger = $logger;
         $this->configProviders = $configProviders;
-        $this->updateOrderCommand = $updateOrderCommand;
         $this->paymentDataObjectFactory = $paymentDataObjectFactory;
+        $this->commandPoolFactory = $commandPoolFactory;
     }
 
     /**
@@ -253,12 +258,21 @@ class Response extends \Magento\Framework\App\Action\Action
 
             $paymentData = $this->paymentDataObjectFactory->create($order->getPayment());
 
-            // Update payment and order
-            $this->updateOrderCommand->execute([
-                'payment' => $paymentData,
-                'transaction_id' => $data['transaction']['id'],
-                'order_id' => $data['order']['id']
+            // @todo: Commands require specific config, so they need to be defined separately in the di.xml
+            $commandPool = $this->commandPoolFactory->create([
+                'commands' => [
+                    'tns_direct' => self::DIRECT_ORDER_UPDATE_COMMAND,
+                    'tns_hpf' => self::HPF_ORDER_UPDATE_COMMAND,
+                    'tns_hosted' => self::HOSTED_ORDER_UPDATE_COMMAND,
+                ]
             ]);
+            $commandPool
+                ->get($this->getRequest()->getParam('method'))
+                ->execute([
+                    'payment' => $paymentData,
+                    'transaction_id' => $data['transaction']['id'],
+                    'order_id' => $data['order']['id']
+                ]);
 
         } catch (\Exception $e) {
             $errorMessage = sprintf(

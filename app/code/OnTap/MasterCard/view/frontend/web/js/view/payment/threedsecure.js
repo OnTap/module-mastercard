@@ -27,6 +27,7 @@ define([
         acsComplete: false,
         id: null,
         messageContainer: null,
+        checkUrl: null,
 
         initialize: function(config) {
             this._super()
@@ -85,7 +86,7 @@ define([
                 }, this));
             }
 
-            $.when(checkEnrolmentAction(this.messageContainer)).fail(
+            $.when(checkEnrolmentAction(this.messageContainer, this.checkUrl)).fail(
                 $.proxy(this.onError, this)
             ).done(
                 $.proxy(this.isEnrolled, this)

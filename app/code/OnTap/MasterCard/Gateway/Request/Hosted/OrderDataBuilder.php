@@ -93,7 +93,7 @@ class OrderDataBuilder implements BuilderInterface
                 'item' => $this->getItemData(),
                 'shippingAndHandlingAmount' => $shipping->getShippingAmount(),
                 'taxAmount' => $quote->getShippingAddress()->getTaxAmount(), // @todo: Virtual goods have no shipping
-                'notificationUrl' => $config->getWebhookNotificationUrl(),
+                'notificationUrl' => $config->getWebhookNotificationUrl('tns_hosted'),
             ]
         ];
     }

@@ -104,6 +104,7 @@ define(
 
             initChildren: function () {
                 this._super();
+                var config = this.getConfig();
 
                 var threeDSecureComponent = {
                     parent: this.name,
@@ -113,6 +114,7 @@ define(
                     config: {
                         id: this.item.method,
                         messages: this.messageContainer,
+                        checkUrl: config.check_url,
                         onComplete: $.proxy(this.threeDSecureCheckSuccess, this),
                         onError: $.proxy(this.threeDSecureCheckFailed, this),
                         onCancel: $.proxy(this.threeDSecureCancelled, this)

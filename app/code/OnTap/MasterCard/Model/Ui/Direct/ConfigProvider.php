@@ -47,7 +47,8 @@ class ConfigProvider implements ConfigProviderInterface
             'payment' => [
                 self::METHOD_CODE => [
                     'three_d_secure' => (bool) $this->config->getValue('three_d_secure'),
-                    'ccVaultCode' => static::CC_VAULT_CODE
+                    'ccVaultCode' => static::CC_VAULT_CODE,
+                    'check_url' => $this->urlBuilder->getUrl('tns/threedsecure/check', ['method' => 'direct', '_secure' => 1]),
                 ]
             ]
         ];

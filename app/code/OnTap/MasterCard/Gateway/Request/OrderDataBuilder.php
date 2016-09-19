@@ -88,7 +88,7 @@ class OrderDataBuilder implements BuilderInterface
                 'shippingAndHandlingAmount' => $payment->getShippingAmount(),
                 //'discount' => $this->getDiscountData($payment),
                 'taxAmount' => $payment->getOrder()->getTaxAmount(),
-                'notificationUrl' => $config->getWebhookNotificationUrl(),
+                'notificationUrl' => $config->getWebhookNotificationUrl($payment->getMethod()),
             ]
         ];
     }

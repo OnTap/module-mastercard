@@ -141,9 +141,10 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     }
 
     /**
-     * @return string|null
+     * @param string $method
+     * @return mixed|null|string
      */
-    public function getWebhookNotificationUrl()
+    public function getWebhookNotificationUrl($method = '')
     {
         if ($this->getWebhookSecret() && $this->getWebhookSecret() === "") {
             return null;
@@ -151,6 +152,12 @@ class Config extends \Magento\Payment\Gateway\Config\Config
         if ($this->getValue('webhook_url') && $this->getValue('webhook_url') !== "") {
             return $this->getValue('webhook_url');
         }
-        return $this->urlBuilder->getUrl(static::WEB_HOOK_RESPONSE_URL, ['_secure' => true]);
+        return $this->urlBuilder->getUrl(
+            static::WEB_HOOK_RESPONSE_URL,
+            [
+                'method' => $method,
+                '_secure' => true
+            ]
+        );
     }
 }
