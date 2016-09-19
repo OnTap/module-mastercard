@@ -17,7 +17,6 @@ use Magento\Payment\Model\Method\LoggerFactory;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
 use Magento\Payment\Gateway\Command\CommandPoolFactory;
 
-
 /**
  * Class Response
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
