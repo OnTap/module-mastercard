@@ -110,6 +110,7 @@ class SessionInformationManagement implements SessionInformationManagementInterf
             ->create()
             ->load($cartId, 'masked_id');
 
+        $billingAddress->setEmail($email);
         return $this->createNewPaymentSession($quoteIdMask->getQuoteId(), $paymentMethod, $billingAddress);
     }
 }
