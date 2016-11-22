@@ -4,7 +4,7 @@
     <system>
         <section id="payment">
             <group id="tns" translate="label comment" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>MasterCard</label>
+                <label>Mastercard Payment Gateway Services</label>
                 <comment><![CDATA[Accept credit/debit cards in your Magento store.]]></comment>
                 <attribute type="expanded">1</attribute>
                 <fieldset_css>complex</fieldset_css>
