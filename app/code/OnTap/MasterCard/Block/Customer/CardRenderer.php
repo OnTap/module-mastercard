@@ -4,8 +4,6 @@
  */
 namespace OnTap\MasterCard\Block\Customer;
 
-use OnTap\MasterCard\Model\Ui\ConfigProvider;
-use Magento\Framework\View\Element\Template;
 use Magento\Vault\Api\Data\PaymentTokenInterface;
 use Magento\Vault\Block\AbstractCardRenderer;
 

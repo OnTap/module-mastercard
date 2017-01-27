@@ -6,7 +6,6 @@
 namespace OnTap\MasterCard\Gateway\Request;
 
 use Magento\Payment\Gateway\Request\BuilderInterface;
-use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Framework\App\State;
 
 class SourceDataBuilder implements BuilderInterface

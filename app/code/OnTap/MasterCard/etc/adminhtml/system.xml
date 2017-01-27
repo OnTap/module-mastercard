@@ -3,12 +3,12 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
         <section id="payment">
-            <group id="tns" translate="label comment" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="tns" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>MasterCard Payment Gateway Services</label>
                 <comment><![CDATA[Accept credit/debit cards in your Magento store.]]></comment>
                 <attribute type="expanded">1</attribute>
                 <fieldset_css>complex</fieldset_css>
-                <frontend_model>Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>
+                <frontend_model>\Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>
 
                 <group id="hpf" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Hosted Payment Session</label>
