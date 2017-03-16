@@ -8,7 +8,7 @@ namespace OnTap\MasterCard\Gateway\Response;
 use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Vault\Model\VaultPaymentInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
-use Magento\Vault\Api\Data\PaymentTokenInterfaceFactory;
+use Magento\Vault\Model\CreditCardTokenFactory;
 use Magento\Vault\Api\Data\PaymentTokenInterface;
 use Magento\Sales\Api\Data\OrderPaymentExtensionInterface;
 use Magento\Sales\Api\Data\OrderPaymentExtensionInterfaceFactory;
@@ -26,7 +26,7 @@ class TokenCreateHandler implements HandlerInterface
     protected $vaultPayment;
 
     /**
-     * @var PaymentTokenInterfaceFactory
+     * @var CreditCardTokenFactory
      */
     protected $paymentTokenFactory;
 
@@ -44,13 +44,13 @@ class TokenCreateHandler implements HandlerInterface
      * TokenCreateHandler constructor.
      * @param ConfigInterface $config
      * @param VaultPaymentInterface $vaultPayment
-     * @param PaymentTokenInterfaceFactory $paymentTokenFactory
+     * @param CreditCardTokenFactory $paymentTokenFactory
      * @param OrderPaymentExtensionInterfaceFactory $paymentExtensionFactory
      */
     public function __construct(
         ConfigInterface $config,
         VaultPaymentInterface $vaultPayment,
-        PaymentTokenInterfaceFactory $paymentTokenFactory,
+        CreditCardTokenFactory $paymentTokenFactory,
         OrderPaymentExtensionInterfaceFactory $paymentExtensionFactory
     ) {
         // @todo: fetch config generically from payment
@@ -131,7 +131,6 @@ class TokenCreateHandler implements HandlerInterface
             return null;
         }
 
-        /** @var PaymentTokenInterface $paymentToken */
         $paymentToken = $this->paymentTokenFactory->create();
         $paymentToken->setGatewayToken($token);
 
