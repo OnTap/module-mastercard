@@ -21,7 +21,7 @@
       "src/MasterCard/registration.php"
     ],
     "psr-4": {
-      "OnTap\\MasterCard\\": "src/MasterCard"
+      "OnTap\\MasterCard\\": "src/MasterCard/"
     }
   }
 }
