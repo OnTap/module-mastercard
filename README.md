@@ -1,4 +1,3 @@
-# Magento 2.0 Datacash Extension
+# Official Magento 2 MasterCard Module
 
-Testing branch:
-[![Build Status](https://travis-ci.com/OnTap/datacash.svg?token=d61Gqq2YPtQHarY3QNzN&branch=testing)](https://travis-ci.com/OnTap/datacash)
+The OnTap_MasterCard module implements the integration with the MasterCard Payment Gateway Services and makes the latter available as a payment method in Magento.
