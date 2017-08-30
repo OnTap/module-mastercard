@@ -270,11 +270,25 @@
     </virtualType>
     <virtualType name="MpgsDirectCreateTokenCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
         <arguments>
-            <argument name="requestBuilder" xsi:type="object">OnTap\MasterCard\Gateway\Request\Direct\CardDataBuilder</argument>
+            <argument name="requestBuilder" xsi:type="object">MpgsDirectCreateTokenDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">OnTap\MasterCard\Gateway\Http\Vault\TransferFactoryCreateToken</argument>
             <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
             <argument name="handler" xsi:type="object">MpgsDirectTokenCreateHandler</argument>
             <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\TokenCreateValidator</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsDirectCreateTokenDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\Direct\CardDataBuilder</item>
+                <item name="extra" xsi:type="string">MpgsDirectTokenExtraBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsDirectTokenExtraBuilder" type="OnTap\MasterCard\Gateway\Request\ExtraDataBuilder">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
+            <argument name="field" xsi:type="string">custom_data_tokenization</argument>
         </arguments>
     </virtualType>
     <virtualType name="MpgsDirectTokenCreateHandler" type="OnTap\MasterCard\Gateway\Response\TokenCreateHandler">

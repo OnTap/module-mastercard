@@ -296,6 +296,10 @@
                         <frontend_class>validate-number</frontend_class>
                         <config_path>payment/tns_direct/sort_order</config_path>
                     </field>
+                    <field id="custom_data_tokenization" translate="label" type="textarea" sortOrder="190" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Custom JSON data (tokenization)</label>
+                        <config_path>payment/tns_direct/custom_data_tokenization</config_path>
+                    </field>
                 </group>
             </group>
         </section>

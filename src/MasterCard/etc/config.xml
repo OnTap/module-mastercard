@@ -29,6 +29,7 @@
                 <test>0</test>
                 <api_gateway>api_eu</api_gateway>
                 <three_d_secure>0</three_d_secure>
+                <custom_data_tokenization>{}</custom_data_tokenization>
 
                 <!--<can_initialize>1</can_initialize>-->
                 <can_authorize>1</can_authorize>
