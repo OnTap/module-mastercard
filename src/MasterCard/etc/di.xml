@@ -281,14 +281,7 @@
         <arguments>
             <argument name="builders" xsi:type="array">
                 <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\Direct\CardDataBuilder</item>
-                <item name="extra" xsi:type="string">MpgsDirectTokenExtraBuilder</item>
             </argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="MpgsDirectTokenExtraBuilder" type="OnTap\MasterCard\Gateway\Request\ExtraDataBuilder">
-        <arguments>
-            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
-            <argument name="field" xsi:type="string">custom_data_tokenization</argument>
         </arguments>
     </virtualType>
     <virtualType name="MpgsDirectTokenCreateHandler" type="OnTap\MasterCard\Gateway\Response\TokenCreateHandler">
@@ -707,7 +700,15 @@
                 <item name="customer" xsi:type="string">OnTap\MasterCard\Gateway\Request\CustomerDataBuilder</item>
                 <item name="source" xsi:type="string">OnTap\MasterCard\Gateway\Request\SourceDataBuilder</item>
                 <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
+                <item name="extra" xsi:type="string">MpgsHostedCreateSessionExtraDataBuilder</item>
             </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MpgsHostedCreateSessionExtraDataBuilder" type="OnTap\MasterCard\Gateway\Request\ExtraDataBuilder">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsHostedConfig</argument>
+            <argument name="field" xsi:type="string">custom_create_session_request_data</argument>
         </arguments>
     </virtualType>
 
