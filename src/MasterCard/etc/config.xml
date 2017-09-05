@@ -10,7 +10,7 @@
                 <payment_action>authorize</payment_action>
                 <order_status>processing</order_status>
 
-                <api_version>34</api_version>
+                <api_version>43</api_version>
                 <api_gateway>api_eu</api_gateway>
                 <api_eu>https://eu-gateway.mastercard.com/</api_eu>
                 <api_as>https://ap-gateway.mastercard.com/</api_as>
@@ -54,7 +54,7 @@
                 <payment_action>authorize</payment_action>
                 <order_status>processing</order_status>
 
-                <api_version>34</api_version>
+                <api_version>43</api_version>
                 <api_gateway>api_eu</api_gateway>
                 <api_eu>https://eu-gateway.mastercard.com/</api_eu>
                 <api_as>https://ap-gateway.mastercard.com/</api_as>
@@ -89,7 +89,7 @@
                 <payment_action>authorize</payment_action>
                 <order_status>processing</order_status>
 
-                <api_version>34</api_version>
+                <api_version>43</api_version>
                 <api_gateway>api_eu</api_gateway>
                 <api_eu>https://eu-gateway.mastercard.com/</api_eu>
                 <api_as>https://ap-gateway.mastercard.com/</api_as>

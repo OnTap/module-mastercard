@@ -190,10 +190,12 @@ define(
 
             getCardFields: function () {
                 return {
-                    cardNumber: "#tns_hpf_cc_number",
-                    expiryMonth: "#tns_hpf_expiration",
-                    expiryYear: "#tns_hpf_expiration_yr",
-                    securityCode: "#tns_hpf_cc_cid"
+                    card: {
+                        number: "#tns_hpf_cc_number",
+                        expiryMonth: "#tns_hpf_expiration",
+                        expiryYear: "#tns_hpf_expiration_yr",
+                        securityCode: "#tns_hpf_cc_cid"
+                    }
                 }
             },
 
