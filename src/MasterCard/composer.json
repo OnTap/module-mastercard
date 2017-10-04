@@ -2,7 +2,7 @@
   "name": "ontap/module-mastercard",
   "description": "Official Magento2 Plugin to integrate with MasterCard Payments",
   "type": "magento2-module",
-  "version": "100.1.6-beta1",
+  "version": "100.1.6-beta2",
   "license": [
     "OSL-3.0",
     "AFL-3.0"
