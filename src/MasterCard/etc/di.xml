@@ -281,7 +281,14 @@
         <arguments>
             <argument name="builders" xsi:type="array">
                 <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\Direct\CardDataBuilder</item>
+                <item name="extra" xsi:type="string">MpgsDirectCreateTokenExtraDataBuilder</item>
             </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsDirectCreateTokenExtraDataBuilder" type="OnTap\MasterCard\Gateway\Request\ExtraDataBuilder">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
+            <argument name="field" xsi:type="string">custom_create_token_request_data</argument>
         </arguments>
     </virtualType>
     <virtualType name="MpgsDirectTokenCreateHandler" type="OnTap\MasterCard\Gateway\Response\TokenCreateHandler">
@@ -299,6 +306,7 @@
             <argument name="builders" xsi:type="array">
                 <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\TokenDataBuilder</item>
                 <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
+                <item name="extra" xsi:type="string">MpgsDirectAuthorizeExtraDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -312,6 +320,7 @@
             <argument name="builders" xsi:type="array">
                 <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\TokenDataBuilder</item>
                 <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
+                <item name="extra" xsi:type="string">MpgsDirectSaleExtraDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -489,7 +498,14 @@
                 <item name="3ds_results" xsi:type="string">TnsDirectThreeDSecureResultDataBuilder</item>
                 <item name="source" xsi:type="string">OnTap\MasterCard\Gateway\Request\SourceDataBuilder</item>
                 <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
+                <item name="extra" xsi:type="string">MpgsDirectAuthorizeExtraDataBuilder</item>
             </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsDirectAuthorizeExtraDataBuilder" type="OnTap\MasterCard\Gateway\Request\ExtraDataBuilder">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
+            <argument name="field" xsi:type="string">custom_authorize_request_data</argument>
         </arguments>
     </virtualType>
 
@@ -505,9 +521,17 @@
                 <item name="3ds_results" xsi:type="string">TnsDirectThreeDSecureResultDataBuilder</item>
                 <item name="source" xsi:type="string">OnTap\MasterCard\Gateway\Request\SourceDataBuilder</item>
                 <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
+                <item name="extra" xsi:type="string">MpgsDirectSaleExtraDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
+    <virtualType name="MpgsDirectSaleExtraDataBuilder" type="OnTap\MasterCard\Gateway\Request\ExtraDataBuilder">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
+            <argument name="field" xsi:type="string">custom_sale_request_data</argument>
+        </arguments>
+    </virtualType>
+
 
     <virtualType name="TnsDirectSaleResponseHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
         <arguments>
@@ -825,13 +849,28 @@
     </virtualType>
     <virtualType name="MpgsHpfCreateTokenCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
         <arguments>
-            <argument name="requestBuilder" xsi:type="object">OnTap\MasterCard\Gateway\Request\Hpf\SessionDataBuilder</argument>
+            <argument name="requestBuilder" xsi:type="object">MpgsHpfCreateTokenDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">MpgsHpfTrasferFactoryCreateToken</argument>
             <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
             <argument name="handler" xsi:type="object">MpgsHpfTokenCreateHandler</argument>
             <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\TokenCreateValidator</argument>
         </arguments>
     </virtualType>
+    <virtualType name="MpgsHpfCreateTokenDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="session" xsi:type="string">OnTap\MasterCard\Gateway\Request\Hpf\SessionDataBuilder</item>
+                <item name="extra" xsi:type="string">MpgsHpfCreateTokenExtraDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsHpfCreateTokenExtraDataBuilder" type="OnTap\MasterCard\Gateway\Request\ExtraDataBuilder">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsHpfConfig</argument>
+            <argument name="field" xsi:type="string">custom_create_token_request_data</argument>
+        </arguments>
+    </virtualType>
+
     <virtualType name="MpgsHpfTrasferFactoryCreateToken" type="OnTap\MasterCard\Gateway\Http\Vault\TransferFactoryCreateToken">
         <arguments>
             <argument name="config" xsi:type="object">TnsHpfConfig</argument>
@@ -852,6 +891,7 @@
             <argument name="builders" xsi:type="array">
                 <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\TokenDataBuilder</item>
                 <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
+                <item name="extra" xsi:type="string">MpgsHpfSaleExtraDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -865,6 +905,7 @@
             <argument name="builders" xsi:type="array">
                 <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\TokenDataBuilder</item>
                 <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
+                <item name="extra" xsi:type="string">MpgsHpfAuthorizeExtraDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -920,7 +961,14 @@
                 <item name="3ds_results" xsi:type="string">TnsHpfThreeDSecureResultDataBuilder</item>
                 <item name="source" xsi:type="string">OnTap\MasterCard\Gateway\Request\SourceDataBuilder</item>
                 <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
+                <item name="extra" xsi:type="string">MpgsHpfSaleExtraDataBuilder</item>
             </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsHpfSaleExtraDataBuilder" type="OnTap\MasterCard\Gateway\Request\ExtraDataBuilder">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsHpfConfig</argument>
+            <argument name="field" xsi:type="string">custom_sale_request_data</argument>
         </arguments>
     </virtualType>
 
@@ -1006,7 +1054,14 @@
                 <item name="3ds_results" xsi:type="string">TnsHpfThreeDSecureResultDataBuilder</item>
                 <item name="source" xsi:type="string">OnTap\MasterCard\Gateway\Request\SourceDataBuilder</item>
                 <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
+                <item name="extra" xsi:type="string">MpgsHpfAuthorizeExtraDataBuilder</item>
             </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsHpfAuthorizeExtraDataBuilder" type="OnTap\MasterCard\Gateway\Request\ExtraDataBuilder">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsHpfConfig</argument>
+            <argument name="field" xsi:type="string">custom_authorize_request_data</argument>
         </arguments>
     </virtualType>
 
