@@ -5,10 +5,12 @@
 /*global define*/
 define(
     [
+        'underscore',
         'uiComponent',
         'Magento_Checkout/js/model/payment/renderer-list'
     ],
     function (
+        _,
         Component,
         rendererList
     ) {
@@ -27,6 +29,27 @@ define(
                 component: 'OnTap_MasterCard/js/view/payment/method-renderer/tns-hpf'
             }
         );
+
+        _.each(window.checkoutConfig.payment.amexWallet, function (config, index) {
+            rendererList.push(
+                {
+                    type: index,
+                    config: config.config,
+                    component: config.component,
+
+                    /**
+                     * Custom payment method types comparator
+                     * @param {String} typeA
+                     * @param {String} typeB
+                     * @return {Boolean}
+                     */
+                    typeComparatorCallback: function (typeA, typeB) {
+                        return typeA.substring(0, typeA.lastIndexOf('_')) === typeB;
+                    }
+                }
+            );
+        });
+
         /** Add view logic here if needed */
         return Component.extend({});
     }

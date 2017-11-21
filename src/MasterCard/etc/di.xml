@@ -1076,4 +1076,41 @@
             <argument name="config" xsi:type="object">TnsHpfConfig</argument>
         </arguments>
     </virtualType>
+
+    <!-- AMEX -->
+    <!-- Defines a list of providers that are compatible with Amex wallet -->
+    <type name="OnTap\MasterCard\Model\Config\Source\Provider">
+        <arguments>
+            <argument name="providers" xsi:type="array">
+                <item name="tns_direct" xsi:type="object">TnsDirectFacade</item>
+                <item name="tns_hpf" xsi:type="object">TnsHpfFacade</item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="MpgsAmexConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="string">mpgs_amex_wallet</argument>
+        </arguments>
+    </virtualType>
+    <!-- @api create virtual type based on default value handler if it required by payment method -->
+    <virtualType name="MpgsWalletPaymentDefaultValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">Magento\Payment\Gateway\Config\Config</argument>
+        </arguments>
+    </virtualType>
+    <!-- @api create virtual type based on default value handler pool if it required by payment method -->
+    <virtualType name="MpgsWalletPaymentValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">MpgsWalletPaymentDefaultValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="OnTap\MasterCard\Model\Method\Wallet\AmexWallet">
+        <arguments>
+            <argument name="config" xsi:type="object">MpgsAmexConfig</argument>
+            <argument name="valueHandlerPool" xsi:type="object">MpgsWalletPaymentValueHandlerPool</argument>
+            <argument name="code" xsi:type="string">mpgs_amex_wallet</argument>
+        </arguments>
+    </type>
 </config>
