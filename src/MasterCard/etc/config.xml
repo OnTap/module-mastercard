@@ -140,12 +140,19 @@
                 <title>Stored Cards (MasterCard HPF)</title>
             </tns_hpf_vault>
             <mpgs_amex_wallet>
-                <model>OnTap\MasterCard\Model\Method\Wallet\AmexWallet</model>
+                <model>Magento\Vault\Model\Method\NullPaymentProvider</model>
                 <title>Amex Express Checkout</title>
                 <active>0</active>
                 <title>Amex Express Checkout</title>
                 <provider>tns_direct</provider>
+                <js_component>OnTap_MasterCard/js/view/payment/method-renderer/amex-wallet</js_component>
             </mpgs_amex_wallet>
+            <tns_direct_amex>
+                <model>MpgsDirectAmexWallet</model>
+            </tns_direct_amex>
+            <tns_hpf_amex>
+                <model>MpgsHpfAmexWallet</model>
+            </tns_hpf_amex>
         </payment>
     </default>
 </config>

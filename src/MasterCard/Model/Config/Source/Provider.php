@@ -31,6 +31,10 @@ class Provider implements \Magento\Framework\Option\ArrayInterface
         $options = [];
 
         foreach ($this->providers as $provider) {
+            $active = (bool) $provider->isActive();
+            if (!$active) {
+                continue;
+            }
             $options[] = [
                 'label' => $provider->getTitle(),
                 'value' => $provider->getCode()
@@ -38,17 +42,5 @@ class Provider implements \Magento\Framework\Option\ArrayInterface
         }
 
         return $options;
-    }
-
-    /**
-     * @param $key
-     * @return \Magento\Payment\Model\MethodInterface
-     */
-    public function getProvider($key)
-    {
-        if (!$key) {
-            return null;
-        }
-        return $this->providers[$key];
     }
 }

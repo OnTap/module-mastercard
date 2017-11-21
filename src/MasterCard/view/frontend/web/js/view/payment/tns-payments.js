@@ -30,7 +30,7 @@ define(
             }
         );
 
-        _.each(window.checkoutConfig.payment.amexWallet, function (config, index) {
+        _.each(window.checkoutConfig.payment.wallets, function (config, index) {
             rendererList.push(
                 {
                     type: index,

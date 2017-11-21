@@ -2,7 +2,7 @@
 /**
  * Copyright (c) 2017. On Tap Networks Limited.
  */
-namespace OnTap\MasterCard\Model\Method\Wallet;
+namespace OnTap\MasterCard\Model\Method;
 
 use Magento\Payment\Model\MethodInterface;
 

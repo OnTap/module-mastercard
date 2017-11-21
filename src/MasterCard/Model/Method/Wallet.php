@@ -2,14 +2,13 @@
 /**
  * Copyright (c) 2017. On Tap Networks Limited.
  */
-namespace OnTap\MasterCard\Model\Method\Wallet;
+namespace OnTap\MasterCard\Model\Method;
 
 use Magento\Payment\Gateway\Config\ValueHandlerPoolInterface;
 use Magento\Payment\Gateway\ConfigInterface;
 use Magento\Payment\Model\MethodInterface;
-use OnTap\MasterCard\Model\Config\Source\Provider as SourceProvider;
 
-class AmexWallet implements WalletInterface
+class Wallet implements WalletInterface
 {
     /**
      * @var ConfigInterface
@@ -37,19 +36,14 @@ class AmexWallet implements WalletInterface
     protected $storeId;
 
     /**
-     * @var SourceProvider
-     */
-    protected $sourceProvider;
-
-    /**
-     * AmexWallet constructor.
-     * @param SourceProvider $sourceProvider
+     * Wallet constructor.
+     * @param MethodInterface $provider
      * @param ConfigInterface $config
      * @param ValueHandlerPoolInterface $valueHandlerPool
      * @param $code
      */
     public function __construct(
-        SourceProvider $sourceProvider,
+        MethodInterface $provider,
         ConfigInterface $config,
         ValueHandlerPoolInterface $valueHandlerPool,
         $code
@@ -57,7 +51,7 @@ class AmexWallet implements WalletInterface
         $this->config = $config;
         $this->valueHandlerPool = $valueHandlerPool;
         $this->code = $code;
-        $this->sourceProvider = $sourceProvider;
+        $this->provider = $provider;
     }
 
     /**
@@ -88,8 +82,7 @@ class AmexWallet implements WalletInterface
      */
     public function getProvider()
     {
-        $provider = $this->config->getValue('provider');
-        return $this->sourceProvider->getProvider($provider);
+        return $this->provider;
     }
 
     /**
@@ -164,7 +157,7 @@ class AmexWallet implements WalletInterface
      */
     public function canAuthorize()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -175,7 +168,7 @@ class AmexWallet implements WalletInterface
      */
     public function canCapture()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -186,7 +179,7 @@ class AmexWallet implements WalletInterface
      */
     public function canCapturePartial()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -197,7 +190,7 @@ class AmexWallet implements WalletInterface
      */
     public function canCaptureOnce()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -208,7 +201,7 @@ class AmexWallet implements WalletInterface
      */
     public function canRefund()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -219,7 +212,7 @@ class AmexWallet implements WalletInterface
      */
     public function canRefundPartialPerInvoice()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -229,7 +222,7 @@ class AmexWallet implements WalletInterface
      */
     public function canVoid()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -272,7 +265,7 @@ class AmexWallet implements WalletInterface
      */
     public function canFetchTransactionInfo()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -286,7 +279,7 @@ class AmexWallet implements WalletInterface
      */
     public function fetchTransactionInfo(\Magento\Payment\Model\InfoInterface $payment, $transactionId)
     {
-        // TODO: Implement fetchTransactionInfo() method.
+        throw new \DomainException("Not implemented");
     }
 
     /**
@@ -319,7 +312,7 @@ class AmexWallet implements WalletInterface
      */
     public function isInitializeNeeded()
     {
-        // TODO: Implement isInitializeNeeded() method.
+        return true;
     }
 
     /**
@@ -330,7 +323,7 @@ class AmexWallet implements WalletInterface
      */
     public function canUseForCountry($country)
     {
-        return true;
+        return $this->getProvider()->canUseForCountry($country);
     }
 
     /**
@@ -342,7 +335,7 @@ class AmexWallet implements WalletInterface
      */
     public function canUseForCurrency($currencyCode)
     {
-        return true;
+        return $this->getProvider()->canUseForCurrency($currencyCode);
     }
 
     /**
@@ -392,6 +385,7 @@ class AmexWallet implements WalletInterface
      */
     public function validate()
     {
+        $this->getProvider()->validate();
         return $this;
     }
 
@@ -405,7 +399,7 @@ class AmexWallet implements WalletInterface
      */
     public function order(\Magento\Payment\Model\InfoInterface $payment, $amount)
     {
-        // TODO: Implement order() method.
+        throw new \DomainException("Not implemented");
     }
 
     /**
@@ -418,7 +412,7 @@ class AmexWallet implements WalletInterface
      */
     public function authorize(\Magento\Payment\Model\InfoInterface $payment, $amount)
     {
-        // TODO: Implement authorize() method.
+        throw new \DomainException("Not implemented");
     }
 
     /**
@@ -431,7 +425,7 @@ class AmexWallet implements WalletInterface
      */
     public function capture(\Magento\Payment\Model\InfoInterface $payment, $amount)
     {
-        // TODO: Implement capture() method.
+        throw new \DomainException("Not implemented");
     }
 
     /**
@@ -444,7 +438,7 @@ class AmexWallet implements WalletInterface
      */
     public function refund(\Magento\Payment\Model\InfoInterface $payment, $amount)
     {
-        // TODO: Implement refund() method.
+        throw new \DomainException("Not implemented");
     }
 
     /**
@@ -456,7 +450,7 @@ class AmexWallet implements WalletInterface
      */
     public function cancel(\Magento\Payment\Model\InfoInterface $payment)
     {
-        // TODO: Implement cancel() method.
+        throw new \DomainException("Not implemented");
     }
 
     /**
@@ -468,7 +462,7 @@ class AmexWallet implements WalletInterface
      */
     public function void(\Magento\Payment\Model\InfoInterface $payment)
     {
-        // TODO: Implement void() method.
+        throw new \DomainException("Not implemented");
     }
 
     /**
@@ -478,7 +472,7 @@ class AmexWallet implements WalletInterface
      */
     public function canReviewPayment()
     {
-        // TODO: Implement canReviewPayment() method.
+        throw new \DomainException("Not implemented");
     }
 
     /**
@@ -491,7 +485,7 @@ class AmexWallet implements WalletInterface
      */
     public function acceptPayment(\Magento\Payment\Model\InfoInterface $payment)
     {
-        // TODO: Implement acceptPayment() method.
+        throw new \DomainException("Not implemented");
     }
 
     /**
@@ -504,7 +498,7 @@ class AmexWallet implements WalletInterface
      */
     public function denyPayment(\Magento\Payment\Model\InfoInterface $payment)
     {
-        // TODO: Implement denyPayment() method.
+        throw new \DomainException("Not implemented");
     }
 
     /**
@@ -517,7 +511,7 @@ class AmexWallet implements WalletInterface
      */
     public function getConfigData($field, $storeId = null)
     {
-        // TODO: Implement getConfigData() method.
+        return $this->config->getValue($field, $storeId);
     }
 
     /**
@@ -541,7 +535,7 @@ class AmexWallet implements WalletInterface
      */
     public function isAvailable(\Magento\Quote\Api\Data\CartInterface $quote = null)
     {
-        return true;
+        return $this->getProvider()->isAvailable($quote);
     }
 
     /**
@@ -553,7 +547,8 @@ class AmexWallet implements WalletInterface
      */
     public function isActive($storeId = null)
     {
-        return (bool) $this->config->getValue('active', $storeId);
+        return (bool) $this->config->getValue('active', $storeId)
+            && $this->getProviderCode() == $this->config->getValue('provider', $storeId);
     }
 
     /**
@@ -581,6 +576,6 @@ class AmexWallet implements WalletInterface
      */
     public function getConfigPaymentAction()
     {
-        // TODO: Implement getConfigPaymentAction() method.
+        return $this->getProvider()->getConfigPaymentAction();
     }
 }

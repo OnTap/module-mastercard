@@ -31,7 +31,7 @@
                 <item name="tns_direct" xsi:type="object">OnTap\MasterCard\Model\Ui\Direct\ConfigProvider</item>
                 <item name="tns_hosted" xsi:type="object">OnTap\MasterCard\Model\Ui\Hosted\ConfigProvider</item>
                 <item name="tns_hpf" xsi:type="object">OnTap\MasterCard\Model\Ui\Hpf\ConfigProvider</item>
-                <item name="amex_wallet_provider" xsi:type="object">OnTap\MasterCard\Model\Ui\Amex\ConfigProvider</item>
+                <item name="wallet_provider" xsi:type="object">OnTap\MasterCard\Model\Ui\Wallet\ConfigProvider</item>
             </argument>
         </arguments>
     </type>

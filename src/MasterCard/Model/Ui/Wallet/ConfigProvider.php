@@ -2,17 +2,17 @@
 /**
  * Copyright (c) 2017. On Tap Networks Limited.
  */
-namespace OnTap\MasterCard\Model\Ui\Amex;
+namespace OnTap\MasterCard\Model\Ui\Wallet;
 
 use Magento\Checkout\Model\ConfigProviderInterface;
 use Magento\Payment\Api\PaymentMethodListInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use OnTap\MasterCard\Model\Method\Wallet\WalletInterface;
+use OnTap\MasterCard\Model\Method\WalletInterface;
 use Magento\Payment\Model\Method\InstanceFactory;
 
 class ConfigProvider implements ConfigProviderInterface
 {
-    protected static $group = 'amexWallet';
+    protected static $group = 'wallets';
 
     /**
      * @var PaymentMethodListInterface
@@ -56,20 +56,15 @@ class ConfigProvider implements ConfigProviderInterface
         $list = $this->paymentMethodList->getActiveList($storeId);
 
         $methods = [];
-        foreach ($list as $method) {
+        foreach ($list as $i => $method) {
             $methodInstance = $this->instanceFactory->create($method);
             if ($methodInstance instanceof WalletInterface) {
-                $provider = $methodInstance->getProvider();
-                if (!$provider) {
-                    break;
-                }
-
-                $methods['mpgs_amex_wallet_method'] = [
+                $methods[$method->getCode() . '_' . $i] = [
                     'is_enabled' => true,
                     'title' => $methodInstance->getTitle(),
                     'config' => [
                     ],
-                    'component' => 'OnTap_MasterCard/js/view/payment/method-renderer/amex-wallet',
+                    'component' => $methodInstance->getConfigData('js_component'),
                 ];
                 break;
             }

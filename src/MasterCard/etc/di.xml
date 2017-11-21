@@ -1106,11 +1106,20 @@
             </argument>
         </arguments>
     </virtualType>
-    <type name="OnTap\MasterCard\Model\Method\Wallet\AmexWallet">
+    <virtualType name="MpgsDirectAmexWallet" type="OnTap\MasterCard\Model\Method\Wallet">
         <arguments>
             <argument name="config" xsi:type="object">MpgsAmexConfig</argument>
             <argument name="valueHandlerPool" xsi:type="object">MpgsWalletPaymentValueHandlerPool</argument>
-            <argument name="code" xsi:type="string">mpgs_amex_wallet</argument>
+            <argument name="code" xsi:type="string">tns_direct_amex</argument>
+            <argument name="provider" xsi:type="object">TnsDirectFacade</argument>
         </arguments>
-    </type>
+    </virtualType>
+    <virtualType name="MpgsHpfAmexWallet" type="OnTap\MasterCard\Model\Method\Wallet">
+        <arguments>
+            <argument name="config" xsi:type="object">MpgsAmexConfig</argument>
+            <argument name="valueHandlerPool" xsi:type="object">MpgsWalletPaymentValueHandlerPool</argument>
+            <argument name="code" xsi:type="string">tns_hpf_amex</argument>
+            <argument name="provider" xsi:type="object">TnsHpfFacade</argument>
+        </arguments>
+    </virtualType>
 </config>
