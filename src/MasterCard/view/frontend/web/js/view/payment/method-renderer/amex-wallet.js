@@ -4,46 +4,71 @@
 /*global define*/
 define(
     [
-        'Magento_Checkout/js/view/payment/default',
-        'Magento_Checkout/js/action/select-payment-method',
-        'Magento_Checkout/js/checkout-data'
+        'OnTap_MasterCard/js/view/payment/method-renderer/base-adapter',
+        'OnTap_MasterCard/js/view/payment/amex-adapter',
+        'OnTap_MasterCard/js/action/create-session',
+        'OnTap_MasterCard/js/action/open-wallet',
+        'jquery'
     ],
-    function (Component, selectPaymentMethod, checkoutData) {
+    function (Component, adapter, createSessionAction, openWalletAction, $) {
         'use strict';
         return Component.extend({
             defaults: {
                 template: 'OnTap_MasterCard/payment/amex-wallet'
             },
+            additionalData: {},
 
-            /**
-             * @returns {exports.initObservable}
-             */
-            initObservable: function () {
-                this._super()
-                    .observe([]);
+            createPaymentSession: function () {
+                this.isPlaceOrderActionAllowed(false);
+                this.buttonTitle(this.buttonTitleDisabled);
 
-                return this;
-            },
-
-            /**
-             * @returns {String}
-             */
-            getId: function () {
-                return this.index;
-            },
-
-            /**
-             * @returns
-             */
-            selectPaymentMethod: function () {
-                selectPaymentMethod(
-                    {
-                        method: this.getId()
-                    }
+                var action = createSessionAction(
+                    'mpgs',
+                    this.getData(),
+                    this.messageContainer
                 );
-                checkoutData.setSelectedPaymentMethod(this.getId());
 
-                return true;
+                $.when(action).fail($.proxy(function () {
+                    this.isPlaceOrderActionAllowed(true);
+                }, this)).done($.proxy(function (session) {
+                    // Session creation succeeded
+                    if (this.active() && this.adapterLoaded()) {
+
+                        console.log('Session created', session, this);
+                        this.openWallet(session);
+
+                    } else {
+                        this.isPlaceOrderActionAllowed(true);
+                        this.messageContainer.addErrorMessage({message: "Payment Adapter failed to load"});
+                    }
+                }, this));
+            },
+
+            openWallet: function (session) {
+                var action = openWalletAction(
+                    'mpgs',
+                    {
+                        'sessionId': session[0],
+                        'type': 'AMEX_EXPRESS_CHECKOUT'
+                    },
+                    this.messageContainer
+                );
+
+                $.when(action).fail($.proxy(function () {
+                    this.isPlaceOrderActionAllowed(true);
+                }, this)).done($.proxy(function (response) {
+
+                    console.log('Open wallet', response);
+
+                }, this));
+            },
+
+            loadAdapter: function () {
+                this.adapterLoaded(true);
+            },
+
+            getConfig: function () {
+                return window.checkoutConfig.wallets[this.getCode()];
             }
         });
     }

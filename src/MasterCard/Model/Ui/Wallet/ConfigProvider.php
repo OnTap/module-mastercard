@@ -56,16 +56,15 @@ class ConfigProvider implements ConfigProviderInterface
         $list = $this->paymentMethodList->getActiveList($storeId);
 
         $methods = [];
+        $configs = [];
         foreach ($list as $i => $method) {
             $methodInstance = $this->instanceFactory->create($method);
             if ($methodInstance instanceof WalletInterface) {
                 $methods[$method->getCode() . '_' . $i] = [
-                    'is_enabled' => true,
                     'title' => $methodInstance->getTitle(),
-                    'config' => [
-                    ],
                     'component' => $methodInstance->getConfigData('js_component'),
                 ];
+                $configs[$method->getCode()] = $methodInstance->getJsConfig();
                 break;
             }
         }
@@ -73,7 +72,8 @@ class ConfigProvider implements ConfigProviderInterface
         return [
             'payment' => [
                 self::$group => $methods
-            ]
+            ],
+            self::$group => $configs
         ];
     }
 }

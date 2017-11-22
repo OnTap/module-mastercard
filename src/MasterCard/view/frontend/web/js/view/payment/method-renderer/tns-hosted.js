@@ -4,9 +4,8 @@
 /*global define*/
 define(
     [
-        'Magento_Checkout/js/view/payment/default',
+        'OnTap_MasterCard/js/view/payment/method-renderer/base-adapter',
         'jquery',
-        'ko',
         'Magento_Checkout/js/model/quote',
         'Magento_Checkout/js/model/full-screen-loader',
         'Magento_Ui/js/modal/alert',
@@ -14,52 +13,15 @@ define(
         'OnTap_MasterCard/js/action/create-session',
         'mage/translate'
     ],
-    function (Component, $, ko, quote, fullScreenLoader, alert, paymentAdapter, createSessionAction, $t) {
+    function (Component, $, quote, fullScreenLoader, alert, paymentAdapter, createSessionAction) {
         'use strict';
 
         return Component.extend({
             defaults: {
-                template: 'OnTap_MasterCard/payment/tns-hosted',
-                adapterLoaded: false,
-                active: false,
-                buttonTitle: null,
-                buttonTitleEnabled: $t('Pay'),
-                buttonTitleDisabled: $t('Please wait...'),
-                imports: {
-                    onActiveChange: 'active'
-                }
+                template: 'OnTap_MasterCard/payment/tns-hosted'
             },
             resultIndicator: null,
             sessionVersion: null,
-
-            initObservable: function () {
-                this._super()
-                    .observe('active adapterLoaded buttonTitle');
-
-                this.buttonTitle(this.buttonTitleDisabled);
-                this.isPlaceOrderActionAllowed.subscribe($.proxy(this.buttonTitleHandler, this));
-                this.adapterLoaded.subscribe($.proxy(this.buttonTitleHandler, this));
-
-                return this;
-            },
-
-            buttonTitleHandler: function (isButtonEnabled) {
-                if (isButtonEnabled && this.isActive()) {
-                    this.buttonTitle(this.buttonTitleEnabled);
-                }
-            },
-
-            onActiveChange: function (isActive) {
-                if (isActive && !this.adapterLoaded()) {
-                    this.loadAdapter();
-                }
-            },
-
-            isActive: function () {
-                var active = this.getCode() === this.isChecked();
-                this.active(active);
-                return active;
-            },
 
             loadAdapter: function (sessionId) {
                 var config = this.getConfig();
@@ -82,6 +44,7 @@ define(
                 this.buttonTitle(this.buttonTitleDisabled);
 
                 var action = createSessionAction(
+                    'mpgs/hosted',
                     this.getData(),
                     this.messageContainer
                 );
@@ -109,14 +72,6 @@ define(
                         this.messageContainer.addErrorMessage({message: "Payment Adapter failed to load"});
                     }
                 }, this));
-            },
-
-            isCheckoutDisabled: function () {
-                return !this.adapterLoaded() || !this.isPlaceOrderActionAllowed();
-            },
-
-            getConfig: function () {
-                return window.checkoutConfig.payment[this.getCode()];
             },
 
             errorCallback: function (error) {

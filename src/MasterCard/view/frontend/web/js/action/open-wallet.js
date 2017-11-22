@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016. On Tap Networks Limited.
+ * Copyright (c) 2017. On Tap Networks Limited.
  */
 define(
     [
@@ -13,29 +13,29 @@ define(
     function (quote, urlBuilder, storage, url, errorProcessor, customer) {
         'use strict';
 
-        return function (api, paymentData, messageContainer) {
+        return function (api, sessionData, messageContainer) {
             var serviceUrl,
                 payload;
 
             if (customer.isLoggedIn()) {
-                serviceUrl = urlBuilder.createUrl('/:api/session/create', {
+                serviceUrl = urlBuilder.createUrl('/:api/session/wallet', {
                     api: api
                 });
                 payload = {
                     cartId: quote.getQuoteId(),
-                    paymentMethod: paymentData,
-                    billingAddress: quote.billingAddress()
+                    sessionId: sessionData.sessionId,
+                    type: sessionData.type
                 };
             } else {
-                serviceUrl = urlBuilder.createUrl('/:api/session/:quoteId/create', {
-                    quoteId: quote.getQuoteId(),
-                    api: api
+                serviceUrl = urlBuilder.createUrl('/:api/session/:quoteId/wallet', {
+                    api: api,
+                    quoteId: quote.getQuoteId()
                 });
                 payload = {
                     cartId: quote.getQuoteId(),
                     email: quote.guestEmail,
-                    paymentMethod: paymentData,
-                    billingAddress: quote.billingAddress()
+                    sessionId: sessionData.sessionId,
+                    type: sessionData.type
                 };
             }
 

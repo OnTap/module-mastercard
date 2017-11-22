@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <!-- Copyright (c) 2016. On Tap Networks Limited. -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <preference for="OnTap\MasterCard\Api\SessionInformationManagementInterface" type="OnTap\MasterCard\Model\SessionInformationManagement" />
+    <preference for="OnTap\MasterCard\Api\SessionManagementInterface" type="MpgsWalletDirectCreateSession" />
+    <preference for="OnTap\MasterCard\Api\Hosted\SessionManagementInterface" type="MpgsHostedCreateSession" />
 
     <!-- Virtual operation classes that specify apiOperation generically -->
     <virtualType name="AuthorizeOperationDataBuilder" type="OnTap\MasterCard\Gateway\Request\OperationBuilder">
@@ -44,6 +45,12 @@
             <argument name="operation" xsi:type="string">PROCESS_ACS_RESULT</argument>
         </arguments>
     </virtualType>
+    <virtualType name="MpgsWalletDirectCreateSession" type="OnTap\MasterCard\Model\SessionInformationManagement">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
+        </arguments>
+    </virtualType>
+
 
     <type name="OnTap\MasterCard\Gateway\Http\Client\Rest">
         <arguments>
@@ -238,6 +245,8 @@
                 <item name="create_token" xsi:type="string">MpgsDirectCreateTokenCommand</item>
                 <item name="vault_sale" xsi:type="string">MpgsDirectVaultSaleCommand</item>
                 <item name="vault_authorize" xsi:type="string">MpgsDirectVaultAuthorizeCommand</item>
+                <item name="create_session" xsi:type="string">MpgsDirectCreateSessionCommand</item>
+                <item name="open_wallet" xsi:type="string">MpgsDirectOpenWalletCommand</item>
             </argument>
         </arguments>
     </virtualType>
@@ -555,11 +564,11 @@
         </arguments>
     </virtualType>
 
-    <type name="OnTap\MasterCard\Model\SessionInformationManagement">
+    <virtualType name="MpgsHostedCreateSession" type="OnTap\MasterCard\Model\SessionInformationManagement">
         <arguments>
             <argument name="commandPool" xsi:type="object">TnsHostedCommandPool</argument>
         </arguments>
-    </type>
+    </virtualType>
 
     <virtualType name="TnsHostedConfig" type="OnTap\MasterCard\Gateway\Config\Hosted\Config">
         <arguments>
@@ -638,10 +647,16 @@
     <virtualType name="TnsHostedCreateSessionCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
         <arguments>
             <argument name="requestBuilder" xsi:type="object">TnsHostedSessionDataBuilder</argument>
-            <argument name="transferFactory" xsi:type="object">OnTap\MasterCard\Gateway\Http\Hosted\TransferFactorySession</argument>
+            <argument name="transferFactory" xsi:type="object">MpgsHostedCreateSessionTransferFactory</argument>
             <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
             <argument name="handler" xsi:type="object">OnTap\MasterCard\Gateway\Response\Hosted\SessionHandler</argument>
             <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\ResponseValidator</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsHostedCreateSessionTransferFactory" type="OnTap\MasterCard\Gateway\Http\TransferFactorySession">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsHostedConfig</argument>
+            <argument name="createNewSession" xsi:type="boolean">true</argument>
         </arguments>
     </virtualType>
 
@@ -695,12 +710,6 @@
             </argument>
         </arguments>
     </virtualType>
-
-    <type name="OnTap\MasterCard\Gateway\Http\Hosted\TransferFactorySession">
-        <arguments>
-            <argument name="config" xsi:type="object">TnsHostedConfig</argument>
-        </arguments>
-    </type>
 
     <virtualType name="HostedTransferFactory" type="OnTap\MasterCard\Gateway\Http\TransferFactory">
         <arguments>
@@ -1077,6 +1086,18 @@
         </arguments>
     </virtualType>
 
+    <virtualType name="MpgsDirectSessionRequest" type="OnTap\MasterCard\Gateway\Http\TransferFactorySession">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsDirectNewSessionRequest" type="OnTap\MasterCard\Gateway\Http\TransferFactorySession">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
+            <argument name="createNewSession" xsi:type="boolean">true</argument>
+        </arguments>
+    </virtualType>
+
     <!-- AMEX -->
     <!-- Defines a list of providers that are compatible with Amex wallet -->
     <type name="OnTap\MasterCard\Model\Config\Source\Provider">
@@ -1106,7 +1127,7 @@
             </argument>
         </arguments>
     </virtualType>
-    <virtualType name="MpgsDirectAmexWallet" type="OnTap\MasterCard\Model\Method\Wallet">
+    <virtualType name="MpgsDirectAmexWallet" type="OnTap\MasterCard\Model\Method\Amex\Wallet">
         <arguments>
             <argument name="config" xsi:type="object">MpgsAmexConfig</argument>
             <argument name="valueHandlerPool" xsi:type="object">MpgsWalletPaymentValueHandlerPool</argument>
@@ -1114,12 +1135,29 @@
             <argument name="provider" xsi:type="object">TnsDirectFacade</argument>
         </arguments>
     </virtualType>
-    <virtualType name="MpgsHpfAmexWallet" type="OnTap\MasterCard\Model\Method\Wallet">
+    <virtualType name="MpgsHpfAmexWallet" type="OnTap\MasterCard\Model\Method\Amex\Wallet">
         <arguments>
             <argument name="config" xsi:type="object">MpgsAmexConfig</argument>
             <argument name="valueHandlerPool" xsi:type="object">MpgsWalletPaymentValueHandlerPool</argument>
             <argument name="code" xsi:type="string">tns_hpf_amex</argument>
             <argument name="provider" xsi:type="object">TnsHpfFacade</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsDirectCreateSessionCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">OnTap\MasterCard\Gateway\Request\NullDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">MpgsDirectNewSessionRequest</argument>
+            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
+            <argument name="handler" xsi:type="object">OnTap\MasterCard\Gateway\Response\SessionHandler</argument>
+            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\ResponseValidator</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsDirectOpenWalletCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">OnTap\MasterCard\Gateway\Request\WalletDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">MpgsDirectSessionRequest</argument>
+            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
+            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\ResponseValidator</argument>
         </arguments>
     </virtualType>
 </config>

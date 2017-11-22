@@ -23,7 +23,7 @@ class GetTransferFactory extends TransferFactory
     {
         $orderId = $request['order_id'];
         $txnId = $request['transaction_id'];
-        return $this->getGatewayUri() . 'order/'.$orderId.'/transaction/'.$txnId;
+        return $this->getGatewayUri() . 'order/' . $orderId . '/transaction/' . $txnId;
     }
 
     /**

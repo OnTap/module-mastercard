@@ -7,9 +7,15 @@ namespace OnTap\MasterCard\Model\Method;
 use Magento\Payment\Gateway\Config\ValueHandlerPoolInterface;
 use Magento\Payment\Gateway\ConfigInterface;
 use Magento\Payment\Model\MethodInterface;
+use Magento\Payment\Gateway\Command;
 
 class Wallet implements WalletInterface
 {
+    /**
+     * @var string
+     */
+    protected $walletInitializeCommand = 'not-implemented';
+
     /**
      * @var ConfigInterface
      */
@@ -36,6 +42,11 @@ class Wallet implements WalletInterface
     protected $storeId;
 
     /**
+     * @var Command\CommandManagerPoolInterface
+     */
+    protected $commandManagerPool;
+
+    /**
      * Wallet constructor.
      * @param MethodInterface $provider
      * @param ConfigInterface $config
@@ -46,12 +57,14 @@ class Wallet implements WalletInterface
         MethodInterface $provider,
         ConfigInterface $config,
         ValueHandlerPoolInterface $valueHandlerPool,
+        Command\CommandManagerPoolInterface $commandManagerPool,
         $code
     ) {
         $this->config = $config;
         $this->valueHandlerPool = $valueHandlerPool;
         $this->code = $code;
         $this->provider = $provider;
+        $this->commandManagerPool = $commandManagerPool;
     }
 
     /**
@@ -312,7 +325,7 @@ class Wallet implements WalletInterface
      */
     public function isInitializeNeeded()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -412,6 +425,16 @@ class Wallet implements WalletInterface
      */
     public function authorize(\Magento\Payment\Model\InfoInterface $payment, $amount)
     {
+//        $commandExecutor = $this->commandManagerPool->get(
+//            $this->getProvider()->getCode()
+//        );
+//
+//        $commandExecutor->executeByCode($this->walletInitializeCommand);
+//
+//        $stateObject->setData('state', \Magento\Sales\Model\Order::STATE_PENDING_PAYMENT);
+//        $stateObject->setData('status', 'pending_payment');
+//
+//        return $this;
         throw new \DomainException("Not implemented");
     }
 
@@ -564,7 +587,7 @@ class Wallet implements WalletInterface
      */
     public function initialize($paymentAction, $stateObject)
     {
-        return $this;
+        throw new \DomainException("Not implemented");
     }
 
     /**
@@ -577,5 +600,13 @@ class Wallet implements WalletInterface
     public function getConfigPaymentAction()
     {
         return $this->getProvider()->getConfigPaymentAction();
+    }
+
+    /**
+     * @return array
+     */
+    public function getJsConfig()
+    {
+        throw new \DomainException("Not implemented");
     }
 }

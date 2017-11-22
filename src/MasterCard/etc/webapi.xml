@@ -1,9 +1,8 @@
 <?xml version="1.0"?>
 <!-- Copyright (c) 2016. On Tap Networks Limited. -->
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
-    <!-- Create payment session -->
-    <route method="POST" url="/V1/tns/hc/session/create">
-        <service class="OnTap\MasterCard\Api\SessionInformationManagementInterface" method="createNewPaymentSession"/>
+    <route method="POST" url="/V1/mpgs/hosted/session/create">
+        <service class="OnTap\MasterCard\Api\Hosted\SessionManagementInterface" method="createNewPaymentSession"/>
         <resources>
             <resource ref="self" />
         </resources>
@@ -11,8 +10,40 @@
             <parameter name="cartId" force="true">%cart_id%</parameter>
         </data>
     </route>
-    <route method="POST" url="/V1/tns/hc/session/:cartId/create">
-        <service class="OnTap\MasterCard\Api\SessionInformationManagementInterface" method="createNewGuestPaymentSession"/>
+    <route method="POST" url="/V1/mpgs/hosted/session/:cartId/create">
+        <service class="OnTap\MasterCard\Api\Hosted\SessionManagementInterface" method="createNewGuestPaymentSession"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+
+    <route method="POST" url="/V1/mpgs/session/create">
+        <service class="OnTap\MasterCard\Api\SessionManagementInterface" method="createNewPaymentSession"/>
+        <resources>
+            <resource ref="self" />
+        </resources>
+        <data>
+            <parameter name="cartId" force="true">%cart_id%</parameter>
+        </data>
+    </route>
+    <route method="POST" url="/V1/mpgs/session/:cartId/create">
+        <service class="OnTap\MasterCard\Api\SessionManagementInterface" method="createNewGuestPaymentSession"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+
+    <route method="POST" url="/V1/mpgs/session/wallet">
+        <service class="OnTap\MasterCard\Api\SessionManagementInterface" method="openWallet"/>
+        <resources>
+            <resource ref="self" />
+        </resources>
+        <data>
+            <parameter name="cartId" force="true">%cart_id%</parameter>
+        </data>
+    </route>
+    <route method="POST" url="/V1/mpgs/session/:cartId/wallet">
+        <service class="OnTap\MasterCard\Api\SessionManagementInterface" method="openWalletGuest"/>
         <resources>
             <resource ref="anonymous" />
         </resources>

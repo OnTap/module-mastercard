@@ -17,4 +17,9 @@ interface WalletInterface extends \Magento\Payment\Model\MethodInterface
      * @return MethodInterface
      */
     public function getProvider();
+
+    /**
+     * @return array
+     */
+    public function getJsConfig();
 }

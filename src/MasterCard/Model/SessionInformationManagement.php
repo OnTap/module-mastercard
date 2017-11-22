@@ -1,20 +1,20 @@
 <?php
 /**
- * Copyright (c) 2016. On Tap Networks Limited.
+ * Copyright (c) 2017. On Tap Networks Limited.
  */
-
 namespace OnTap\MasterCard\Model;
 
-use OnTap\MasterCard\Api\SessionInformationManagementInterface;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
 use Magento\Payment\Gateway\Command\CommandPoolInterface;
 use Magento\Quote\Model\QuoteIdMaskFactory;
 use Magento\Quote\Api\BillingAddressManagementInterface;
+use OnTap\MasterCard\Api\SessionManagementInterface;
 
-class SessionInformationManagement implements SessionInformationManagementInterface
+class SessionInformationManagement implements SessionManagementInterface
 {
-    const CREATE_HOSTED_SESSION = 'create_session';
+    const CREATE_SESSION = 'create_session';
+    const OPEN_WALLET = 'open_wallet';
 
     /**
      * @var CommandPoolInterface
@@ -82,7 +82,7 @@ class SessionInformationManagement implements SessionInformationManagementInterf
         $quote->reserveOrderId();
 
         $this->commandPool
-            ->get(static::CREATE_HOSTED_SESSION)
+            ->get(self::CREATE_SESSION)
             ->execute([
                 'payment' => $this->paymentDataObjectFactory->create($quote->getPayment())
             ]);
@@ -112,5 +112,50 @@ class SessionInformationManagement implements SessionInformationManagementInterf
 
         $billingAddress->setEmail($email);
         return $this->createNewPaymentSession($quoteIdMask->getQuoteId(), $paymentMethod, $billingAddress);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function openWallet(
+        $cartId,
+        $sessionId,
+        $type
+    ) {
+        /* @var \Magento\Quote\Model\Quote $quote */
+        $quote = $this->quoteRepository->getActive($cartId);
+
+        $quote->getPayment()->setAdditionalInformation('wallet', [
+            'type' => $type
+        ]);
+
+        $this->commandPool
+            ->get(self::OPEN_WALLET)
+            ->execute([
+                'payment' => $this->paymentDataObjectFactory->create($quote->getPayment())
+            ]);
+
+        $wallet = $quote->getPayment()->getAdditionalInformation('wallet');
+        $quote->save();
+
+        return [
+
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function openWalletGuest(
+        $cartId,
+        $email,
+        $sessionId,
+        $type
+    ) {
+        $quoteIdMask = $this->quoteIdMaskFactory
+            ->create()
+            ->load($cartId, 'masked_id');
+
+        return $this->openWallet($quoteIdMask->getQuoteId(), $sessionId, $type);
     }
 }

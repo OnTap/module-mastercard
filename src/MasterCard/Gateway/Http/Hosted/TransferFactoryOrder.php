@@ -23,6 +23,6 @@ class TransferFactoryOrder extends TransferFactory
     protected function getUri(PaymentDataObjectInterface $payment)
     {
         $orderId = $payment->getOrder()->getOrderIncrementId();
-        return $this->getGatewayUri() . 'order/'.$orderId;
+        return $this->getGatewayUri() . 'order/' . $orderId;
     }
 }

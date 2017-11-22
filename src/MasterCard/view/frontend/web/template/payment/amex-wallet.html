@@ -1,15 +1,15 @@
-<div class="payment-method" css="'_active': (getId() === isChecked())">
+<div class="payment-method" data-bind="css: {'_active': isActive()}">
     <div class="payment-method-title field choice">
         <input type="radio"
                name="payment[method]"
                class="radio"
                data-bind="
-                    attr: {'id': getId()},
-                    value: getId(),
+                    attr: {'id': getCode()},
+                    value: getCode(),
                     click: selectPaymentMethod,
                     checked: isChecked,
                     visible: isRadioButtonVisible()"/>
-        <label class="label" data-bind="attr: {'for': getId()}">
+        <label class="label" data-bind="attr: {'for': getCode()}">
             <span text="getTitle()"></span>
         </label>
     </div>
@@ -25,10 +25,8 @@
             <div class="primary">
                 <button class="action primary checkout"
                         type="submit"
-                        data-bind="
-                            click: placeOrder,
-                            attr: {title: $t('Place Order')}">
-                    <span translate="'Place Order'"></span>
+                        data-bind="click: createPaymentSession, attr: {title: $t('Pay')}, css: {disabled: isCheckoutDisabled()}">
+                    <span data-bind="text: buttonTitle()"></span>
                 </button>
             </div>
         </div>
