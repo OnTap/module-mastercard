@@ -8,6 +8,7 @@ use Magento\Payment\Gateway\Config\ValueHandlerPoolInterface;
 use Magento\Payment\Gateway\ConfigInterface;
 use Magento\Payment\Model\MethodInterface;
 use Magento\Payment\Gateway\Command;
+use Magento\Payment\Gateway\Config\ConfigFactory;
 
 class Wallet implements WalletInterface
 {
@@ -20,6 +21,11 @@ class Wallet implements WalletInterface
      * @var ConfigInterface
      */
     protected $config;
+
+    /**
+     * @var \Magento\Payment\Gateway\Config\Config
+     */
+    protected $methodConfig;
 
     /**
      * @var ValueHandlerPoolInterface
@@ -47,15 +53,30 @@ class Wallet implements WalletInterface
     protected $commandManagerPool;
 
     /**
+     * @var ConfigFactory
+     */
+    protected $configFactory;
+
+    /**
+     * @var ConfigInterface
+     */
+    protected $providerConfig;
+
+    /**
      * Wallet constructor.
+     * @param ConfigFactory $configFactory
      * @param MethodInterface $provider
      * @param ConfigInterface $config
+     * @param ConfigInterface $providerConfig
      * @param ValueHandlerPoolInterface $valueHandlerPool
+     * @param Command\CommandManagerPoolInterface $commandManagerPool
      * @param $code
      */
     public function __construct(
+        ConfigFactory $configFactory,
         MethodInterface $provider,
         ConfigInterface $config,
+        ConfigInterface $providerConfig,
         ValueHandlerPoolInterface $valueHandlerPool,
         Command\CommandManagerPoolInterface $commandManagerPool,
         $code
@@ -65,6 +86,27 @@ class Wallet implements WalletInterface
         $this->code = $code;
         $this->provider = $provider;
         $this->commandManagerPool = $commandManagerPool;
+        $this->configFactory = $configFactory;
+        $this->providerConfig = $providerConfig;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getProviderConfig()
+    {
+        return $this->providerConfig;
+    }
+
+    /**
+     * @return \Magento\Payment\Gateway\Config\Config
+     */
+    public function getMethodConfig()
+    {
+        if (!$this->methodConfig) {
+            $this->methodConfig = $this->configFactory->create($this->getCode());
+        }
+        return $this->methodConfig;
     }
 
     /**

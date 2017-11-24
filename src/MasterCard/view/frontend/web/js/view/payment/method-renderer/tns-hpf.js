@@ -36,6 +36,7 @@ define(
             validateHandler: null,
             sessionId: null,
             inPayment: false,
+            adapter: null,
 
             initialize: function () {
                 this._super();
@@ -149,12 +150,15 @@ define(
             },
 
             loadAdapter: function () {
-                var config = this.getConfig();
+                var config = this.getConfig(),
+                    data = {
+                        fields: this.getCardFields()
+                    };
 
-                paymentAdapter.loadApi(
-                    this.getCardFields(),
+                paymentAdapter.init(
+                    this.getCode(),
                     config.component_url,
-                    config.merchant_username,
+                    data,
                     $.proxy(this.paymentAdapterLoaded, this),
                     config.debug
                 );
@@ -164,7 +168,8 @@ define(
                 return !this.adapterLoaded() || !this.isPlaceOrderActionAllowed();
             },
 
-            paymentAdapterLoaded: function (adapter) {
+            paymentAdapterLoaded: function (adapter, response) {
+                this.adapter = adapter;
                 this.adapterLoaded(true);
             },
 
@@ -248,7 +253,7 @@ define(
                 this.buttonTitle(this.buttonTitleDisabled);
                 this.inPayment = false;
 
-                paymentAdapter.startSession($.proxy(function(response) {
+                this.adapter.startSession($.proxy(function(response) {
                     if (this.inPayment === true) {
                         console.info("Duplicate response from session.updateSessionFromForm");
                         return;

@@ -6,7 +6,7 @@ namespace OnTap\MasterCard\Model\Method\Amex;
 
 use OnTap\MasterCard\Model\Method\WalletInterface;
 
-class Wallet extends \OnTap\MasterCard\Model\Method\Wallet implements WalletInterface
+class DirectWallet extends \OnTap\MasterCard\Model\Method\Wallet implements WalletInterface
 {
     protected $walletInitializeCommand = 'amex_create_session';
 

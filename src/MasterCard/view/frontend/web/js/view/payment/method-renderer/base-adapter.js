@@ -38,6 +38,10 @@ define(
                 return this;
             },
 
+            safeNumber: function (num) {
+                return parseFloat(num).toFixed(2);
+            },
+
             buttonTitleHandler: function (isButtonEnabled) {
                 if (isButtonEnabled && this.isActive()) {
                     this.buttonTitle(this.buttonTitleEnabled);

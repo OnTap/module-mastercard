@@ -145,13 +145,14 @@
                 <active>0</active>
                 <title>Amex Express Checkout</title>
                 <provider>tns_direct</provider>
-                <js_component>OnTap_MasterCard/js/view/payment/method-renderer/amex-wallet</js_component>
-                <adapter_component>https://icm.aexp-static.com/Internet/IMDC/US_en/RegisteredCard/IntlAmexExpressCheckout/js/AmexExpressCheckout.js</adapter_component>
             </mpgs_amex_wallet>
             <tns_direct_amex>
+                <js_component>OnTap_MasterCard/js/view/payment/method-renderer/amex-wallet-direct</js_component>
+                <adapter_component>https://icm.aexp-static.com/Internet/IMDC/US_en/RegisteredCard/IntlAmexExpressCheckout/js/AmexExpressCheckout.js</adapter_component>
                 <model>MpgsDirectAmexWallet</model>
             </tns_direct_amex>
             <tns_hpf_amex>
+                <js_component>OnTap_MasterCard/js/view/payment/method-renderer/amex-wallet-hpf</js_component>
                 <model>MpgsHpfAmexWallet</model>
             </tns_hpf_amex>
         </payment>

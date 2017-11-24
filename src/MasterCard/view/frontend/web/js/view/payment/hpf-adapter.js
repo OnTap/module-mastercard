@@ -4,28 +4,21 @@
 /*browser:true*/
 /*global define*/
 define([
-    'jquery'
-], function ($) {
+    'jquery',
+    'Magento_Checkout/js/model/quote'
+], function ($, quote) {
     'use strict';
 
     return {
-        onLoadedCallback: null,
         sessionUpdatedCallback: null,
         debug: false,
-        fields: null,
 
         logDebug: function (s) {
             if (this.debug) {
                 console.info(s);
             }
         },
-        loadApi: function (fields, componentUrl, merchantId, onLoadedCallback, debugMode) {
-            this.onLoadedCallback = onLoadedCallback;
-            this.debug = debugMode;
-            this.fields = fields;
-
-            this.logDebug("Loading HPF Api...");
-
+        getUrl: function (componentUrl) {
             var url = componentUrl,
                 cacheBust = new Date().getTime();
 
@@ -34,22 +27,33 @@ define([
             } else {
                 url += '?_=' + cacheBust;
             }
+
+            return url;
+        },
+        init: function (methodCode, componentUrl, data, onLoadedCallback, debugMode) {
+            this.debug = debugMode;
+
+            this.logDebug("Loading HPF...");
+
+            var url = this.getUrl(componentUrl);
+
             requirejs.load({
                 contextName: '_',
-                onScriptLoad: $.proxy(this.scriptLoadedCallback, this)
-            }, 'tns_hpf', url);
-
+                onScriptLoad: $.proxy(function () {
+                    $.proxy(this.configure, this)(PaymentSession, data, onLoadedCallback);
+                }, this)
+            }, methodCode, url);
         },
-        scriptLoadedCallback: function () {
-            this.logDebug("Script loaded, configuring session...");
-            PaymentSession.configure({
-                fields: this.fields,
-                frameEmbeddingMitigation: ["x-frame-options"],
+        configure: function (PaymentSession, data, onLoadedCallback) {
+            this.logDebug("Configuring HPF...");
+
+            PaymentSession.configure($.extend({
                 callbacks: {
-                    initialized: $.proxy(this.onLoadedCallback, this),
+                    initialized: $.proxy(onLoadedCallback, this, this),
                     formSessionUpdate: $.proxy(this.sessionUpdated, this)
-                }
-            });
+                },
+                frameEmbeddingMitigation: ["x-frame-options"]
+            }, data));
         },
         startSession: function (callback) {
             this.logDebug("Starting payment session...");

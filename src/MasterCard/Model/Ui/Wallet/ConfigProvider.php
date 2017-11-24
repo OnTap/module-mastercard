@@ -62,7 +62,7 @@ class ConfigProvider implements ConfigProviderInterface
             if ($methodInstance instanceof WalletInterface) {
                 $methods[$method->getCode() . '_' . $i] = [
                     'title' => $methodInstance->getTitle(),
-                    'component' => $methodInstance->getConfigData('js_component'),
+                    'component' => $methodInstance->getMethodConfig()->getValue('js_component'),
                 ];
                 $configs[$method->getCode()] = $methodInstance->getJsConfig();
                 break;

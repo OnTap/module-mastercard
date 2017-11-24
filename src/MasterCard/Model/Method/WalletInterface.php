@@ -22,4 +22,14 @@ interface WalletInterface extends \Magento\Payment\Model\MethodInterface
      * @return array
      */
     public function getJsConfig();
+
+    /**
+     * @return \Magento\Payment\Gateway\Config\Config
+     */
+    public function getMethodConfig();
+
+    /**
+     * @return \Magento\Payment\Gateway\Config\Config
+     */
+    public function getProviderConfig();
 }
