@@ -9,6 +9,7 @@ use Magento\Payment\Gateway\ConfigInterface;
 use Magento\Payment\Model\MethodInterface;
 use Magento\Payment\Gateway\Command;
 use Magento\Payment\Gateway\Config\ConfigFactory;
+use Magento\Framework\UrlInterface;
 
 class Wallet implements WalletInterface
 {
@@ -63,16 +64,23 @@ class Wallet implements WalletInterface
     protected $providerConfig;
 
     /**
+     * @var UrlInterface
+     */
+    protected $url;
+
+    /**
      * Wallet constructor.
+     * @param UrlInterface $url
      * @param ConfigFactory $configFactory
      * @param MethodInterface $provider
      * @param ConfigInterface $config
      * @param ConfigInterface $providerConfig
      * @param ValueHandlerPoolInterface $valueHandlerPool
      * @param Command\CommandManagerPoolInterface $commandManagerPool
-     * @param $code
+     * @param string $code
      */
     public function __construct(
+        UrlInterface $url,
         ConfigFactory $configFactory,
         MethodInterface $provider,
         ConfigInterface $config,
@@ -88,6 +96,15 @@ class Wallet implements WalletInterface
         $this->commandManagerPool = $commandManagerPool;
         $this->configFactory = $configFactory;
         $this->providerConfig = $providerConfig;
+        $this->url = $url;
+    }
+
+    /**
+     * @return UrlInterface
+     */
+    public function getUrlBuilder()
+    {
+        return $this->url;
     }
 
     /**

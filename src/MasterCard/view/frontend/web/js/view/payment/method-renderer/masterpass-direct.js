@@ -59,15 +59,20 @@ define(
                 }, this)).done($.proxy(function (response) {
 
                     console.log('Open wallet', response);
+
+                    var config = this.getConfig();
                     adapter.checkout({
                         'merchantCheckoutId': response.merchant_checkout_id,
                         'allowedCardTypes': [response.allowed_card_types],
                         'requestToken': response.request_token,
-                        'failureCallback': response.origin_url,
-                        'successCallback': response.origin_url
-                    });
+                        'callbackUrl': config.callbackUrl
+                    }, this.onCallback, this.onCallback, this.onCallback);
 
                 }, this));
+            },
+
+            onCallback: function () {
+                console.log(this, arguments);
             },
 
             loadAdapter: function () {

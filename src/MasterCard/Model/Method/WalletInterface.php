@@ -32,4 +32,9 @@ interface WalletInterface extends \Magento\Payment\Model\MethodInterface
      * @return \Magento\Payment\Gateway\Config\Config
      */
     public function getProviderConfig();
+
+    /**
+     * @return \Magento\Framework\UrlInterface
+     */
+    public function getUrlBuilder();
 }

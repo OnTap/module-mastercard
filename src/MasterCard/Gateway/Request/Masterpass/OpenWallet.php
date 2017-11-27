@@ -6,10 +6,24 @@
 namespace OnTap\MasterCard\Gateway\Request\Masterpass;
 
 use Magento\Payment\Gateway\Request\BuilderInterface;
-use Magento\Payment\Gateway\Helper\SubjectReader;
+use Magento\Framework\UrlInterface;
 
 class OpenWallet implements BuilderInterface
 {
+    /**
+     * @var UrlInterface
+     */
+    protected $urlBuilder;
+
+    /**
+     * OpenWallet constructor.
+     * @param UrlInterface $url
+     */
+    public function __construct(UrlInterface $url)
+    {
+        $this->urlBuilder = $url;
+    }
+
     /**
      * Builds ENV request
      *
@@ -21,7 +35,7 @@ class OpenWallet implements BuilderInterface
         return [
             'wallet' => [
                 'masterpass' => [
-                    'originUrl' => 'http://mastercard-m2.dev/2.2/checkout/#payment'
+                    'originUrl' => $this->urlBuilder->getUrl('mpgs/masterpass/review', ['_secure' => true])
                 ]
             ]
         ];

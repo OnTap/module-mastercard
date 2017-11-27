@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <title>Review Order</title>
+    </head>
+    <body>
+        <referenceBlock name="head.components">
+            <block class="Magento\Framework\View\Element\Js\Components" name="mpgs_masterpass_review_checkout_head_components" template="Magento_Checkout::js/components.phtml"/>
+        </referenceBlock>
+        <referenceContainer name="content">
+            <block class="OnTap\MasterCard\Block\Masterpass\Review" name="mpgs.masterpass.review" template="OnTap_MasterCard::masterpass/review.phtml">
+
+            </block>
+        </referenceContainer>
+        <block class="Magento\Framework\View\Element\Template" name="additional.product.info" template="Magento_Theme::template.phtml"/>
+    </body>
+</page>

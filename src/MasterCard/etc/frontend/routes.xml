@@ -5,5 +5,8 @@
         <route id="tns" frontName="tns">
             <module name="OnTap_MasterCard" />
         </route>
+        <route id="mpgs" frontName="mpgs">
+            <module name="OnTap_MasterCard" />
+        </route>
     </router>
 </config>

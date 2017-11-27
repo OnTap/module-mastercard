@@ -8,15 +8,14 @@ use OnTap\MasterCard\Model\Method\WalletInterface;
 
 class DirectWallet extends \OnTap\MasterCard\Model\Method\Wallet implements WalletInterface
 {
-    protected $walletInitializeCommand = 'visa_create_session';
-
     /**
      * @return array
      */
     public function getJsConfig()
     {
         return [
-            'adapter_component' => $this->getMethodConfig()->getValue('adapter_component')
+            'adapter_component' => $this->getMethodConfig()->getValue('adapter_component'),
+            'callbackUrl' => $this->getUrlBuilder()->getUrl('mpgs/masterpass/review')
         ];
     }
 }

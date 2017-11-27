@@ -15,8 +15,12 @@ define([
             }, 'masterpass_wallet', componentUrl);
         },
 
-        checkout: function (data) {
-            MasterPass.client.checkout(data);
+        checkout: function (data, onSuccess, onCancel, onFailure) {
+            MasterPass.client.checkout($.extend({
+                'failureCallback': $.proxy(onSuccess, this),
+                'cancelCallback': $.proxy(onCancel, this),
+                'successCallback': $.proxy(onFailure, this)
+            }, data));
         }
     }
 });
