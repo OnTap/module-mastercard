@@ -10,11 +10,11 @@ use Magento\Payment\Gateway\Command\CommandPoolInterface;
 use Magento\Quote\Model\QuoteIdMaskFactory;
 use Magento\Quote\Api\BillingAddressManagementInterface;
 use OnTap\MasterCard\Api\SessionManagementInterface;
+use OnTap\MasterCard\Gateway\Config\Wallet\CommandProvider;
 
 class SessionInformationManagement implements SessionManagementInterface
 {
     const CREATE_SESSION = 'create_session';
-    const OPEN_WALLET = 'open_wallet';
 
     /**
      * @var CommandPoolInterface
@@ -42,25 +42,41 @@ class SessionInformationManagement implements SessionManagementInterface
     protected $billingAddressManagement;
 
     /**
+     * @var CommandProvider
+     */
+    protected $commandProvider;
+
+    /**
+     * @var WalletFactory
+     */
+    protected $walletFactory;
+
+    /**
      * SessionInformationManagement constructor.
      * @param CommandPoolInterface $commandPool
      * @param CartRepositoryInterface $quoteRepository
      * @param PaymentDataObjectFactory $paymentDataObjectFactory
      * @param QuoteIdMaskFactory $quoteIdMaskFactory
      * @param BillingAddressManagementInterface $billingAddressManagement
+     * @param CommandProvider $commandProvider
+     * @param WalletFactory $walletFactory
      */
     public function __construct(
         CommandPoolInterface $commandPool,
         CartRepositoryInterface $quoteRepository,
         PaymentDataObjectFactory $paymentDataObjectFactory,
         QuoteIdMaskFactory $quoteIdMaskFactory,
-        BillingAddressManagementInterface $billingAddressManagement
+        BillingAddressManagementInterface $billingAddressManagement,
+        CommandProvider $commandProvider,
+        WalletFactory $walletFactory
     ) {
         $this->commandPool = $commandPool;
         $this->quoteRepository = $quoteRepository;
         $this->paymentDataObjectFactory = $paymentDataObjectFactory;
         $this->quoteIdMaskFactory = $quoteIdMaskFactory;
         $this->billingAddressManagement = $billingAddressManagement;
+        $this->commandProvider = $commandProvider;
+        $this->walletFactory = $walletFactory;
     }
 
     /**
@@ -129,18 +145,26 @@ class SessionInformationManagement implements SessionManagementInterface
             'type' => $type
         ]);
 
+        $command = $this->commandProvider->getByType($type);
         $this->commandPool
-            ->get(self::OPEN_WALLET)
+            ->get($command)
             ->execute([
                 'payment' => $this->paymentDataObjectFactory->create($quote->getPayment())
             ]);
 
-        $wallet = $quote->getPayment()->getAdditionalInformation('wallet');
+        $walletData = $quote->getPayment()->getAdditionalInformation('wallet');
+        $walletProvider = $quote->getPayment()->getAdditionalInformation('walletProvider');
+
         $quote->save();
 
-        return [
+        $wallet = $this->walletFactory->create(['data' => [
+            'walletProvider' => $walletProvider
+        ]]);
 
-        ];
+        $type = key($walletData);
+        $wallet->addData($walletData[$type]);
+
+        return $wallet;
     }
 
     /**

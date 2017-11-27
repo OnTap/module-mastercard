@@ -65,7 +65,6 @@ class ConfigProvider implements ConfigProviderInterface
                     'component' => $methodInstance->getMethodConfig()->getValue('js_component'),
                 ];
                 $configs[$method->getCode()] = $methodInstance->getJsConfig();
-                break;
             }
         }
 

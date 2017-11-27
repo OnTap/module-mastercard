@@ -30,16 +30,8 @@ define(
 
                 var data = {
                     wallets: {
-                        amexExpressCheckout: {
-                            enabled: true,
-                            initTags: {
-                                "theme": "responsive",
-                                "env": "qa",
-                                "disable_btn": "false",
-                                "button_color": "light",
-                                "client_id": "398f9858-5567-434f-a929-242d6fc7fea8",
-                                "display_type":"custom"  // IF USING OWN IMAGE FOR BUTTON
-                            }
+                        visaCheckout: {
+                            enabled: true
                         }
                     },
                     order: {

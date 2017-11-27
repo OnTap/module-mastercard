@@ -5,7 +5,7 @@
 define(
     [
         'OnTap_MasterCard/js/view/payment/method-renderer/base-adapter',
-        'OnTap_MasterCard/js/view/payment/amex-adapter',
+        'OnTap_MasterCard/js/view/payment/masterpass-adapter',
         'OnTap_MasterCard/js/action/create-session',
         'OnTap_MasterCard/js/action/open-wallet',
         'jquery'
@@ -35,7 +35,7 @@ define(
                     if (this.active() && this.adapterLoaded()) {
 
                         console.log('Session created', session, this);
-                        this.openWallet(session);
+                        this.configureWallet(session);
 
                     } else {
                         this.isPlaceOrderActionAllowed(true);
@@ -44,12 +44,12 @@ define(
                 }, this));
             },
 
-            openWallet: function (session) {
+            configureWallet: function (session) {
                 var action = openWalletAction(
                     'mpgs',
                     {
                         'sessionId': session[0],
-                        'type': 'AMEX_EXPRESS_CHECKOUT'
+                        'type': 'MASTERPASS_ONLINE'
                     },
                     this.messageContainer
                 );
@@ -59,11 +59,23 @@ define(
                 }, this)).done($.proxy(function (response) {
 
                     console.log('Open wallet', response);
+                    adapter.checkout({
+                        'merchantCheckoutId': response.merchant_checkout_id,
+                        'allowedCardTypes': [response.allowed_card_types],
+                        'requestToken': response.request_token,
+                        'failureCallback': response.origin_url,
+                        'successCallback': response.origin_url
+                    });
 
                 }, this));
             },
 
             loadAdapter: function () {
+                var config = this.getConfig();
+                adapter.loadAdapter(config.adapter_component, $.proxy(this.adapterLoaded, this));
+            },
+
+            adapterLoaded: function () {
                 this.adapterLoaded(true);
             },
 
