@@ -15,7 +15,7 @@ class DirectWallet extends \OnTap\MasterCard\Model\Method\Wallet implements Wall
     {
         return [
             'adapter_component' => $this->getMethodConfig()->getValue('adapter_component'),
-            'callbackUrl' => $this->getUrlBuilder()->getUrl('mpgs/masterpass/review')
+            'callbackUrl' => $this->getUrlBuilder()->getUrl('mpgs/session/updateMasterpass')
         ];
     }
 }

@@ -26,5 +26,6 @@ class WalletHandler implements HandlerInterface
 
         $payment->setAdditionalInformation('walletProvider', $response['order']['walletProvider']);
         $payment->setAdditionalInformation('wallet', $response['wallet']);
+        $payment->setAdditionalInformation('session', $response['session']);
     }
 }

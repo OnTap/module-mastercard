@@ -31,16 +31,6 @@ class PaymentHandler implements HandlerInterface
     }
 
     /**
-     * @param string $data
-     * @param string $field
-     * @return string|null
-     */
-    public static function safeValue($data, $field)
-    {
-        return isset($data[$field]) ? $data[$field] : null;
-    }
-
-    /**
      * @param Payment|\Magento\Sales\Api\Data\OrderPaymentInterface $payment
      * @param array $response
      * @return void
@@ -60,40 +50,6 @@ class PaymentHandler implements HandlerInterface
 
         if (isset($response['risk'])) {
             $payment->setAdditionalInformation('risk', $response['risk']);
-        }
-
-        if (isset($response['sourceOfFunds']) && isset($response['sourceOfFunds']['provided']['card'])) {
-            $cardDetails = $response['sourceOfFunds']['provided']['card'];
-
-            $payment->setAdditionalInformation('card_scheme', $cardDetails['scheme']);
-            $payment->setAdditionalInformation(
-                'card_number',
-                'XXXX-' . substr($cardDetails['number'], -4)
-            );
-            $payment->setAdditionalInformation(
-                'card_expiry_date',
-                sprintf(
-                    '%s/%s',
-                    $cardDetails['expiry']['month'],
-                    $cardDetails['expiry']['year']
-                )
-            );
-            if (isset($cardDetails['fundingMethod'])) {
-                $payment->setAdditionalInformation('fundingMethod', static::safeValue($cardDetails, 'fundingMethod'));
-            }
-            if (isset($cardDetails['issuer'])) {
-                $payment->setAdditionalInformation('issuer', static::safeValue($cardDetails, 'issuer'));
-            }
-            if (isset($cardDetails['nameOnCard'])) {
-                $payment->setAdditionalInformation('nameOnCard', static::safeValue($cardDetails, 'nameOnCard'));
-            }
-        }
-
-        if (isset($response['response']['cardSecurityCode'])) {
-            $payment->setAdditionalInformation(
-                'cvv_validation',
-                $response['response']['cardSecurityCode']['gatewayCode']
-            );
         }
     }
 }

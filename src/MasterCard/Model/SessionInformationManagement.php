@@ -141,9 +141,7 @@ class SessionInformationManagement implements SessionManagementInterface
         /* @var \Magento\Quote\Model\Quote $quote */
         $quote = $this->quoteRepository->getActive($cartId);
 
-        $quote->getPayment()->setAdditionalInformation('wallet', [
-            'type' => $type
-        ]);
+        $quote->getPayment()->setAdditionalInformation('walletProvider', $type);
 
         $command = $this->commandProvider->getByType($type);
         $this->commandPool
@@ -155,6 +153,7 @@ class SessionInformationManagement implements SessionManagementInterface
         $walletData = $quote->getPayment()->getAdditionalInformation('wallet');
         $walletProvider = $quote->getPayment()->getAdditionalInformation('walletProvider');
 
+        $quote->getPayment()->save();
         $quote->save();
 
         $wallet = $this->walletFactory->create(['data' => [

@@ -2,27 +2,15 @@
 /**
  * Copyright (c) 2017. On Tap Networks Limited.
  */
-
 namespace OnTap\MasterCard\Gateway\Request\Masterpass;
 
 use Magento\Payment\Gateway\Request\BuilderInterface;
-use Magento\Framework\UrlInterface;
 
-class OpenWallet implements BuilderInterface
+class OAuth implements BuilderInterface
 {
-    /**
-     * @var UrlInterface
-     */
-    protected $urlBuilder;
-
-    /**
-     * OpenWallet constructor.
-     * @param UrlInterface $url
-     */
-    public function __construct(UrlInterface $url)
-    {
-        $this->urlBuilder = $url;
-    }
+    const OAUTH_TOKEN = 'oauthToken';
+    const OAUTH_VERIFIER = 'oauthVerifier';
+    const CHECKOUT_URL = 'checkoutUrl';
 
     /**
      * Builds ENV request
@@ -35,7 +23,9 @@ class OpenWallet implements BuilderInterface
         return [
             'wallet' => [
                 'masterpass' => [
-                    'originUrl' => $this->urlBuilder->getUrl('mpgs/session/updateMasterpass', ['_secure' => true])
+                    self::OAUTH_TOKEN => $buildSubject[self::OAUTH_TOKEN],
+                    self::OAUTH_VERIFIER => $buildSubject[self::OAUTH_VERIFIER],
+                    self::CHECKOUT_URL => $buildSubject[self::CHECKOUT_URL]
                 ]
             ]
         ];

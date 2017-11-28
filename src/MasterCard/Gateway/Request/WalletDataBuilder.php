@@ -26,7 +26,7 @@ class WalletDataBuilder implements BuilderInterface
 
         /** @var Payment $payment */
         $payment = $paymentDO->getPayment();
-        $wallet = $payment->getAdditionalInformation('wallet');
+        $provider = $payment->getAdditionalInformation('walletProvider');
         $session = $payment->getAdditionalInformation('session');
 
         /** @var \Magento\Quote\Model\Quote $quote */
@@ -35,7 +35,7 @@ class WalletDataBuilder implements BuilderInterface
 
         return [
             'order' => [
-                'walletProvider' => $wallet['type'],
+                'walletProvider' => $provider,
                 'amount' => sprintf('%.2F', $quote->getGrandTotal()),
                 'currency' => $order->getCurrencyCode(),
             ],

@@ -46,6 +46,11 @@
             <argument name="operation" xsi:type="string">PROCESS_ACS_RESULT</argument>
         </arguments>
     </virtualType>
+    <virtualType name="UpdateWalletFromSession" type="OnTap\MasterCard\Gateway\Request\OperationBuilder">
+        <arguments>
+            <argument name="operation" xsi:type="string">UPDATE_SESSION_FROM_WALLET</argument>
+        </arguments>
+    </virtualType>
     <virtualType name="MpgsWalletDirectCreateSession" type="OnTap\MasterCard\Model\SessionInformationManagement">
         <arguments>
             <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
@@ -140,6 +145,7 @@
                 <item name="transaction" xsi:type="string">OnTap\MasterCard\Gateway\Response\TransactionIdHandler</item>
                 <item name="authorize" xsi:type="string">OnTap\MasterCard\Gateway\Response\AuthorizeHandler</item>
                 <item name="payment" xsi:type="string">OnTap\MasterCard\Gateway\Response\PaymentHandler</item>
+                <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Response\CardDataHandler</item>
             </argument>
         </arguments>
     </virtualType>
@@ -249,6 +255,7 @@
                 <item name="create_session" xsi:type="string">MpgsDirectCreateSessionCommand</item>
                 <item name="open_amex" xsi:type="string">MpgsDirectOpenWalletCommand</item>
                 <item name="open_masterpass" xsi:type="string">MpgsDirectOpenMasterpassCommand</item>
+                <item name="update_wallet" xsi:type="string">MpgsDirectUpdateWallet</item>
             </argument>
         </arguments>
     </virtualType>
@@ -550,6 +557,7 @@
                 <item name="transaction" xsi:type="string">OnTap\MasterCard\Gateway\Response\TransactionIdHandler</item>
                 <item name="capture" xsi:type="string">OnTap\MasterCard\Gateway\Response\CaptureHandler</item>
                 <item name="payment" xsi:type="string">OnTap\MasterCard\Gateway\Response\PaymentHandler</item>
+                <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Response\CardDataHandler</item>
             </argument>
         </arguments>
     </virtualType>
@@ -957,6 +965,7 @@
                 <item name="transaction" xsi:type="string">OnTap\MasterCard\Gateway\Response\TransactionIdHandler</item>
                 <item name="capture" xsi:type="string">OnTap\MasterCard\Gateway\Response\CaptureHandler</item>
                 <item name="payment" xsi:type="string">OnTap\MasterCard\Gateway\Response\PaymentHandler</item>
+                <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Response\CardDataHandler</item>
             </argument>
         </arguments>
     </virtualType>
@@ -1177,6 +1186,37 @@
             <argument name="requestBuilder" xsi:type="object">MpgsDirectOpenMasterpassDataBuilder</argument>
         </arguments>
     </virtualType>
+    <virtualType name="MpgsDirectUpdateWallet" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">MpgsDirectUpdateWalletDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">MpgsDirectSessionRequest</argument>
+            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
+            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\WalletValidator</argument>
+            <argument name="handler" xsi:type="object">MpgsSessionWalletHandler</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsSessionWalletHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Response\CardDataHandler</item>
+                <item name="wallet" xsi:type="string">OnTap\MasterCard\Gateway\Response\WalletHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsDirectUpdateWalletDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="operation" xsi:type="string">UpdateWalletFromSession</item>
+                <item name="wallet" xsi:type="string">OnTap\MasterCard\Gateway\Request\WalletDataBuilder</item>
+                <item name="oauth" xsi:type="string">OnTap\MasterCard\Gateway\Request\Masterpass\OAuth</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="OnTap\MasterCard\Controller\Session\UpdateMasterpass">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
+        </arguments>
+    </type>
 
     <!-- Visa Checkout -->
     <virtualType name="VisaCheckoutProvidersPool" type="OnTap\MasterCard\Model\Config\Source\Provider">
