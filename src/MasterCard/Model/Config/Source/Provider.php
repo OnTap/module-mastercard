@@ -31,10 +31,10 @@ class Provider implements \Magento\Framework\Option\ArrayInterface
         $options = [];
 
         foreach ($this->providers as $provider) {
-            $active = (bool) $provider->isActive();
-            if (!$active) {
-                continue;
-            }
+//            $active = (bool) $provider->isActive();
+//            if (!$active) {
+//                continue;
+//            }
             $options[] = [
                 'label' => $provider->getTitle(),
                 'value' => $provider->getCode()

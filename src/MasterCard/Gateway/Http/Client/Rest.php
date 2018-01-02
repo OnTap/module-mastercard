@@ -87,7 +87,8 @@ class Rest implements ClientInterface
     {
         $log = [
             'request' => json_encode($transferObject->getBody(), JSON_UNESCAPED_SLASHES),
-            'request_uri' => $transferObject->getUri()
+            'request_uri' => $transferObject->getUri(),
+            'method' => $transferObject->getMethod(),
         ];
         $response = [];
 

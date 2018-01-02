@@ -16,6 +16,7 @@
                 <api_as>https://ap-gateway.mastercard.com/</api_as>
                 <api_na>https://na-gateway.mastercard.com/</api_na>
                 <api_uat>https://secure.uat.tnspayments.com/</api_uat>
+                <api_au>https://mtf.gateway.mastercard.com/</api_au>
                 <custom_create_token_request_data>{}</custom_create_token_request_data>
                 <custom_sale_request_data>{}</custom_sale_request_data>
                 <custom_authorize_request_data>{}</custom_authorize_request_data>
@@ -145,6 +146,8 @@
                 <model>Magento\Vault\Model\Method\NullPaymentProvider</model>
                 <active>0</active>
                 <title>Amex Express Checkout</title>
+                <client_id />
+                <env>qa</env>
                 <provider>tns_direct</provider>
             </mpgs_amex_wallet>
             <tns_direct_amex>
@@ -157,33 +160,33 @@
                 <model>MpgsHpfAmexWallet</model>
             </tns_hpf_amex>
 
-            <mpgs_visa_checkout>
-                <model>Magento\Vault\Model\Method\NullPaymentProvider</model>
-                <title>Visa Checkout</title>
-                <active>0</active>
-                <provider>tns_direct</provider>
-            </mpgs_visa_checkout>
-            <tns_hpf_visa>
-                <model>MpgsHpfVisaCheckout</model>
-                <js_component>OnTap_MasterCard/js/view/payment/method-renderer/visa-checkout-hpf</js_component>
-            </tns_hpf_visa>
-            <tns_direct_visa>
-                <model>MpgsDirectVisaCheckout</model>
-                <adapter_component>https://icm.aexp-static.com/Internet/IMDC/US_en/RegisteredCard/IntlAmexExpressCheckout/js/AmexExpressCheckout.js</adapter_component>
-                <js_component>OnTap_MasterCard/js/view/payment/method-renderer/visa-checkout-direct</js_component>
-            </tns_direct_visa>
+            <!--<mpgs_visa_checkout>-->
+                <!--<model>Magento\Vault\Model\Method\NullPaymentProvider</model>-->
+                <!--<title>Visa Checkout</title>-->
+                <!--<active>0</active>-->
+                <!--<provider>tns_direct</provider>-->
+            <!--</mpgs_visa_checkout>-->
+            <!--<tns_hpf_visa>-->
+                <!--<model>MpgsHpfVisaCheckout</model>-->
+                <!--<js_component>OnTap_MasterCard/js/view/payment/method-renderer/visa-checkout-hpf</js_component>-->
+            <!--</tns_hpf_visa>-->
+            <!--<tns_direct_visa>-->
+                <!--<model>MpgsDirectVisaCheckout</model>-->
+                <!--<adapter_component>https://icm.aexp-static.com/Internet/IMDC/US_en/RegisteredCard/IntlAmexExpressCheckout/js/AmexExpressCheckout.js</adapter_component>-->
+                <!--<js_component>OnTap_MasterCard/js/view/payment/method-renderer/visa-checkout-direct</js_component>-->
+            <!--</tns_direct_visa>-->
 
-            <mpgs_masterpass>
-                <model>Magento\Vault\Model\Method\NullPaymentProvider</model>
-                <active>0</active>
-                <title>Masterpass</title>
-                <provider>tns_direct</provider>
-            </mpgs_masterpass>
-            <tns_direct_masterpass>
-                <js_component>OnTap_MasterCard/js/view/payment/method-renderer/masterpass-direct</js_component>
-                <adapter_component>https://sandbox.masterpass.com/lightbox/Switch/integration/MasterPass.client.js</adapter_component>
-                <model>MpgsDirectMasterpassWallet</model>
-            </tns_direct_masterpass>
+            <!--<mpgs_masterpass>-->
+                <!--<model>Magento\Vault\Model\Method\NullPaymentProvider</model>-->
+                <!--<active>0</active>-->
+                <!--<title>Masterpass</title>-->
+                <!--<provider>tns_direct</provider>-->
+            <!--</mpgs_masterpass>-->
+            <!--<tns_direct_masterpass>-->
+                <!--<js_component>OnTap_MasterCard/js/view/payment/method-renderer/masterpass-direct</js_component>-->
+                <!--<adapter_component>https://sandbox.masterpass.com/lightbox/Switch/integration/MasterPass.client.js</adapter_component>-->
+                <!--<model>MpgsDirectMasterpassWallet</model>-->
+            <!--</tns_direct_masterpass>-->
         </payment>
     </default>
 </config>

@@ -19,6 +19,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     const API_AMERICA = 'api_na';
     const API_ASIA = 'api_as';
     const API_UAT = 'api_uat';
+    const API_AU = 'api_au';
     const API_OTHER = 'api_other';
     const TEST_PREFIX = 'TEST';
 

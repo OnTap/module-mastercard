@@ -26,14 +26,17 @@ class TransferFactorySession extends TransferFactory
      * @param ConfigInterface $config
      * @param TransferBuilder $transferBuilder
      * @param bool $createNewSession
+     * @param string $requestType
      */
     public function __construct(
         ConfigInterface $config,
         TransferBuilder $transferBuilder,
-        $createNewSession = false
+        $createNewSession = false,
+        $requestType = Rest::POST
     ) {
         parent::__construct($config, $transferBuilder);
         $this->createNewSession = $createNewSession;
+        $this->httpMethod = $requestType;
     }
 
     /**

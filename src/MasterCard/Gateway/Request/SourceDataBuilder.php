@@ -7,6 +7,9 @@ namespace OnTap\MasterCard\Gateway\Request;
 
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Framework\App\State;
+use Magento\Payment\Gateway\Helper\SubjectReader;
+use Magento\Payment\Gateway\Helper\ContextHelper;
+use OnTap\MasterCard\Model\Method\WalletInterface;
 
 class SourceDataBuilder implements BuilderInterface
 {
@@ -36,7 +39,15 @@ class SourceDataBuilder implements BuilderInterface
      */
     public function build(array $buildSubject)
     {
-        //$paymentDO = SubjectReader::readPayment($buildSubject);
+        $paymentDO = SubjectReader::readPayment($buildSubject);
+
+        $payment = $paymentDO->getPayment();
+        ContextHelper::assertOrderPayment($payment);
+
+        // For wallets, we do not send this parameter
+        if ($payment->getMethodInstance() instanceof WalletInterface) {
+            return [];
+        }
 
         $source = static::TXN_SOURCE_FRONTEND;
 

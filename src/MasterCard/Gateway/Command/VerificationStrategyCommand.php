@@ -15,6 +15,7 @@ use Magento\Payment\Gateway\Helper\SubjectReader;
 use OnTap\MasterCard\Gateway\Response\ThreeDSecure\CheckHandler;
 use Magento\Framework\App\State;
 use Magento\Vault\Model\Ui\VaultConfigProvider;
+use OnTap\MasterCard\Model\Method\WalletInterface;
 
 /**
  * Class VerificationStrategyCommand
@@ -73,6 +74,11 @@ class VerificationStrategyCommand implements CommandInterface
     {
         /** @var Payment $paymentInfo */
         $paymentInfo = $paymentDO->getPayment();
+
+        // Don't use 3DS with wallets
+        if ($paymentInfo->getMethodInstance() instanceof WalletInterface) {
+            return false;
+        }
 
         // Don't use 3DS in admin
         if ($this->state->getAreaCode() === \Magento\Framework\App\Area::AREA_ADMINHTML) {

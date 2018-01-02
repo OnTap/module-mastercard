@@ -143,11 +143,13 @@ class SessionInformationManagement implements SessionManagementInterface
 
         $quote->getPayment()->setAdditionalInformation('walletProvider', $type);
 
+        $paymentDO =  $this->paymentDataObjectFactory->create($quote->getPayment());
+
         $command = $this->commandProvider->getByType($type);
         $this->commandPool
             ->get($command)
             ->execute([
-                'payment' => $this->paymentDataObjectFactory->create($quote->getPayment())
+                'payment' => $paymentDO
             ]);
 
         $walletData = $quote->getPayment()->getAdditionalInformation('wallet');
@@ -162,6 +164,13 @@ class SessionInformationManagement implements SessionManagementInterface
 
         $type = key($walletData);
         $wallet->addData($walletData[$type]);
+
+//        // Provide shipping to wallet
+//        $this->commandPool
+//            ->get('update_session')
+//            ->execute([
+//                'payment' => $paymentDO,
+//            ]);
 
         return $wallet;
     }

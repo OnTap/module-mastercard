@@ -16,7 +16,10 @@ class DirectWallet extends \OnTap\MasterCard\Model\Method\Wallet implements Wall
     public function getJsConfig()
     {
         return [
-            'adapter_component' => $this->getMethodConfig()->getValue('adapter_component')
+            'adapter_component' => $this->getMethodConfig()->getValue('adapter_component'),
+            'client_id' => $this->getConfigData('client_id'),
+            'env' => $this->getConfigData('env'),
+            'callback_url' => $this->getUrlBuilder()->getUrl('mpgs/session/updateAmex')
         ];
     }
 }

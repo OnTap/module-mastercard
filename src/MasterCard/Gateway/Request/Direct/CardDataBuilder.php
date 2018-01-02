@@ -31,6 +31,15 @@ class CardDataBuilder implements BuilderInterface
         $payment = $paymentDO->getPayment();
         ContextHelper::assertOrderPayment($payment);
 
+        $cc = $payment->getAdditionalInformation(self::CC_NUMBER);
+        if (!$cc) {
+            return [
+                'sourceOfFunds' => [
+                    'type' => self::TYPE,
+                ]
+            ];
+        }
+
         return [
             'sourceOfFunds' => [
                 'provided' => [
@@ -39,7 +48,7 @@ class CardDataBuilder implements BuilderInterface
                             'month' => $this->formatMonth($payment->getAdditionalInformation(self::CC_EXP_MONTH)),
                             'year' => $this->formatYear($payment->getAdditionalInformation(self::CC_EXP_YEAR)),
                         ],
-                        'number' => $payment->getAdditionalInformation(self::CC_NUMBER),
+                        'number' => $cc,
                         'securityCode' => $payment->getAdditionalInformation(self::CC_CID),
                     ],
                 ],
