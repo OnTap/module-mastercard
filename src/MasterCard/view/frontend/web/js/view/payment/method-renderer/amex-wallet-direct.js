@@ -11,9 +11,10 @@ define(
         'OnTap_MasterCard/js/action/open-wallet',
         'OnTap_MasterCard/js/action/set-billing-address',
         'Magento_Ui/js/model/messageList',
+        'Magento_Checkout/js/model/full-screen-loader',
         'jquery'
     ],
-    function (quote, Component, adapter, createSessionAction, openWalletAction, setBillingAddressAction, globalMessageList, $) {
+    function (quote, Component, adapter, createSessionAction, openWalletAction, setBillingAddressAction, globalMessageList, loader, $) {
         'use strict';
         return Component.extend({
             defaults: {
@@ -70,17 +71,18 @@ define(
                     walletId = response.wallet_id,
                     cardType = response.card_type,
                     params = {
-                        'authCode': amexAuthCode,
-                        'transactionId': transactionId,
-                        'walletId': walletId,
-                        'selectedCardType': cardType,
-                        'guestEmail': quote.guestEmail,
-                        'quoteId': quote.getQuoteId()
+                        authCode: amexAuthCode,
+                        transactionId: transactionId,
+                        walletId: walletId,
+                        selectedCardType: cardType,
+                        guestEmail: quote.guestEmail,
+                        quoteId: quote.getQuoteId()
                     };
 
                 var xhr = setBillingAddressAction(globalMessageList);
 
                 $.when(xhr).done($.proxy(function () {
+                    loader.startLoader();
                     window.location.href = this.getConfig().callback_url + '?' + $.param(params);
                 }, this));
             },

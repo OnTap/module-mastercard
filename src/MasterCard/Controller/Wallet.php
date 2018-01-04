@@ -5,17 +5,14 @@
 namespace OnTap\MasterCard\Controller;
 
 use Magento\Framework\App\Action\Context;
-use Magento\Payment\Gateway\Command\CommandPoolInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
 use Magento\Checkout\Api\PaymentInformationManagementInterface;
 use Magento\Checkout\Api\GuestPaymentInformationManagementInterface;
 
 abstract class Wallet extends \Magento\Framework\App\Action\Action
 {
-    /**
-     * @var CommandPoolInterface
-     */
-    protected $commandPool;
+    const GUEST_EMAIL = 'guestEmail';
+    const QUOTE_ID = 'quoteId';
 
     /**
      * @var PaymentDataObjectFactory
@@ -45,7 +42,6 @@ abstract class Wallet extends \Magento\Framework\App\Action\Action
     /**
      * UpdateWallet constructor.
      * @param Context $context
-     * @param CommandPoolInterface $commandPool
      * @param PaymentDataObjectFactory $paymentDataObjectFactory
      * @param \Magento\Checkout\Model\Session $checkoutSession
      * @param \Magento\Customer\Model\Session $customerSession
@@ -54,7 +50,6 @@ abstract class Wallet extends \Magento\Framework\App\Action\Action
      */
     public function __construct(
         Context $context,
-        CommandPoolInterface $commandPool,
         PaymentDataObjectFactory $paymentDataObjectFactory,
         \Magento\Checkout\Model\Session $checkoutSession,
         \Magento\Customer\Model\Session $customerSession,
@@ -62,7 +57,6 @@ abstract class Wallet extends \Magento\Framework\App\Action\Action
         GuestPaymentInformationManagementInterface $guestPaymentInformationManagement
     ) {
         parent::__construct($context);
-        $this->commandPool = $commandPool;
         $this->paymentDataObjectFactory = $paymentDataObjectFactory;
         $this->checkoutSession = $checkoutSession;
         $this->paymentInformationManagement = $paymentInformationManagement;

@@ -24,9 +24,12 @@ class SessionDataBuilder implements BuilderInterface
         $payment = $paymentDO->getPayment();
         ContextHelper::assertOrderPayment($payment);
 
+        $session = $payment->getAdditionalInformation('session');
+
         return [
             'session' => [
-                'id' => $payment->getAdditionalInformation('session')
+                'id' => $session['id'],
+                'version' => $session['version']
             ],
             'sourceOfFunds' => [
                 'type' => 'CARD'

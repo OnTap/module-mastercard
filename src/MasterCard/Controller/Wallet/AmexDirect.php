@@ -6,13 +6,53 @@ namespace OnTap\MasterCard\Controller\Wallet;
 
 use OnTap\MasterCard\Gateway\Request\Amex\SessionFromWallet;
 use OnTap\MasterCard\Controller\Wallet;
+use Magento\Framework\App\Action\Context;
+use Magento\Payment\Gateway\Command\CommandPoolInterface;
+use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
+use Magento\Checkout\Api\PaymentInformationManagementInterface;
+use Magento\Checkout\Api\GuestPaymentInformationManagementInterface;
 
-class Amex extends Wallet
+class AmexDirect extends Wallet
 {
     const UPDATE_WALLET_COMMAND = 'update_amex_wallet';
 
     /**
-     * @return string
+     * @var CommandPoolInterface
+     */
+    protected $commandPool;
+
+    /**
+     * AmexDirect constructor.
+     * @param CommandPoolInterface $commandPool
+     * @param Context $context
+     * @param PaymentDataObjectFactory $paymentDataObjectFactory
+     * @param \Magento\Checkout\Model\Session $checkoutSession
+     * @param \Magento\Customer\Model\Session $customerSession
+     * @param PaymentInformationManagementInterface $paymentInformationManagement
+     * @param GuestPaymentInformationManagementInterface $guestPaymentInformationManagement
+     */
+    public function __construct(
+        CommandPoolInterface $commandPool,
+        Context $context,
+        PaymentDataObjectFactory $paymentDataObjectFactory,
+        \Magento\Checkout\Model\Session $checkoutSession,
+        \Magento\Customer\Model\Session $customerSession,
+        PaymentInformationManagementInterface $paymentInformationManagement,
+        GuestPaymentInformationManagementInterface $guestPaymentInformationManagement
+    ) {
+        parent::__construct(
+            $context,
+            $paymentDataObjectFactory,
+            $checkoutSession,
+            $customerSession,
+            $paymentInformationManagement,
+            $guestPaymentInformationManagement
+        );
+        $this->commandPool = $commandPool;
+    }
+
+    /**
+     * @inheritdoc
      */
     protected function getMethod()
     {
@@ -20,7 +60,7 @@ class Amex extends Wallet
     }
 
     /**
-     * @throws \Exception
+     * @inheritdoc
      */
     public function execute()
     {
@@ -49,8 +89,8 @@ class Amex extends Wallet
                 );
             } else {
                 $this->guestPaymentInformationManagement->savePaymentInformationAndPlaceOrder(
-                    $this->getRequest()->getParam(SessionFromWallet::QUOTE_ID),
-                    $this->getRequest()->getParam(SessionFromWallet::GUEST_EMAIL),
+                    $this->getRequest()->getParam(Wallet::QUOTE_ID),
+                    $this->getRequest()->getParam(Wallet::GUEST_EMAIL),
                     $payment
                 );
             }

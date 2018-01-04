@@ -7,9 +7,12 @@ define(
         'OnTap_MasterCard/js/view/payment/method-renderer/base-adapter',
         'OnTap_MasterCard/js/view/payment/hpf-adapter',
         'jquery',
-        'Magento_Checkout/js/model/quote'
+        'Magento_Checkout/js/model/quote',
+        'OnTap_MasterCard/js/action/set-billing-address',
+        'Magento_Ui/js/model/messageList',
+        'Magento_Checkout/js/model/full-screen-loader'
     ],
-    function (Component, paymentAdapter, $, quote) {
+    function (Component, paymentAdapter, $, quote, setBillingAddressAction, globalMessageList, loader) {
         'use strict';
         return Component.extend({
             defaults: {
@@ -17,12 +20,6 @@ define(
             },
             additionalData: {},
             adapter: null,
-
-            createPaymentSession: function () {
-                this.adapter.startSession($.proxy(function(response) {
-                    console.log(response);
-                }, this));
-            },
 
             loadAdapter: function () {
                 var config = this.getConfig();
@@ -33,20 +30,24 @@ define(
                         amexExpressCheckout: {
                             enabled: true,
                             initTags: {
-                                "theme": "responsive",
-                                "env": "qa",
-                                "disable_btn": "false",
-                                "button_color": "light",
-                                "client_id": "398f9858-5567-434f-a929-242d6fc7fea8",
-                                "display_type":"custom"  // IF USING OWN IMAGE FOR BUTTON
+                                'theme': 'responsive',
+                                'env': config.env,
+                                'disable_btn': 'false',
+                                'client_id': config.client_id
                             }
                         }
                     },
                     order: {
                         amount: this.safeNumber(totals.base_grand_total),
                         currency: totals.quote_currency_code
+                    },
+                    callbacks: {
+                        amexExpressCheckout: $.proxy(this.aecInteractionFinished, this)
                     }
                 };
+
+                new MutationObserver($.proxy(this.adapterLoaded, this, true))
+                    .observe($('#amex-express-checkout').get(0), { childList: true });
 
                 paymentAdapter.init(
                     this.getCode(),
@@ -62,11 +63,26 @@ define(
                 if (response.status === 'system_error') {
                     this.messageContainer.addErrorMessage({message: response.message});
                 }
-                this.adapterLoaded(true);
             },
 
             getConfig: function () {
                 return window.checkoutConfig.wallets[this.getCode()];
+            },
+
+            aecInteractionFinished: function (response) {
+                if (response.status !== 'ok' || !response.session) {
+                    this.messageContainer.addErrorMessage({message: 'Unexpected AEC status, please try again later.'});
+                } else {
+                    var xhr = setBillingAddressAction(globalMessageList);
+                    var params = $.extend(response.session, {
+                        guestEmail: quote.guestEmail,
+                        quoteId: quote.getQuoteId()
+                    });
+                    $.when(xhr).done($.proxy(function () {
+                        loader.startLoader();
+                        window.location.href = this.getConfig().callback_url + '?' + $.param(params);
+                    }, this));
+                }
             }
         });
     }

@@ -1228,7 +1228,7 @@
             <argument name="commandPool" xsi:type="object">TnsHpfCommandPool</argument>
         </arguments>
     </virtualType>
-    <type name="OnTap\MasterCard\Controller\Wallet\Amex">
+    <type name="OnTap\MasterCard\Controller\Wallet\AmexDirect">
         <arguments>
             <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
         </arguments>

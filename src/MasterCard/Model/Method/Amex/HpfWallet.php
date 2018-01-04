@@ -17,6 +17,9 @@ class HpfWallet extends \OnTap\MasterCard\Model\Method\Wallet implements WalletI
             'merchant_username' => $this->getProviderConfig()->getMerchantId(),
             'component_url' => $this->getProviderConfig()->getComponentUrl(),
             'debug' => (bool) $this->getProviderConfig()->getValue('debug'),
+            'client_id' => $this->getConfigData('client_id'),
+            'env' => $this->getConfigData('env'),
+            'callback_url' => $this->getUrlBuilder()->getUrl('mpgs/wallet/amexHpf'),
         ];
     }
 }

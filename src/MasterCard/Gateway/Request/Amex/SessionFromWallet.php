@@ -13,8 +13,6 @@ class SessionFromWallet implements BuilderInterface
     const SEL_CARD_TYPE = 'selectedCardType';
     const TRANS_ID = 'transactionId';
     const WALLET_ID = 'walletId';
-    const GUEST_EMAIL = 'guestEmail';
-    const QUOTE_ID = 'quoteId';
 
     /**
      * Builds ENV request
