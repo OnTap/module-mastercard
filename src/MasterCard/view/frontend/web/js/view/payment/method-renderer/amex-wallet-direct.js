@@ -4,13 +4,16 @@
 /*global define*/
 define(
     [
+        'Magento_Checkout/js/model/quote',
         'OnTap_MasterCard/js/view/payment/method-renderer/base-adapter',
         'OnTap_MasterCard/js/view/payment/amex-adapter',
         'OnTap_MasterCard/js/action/create-session',
         'OnTap_MasterCard/js/action/open-wallet',
+        'OnTap_MasterCard/js/action/set-billing-address',
+        'Magento_Ui/js/model/messageList',
         'jquery'
     ],
-    function (Component, adapter, createSessionAction, openWalletAction, $) {
+    function (quote, Component, adapter, createSessionAction, openWalletAction, setBillingAddressAction, globalMessageList, $) {
         'use strict';
         return Component.extend({
             defaults: {
@@ -19,6 +22,8 @@ define(
             additionalData: {},
 
             openWallet: function (session) {
+                var email = quote.guestEmail;
+
                 new MutationObserver($.proxy(this.adapterLoaded, this, true))
                     .observe($('#amex-express-checkout').get(0), { childList: true });
 
@@ -60,19 +65,24 @@ define(
             },
 
             aecCallbackHandler: function (response) {
-                var amexAuthCode = response.auth_code;
-                var transactionId = response.transaction_id;
-                var walletId = response.wallet_id;
-                var cardType = response.card_type;
+                var amexAuthCode = response.auth_code,
+                    transactionId = response.transaction_id,
+                    walletId = response.wallet_id,
+                    cardType = response.card_type,
+                    params = {
+                        'authCode': amexAuthCode,
+                        'transactionId': transactionId,
+                        'walletId': walletId,
+                        'selectedCardType': cardType,
+                        'guestEmail': quote.guestEmail,
+                        'quoteId': quote.getQuoteId()
+                    };
 
-                var params = {
-                    'authCode': amexAuthCode,
-                    'transactionId': transactionId,
-                    'walletId': walletId,
-                    'selectedCardType': cardType
-                };
+                var xhr = setBillingAddressAction(globalMessageList);
 
-                window.location.href = this.getConfig().callback_url + '?' + $.param(params);
+                $.when(xhr).done($.proxy(function () {
+                    window.location.href = this.getConfig().callback_url + '?' + $.param(params);
+                }, this));
             },
 
             loadAdapter: function () {

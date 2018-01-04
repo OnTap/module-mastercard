@@ -39,12 +39,21 @@ class UpdateAmex extends UpdateWallet
                 ]);
 
             $payment->setMethod($this->getMethod());
-            $this->checkoutSession->getQuote()->getPayment()->save();
+            $quote->getPayment()->save();
 
-            $this->paymentInformationManagement->savePaymentInformationAndPlaceOrder(
-                $quote->getId(),
-                $payment
-            );
+            if ($this->customerSession->isLoggedIn()) {
+                $this->paymentInformationManagement->savePaymentInformationAndPlaceOrder(
+                    $quote->getId(),
+                    $payment
+                );
+            } else {
+                $this->guestPaymentInformationManagement->savePaymentInformationAndPlaceOrder(
+                    $this->getRequest()->getParam(SessionFromWallet::QUOTE_ID),
+                    $this->getRequest()->getParam(SessionFromWallet::GUEST_EMAIL),
+                    $payment
+                );
+            }
+
         } catch (\Exception $e) {
             $this->messageManager->addErrorMessage($e->getMessage());
             return $this->_redirect('checkout/cart');

@@ -58,7 +58,7 @@ interface SessionManagementInterface
      * @param string $email
      * @param string $sessionId
      * @param string $type
-     * @return string[]
+     * @return \OnTap\MasterCard\Api\Data\WalletDataInterface
      */
     public function openWalletGuest(
         $cartId,
