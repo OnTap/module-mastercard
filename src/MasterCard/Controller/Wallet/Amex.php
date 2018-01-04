@@ -2,11 +2,12 @@
 /**
  * Copyright (c) 2017. On Tap Networks Limited.
  */
-namespace OnTap\MasterCard\Controller\Session;
+namespace OnTap\MasterCard\Controller\Wallet;
 
 use OnTap\MasterCard\Gateway\Request\Amex\SessionFromWallet;
+use OnTap\MasterCard\Controller\Wallet;
 
-class UpdateAmex extends UpdateWallet
+class Amex extends Wallet
 {
     const UPDATE_WALLET_COMMAND = 'update_amex_wallet';
 

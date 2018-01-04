@@ -13,7 +13,7 @@ define(
         'use strict';
         return Component.extend({
             defaults: {
-                template: 'OnTap_MasterCard/payment/wallet'
+                template: 'OnTap_MasterCard/payment/amex_wallet'
             },
             additionalData: {},
             adapter: null,

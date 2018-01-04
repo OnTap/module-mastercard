@@ -2,7 +2,7 @@
 /**
  * Copyright (c) 2017. On Tap Networks Limited.
  */
-namespace OnTap\MasterCard\Controller\Session;
+namespace OnTap\MasterCard\Controller;
 
 use Magento\Framework\App\Action\Context;
 use Magento\Payment\Gateway\Command\CommandPoolInterface;
@@ -10,7 +10,7 @@ use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
 use Magento\Checkout\Api\PaymentInformationManagementInterface;
 use Magento\Checkout\Api\GuestPaymentInformationManagementInterface;
 
-abstract class UpdateWallet extends \Magento\Framework\App\Action\Action
+abstract class Wallet extends \Magento\Framework\App\Action\Action
 {
     /**
      * @var CommandPoolInterface
