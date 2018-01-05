@@ -5,7 +5,6 @@
 
 namespace OnTap\MasterCard\Model\Config\Source;
 
-
 class Env implements \Magento\Framework\Option\ArrayInterface
 {
     /**

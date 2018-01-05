@@ -78,9 +78,18 @@ class CheckDataBuilder extends CardDataBuilder implements BuilderInterface
         }
 
         if ($code === \OnTap\MasterCard\Model\Ui\Hpf\ConfigProvider::METHOD_CODE) {
+            $session = $payment->getAdditionalInformation('session');
+
+            // By default Magento behaviour, the additional_data can only be saves as string[]
+            // this process helps to solve that
+            if (is_string($session)) {
+                $session = \Zend_Json::decode($session);
+            }
+
             $data = array_merge($data, [
                 'session' => [
-                    'id' => $payment->getAdditionalInformation('session')
+                    'id' => $session['id'],
+                    'version' => $session['version'],
                 ]
             ]);
         }

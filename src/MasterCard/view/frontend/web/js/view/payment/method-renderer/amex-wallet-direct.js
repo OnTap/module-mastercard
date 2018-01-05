@@ -14,7 +14,17 @@ define(
         'Magento_Checkout/js/model/full-screen-loader',
         'jquery'
     ],
-    function (quote, Component, adapter, createSessionAction, openWalletAction, setBillingAddressAction, globalMessageList, loader, $) {
+    function (
+        quote,
+        Component,
+        adapter,
+        createSessionAction,
+        openWalletAction,
+        setBillingAddressAction,
+        globalMessageList,
+        loader,
+        $
+    ) {
         'use strict';
         return Component.extend({
             defaults: {

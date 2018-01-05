@@ -37,8 +37,6 @@ class WalletValidator extends AbstractValidator
             return $this->createResult(false, [__("Response does not contain wallet data.")]);
         }
 
-        // @todo: Validate Amount
-
         return $this->createResult(true);
     }
 }

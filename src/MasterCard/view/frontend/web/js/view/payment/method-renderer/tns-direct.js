@@ -15,7 +15,18 @@ define(
         'mage/translate',
         'Magento_Vault/js/view/payment/vault-enabler'
     ],
-    function ($, ccFormComponent, additionalValidators, setPaymentInformationAction, checkEnrolmentAction, url, layout, fullScreenLoader, $t, VaultEnabler) {
+    function (
+        $,
+        ccFormComponent,
+        additionalValidators,
+        setPaymentInformationAction,
+        checkEnrolmentAction,
+        url,
+        layout,
+        fullScreenLoader,
+        $t,
+        VaultEnabler
+    ) {
         'use strict';
 
         return ccFormComponent.extend({

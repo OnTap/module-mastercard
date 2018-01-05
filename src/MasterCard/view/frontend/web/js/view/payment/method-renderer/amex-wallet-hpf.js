@@ -30,10 +30,10 @@ define(
                         amexExpressCheckout: {
                             enabled: true,
                             initTags: {
-                                'theme': 'responsive',
-                                'env': config.env,
-                                'disable_btn': 'false',
-                                'client_id': config.client_id
+                                theme: 'responsive',
+                                env: config.env,
+                                disable_btn: 'false',
+                                client_id: config.client_id
                             }
                         }
                     },

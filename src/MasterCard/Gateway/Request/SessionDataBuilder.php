@@ -8,6 +8,7 @@ namespace OnTap\MasterCard\Gateway\Request;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Helper\ContextHelper;
+use OnTap\MasterCard\Model\Method\WalletInterface;
 
 class SessionDataBuilder implements BuilderInterface
 {
@@ -20,8 +21,13 @@ class SessionDataBuilder implements BuilderInterface
     public function build(array $buildSubject)
     {
         $paymentDO = SubjectReader::readPayment($buildSubject);
-
         $payment = $paymentDO->getPayment();
+
+        // Session is only relevant with Wallets
+        if (!($payment->getMethodInstance() instanceof WalletInterface)) {
+            return [];
+        }
+
         ContextHelper::assertOrderPayment($payment);
 
         $session = $payment->getAdditionalInformation('session');

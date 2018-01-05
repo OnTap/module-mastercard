@@ -15,7 +15,10 @@ define(
         'Magento_Checkout/js/model/full-screen-loader',
         'Magento_Vault/js/view/payment/vault-enabler'
     ],
-    function ($, ccFormComponent, additionalValidators, paymentAdapter, alert, $t, setPaymentInformationAction, layout, fullScreenLoader, VaultEnabler) {
+    function (
+        $,
+        ccFormComponent,
+        additionalValidators,paymentAdapter, alert, $t, setPaymentInformationAction, layout, fullScreenLoader, VaultEnabler) {
         'use strict';
 
         return ccFormComponent.extend({
@@ -34,7 +37,7 @@ define(
             },
             placeOrderHandler: null,
             validateHandler: null,
-            sessionId: null,
+            session: null,
             inPayment: false,
             adapter: null,
 
@@ -186,7 +189,7 @@ define(
                 var data = {
                     'method': this.item.method,
                     'additional_data': {
-                        'session': this.sessionId
+                        'session': this.session
                     }
                 };
                 this.vaultEnabler.visitAdditionalData(data);
@@ -280,7 +283,7 @@ define(
                         }
                     }
                     if (response.status === "ok") {
-                        this.sessionId = response.session.id;
+                        this.session = JSON.stringify(response.session);
                         if (this.is3DsEnabled()) {
                             var action = setPaymentInformationAction(this.messageContainer, this.getData());
 

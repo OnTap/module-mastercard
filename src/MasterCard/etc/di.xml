@@ -741,7 +741,7 @@
                 <item name="billing" xsi:type="string">OnTap\MasterCard\Gateway\Request\BillingDataBuilder</item>
                 <item name="shipping" xsi:type="string">OnTap\MasterCard\Gateway\Request\ShippingDataBuilder</item>
                 <item name="customer" xsi:type="string">OnTap\MasterCard\Gateway\Request\CustomerDataBuilder</item>
-                <item name="source" xsi:type="string">OnTap\MasterCard\Gateway\Request\SourceDataBuilder</item>
+                <item name="source" xsi:type="string">OnTap\MasterCard\Gateway\Request\Hosted\SourceDataBuilder</item>
                 <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
                 <item name="extra" xsi:type="string">MpgsHostedCreateSessionExtraDataBuilder</item>
             </argument>
@@ -1113,21 +1113,6 @@
             <argument name="createNewSession" xsi:type="boolean">true</argument>
         </arguments>
     </virtualType>
-    <!-- @api create virtual type based on default value handler if it required by payment method -->
-    <virtualType name="MpgsWalletPaymentDefaultValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
-        <arguments>
-            <argument name="configInterface" xsi:type="object">Magento\Payment\Gateway\Config\Config</argument>
-        </arguments>
-    </virtualType>
-    <!-- @api create virtual type based on default value handler pool if it required by payment method -->
-    <virtualType name="MpgsWalletPaymentValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
-        <arguments>
-            <argument name="handlers" xsi:type="array">
-                <item name="default" xsi:type="string">MpgsWalletPaymentDefaultValueHandler</item>
-            </argument>
-        </arguments>
-    </virtualType>
-
     <virtualType name="MpgsDirectCreateSessionCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
         <arguments>
             <argument name="requestBuilder" xsi:type="object">OnTap\MasterCard\Gateway\Request\NullDataBuilder</argument>
@@ -1221,7 +1206,7 @@
             <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form\Cc</argument>
             <argument name="infoBlockType" xsi:type="string">MpgsAmexInfoBlock</argument>
             <argument name="config" xsi:type="object">MpgsAmexConfig</argument>
-            <argument name="valueHandlerPool" xsi:type="object">TnsValueHandlerPool</argument>
+            <argument name="valueHandlerPool" xsi:type="object">TnsHpfValueHandlerPool</argument>
             <argument name="code" xsi:type="string">tns_hpf_amex</argument>
             <argument name="provider" xsi:type="object">TnsHpfFacade</argument>
             <argument name="providerConfig" xsi:type="object">TnsHpfConfig</argument>

@@ -26,6 +26,12 @@ class SessionDataBuilder implements BuilderInterface
 
         $session = $payment->getAdditionalInformation('session');
 
+        // By default Magento behaviour, the additional_data can only be saves as string[]
+        // this process helps to solve that
+        if (is_string($session)) {
+            $session = \Zend_Json::decode($session);
+        }
+
         return [
             'session' => [
                 'id' => $session['id'],

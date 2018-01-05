@@ -1,5 +1,5 @@
-/**
- * @api
+/*
+ * Copyright (c) 2017. On Tap Networks Limited.
  */
 define(
     [
