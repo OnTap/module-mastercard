@@ -8,9 +8,8 @@ namespace OnTap\MasterCard\Gateway\Request\ThreeDSecure;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Framework\UrlInterface;
-use OnTap\MasterCard\Gateway\Request\Direct\CardDataBuilder;
 
-class CheckDataBuilder extends CardDataBuilder implements BuilderInterface
+class CheckDataBuilder implements BuilderInterface
 {
     const PAGE_GENERATION_MODE = 'CUSTOMIZED';
     const PAGE_ENCODING = 'UTF_8';
@@ -38,61 +37,14 @@ class CheckDataBuilder extends CardDataBuilder implements BuilderInterface
      */
     public function build(array $buildSubject)
     {
-        $paymentDO = SubjectReader::readPayment($buildSubject);
-        $order = $paymentDO->getOrder();
-        $payment = $paymentDO->getPayment();
-
         $data = [
             '3DSecure' => [
                 'authenticationRedirect' => [
-                    'pageGenerationMode' => static::PAGE_GENERATION_MODE,
-                    'responseUrl' => $this->urlHelper->getUrl(static::RESPONSE_URL),
+                    'pageGenerationMode' => self::PAGE_GENERATION_MODE,
+                    'responseUrl' => $this->urlHelper->getUrl(self::RESPONSE_URL),
                 ]
-            ],
-            'order' => [
-                'amount' => sprintf('%.2F', SubjectReader::readAmount($buildSubject)),
-                'currency' => $order->getCurrencyCode(),
             ],
         ];
-
-        $code = $payment->getMethodInstance()->getCode();
-
-        if ($code === \OnTap\MasterCard\Model\Ui\Direct\ConfigProvider::METHOD_CODE) {
-            $data = array_merge($data, [
-                'sourceOfFunds' => [
-                    'provided' => [
-                        'card' => [
-                            'expiry' => [
-                                'month' => $this->formatMonth(
-                                    $payment->getAdditionalInformation(CardDataBuilder::CC_EXP_MONTH)
-                                ),
-                                'year' => $this->formatYear(
-                                    $payment->getAdditionalInformation(CardDataBuilder::CC_EXP_YEAR)
-                                ),
-                            ],
-                            'number' => $payment->getAdditionalInformation(CardDataBuilder::CC_NUMBER),
-                        ],
-                    ],
-                ],
-            ]);
-        }
-
-        if ($code === \OnTap\MasterCard\Model\Ui\Hpf\ConfigProvider::METHOD_CODE) {
-            $session = $payment->getAdditionalInformation('session');
-
-            // By default Magento behaviour, the additional_data can only be saves as string[]
-            // this process helps to solve that
-            if (is_string($session)) {
-                $session = \Zend_Json::decode($session);
-            }
-
-            $data = array_merge($data, [
-                'session' => [
-                    'id' => $session['id'],
-                    'version' => $session['version'],
-                ]
-            ]);
-        }
 
         return $data;
     }

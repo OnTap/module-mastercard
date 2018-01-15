@@ -6,6 +6,7 @@
 namespace OnTap\MasterCard\Observer\Direct;
 
 use OnTap\MasterCard\Gateway\Request\Direct\CardDataBuilder;
+use OnTap\MasterCard\Gateway\Request\SecurityCodeBuilder;
 use OnTap\MasterCard\Observer\DataAssignAbstract;
 
 class DataAssignObserver extends DataAssignAbstract
@@ -18,6 +19,6 @@ class DataAssignObserver extends DataAssignAbstract
         CardDataBuilder::CC_EXP_YEAR,
         CardDataBuilder::CC_EXP_MONTH,
         CardDataBuilder::CC_NUMBER,
-        CardDataBuilder::CC_CID
+        SecurityCodeBuilder::CC_CID
     ];
 }

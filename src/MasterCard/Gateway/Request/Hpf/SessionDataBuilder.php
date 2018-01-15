@@ -7,7 +7,6 @@ namespace OnTap\MasterCard\Gateway\Request\Hpf;
 
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
-use Magento\Payment\Gateway\Helper\ContextHelper;
 
 class SessionDataBuilder implements BuilderInterface
 {
@@ -16,14 +15,13 @@ class SessionDataBuilder implements BuilderInterface
      *
      * @param array $buildSubject
      * @return array
+     * @throws \Zend_Json_Exception
      */
     public function build(array $buildSubject)
     {
         $paymentDO = SubjectReader::readPayment($buildSubject);
 
         $payment = $paymentDO->getPayment();
-        ContextHelper::assertOrderPayment($payment);
-
         $session = $payment->getAdditionalInformation('session');
 
         // By default Magento behaviour, the additional_data can only be saves as string[]
@@ -37,9 +35,6 @@ class SessionDataBuilder implements BuilderInterface
                 'id' => $session['id'],
                 'version' => $session['version']
             ],
-            'sourceOfFunds' => [
-                'type' => 'CARD'
-            ]
         ];
     }
 }

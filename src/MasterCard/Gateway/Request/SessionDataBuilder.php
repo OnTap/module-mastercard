@@ -17,6 +17,7 @@ class SessionDataBuilder implements BuilderInterface
      *
      * @param array $buildSubject
      * @return array
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function build(array $buildSubject)
     {
@@ -28,7 +29,7 @@ class SessionDataBuilder implements BuilderInterface
             return [];
         }
 
-        ContextHelper::assertOrderPayment($payment);
+//        ContextHelper::assertOrderPayment($payment);
 
         $session = $payment->getAdditionalInformation('session');
 

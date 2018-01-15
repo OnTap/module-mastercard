@@ -82,8 +82,6 @@ class OrderDataBuilder implements BuilderInterface
 
         return [
             'order' => [
-                'amount' => sprintf('%.2F', SubjectReader::readAmount($buildSubject)),
-                'currency' => $order->getCurrencyCode(),
                 'item' => $this->getOrderItems($order->getItems()),
                 'shippingAndHandlingAmount' => $payment->getShippingAmount(),
                 //'discount' => $this->getDiscountData($payment),

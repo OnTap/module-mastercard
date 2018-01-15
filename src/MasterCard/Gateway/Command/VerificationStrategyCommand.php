@@ -69,16 +69,12 @@ class VerificationStrategyCommand implements CommandInterface
     /**
      * @param PaymentDataObjectInterface $paymentDO
      * @return bool
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function isThreeDSSupported(PaymentDataObjectInterface $paymentDO)
     {
         /** @var Payment $paymentInfo */
         $paymentInfo = $paymentDO->getPayment();
-
-        // Don't use 3DS with wallets
-        if ($paymentInfo->getMethodInstance() instanceof WalletInterface) {
-            return false;
-        }
 
         // Don't use 3DS in admin
         if ($this->state->getAreaCode() === \Magento\Framework\App\Area::AREA_ADMINHTML) {
@@ -116,7 +112,10 @@ class VerificationStrategyCommand implements CommandInterface
      * Executes command basing on business object
      *
      * @param array $commandSubject
-     * @return null|Command\ResultInterface
+     * @return void|Command\ResultInterface|null
+     * @throws Command\CommandException
+     * @throws \Magento\Framework\Exception\NotFoundException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function execute(array $commandSubject)
     {

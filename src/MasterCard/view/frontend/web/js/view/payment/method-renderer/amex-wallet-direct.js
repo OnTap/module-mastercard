@@ -10,9 +10,12 @@ define(
         'OnTap_MasterCard/js/action/create-session',
         'OnTap_MasterCard/js/action/open-wallet',
         'OnTap_MasterCard/js/action/set-billing-address',
+        'Magento_Checkout/js/action/set-payment-information',
+        'OnTap_MasterCard/js/action/update-session-from-wallet',
         'Magento_Ui/js/model/messageList',
         'Magento_Checkout/js/model/full-screen-loader',
-        'jquery'
+        'jquery',
+        'uiLayout'
     ],
     function (
         quote,
@@ -21,9 +24,12 @@ define(
         createSessionAction,
         openWalletAction,
         setBillingAddressAction,
+        setPaymentInformationAction,
+        updateSessionAction,
         globalMessageList,
         loader,
-        $
+        $,
+        layout
     ) {
         'use strict';
         return Component.extend({
@@ -31,10 +37,32 @@ define(
                 template: 'OnTap_MasterCard/payment/amex_wallet'
             },
             additionalData: {},
+            params: {},
+
+            initChildren: function () {
+                this._super();
+                var config = this.getConfig();
+
+                var threeDSecureComponent = {
+                    parent: this.name,
+                    name: this.name + '.threedsecure',
+                    displayArea: 'threedsecure',
+                    component: 'OnTap_MasterCard/js/view/payment/threedsecure',
+                    config: {
+                        id: this.item.method,
+                        messages: this.messageContainer,
+                        checkUrl: config.check_url,
+                        onComplete: $.proxy(this.redirectPlaceOrder, this),
+                        onError: $.proxy(this.threeDSecureCheckFailed, this),
+                        onCancel: $.proxy(this.threeDSecureCancelled, this)
+                    }
+                };
+                layout([threeDSecureComponent]);
+
+                return this;
+            },
 
             openWallet: function (session) {
-                var email = quote.guestEmail;
-
                 new MutationObserver($.proxy(this.adapterLoaded, this, true))
                     .observe($('#amex-express-checkout').get(0), { childList: true });
 
@@ -79,22 +107,26 @@ define(
                 var amexAuthCode = response.auth_code,
                     transactionId = response.transaction_id,
                     walletId = response.wallet_id,
-                    cardType = response.card_type,
-                    params = {
-                        authCode: amexAuthCode,
-                        transactionId: transactionId,
-                        walletId: walletId,
-                        selectedCardType: cardType,
-                        guestEmail: quote.guestEmail,
-                        quoteId: quote.getQuoteId()
-                    };
+                    cardType = response.card_type;
 
-                var xhr = setBillingAddressAction(globalMessageList);
+                this.params = {
+                    authCode: amexAuthCode,
+                    transId: transactionId,
+                    walletId: walletId,
+                    selCardType: cardType
+                };
+
+                var xhr = setPaymentInformationAction(this.messageContainer, this.getData());
 
                 $.when(xhr).done($.proxy(function () {
-                    loader.startLoader();
-                    window.location.href = this.getConfig().callback_url + '?' + $.param(params);
-                }, this));
+                    this.placeOrder();
+                }, this)).fail(
+                    $.proxy(this.paymentFailed, this)
+                );
+            },
+
+            paymentFailed: function () {
+                loader.stopLoader();
             },
 
             loadAdapter: function () {
@@ -116,8 +148,47 @@ define(
                 }, this));
             },
 
+            placeOrder: function () {
+                loader.startLoader();
+
+                var action = updateSessionAction(
+                    'mpgs',
+                    this.params,
+                    this.messageContainer
+                );
+
+                $.when(action).done($.proxy(function () {
+                    if (this.is3DsEnabled()) {
+                        this.delegate('threeDSecureOpen', this);
+                    } else {
+                        this.redirectPlaceOrder();
+                    }
+                }, this)).fail($.proxy(this.paymentFailed, this));
+            },
+
             getConfig: function () {
                 return window.checkoutConfig.wallets[this.getCode()];
+            },
+
+            is3DsEnabled: function () {
+                return this.getConfig().three_d_secure;
+            },
+
+            threeDSecureCancelled: function () {
+                loader.stopLoader();
+                this.isPlaceOrderActionAllowed(true);
+            },
+
+            redirectPlaceOrder: function () {
+                window.location.href = this.getConfig().callback_url + '?' + $.param({
+                    guestEmail: quote.guestEmail,
+                    quoteId: quote.getQuoteId()
+                });
+            },
+
+            threeDSecureCheckFailed: function () {
+                this.messageContainer.addErrorMessage('3D-Secure validation failed.');
+                loader.stopLoader();
             }
         });
     }

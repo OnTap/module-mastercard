@@ -27,6 +27,7 @@ class CardDataHandler implements HandlerInterface
      * @param array $handlingSubject
      * @param array $response
      * @return void
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function handle(array $handlingSubject, array $response)
     {

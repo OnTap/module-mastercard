@@ -22,6 +22,7 @@ class Check extends \Magento\Framework\App\Action\Action
     const CHECK_ENROLMENT = '3ds_enrollment';
     const CHECK_ENROLMENT_TYPE_DIRECT = 'TnsThreeDSecureEnrollmentCommand';
     const CHECK_ENROLMENT_TYPE_HPF = 'TnsHpfThreeDSecureEnrollmentCommand';
+    const CHECK_ENROLMENT_TYPE_AMEX = 'MpgsAmexThreeDSecureEnrollmentCommand';
 
     /**
      * @var Session
@@ -69,7 +70,6 @@ class Check extends \Magento\Framework\App\Action\Action
      * Dispatch request
      *
      * @return \Magento\Framework\Controller\ResultInterface|ResponseInterface
-     * @throws \Magento\Framework\Exception\NotFoundException
      */
     public function execute()
     {
@@ -79,8 +79,9 @@ class Check extends \Magento\Framework\App\Action\Action
             // @todo: Commands require specific config, so they need to be defined separately in the di.xml
             $commandPool = $this->commandPoolFactory->create([
                 'commands' => [
-                    'hpf' => static::CHECK_ENROLMENT_TYPE_HPF,
-                    'direct' => static::CHECK_ENROLMENT_TYPE_DIRECT,
+                    'hpf' => self::CHECK_ENROLMENT_TYPE_HPF,
+                    'direct' => self::CHECK_ENROLMENT_TYPE_DIRECT,
+                    'amex' => self::CHECK_ENROLMENT_TYPE_AMEX
                 ]
             ]);
 

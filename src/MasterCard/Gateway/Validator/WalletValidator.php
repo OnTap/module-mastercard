@@ -22,7 +22,11 @@ class WalletValidator extends AbstractValidator
         $response = SubjectReader::readResponse($validationSubject);
 
         if (isset($response['error'])) {
-            return $this->createResult(false, [__("Unable to open the wallet, please try again later.")]);
+            if (isset($response['error']['explanation'])) {
+                return $this->createResult(false, [__($response['error']['explanation'])]);
+            } else {
+                return $this->createResult(false, [__("Unable to connect to the wallet, please try again later.")]);
+            }
         }
 
         if (!isset($response['session']) || !isset($response['session']['updateStatus'])) {

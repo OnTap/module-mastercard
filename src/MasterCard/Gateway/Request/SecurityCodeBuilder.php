@@ -1,16 +1,17 @@
 <?php
 /**
- * Copyright (c) 2016. On Tap Networks Limited.
+ * Copyright (c) 2018. On Tap Networks Limited.
  */
 
 namespace OnTap\MasterCard\Gateway\Request;
 
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
-use Magento\Payment\Gateway\Helper\ContextHelper;
 
-class TokenDataBuilder implements BuilderInterface
+class SecurityCodeBuilder implements BuilderInterface
 {
+    const CC_CID = 'cc_cid';
+
     /**
      * Builds ENV request
      *
@@ -20,17 +21,16 @@ class TokenDataBuilder implements BuilderInterface
     public function build(array $buildSubject)
     {
         $paymentDO = SubjectReader::readPayment($buildSubject);
-
         $payment = $paymentDO->getPayment();
-        ContextHelper::assertOrderPayment($payment);
-
-        $extensionAttributes = $payment->getExtensionAttributes();
-        $paymentToken = $extensionAttributes->getVaultPaymentToken();
 
         return [
             'sourceOfFunds' => [
-                'token' => $paymentToken->getGatewayToken(),
-            ],
+                'provided' => [
+                    'card' => [
+                        'securityCode' => $payment->getAdditionalInformation(self::CC_CID)
+                    ]
+                ]
+            ]
         ];
     }
 }

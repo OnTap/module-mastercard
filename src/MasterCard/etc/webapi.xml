@@ -48,4 +48,11 @@
             <resource ref="anonymous" />
         </resources>
     </route>
+
+    <route method="POST" url="/V1/mpgs/wallet/update-session">
+        <service class="OnTap\MasterCard\Api\WalletPaymentInterface" method="updateSessionFromWallet"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
 </routes>
