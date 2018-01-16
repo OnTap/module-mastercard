@@ -128,7 +128,7 @@ class ResponseValidator extends AbstractValidator
                 break;
         }
 
-        if (count($errors) > 0) {
+        if (!empty($errors)) {
             return $this->createResult(false, $errors);
         }
 

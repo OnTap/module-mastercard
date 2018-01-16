@@ -10,20 +10,19 @@ use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Sales\Model\Order\Payment;
 use Magento\Payment\Gateway\Data\Quote\QuoteAdapter;
 use Magento\Checkout\Model\CartFactory;
-use Magento\Checkout\Model\Cart;
 use OnTap\MasterCard\Gateway\Config\ConfigFactory;
 
 class OrderDataBuilder implements BuilderInterface
 {
     /**
-     * @var Cart
-     */
-    private $cart;
-
-    /**
      * @var ConfigFactory
      */
     protected $configFactory;
+
+    /**
+     * @var CartFactory
+     */
+    protected $cartFactory;
 
     /**
      * OrderDataBuilder constructor.
@@ -32,7 +31,7 @@ class OrderDataBuilder implements BuilderInterface
      */
     public function __construct(CartFactory $cartFactory, ConfigFactory $configFactory)
     {
-        $this->cart = $cartFactory->create();
+        $this->cartFactory = $cartFactory;
         $this->configFactory = $configFactory;
     }
 
@@ -41,9 +40,13 @@ class OrderDataBuilder implements BuilderInterface
      */
     protected function getItemData()
     {
+        /** @var \Magento\Checkout\Model\Cart $cart */
+        $cart = $this->cartFactory->create();
+
         $data = [];
+
         /** @var \Magento\Quote\Model\Quote\Item $item */
-        foreach ($this->cart->getItems() as $item) {
+        foreach ($cart->getItems() as $item) {
             if ($item->getParentItemId() !== null) {
                 continue;
             }

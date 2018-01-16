@@ -14,14 +14,25 @@ define([
             window.tnsCancelCallback = $.proxy(onCancel, this);
             window.tnsCompletedCallback = $.proxy(onComplete, this);
 
-            var node = requirejs.load({
-                contextName: '_',
-                onScriptLoad: $.proxy(onLoadedCallback, this)
-            }, 'tns_hosted', componentUrl);
+            var loader = document.createElement('script');
+            loader.type = 'text/javascript';
+            loader.async = true;
+            loader.src = componentUrl;
+            loader['data-error'] = 'tnsErrorCallback';
+            loader['data-cancel'] = 'tnsCancelCallback';
+            loader['data-complete'] = 'tnsCompletedCallback';
+            document.body.append(loader);
 
-            node.setAttribute('data-error', 'window.tnsErrorCallback');
-            node.setAttribute('data-cancel', 'window.tnsCancelCallback');
-            node.setAttribute('data-complete', 'window.tnsCompletedCallback');
+            this.waitUntilReady($.proxy(onLoadedCallback, this));
+        },
+        waitUntilReady: function (callback) {
+            setTimeout(function() {
+                if (typeof window.Checkout !== 'undefined') {
+                    callback();
+                } else {
+                    this.waitUntilReady(callback);
+                }
+            }.bind(this), 200);
         },
         safeNumber: function (num) {
             return parseFloat(num).toFixed(2);

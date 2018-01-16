@@ -92,6 +92,7 @@ define(
                     $('body').append(amexInit);
 
                     requirejs.load({
+                        config: {},
                         contextName: '_'
                     }, 'amex_wallet', this.getConfig().adapter_component);
 

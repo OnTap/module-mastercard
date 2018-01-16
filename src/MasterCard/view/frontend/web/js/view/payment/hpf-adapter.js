@@ -38,6 +38,7 @@ define([
             var url = this.getUrl(componentUrl);
 
             requirejs.load({
+                config: {},
                 contextName: '_',
                 onScriptLoad: $.proxy(function () {
                     $.proxy(this.configure, this)(PaymentSession, data, onLoadedCallback);

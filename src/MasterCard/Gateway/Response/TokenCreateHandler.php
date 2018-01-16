@@ -53,7 +53,6 @@ class TokenCreateHandler implements HandlerInterface
         CreditCardTokenFactory $paymentTokenFactory,
         OrderPaymentExtensionInterfaceFactory $paymentExtensionFactory
     ) {
-        // @todo: fetch config generically from payment
         $this->config = $config;
         $this->vaultPayment = $vaultPayment;
         $this->paymentTokenFactory = $paymentTokenFactory;

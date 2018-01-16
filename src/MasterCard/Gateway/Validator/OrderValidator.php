@@ -39,7 +39,7 @@ class OrderValidator extends AbstractValidator
             $errors[] = __("Currency mismatch");
         }
 
-        if (count($errors) > 0) {
+        if (!empty($errors)) {
             return $this->createResult(false, $errors);
         }
 
