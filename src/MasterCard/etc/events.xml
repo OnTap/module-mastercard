@@ -11,4 +11,7 @@
     <event name="payment_method_assign_data_tns_hpf">
         <observer name="tns_hpf_gateway_data_assign" instance="OnTap\MasterCard\Observer\Hpf\DataAssignObserver" />
     </event>
+    <event name="payment_method_assign_data_tns_hpf_amex">
+        <observer name="tns_hpf_gateway_data_assign" instance="OnTap\MasterCard\Observer\Hpf\DataAssignObserver" />
+    </event>
 </config>

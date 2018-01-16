@@ -6,10 +6,8 @@ define(
     [
         'Magento_Checkout/js/model/quote',
         'OnTap_MasterCard/js/view/payment/method-renderer/base-adapter',
-        'OnTap_MasterCard/js/view/payment/amex-adapter',
         'OnTap_MasterCard/js/action/create-session',
         'OnTap_MasterCard/js/action/open-wallet',
-        'OnTap_MasterCard/js/action/set-billing-address',
         'Magento_Checkout/js/action/set-payment-information',
         'OnTap_MasterCard/js/action/update-session-from-wallet',
         'Magento_Ui/js/model/messageList',
@@ -20,10 +18,8 @@ define(
     function (
         quote,
         Component,
-        adapter,
         createSessionAction,
         openWalletAction,
-        setBillingAddressAction,
         setPaymentInformationAction,
         updateSessionAction,
         globalMessageList,
@@ -116,6 +112,8 @@ define(
                     selCardType: cardType
                 };
 
+                loader.startLoader();
+
                 var xhr = setPaymentInformationAction(this.messageContainer, this.getData());
 
                 $.when(xhr).done($.proxy(function () {
@@ -131,9 +129,7 @@ define(
 
             loadAdapter: function () {
                 window.aecCallbackHandler = $.proxy(this.aecCallbackHandler, this);
-
                 this.isPlaceOrderActionAllowed(false);
-                this.buttonTitle(this.buttonTitleDisabled);
 
                 var action = createSessionAction(
                     'mpgs',
@@ -149,8 +145,6 @@ define(
             },
 
             placeOrder: function () {
-                loader.startLoader();
-
                 var action = updateSessionAction(
                     'mpgs',
                     this.params,
@@ -158,6 +152,7 @@ define(
                 );
 
                 $.when(action).done($.proxy(function () {
+                    loader.stopLoader();
                     if (this.is3DsEnabled()) {
                         this.delegate('threeDSecureOpen', this);
                     } else {
@@ -175,11 +170,11 @@ define(
             },
 
             threeDSecureCancelled: function () {
-                loader.stopLoader();
                 this.isPlaceOrderActionAllowed(true);
             },
 
             redirectPlaceOrder: function () {
+                this.adapterLoaded(false);
                 window.location.href = this.getConfig().callback_url + '?' + $.param({
                     guestEmail: quote.guestEmail,
                     quoteId: quote.getQuoteId()
@@ -187,7 +182,6 @@ define(
             },
 
             threeDSecureCheckFailed: function () {
-                this.messageContainer.addErrorMessage('3D-Secure validation failed.');
                 loader.stopLoader();
             }
         });

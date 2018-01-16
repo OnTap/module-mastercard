@@ -65,11 +65,6 @@ abstract class Wallet extends \Magento\Framework\App\Action\Action
     }
 
     /**
-     * @return string
-     */
-    abstract protected function getMethod();
-
-    /**
      * @throws \Exception
      */
     abstract public function execute();

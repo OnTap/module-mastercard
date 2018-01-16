@@ -94,7 +94,7 @@ define([
         },
 
         isEnrolled: function (response) {
-            if (response.result == "CARD_ENROLLED") {
+            if (response.result === "CARD_ENROLLED") {
                 // Card is enrolled, proceed with ACS
                 this.iframe.attr('src', url.build('tns/threedsecure/form'));
                 this.modal.modal('openModal');

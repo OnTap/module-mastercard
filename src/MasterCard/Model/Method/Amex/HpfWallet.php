@@ -19,7 +19,15 @@ class HpfWallet extends \OnTap\MasterCard\Model\Method\Wallet implements WalletI
             'debug' => (bool) $this->getProviderConfig()->getValue('debug'),
             'client_id' => $this->getConfigData('client_id'),
             'env' => $this->getConfigData('env'),
-            'callback_url' => $this->getUrlBuilder()->getUrl('mpgs/wallet/amexHpf'),
+            'callback_url' => $this->getUrlBuilder()->getUrl('mpgs/wallet/amex', ['_secure' => true]),
+            'three_d_secure' => (bool) $this->getProviderConfig()->getValue('three_d_secure'),
+            'check_url' => $this->getUrlBuilder()->getUrl(
+                'tns/threedsecure/check',
+                [
+                    'method' => 'amex',
+                    '_secure' => 1
+                ]
+            ),
         ];
     }
 }

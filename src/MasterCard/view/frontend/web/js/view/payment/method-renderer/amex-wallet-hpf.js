@@ -8,11 +8,21 @@ define(
         'OnTap_MasterCard/js/view/payment/hpf-adapter',
         'jquery',
         'Magento_Checkout/js/model/quote',
-        'OnTap_MasterCard/js/action/set-billing-address',
+        'Magento_Checkout/js/action/set-payment-information',
         'Magento_Ui/js/model/messageList',
-        'Magento_Checkout/js/model/full-screen-loader'
+        'Magento_Checkout/js/model/full-screen-loader',
+        'uiLayout'
     ],
-    function (Component, paymentAdapter, $, quote, setBillingAddressAction, globalMessageList, loader) {
+    function (
+        Component,
+        paymentAdapter,
+        $,
+        quote,
+        setPaymentInformationAction,
+        globalMessageList,
+        loader,
+        layout
+    ) {
         'use strict';
         return Component.extend({
             defaults: {
@@ -20,6 +30,42 @@ define(
             },
             additionalData: {},
             adapter: null,
+            inPayment: false,
+
+            initChildren: function () {
+                this._super();
+                var config = this.getConfig();
+
+                var threeDSecureComponent = {
+                    parent: this.name,
+                    name: this.name + '.threedsecure',
+                    displayArea: 'threedsecure',
+                    component: 'OnTap_MasterCard/js/view/payment/threedsecure',
+                    config: {
+                        id: this.item.method,
+                        messages: this.messageContainer,
+                        checkUrl: config.check_url,
+                        onComplete: $.proxy(this.redirectPlaceOrder, this),
+                        onError: $.proxy(this.threeDSecureCheckFailed, this),
+                        onCancel: $.proxy(this.threeDSecureCancelled, this)
+                    }
+                };
+                layout([threeDSecureComponent]);
+
+                return this;
+            },
+
+            threeDSecureCheckFailed: function () {
+                loader.stopLoader();
+            },
+
+            threeDSecureCancelled: function () {
+                this.isPlaceOrderActionAllowed(true);
+            },
+
+            is3DsEnabled: function () {
+                return this.getConfig().three_d_secure;
+            },
 
             loadAdapter: function () {
                 var config = this.getConfig();
@@ -69,19 +115,52 @@ define(
                 return window.checkoutConfig.wallets[this.getCode()];
             },
 
+            paymentFailed: function () {
+                loader.stopLoader();
+            },
+
+            placeOrder: function () {
+                loader.stopLoader();
+                if (this.is3DsEnabled()) {
+                    this.delegate('threeDSecureOpen', this);
+                } else {
+                    this.redirectPlaceOrder();
+                }
+            },
+
+            redirectPlaceOrder: function () {
+                this.adapterLoaded(false);
+                window.location.href = this.getConfig().callback_url + '?' + $.param({
+                    guestEmail: quote.guestEmail,
+                    quoteId: quote.getQuoteId()
+                });
+            },
+
+            getData: function (session) {
+                if (session !== undefined) {
+                    var _session = JSON.stringify(session);
+                    return $.extend(this._super(), {
+                        additional_data: {
+                            session: _session
+                        }
+                    });
+                }
+                return this._super();
+            },
+
             aecInteractionFinished: function (response) {
                 if (response.status !== 'ok' || !response.session) {
                     this.messageContainer.addErrorMessage({message: 'Unexpected AEC status, please try again later.'});
                 } else {
-                    var xhr = setBillingAddressAction(globalMessageList);
-                    var params = $.extend(response.session, {
-                        guestEmail: quote.guestEmail,
-                        quoteId: quote.getQuoteId()
-                    });
+
+                    loader.startLoader();
+
+                    var xhr = setPaymentInformationAction(this.messageContainer, this.getData(response.session));
                     $.when(xhr).done($.proxy(function () {
-                        loader.startLoader();
-                        window.location.href = this.getConfig().callback_url + '?' + $.param(params);
-                    }, this));
+                        this.placeOrder();
+                    }, this)).fail(
+                        $.proxy(this.paymentFailed, this)
+                    );
                 }
             }
         });

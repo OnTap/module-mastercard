@@ -1,23 +1,14 @@
 <?php
 /**
- * Copyright (c) 2017. On Tap Networks Limited.
+ * Copyright (c) 2018. On Tap Networks Limited.
  */
+
 namespace OnTap\MasterCard\Controller\Wallet;
 
 use OnTap\MasterCard\Controller\Wallet;
 
-class AmexDirect extends Wallet
+class Amex extends Wallet
 {
-    const UPDATE_WALLET_COMMAND = 'update_amex_wallet';
-
-    /**
-     * @inheritdoc
-     */
-    protected function getMethod()
-    {
-        return 'tns_direct_amex';
-    }
-
     /**
      * @inheritdoc
      */

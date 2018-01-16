@@ -18,6 +18,7 @@ class SessionDataBuilder implements BuilderInterface
      * @param array $buildSubject
      * @return array
      * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Zend_Json_Exception
      */
     public function build(array $buildSubject)
     {
@@ -29,9 +30,13 @@ class SessionDataBuilder implements BuilderInterface
             return [];
         }
 
-//        ContextHelper::assertOrderPayment($payment);
-
         $session = $payment->getAdditionalInformation('session');
+
+        // By default Magento behaviour, the additional_data can only be saves as string[]
+        // this process helps to solve that
+        if (is_string($session)) {
+            $session = \Zend_Json::decode($session);
+        }
 
         return [
             'session' => [
