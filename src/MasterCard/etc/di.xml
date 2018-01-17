@@ -85,7 +85,16 @@
             <argument name="handler" xsi:type="object">OnTap\MasterCard\Gateway\Response\ThreeDSecure\CheckHandler</argument>
         </arguments>
     </virtualType>
-    <virtualType name="MpgsAmexThreeDSecureEnrollmentCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
+    <virtualType name="MpgsAmexHpfEnrollmentCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">MpgsSession3dsDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">MpgsHpfTransferFactoryEnrolment</argument>
+            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
+            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\ThreeDSecureValidator</argument>
+            <argument name="handler" xsi:type="object">OnTap\MasterCard\Gateway\Response\ThreeDSecure\CheckHandler</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsAmexDirectEnrollmentCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
         <arguments>
             <argument name="requestBuilder" xsi:type="object">MpgsSession3dsDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">OnTap\MasterCard\Gateway\Http\ThreeDSecure\TransferFactoryEnrolment</argument>
@@ -1274,6 +1283,21 @@
                 <item xsi:type="string" name="is_secure_mode">0</item>
             </argument>
             <argument name="config" xsi:type="object">MpgsAmexConfig</argument>
+        </arguments>
+    </virtualType>
+    <type name="OnTap\MasterCard\Controller\Threedsecure\Check">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">ThreeDSecureCommandPool</argument>
+        </arguments>
+    </type>
+    <virtualType name="ThreeDSecureCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="direct" xsi:type="string">TnsThreeDSecureEnrollmentCommand</item>
+                <item name="hpf" xsi:type="string">TnsHpfThreeDSecureEnrollmentCommand</item>
+                <item name="amex_direct" xsi:type="string">MpgsAmexDirectEnrollmentCommand</item>
+                <item name="amex_hpf" xsi:type="string">MpgsAmexHpfEnrollmentCommand</item>
+            </argument>
         </arguments>
     </virtualType>
 </config>

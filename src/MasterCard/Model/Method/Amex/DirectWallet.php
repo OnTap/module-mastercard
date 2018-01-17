@@ -22,7 +22,7 @@ class DirectWallet extends \OnTap\MasterCard\Model\Method\Wallet implements Wall
             'check_url' => $this->getUrlBuilder()->getUrl(
                 'tns/threedsecure/check',
                 [
-                    'method' => 'amex',
+                    'method' => 'amex_direct',
                     '_secure' => 1
                 ]
             ),

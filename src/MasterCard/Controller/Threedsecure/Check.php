@@ -11,19 +11,10 @@ use Magento\Checkout\Model\Session;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
 use Magento\Framework\Controller\Result\JsonFactory;
 use OnTap\MasterCard\Gateway\Response\ThreeDSecure\CheckHandler;
-use Magento\Payment\Gateway\Command\CommandPoolFactory;
+use Magento\Payment\Gateway\Command\CommandPoolInterface;
 
-/**
- * Class Check
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
 class Check extends \Magento\Framework\App\Action\Action
 {
-    const CHECK_ENROLMENT = '3ds_enrollment';
-    const CHECK_ENROLMENT_TYPE_DIRECT = 'TnsThreeDSecureEnrollmentCommand';
-    const CHECK_ENROLMENT_TYPE_HPF = 'TnsHpfThreeDSecureEnrollmentCommand';
-    const CHECK_ENROLMENT_TYPE_AMEX = 'MpgsAmexThreeDSecureEnrollmentCommand';
-
     /**
      * @var Session
      */
@@ -40,30 +31,30 @@ class Check extends \Magento\Framework\App\Action\Action
     private $jsonFactory;
 
     /**
-     * @var CommandPoolFactory
+     * @var CommandPoolInterface
      */
-    private $commandPoolFactory;
+    private $commandPool;
 
     /**
      * Check constructor.
-     * @param CommandPoolFactory $commandPoolFactory
+     * @param CommandPoolInterface $commandPool
      * @param Session $checkoutSession
      * @param PaymentDataObjectFactory $paymentDataObjectFactory
      * @param JsonFactory $jsonFactory
      * @param Context $context
      */
     public function __construct(
-        CommandPoolFactory $commandPoolFactory,
+        CommandPoolInterface $commandPool,
         Session $checkoutSession,
         PaymentDataObjectFactory $paymentDataObjectFactory,
         JsonFactory $jsonFactory,
         Context $context
     ) {
         parent::__construct($context);
-        $this->commandPoolFactory = $commandPoolFactory;
         $this->checkoutSession = $checkoutSession;
         $this->paymentDataObjectFactory = $paymentDataObjectFactory;
         $this->jsonFactory = $jsonFactory;
+        $this->commandPool = $commandPool;
     }
 
     /**
@@ -76,18 +67,9 @@ class Check extends \Magento\Framework\App\Action\Action
         $quote = $this->checkoutSession->getQuote();
         $jsonResult = $this->jsonFactory->create();
         try {
-            // @todo: Commands require specific config, so they need to be defined separately in the di.xml
-            $commandPool = $this->commandPoolFactory->create([
-                'commands' => [
-                    'hpf' => self::CHECK_ENROLMENT_TYPE_HPF,
-                    'direct' => self::CHECK_ENROLMENT_TYPE_DIRECT,
-                    'amex' => self::CHECK_ENROLMENT_TYPE_AMEX
-                ]
-            ]);
-
             $paymentDataObject = $this->paymentDataObjectFactory->create($quote->getPayment());
 
-            $commandPool
+            $this->commandPool
                 ->get($this->getRequest()->getParam('method'))
                 ->execute([
                     'payment' => $paymentDataObject,
