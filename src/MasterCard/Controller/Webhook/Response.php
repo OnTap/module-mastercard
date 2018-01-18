@@ -180,6 +180,7 @@ class Response extends \Magento\Framework\App\Action\Action
      * @param string $message
      * @param string $callable
      * @return void
+     * @throws \Zend_Json_Exception
      */
     protected function logWebHookRequest($message, $callable = 'info')
     {

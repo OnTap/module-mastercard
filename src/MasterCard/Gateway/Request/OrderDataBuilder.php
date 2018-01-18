@@ -9,6 +9,7 @@ use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Sales\Model\Order\Payment;
 use OnTap\MasterCard\Gateway\Config\ConfigFactory;
+use OnTap\MasterCard\Model\Method\WalletInterface;
 
 class OrderDataBuilder implements BuilderInterface
 {
@@ -68,6 +69,7 @@ class OrderDataBuilder implements BuilderInterface
      *
      * @param array $buildSubject
      * @return array
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function build(array $buildSubject)
     {
@@ -77,8 +79,16 @@ class OrderDataBuilder implements BuilderInterface
         /** @var Payment $payment */
         $payment = $paymentDO->getPayment();
 
-        $config = $this->configFactory->create();
-        $config->setMethodCode($payment->getMethod());
+        // This method is also used by Wallets as well, so $config can not be directly fabricated,
+        // because method code refers to wallet method, tho wallets use config from providers instead
+        // @todo: Unify config usage somehow by extending the base Adapter (in use by non-Wallet methods)
+        $method = $payment->getMethodInstance();
+        if ($method instanceof WalletInterface) {
+            $config = $method->getProviderConfig();
+        } else {
+            $config = $this->configFactory->create();
+            $config->setMethodCode($payment->getMethod());
+        }
 
         return [
             'order' => [

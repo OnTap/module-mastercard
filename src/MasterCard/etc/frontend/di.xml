@@ -41,6 +41,8 @@
                 <item name="tns_direct" xsi:type="object">TnsDirectConfig</item>
                 <item name="tns_hosted" xsi:type="object">TnsHostedConfig</item>
                 <item name="tns_hpf" xsi:type="object">TnsHpfConfig</item>
+                <item name="tns_hpf_amex" xsi:type="object">TnsHpfConfig</item>
+                <item name="tns_direct_amex" xsi:type="object">TnsDirectConfig</item>
             </argument>
         </arguments>
     </type>
