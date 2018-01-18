@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- Copyright (c) 2016. On Tap Networks Limited. -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-    <module name="OnTap_MasterCard" setup_version="2.1.4">
+    <module name="OnTap_MasterCard" setup_version="2.2.0">
         <sequence>
             <module name="Magento_Payment"/>
             <module name="Magento_Sales"/>
