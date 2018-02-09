@@ -15,7 +15,6 @@
                 <api_eu>https://eu-gateway.mastercard.com/</api_eu>
                 <api_as>https://ap-gateway.mastercard.com/</api_as>
                 <api_na>https://na-gateway.mastercard.com/</api_na>
-                <api_uat>https://secure.uat.tnspayments.com/</api_uat>
                 <api_au>https://mtf.gateway.mastercard.com/</api_au>
                 <custom_create_token_request_data>{}</custom_create_token_request_data>
                 <custom_sale_request_data>{}</custom_sale_request_data>
@@ -62,7 +61,6 @@
                 <api_eu>https://eu-gateway.mastercard.com/</api_eu>
                 <api_as>https://ap-gateway.mastercard.com/</api_as>
                 <api_na>https://na-gateway.mastercard.com/</api_na>
-                <api_uat>https://secure.uat.tnspayments.com/</api_uat>
                 <api_au>https://mtf.gateway.mastercard.com/</api_au>
                 <custom_create_session_request_data>{}</custom_create_session_request_data>
 
@@ -99,7 +97,6 @@
                 <api_eu>https://eu-gateway.mastercard.com/</api_eu>
                 <api_as>https://ap-gateway.mastercard.com/</api_as>
                 <api_na>https://na-gateway.mastercard.com/</api_na>
-                <api_uat>https://secure.uat.tnspayments.com/</api_uat>
                 <api_au>https://mtf.gateway.mastercard.com/</api_au>
                 <custom_create_token_request_data>{}</custom_create_token_request_data>
                 <custom_sale_request_data>{}</custom_sale_request_data>

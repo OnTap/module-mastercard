@@ -123,7 +123,7 @@ class ResponseValidator extends AbstractValidator
             case self::UNKNOWN:
             case self::PENDING:
             case self::FAILURE:
-                $errors[] = $this->resultCode[$response['result']];
+                //$errors[] = $this->resultCode[$response['result']];
                 $errors[] = $this->gatewayCode[$response['response']['gatewayCode']];
                 break;
         }
