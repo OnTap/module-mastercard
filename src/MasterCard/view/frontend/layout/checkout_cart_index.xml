@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) On Tap Networks Limited. -->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="checkout.cart.methods">
+            <block class="OnTap\MasterCard\Block\Cart\ButtonRenderer" name="checkout.cart.methods.mpgs" template="OnTap_MasterCard::cart/button_renderer.phtml" after="checkout.cart.methods.onepage.bottom">
+                <block class="OnTap\MasterCard\Block\Cart\AmexButton\Direct" name="tns_direct_amex" template="OnTap_MasterCard::cart/amex_button/direct.phtml" />
+                <block class="OnTap\MasterCard\Block\Cart\AmexButton\Hpf" name="tns_hpf_amex" template="OnTap_MasterCard::cart/amex_button/hpf.phtml" />
+            </block>
+        </referenceContainer>
+    </body>
+</page>
