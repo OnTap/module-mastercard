@@ -22,7 +22,7 @@ interface WalletPaymentInterface
      * @param string $selCardType
      * @param string $transId
      * @param string $walletId
-     * @return boolean
+     * @return \OnTap\MasterCard\Api\Data\SessionDataInterface
      */
     public function updateSessionFromWallet(
         $authCode,

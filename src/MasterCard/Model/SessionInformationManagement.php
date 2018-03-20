@@ -11,6 +11,7 @@ use Magento\Quote\Model\QuoteIdMaskFactory;
 use Magento\Quote\Api\BillingAddressManagementInterface;
 use OnTap\MasterCard\Api\SessionManagementInterface;
 use OnTap\MasterCard\Gateway\Config\Wallet\CommandProvider;
+use Magento\Quote\Api\PaymentMethodManagementInterface;
 
 class SessionInformationManagement implements SessionManagementInterface
 {
@@ -52,7 +53,13 @@ class SessionInformationManagement implements SessionManagementInterface
     protected $walletFactory;
 
     /**
+     * @var PaymentMethodManagementInterface
+     */
+    protected $paymentMethodManagement;
+
+    /**
      * SessionInformationManagement constructor.
+     * @param PaymentMethodManagementInterface $paymentMethodManagement
      * @param CommandPoolInterface $commandPool
      * @param CartRepositoryInterface $quoteRepository
      * @param PaymentDataObjectFactory $paymentDataObjectFactory
@@ -62,6 +69,7 @@ class SessionInformationManagement implements SessionManagementInterface
      * @param WalletFactory $walletFactory
      */
     public function __construct(
+        PaymentMethodManagementInterface $paymentMethodManagement,
         CommandPoolInterface $commandPool,
         CartRepositoryInterface $quoteRepository,
         PaymentDataObjectFactory $paymentDataObjectFactory,
@@ -77,6 +85,7 @@ class SessionInformationManagement implements SessionManagementInterface
         $this->billingAddressManagement = $billingAddressManagement;
         $this->commandProvider = $commandProvider;
         $this->walletFactory = $walletFactory;
+        $this->paymentMethodManagement = $paymentMethodManagement;
     }
 
     /**
@@ -94,8 +103,10 @@ class SessionInformationManagement implements SessionManagementInterface
         /* @var \Magento\Quote\Model\Quote $quote */
         $quote = $this->quoteRepository->getActive($cartId);
 
-        $quote->setReservedOrderId(null);
-        $quote->reserveOrderId();
+//        $quote->setReservedOrderId(null);
+//        $quote->reserveOrderId();
+
+        $this->paymentMethodManagement->set($cartId, $paymentMethod);
 
         $this->commandPool
             ->get(self::CREATE_SESSION)
@@ -126,7 +137,9 @@ class SessionInformationManagement implements SessionManagementInterface
             ->create()
             ->load($cartId, 'masked_id');
 
-        $billingAddress->setEmail($email);
+        if ($billingAddress) {
+            $billingAddress->setEmail($email);
+        }
         return $this->createNewPaymentSession($quoteIdMask->getQuoteId(), $paymentMethod, $billingAddress);
     }
 

@@ -1,5 +1,6 @@
 <?php
     /* @var \OnTap\MasterCard\Block\Cart\AmexButton\Direct $block */
 ?>
-
-<button>DIRECT</button>
+<div id="amex-express-checkout" data-mage-init='{"OnTap_MasterCard/js/view/cart/amex_direct": {"config": <?php echo $block->getJsConfig() ?>, "reviewPageUrl": "<?php echo $block->getUrl('mpgs/checkout/review') ?>"}}'>
+    <div id="amex-direct-loader" data-bind="'blockLoader': true"></div>
+</div>

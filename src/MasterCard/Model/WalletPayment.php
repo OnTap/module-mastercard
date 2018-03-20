@@ -5,6 +5,7 @@
 
 namespace OnTap\MasterCard\Model;
 
+use OnTap\MasterCard\Api\Data\SessionDataInterface;
 use OnTap\MasterCard\Api\WalletPaymentInterface;
 use Magento\Payment\Gateway\Command\CommandPoolInterface;
 use Magento\Checkout\Model\Session as CheckoutSession;
@@ -28,12 +29,19 @@ class WalletPayment implements WalletPaymentInterface
     protected $paymentDataObjectFactory;
 
     /**
+     * @var \OnTap\MasterCard\Api\Data\SessionDataInterfaceFactory
+     */
+    protected $sessionDataFactory;
+
+    /**
      * WalletPayment constructor.
+     * @param \OnTap\MasterCard\Api\Data\SessionDataInterfaceFactory $sessionDataFactory
      * @param CheckoutSession $checkoutSession
      * @param CommandPoolInterface $commandPool
      * @param PaymentDataObjectFactory $paymentDataObjectFactory
      */
     public function __construct(
+        \OnTap\MasterCard\Api\Data\SessionDataInterfaceFactory $sessionDataFactory,
         CheckoutSession $checkoutSession,
         CommandPoolInterface $commandPool,
         PaymentDataObjectFactory $paymentDataObjectFactory
@@ -41,6 +49,7 @@ class WalletPayment implements WalletPaymentInterface
         $this->checkoutSession = $checkoutSession;
         $this->commandPool = $commandPool;
         $this->paymentDataObjectFactory = $paymentDataObjectFactory;
+        $this->sessionDataFactory = $sessionDataFactory;
     }
 
     /**
@@ -67,6 +76,13 @@ class WalletPayment implements WalletPaymentInterface
 
         $quote->getPayment()->save();
 
-        return true;
+        $sessionData = $paymentDO->getPayment()->getAdditionalInformation('session');
+
+        $session = $this->sessionDataFactory->create(['data' => [
+            SessionDataInterface::SESSION_ID => $sessionData['id'],
+            SessionDataInterface::SESSION_VERSION => $sessionData['version']
+        ]]);
+
+        return $session;
     }
 }

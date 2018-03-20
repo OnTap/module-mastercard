@@ -14,7 +14,7 @@ class Hpf extends AmexButton
      */
     public function getJsComponent()
     {
-        return $this->method->getProviderConfig()->getComponentUrl();
+        return $this->method->getProviderConfig()->getComponentUrl() . '?_=' . time();
     }
 
     /**

@@ -5,6 +5,7 @@
     <preference for="OnTap\MasterCard\Api\Hosted\SessionManagementInterface" type="MpgsHostedCreateSession" />
     <preference for="OnTap\MasterCard\Api\Data\WalletDataInterface" type="OnTap\MasterCard\Model\Wallet" />
     <preference for="OnTap\MasterCard\Api\WalletPaymentInterface" type="OnTap\MasterCard\Model\WalletPayment" />
+    <preference for="OnTap\MasterCard\Api\Data\SessionDataInterface" type="OnTap\MasterCard\Model\Session" />
 
     <!-- Virtual operation classes that specify apiOperation generically -->
     <virtualType name="AuthorizeOperationDataBuilder" type="OnTap\MasterCard\Gateway\Request\OperationBuilder">

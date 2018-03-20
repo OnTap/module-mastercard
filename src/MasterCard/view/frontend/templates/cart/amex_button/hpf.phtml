@@ -24,11 +24,15 @@
                         });
                         return;
                     }
+
+                    $('body').trigger('processStart');
+
                     var params = $.param({
                         session_id: response.session.id,
                         session_version: response.session.version,
                         method: '<?php echo $block->getNameInLayout() ?>'
                     });
+
                     window.location.href = '<?php echo $block->getUrl('mpgs/checkout/review') ?>?' + params;
                 }
             }
