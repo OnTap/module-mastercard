@@ -49,6 +49,11 @@ class Wallet extends \Magento\Payment\Model\Method\Adapter implements WalletInte
     protected $url;
 
     /**
+     * @var CommandPoolInterface|null
+     */
+    protected $_commandPool;
+
+    /**
      * Wallet constructor.
      * @param UrlInterface $url
      * @param ConfigFactory $configFactory
@@ -101,6 +106,15 @@ class Wallet extends \Magento\Payment\Model\Method\Adapter implements WalletInte
         $this->configFactory = $configFactory;
         $this->url = $url;
         $this->providerConfig = $providerConfig;
+        $this->_commandPool = $commandPool;
+    }
+
+    /**
+     * @return CommandPoolInterface|null
+     */
+    public function getCommandPool()
+    {
+        return $this->_commandPool;
     }
 
     /**

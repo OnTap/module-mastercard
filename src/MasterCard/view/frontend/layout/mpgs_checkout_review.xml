@@ -1,9 +1,13 @@
 <?xml version="1.0"?>
 <!-- Copyright (c) On Tap Networks Limited. -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="checkout" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="checkout_cart_item_renderers"/>
     <body>
         <referenceContainer name="content">
-            <block class="OnTap\MasterCard\Block\Checkout\Review" name="checkout.root" template="OnTap_MasterCard::checkout/review.phtml" cacheable="false">
+            <block class="OnTap\MasterCard\Block\Checkout\Review" name="mpgs.checkout.review" template="OnTap_MasterCard::checkout/review.phtml" cacheable="false">
+                <block class="Magento\Checkout\Block\Cart\Grid" name="checkout.cart.form" as="cart-items" template="Magento_Checkout::cart/form.phtml" after="cart.summary">
+                    <block class="Magento\Framework\View\Element\RendererList" name="checkout.cart.item.renderers" as="renderer.list"/>
+                </block>
             </block>
         </referenceContainer>
         <referenceContainer name="page.messages" remove="true"/>
