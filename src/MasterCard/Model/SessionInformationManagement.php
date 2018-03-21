@@ -11,7 +11,7 @@ use Magento\Quote\Model\QuoteIdMaskFactory;
 use Magento\Quote\Api\BillingAddressManagementInterface;
 use OnTap\MasterCard\Api\SessionManagementInterface;
 use OnTap\MasterCard\Gateway\Config\Wallet\CommandProvider;
-use Magento\Quote\Api\PaymentMethodManagementInterface;
+use OnTap\MasterCard\Api\PaymentMethodManagementInterface;
 
 class SessionInformationManagement implements SessionManagementInterface
 {
@@ -129,7 +129,7 @@ class SessionInformationManagement implements SessionManagementInterface
      */
     public function createNewGuestPaymentSession(
         $cartId,
-        $email,
+        $email = null,
         \Magento\Quote\Api\Data\PaymentInterface $paymentMethod,
         \Magento\Quote\Api\Data\AddressInterface $billingAddress = null
     ) {
@@ -137,7 +137,7 @@ class SessionInformationManagement implements SessionManagementInterface
             ->create()
             ->load($cartId, 'masked_id');
 
-        if ($billingAddress) {
+        if ($billingAddress && $email) {
             $billingAddress->setEmail($email);
         }
         return $this->createNewPaymentSession($quoteIdMask->getQuoteId(), $paymentMethod, $billingAddress);
@@ -178,13 +178,6 @@ class SessionInformationManagement implements SessionManagementInterface
         $type = key($walletData);
         $wallet->addData($walletData[$type]);
 
-//        // Provide shipping to wallet
-//        $this->commandPool
-//            ->get('update_session')
-//            ->execute([
-//                'payment' => $paymentDO,
-//            ]);
-
         return $wallet;
     }
 
@@ -193,7 +186,7 @@ class SessionInformationManagement implements SessionManagementInterface
      */
     public function openWalletGuest(
         $cartId,
-        $email,
+        $email = null,
         $sessionId,
         $type
     ) {

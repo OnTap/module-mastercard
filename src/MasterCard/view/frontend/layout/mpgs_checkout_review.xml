@@ -125,11 +125,7 @@
                             </arguments>
                         </block>
                     </container>
-                    <block class="Magento\Checkout\Block\Cart" name="checkout.cart.methods.bottom" template="Magento_Checkout::cart/methods.phtml">
-                        <container name="checkout.cart.methods" as="methods" label="Payment Methods After Checkout Button">
-                            <block class="Magento\Checkout\Block\Onepage\Link" name="checkout.cart.methods.onepage.bottom" template="OnTap_MasterCard::checkout/review/place_order.phtml" />
-                        </container>
-                    </block>
+                    <block class="OnTap\MasterCard\Block\Checkout\Review\PlaceOrder" name="mpgs.checkout.review.placeorder" template="OnTap_MasterCard::checkout/review/place_order.phtml" />
                 </container>
 
 

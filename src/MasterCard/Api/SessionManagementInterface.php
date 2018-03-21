@@ -25,14 +25,14 @@ interface SessionManagementInterface
      * Create a new payment session for the guest user
      *
      * @param string $cartId
-     * @param string $email
+     * @param string|null $email
      * @param \Magento\Quote\Api\Data\PaymentInterface $paymentMethod
      * @param \Magento\Quote\Api\Data\AddressInterface|null $billingAddress
      * @return string[]
      */
     public function createNewGuestPaymentSession(
         $cartId,
-        $email,
+        $email = null,
         \Magento\Quote\Api\Data\PaymentInterface $paymentMethod,
         \Magento\Quote\Api\Data\AddressInterface $billingAddress = null
     );
@@ -55,14 +55,14 @@ interface SessionManagementInterface
      * Open the wallet for a guest user
      *
      * @param string $cartId
-     * @param string $email
+     * @param string|null $email
      * @param string $sessionId
      * @param string $type
      * @return \OnTap\MasterCard\Api\Data\WalletDataInterface
      */
     public function openWalletGuest(
         $cartId,
-        $email,
+        $email = null,
         $sessionId,
         $type
     );

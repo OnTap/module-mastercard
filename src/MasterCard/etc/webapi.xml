@@ -55,4 +55,20 @@
             <resource ref="anonymous" />
         </resources>
     </route>
+
+    <route url="/V1/mpgs/wallet/:cartId/set-payment-information" method="POST">
+        <service class="OnTap\MasterCard\Api\WalletPaymentInterface" method="saveGuestPaymentInformation"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+    <route url="/V1/mpgs/wallet/set-payment-information" method="POST">
+        <service class="OnTap\MasterCard\Api\WalletPaymentInterface" method="savePaymentInformation"/>
+        <resources>
+            <resource ref="self" />
+        </resources>
+        <data>
+            <parameter name="cartId" force="true">%cart_id%</parameter>
+        </data>
+    </route>
 </routes>

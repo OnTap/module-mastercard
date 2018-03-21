@@ -118,6 +118,8 @@ class AddressDataHandler implements HandlerInterface
         $quote = $payment->getPayment()->getQuote();
 
         $customer = $response['customer'];
+        $quote->setCustomerEmail($customer['email']);
+
         $billing = $response['billing']['address'];
         $shipping = $response['shipping']['address'];
 

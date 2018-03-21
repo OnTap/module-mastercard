@@ -39,6 +39,11 @@
                     });
                     $.when(action).done(function () {
                         window.location.href = '<?php echo $block->getUrl('mpgs/checkout/review') ?>?' + params;
+                    }).fail(function (response) {
+                        $('body').trigger('processStop');
+                        alert({
+                            content: $t('Payment could not be completed: ') + response.responseJSON.message
+                        });
                     });
                 }
             }
