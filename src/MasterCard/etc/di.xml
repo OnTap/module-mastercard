@@ -917,7 +917,21 @@
                 <item name="create_token" xsi:type="string">MpgsHpfCreateTokenCommand</item>
                 <item name="vault_sale" xsi:type="string">MpgsHpfVaultSaleCommand</item>
                 <item name="vault_authorize" xsi:type="string">MpgsHpfVaultAuthorizeCommand</item>
+                <item name="get_session" xsi:type="string">MpgsHpfGetSessionCommand</item>
             </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Find session info -->
+    <virtualType name="MpgsHpfGetSessionCommand" type="MpgsDirectGetSessionCommand">
+        <arguments>
+            <argument name="transferFactory" xsi:type="object">MpgsHpfGetSessionRequest</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsHpfGetSessionRequest" type="OnTap\MasterCard\Gateway\Http\TransferFactorySession">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsHpfConfig</argument>
+            <argument name="requestType" xsi:type="const">OnTap\MasterCard\Gateway\Http\Client\Rest::GET</argument>
         </arguments>
     </virtualType>
 

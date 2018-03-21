@@ -5,8 +5,8 @@ define([
     'jquery',
     'OnTap_MasterCard/js/action/create-session',
     'OnTap_MasterCard/js/action/open-wallet',
-    'OnTap_MasterCard/js/action/update-session-from-wallet',
-], function ($, createSessionAction, openWalletAction, updateSessionFromWalletAction, loader) {
+    'OnTap_MasterCard/js/action/update-session-from-wallet'
+], function ($, createSessionAction, openWalletAction, updateSessionFromWalletAction) {
     'use strict';
     $.widget('mpgs.amex_direct', {
         options: {
@@ -92,9 +92,7 @@ define([
 
         sessionFullyUpdated: function (response) {
             var params = $.param({
-                session_id: response.session_id,
-                session_version: response.session_version,
-                method: this.options.method
+                session_version: response.session_version
             });
             window.location.href = this.options.reviewPageUrl + '?' + params;
         }

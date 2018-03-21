@@ -7,8 +7,9 @@
         'jquery',
         'Magento_Ui/js/modal/alert',
         'mage/translate',
+        'OnTap_MasterCard/js/action/set-payment-information',
         '<?php echo $block->getJsComponent() ?>'
-    ], function ($, alert, $t) {
+    ], function ($, alert, $t, setPaymentMethodAction) {
         'use strict';
 
         var config = <?php echo $block->getComponentConfig() ?>;
@@ -28,12 +29,17 @@
                     $('body').trigger('processStart');
 
                     var params = $.param({
-                        session_id: response.session.id,
-                        session_version: response.session.version,
-                        method: '<?php echo $block->getNameInLayout() ?>'
+                        session_version: response.session.version
                     });
-
-                    window.location.href = '<?php echo $block->getUrl('mpgs/checkout/review') ?>?' + params;
+                    var action = setPaymentMethodAction(null, {
+                        method: '<?php echo $block->getNameInLayout() ?>',
+                        additional_data: {
+                            session: response.session.id
+                        }
+                    });
+                    $.when(action).done(function () {
+                        window.location.href = '<?php echo $block->getUrl('mpgs/checkout/review') ?>?' + params;
+                    });
                 }
             }
         });

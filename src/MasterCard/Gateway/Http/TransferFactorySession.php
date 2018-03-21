@@ -48,10 +48,20 @@ class TransferFactorySession extends TransferFactory
         $suffix = '';
         if (!$this->createNewSession) {
             $session = $payment->getPayment()->getAdditionalInformation('session');
-            if (!$session || !isset($session['id'])) {
-                throw new \InvalidArgumentException(__("Session ID not present for order"));
+            $sessionId = null;
+            if (is_string($session)) {
+                if (!$session) {
+                    throw new \InvalidArgumentException(__("Could not find session ID from the payment."));
+                }
+                $sessionId = $session;
             }
-            $suffix = '/' . $session['id'];
+            if (is_array($session)) {
+                if (!isset($session['id'])) {
+                    throw new \InvalidArgumentException(__("Could not find session ID from the payment."));
+                }
+                $sessionId = $session['id'];
+            }
+            $suffix = '/' . $sessionId;
         }
 
         return $this->getGatewayUri() . 'session' . $suffix;

@@ -51,7 +51,7 @@ class Review extends \Magento\Framework\App\Action\Action
      */
     public function execute()
     {
-        try {
+//        try {
             $quote = $this->session->getQuote();
 
             /** @var \OnTap\MasterCard\Model\Method\Wallet $payment */
@@ -63,10 +63,10 @@ class Review extends \Magento\Framework\App\Action\Action
                 'payment' => $paymentDO
             ]);
 
-        } catch (\Exception $e) {
-            $this->messageManager->addErrorMessage($e->getMessage());
-            return $this->_redirect('checkout/cart');
-        }
+//        } catch (\Exception $e) {
+//            $this->messageManager->addErrorMessage($e->getMessage());
+//            return $this->_redirect('checkout/cart');
+//        }
 
         /** @var \Magento\Framework\View\Result\Page $resultPage */
         $resultPage = $this->resultPageFactory->create();

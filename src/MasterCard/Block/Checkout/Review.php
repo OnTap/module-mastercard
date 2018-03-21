@@ -62,7 +62,7 @@ class Review extends \Magento\Framework\View\Element\Template
         return $this->renderAddress($this->quote->getBillingAddress());
     }
 
-    public function getShippingAddress()
+    public function getShippingAddressHtml()
     {
         return $this->renderAddress($this->quote->getShippingAddress());
     }
