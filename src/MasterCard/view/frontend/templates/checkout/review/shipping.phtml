@@ -1,0 +1,16 @@
+<?php
+    /** @var OnTap\MasterCard\Block\Checkout\Review\Shipping $block */
+?>
+<div id="block-shipping" class="block shipping">
+    <div class="step-title" data-role="title" data-bind="i18n: '<?= __('Shipping Address') ?>'"><?= __('Shipping Address') ?></div>
+    <div id="review-shipping-address" data-bind="scope:'review-shipping-address'" class="content" data-role="content" aria-labelledby="block-shipping-heading">
+        <!-- ko template: getTemplate() --><!-- /ko -->
+        <script type="text/x-magento-init">
+            {
+                "#review-shipping-address": {
+                    "Magento_Ui/js/core/app": <?= /* @escapeNotVerified */ $block->getJsLayout() ?>
+                }
+            }
+        </script>
+    </div>
+</div>

@@ -1,0 +1,13 @@
+<?php
+    /** @var OnTap\MasterCard\Block\Checkout\Review\Billing $block */
+?>
+<div id="block-billing" class="block billing" data-mage-init='{"collapsible":{"openedState": "active", "saveState": false, "active": true}}'>
+    <div class="title" data-role="title">
+        <strong id="block-billing-heading" role="heading" aria-level="2">
+            <?= /* @escapeNotVerified */ __('Billing Address') ?>
+        </strong>
+    </div>
+    <div class="content" data-role="content" aria-labelledby="block-billing-heading">
+        <?= $block->getBillingAddressHtml() ?>
+    </div>
+</div>

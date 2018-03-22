@@ -5,20 +5,40 @@
     <body>
         <referenceContainer name="content">
             <block class="OnTap\MasterCard\Block\Checkout\Review" name="mpgs.checkout.review" template="OnTap_MasterCard::checkout/review.phtml" cacheable="false">
+
+                <block class="OnTap\MasterCard\Block\Checkout\Review\Shipping" name="mpgs.checkout.shipping" as="shipping" template="OnTap_MasterCard::checkout/review/shipping.phtml">
+                    <arguments>
+                        <argument name="jsLayout" xsi:type="array">
+                            <item name="components" xsi:type="array">
+                                <item name="review-shipping-address" xsi:type="array">
+                                    <item name="component" xsi:type="string">OnTap_MasterCard/js/view/review/shipping</item>
+                                    <item name="children" xsi:type="array">
+                                        <item name="shipping-selector" xsi:type="array">
+                                            <item name="component" xsi:type="string">Magento_Checkout/js/view/shipping-address/list</item>
+                                        </item>
+                                    </item>
+                                </item>
+                            </item>
+                        </argument>
+                    </arguments>
+                </block>
+
                 <block class="Magento\Checkout\Block\Cart\Grid" name="checkout.cart.form" as="cart-items" template="Magento_Checkout::cart/form.phtml" after="cart.summary">
                     <block class="Magento\Framework\View\Element\RendererList" name="checkout.cart.item.renderers" as="renderer.list"/>
                 </block>
 
-
                 <container name="cart.summary" label="Cart Summary Container" htmlTag="div" htmlClass="cart-summary" after="-">
                     <block class="Magento\Framework\View\Element\Template" name="checkout.cart.summary.title" before="-" template="Magento_Theme::text.phtml">
                         <arguments>
-                            <argument translate="true" name="text" xsi:type="string">Summary</argument>
+                            <argument translate="true" name="text" xsi:type="string">Order Summary</argument>
                             <argument name="tag" xsi:type="string">strong</argument>
                             <argument name="css_class" xsi:type="string">summary title</argument>
                         </arguments>
                     </block>
-                    <block class="Magento\Checkout\Block\Cart\Shipping" name="checkout.cart.shipping" as="shipping" template="Magento_Checkout::cart/shipping.phtml" after="checkout.cart.summary.title">
+                    <block class="OnTap\MasterCard\Block\Checkout\Review\Billing" name="mpgs.checkout.review.billing" template="OnTap_MasterCard::checkout/review/billing.phtml" after="checkout.cart.summary.title">
+
+                    </block>
+                    <block class="Magento\Checkout\Block\Cart\Shipping" name="checkout.cart.shipping" as="shipping" template="Magento_Checkout::cart/shipping.phtml" after="mpgs.checkout.review.billing">
                         <arguments>
                             <argument name="jsLayout" xsi:type="array">
                                 <item name="types" xsi:type="array">

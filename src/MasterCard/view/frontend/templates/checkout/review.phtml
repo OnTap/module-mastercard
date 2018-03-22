@@ -2,25 +2,11 @@
     /* @var \OnTap\MasterCard\Block\Checkout\Review $block */
 ?>
 <div class="block-order-review">
-    <div>
-        <div>
-            <h3>Billing address</h3>
-            <div>
-                <?php echo $block->getBillingAddressHtml() ?>
-            </div>
-            <a href="#">edit</a>
-        </div>
-        <div>
-            <div>
-                <h3>Shipping address</h3>
-            </div>
-            <div>
-                <div>
-                    <?php echo $block->getShippingAddressHtml() ?>
-                </div>
-                <a href="#">edit</a>
-            </div>
-        </div>
+    <div class="opc-wrapper">
+        <?php echo $block->getChildHtml('shipping') ?>
+        <?php echo $block->getChildHtml('cart-items') ?>
     </div>
-    <?php echo $block->getChildHtml() ?>
+    <div>
+        <?php echo $block->getChildHtml('cart.summary') ?>
+    </div>
 </div>
