@@ -55,13 +55,13 @@ class Review extends \Magento\Framework\App\Action\Action
             $quote = $this->session->getQuote();
 
             /** @var \OnTap\MasterCard\Model\Method\Wallet $payment */
-//            $payment = $quote->getPayment()->getMethodInstance();
-//
-//            $command = $payment->getCommandPool()->get('get_session');
-//            $paymentDO = $this->paymentDataObjectFactory->create($quote->getPayment());
-//            $command->execute([
-//                'payment' => $paymentDO
-//            ]);
+            $payment = $quote->getPayment()->getMethodInstance();
+
+            $command = $payment->getCommandPool()->get('get_session');
+            $paymentDO = $this->paymentDataObjectFactory->create($quote->getPayment());
+            $command->execute([
+                'payment' => $paymentDO
+            ]);
 
 //        } catch (\Exception $e) {
 //            $this->messageManager->addErrorMessage($e->getMessage());

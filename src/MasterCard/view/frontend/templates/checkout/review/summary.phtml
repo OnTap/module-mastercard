@@ -1,0 +1,34 @@
+<?php /** @var $block \Magento\Checkout\Block\Cart\Shipping */ ?>
+
+<?php if (!$block->getQuote()->isVirtual()): ?>
+    <div id="block-shipping" class="block shipping" data-mage-init='{"collapsible":{"openedState": "active", "saveState": false, "active": true}}'>
+        <div class="title" data-role="title">
+            <strong id="block-shipping-heading" role="heading" aria-level="2">
+                <?= /* @escapeNotVerified */ __('Shipping Methods') ?>
+            </strong>
+        </div>
+        <div id="block-summary" data-bind="scope:'block-summary'" class="content" data-role="content" aria-labelledby="block-shipping-heading">
+            <!-- ko template: getTemplate() --><!-- /ko -->
+            <script type="text/x-magento-init">
+                {
+                    "#block-summary": {
+                        "Magento_Ui/js/core/app": <?= /* @escapeNotVerified */ $block->getJsLayout() ?>
+                    }
+                }
+            </script>
+        </div>
+    </div>
+<?php endif; ?>
+
+<script>
+    window.checkoutConfig = <?= /* @escapeNotVerified */ $block->getSerializedCheckoutConfig() ?>;
+    window.customerData = window.checkoutConfig.customerData;
+    window.isCustomerLoggedIn = window.checkoutConfig.isCustomerLoggedIn;
+    require([
+        'mage/url',
+        'Magento_Ui/js/block-loader'
+    ], function(url, blockLoader) {
+        blockLoader("<?= /* @escapeNotVerified */ $block->getViewFileUrl('images/loader-1.gif') ?>");
+        return url.setBaseUrl('<?= /* @escapeNotVerified */ $block->getBaseUrl() ?>');
+    })
+</script>

@@ -52,4 +52,13 @@ class Billing extends \Magento\Checkout\Block\Cart\AbstractCart
     {
         return $this->renderAddress($this->_checkoutSession->getQuote()->getBillingAddress());
     }
+
+    /**
+     * @return string
+     */
+    public function getBillingAddressJs()
+    {
+        $address = $this->_checkoutSession->getQuote()->getBillingAddress()->exportCustomerAddress()->__toArray();
+        return \Zend_Json_Encoder::encode($address);
+    }
 }

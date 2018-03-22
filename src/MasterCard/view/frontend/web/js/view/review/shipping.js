@@ -5,9 +5,8 @@ define([
     'Magento_Checkout/js/model/quote',
     'Magento_Checkout/js/checkout-data',
     'Magento_Checkout/js/action/create-shipping-address',
-    'Magento_Checkout/js/action/select-shipping-address',
-    'Magento_Checkout/js/model/address-converter'
-], function (Component, $, registry, quote, checkoutData, createShippingAddress, selectShippingAddress, addressConverter) {
+    'Magento_Checkout/js/action/select-shipping-address'
+], function (Component, $, registry, quote, checkoutData, createShippingAddress, selectShippingAddress) {
     'use strict';
     return Component.extend({
         initialize: function () {

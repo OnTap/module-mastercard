@@ -1,11 +1,10 @@
 <?xml version="1.0"?>
 <!-- Copyright (c) On Tap Networks Limited. -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="checkout" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
-    <update handle="checkout_cart_item_renderers"/>
+    <update handle="mpgs_checkout_review_item_renderers"/>
     <body>
         <referenceContainer name="content">
             <block class="OnTap\MasterCard\Block\Checkout\Review" name="mpgs.checkout.review" template="OnTap_MasterCard::checkout/review.phtml" cacheable="false">
-
                 <block class="OnTap\MasterCard\Block\Checkout\Review\Shipping" name="mpgs.checkout.shipping" as="shipping" template="OnTap_MasterCard::checkout/review/shipping.phtml">
                     <arguments>
                         <argument name="jsLayout" xsi:type="array">
@@ -13,8 +12,11 @@
                                 <item name="review-shipping-address" xsi:type="array">
                                     <item name="component" xsi:type="string">OnTap_MasterCard/js/view/review/shipping</item>
                                     <item name="children" xsi:type="array">
-                                        <item name="shipping-selector" xsi:type="array">
+                                        <item name="shipping-address-selector" xsi:type="array">
                                             <item name="component" xsi:type="string">Magento_Checkout/js/view/shipping-address/list</item>
+                                            <item name="config" xsi:type="array">
+                                                <item name="visible" xsi:type="boolean">true</item>
+                                            </item>
                                         </item>
                                     </item>
                                 </item>
@@ -23,8 +25,8 @@
                     </arguments>
                 </block>
 
-                <block class="Magento\Checkout\Block\Cart\Grid" name="checkout.cart.form" as="cart-items" template="Magento_Checkout::cart/form.phtml" after="cart.summary">
-                    <block class="Magento\Framework\View\Element\RendererList" name="checkout.cart.item.renderers" as="renderer.list"/>
+                <block class="Magento\Checkout\Block\Cart\Grid" name="mpgs.checkout.review.items" as="cart-items" template="OnTap_MasterCard::checkout/review/items.phtml" after="cart.summary">
+                    <block class="Magento\Framework\View\Element\RendererList" name="mpgs.checkout.review.item.renderers" as="renderer.list"/>
                 </block>
 
                 <container name="cart.summary" label="Cart Summary Container" htmlTag="div" htmlClass="cart-summary" after="-">
@@ -38,7 +40,7 @@
                     <block class="OnTap\MasterCard\Block\Checkout\Review\Billing" name="mpgs.checkout.review.billing" template="OnTap_MasterCard::checkout/review/billing.phtml" after="checkout.cart.summary.title">
 
                     </block>
-                    <block class="Magento\Checkout\Block\Cart\Shipping" name="checkout.cart.shipping" as="shipping" template="Magento_Checkout::cart/shipping.phtml" after="mpgs.checkout.review.billing">
+                    <block class="Magento\Checkout\Block\Cart\Shipping" name="checkout.cart.shipping" as="shipping" template="OnTap_MasterCard::checkout/review/summary.phtml" after="mpgs.checkout.review.billing">
                         <arguments>
                             <argument name="jsLayout" xsi:type="array">
                                 <item name="types" xsi:type="array">
@@ -73,7 +75,16 @@
                                         <item name="children" xsi:type="array">
                                             <item name="block-rates" xsi:type="array">
                                                 <item name="component" xsi:type="string">Magento_Checkout/js/view/cart/shipping-rates</item>
+                                                <item name="config" xsi:type="array">
+                                                    <item name="template" xsi:type="string">OnTap_MasterCard/checkout/review/shipping-rates</item>
+                                                </item>
                                                 <item name="sortOrder" xsi:type="string">2</item>
+                                                <item name="children" xsi:type="array">
+                                                    <item name="price" xsi:type="array">
+                                                        <item name="component" xsi:type="string">Magento_Tax/js/view/checkout/shipping_method/price</item>
+                                                        <item name="displayArea" xsi:type="string">price</item>
+                                                    </item>
+                                                </item>
                                             </item>
                                             <item name="block-shipping" xsi:type="array">
                                                 <item name="component" xsi:type="string">Magento_Checkout/js/view/cart/shipping-estimation</item>

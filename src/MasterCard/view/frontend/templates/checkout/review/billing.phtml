@@ -10,4 +10,20 @@
     <div class="content" data-role="content" aria-labelledby="block-billing-heading">
         <?= $block->getBillingAddressHtml() ?>
     </div>
+    <script>
+        require([
+            'Magento_Checkout/js/action/create-billing-address',
+            'Magento_Checkout/js/action/select-billing-address'
+        ], function (createBillingAddressAction, selectBillingAddressAction) {
+            'use strict';
+            var address = createBillingAddressAction(<?= $block->getBillingAddressJs() ?>);
+
+            // xxx: data consistency hack
+            if (typeof address.region === 'object') {
+                address.region = address.region.region;
+            }
+
+            selectBillingAddressAction(address);
+        });
+    </script>
 </div>

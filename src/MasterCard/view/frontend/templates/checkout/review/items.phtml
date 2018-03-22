@@ -1,0 +1,21 @@
+<?php
+/**  @var $block \Magento\Checkout\Block\Cart\Grid */
+?>
+<?php $mergedCells = ($this->helper('Magento\Tax\Helper\Data')->displayCartBothPrices() ? 2 : 1); ?>
+<div class="cart table-wrapper<?= $mergedCells == 2 ? ' detailed' : '' ?>">
+    <table id="shopping-cart-table"
+           class="cart items data table">
+        <caption role="heading" aria-level="2" class="table-caption"><?= /* @escapeNotVerified */ __('Shopping Cart Items') ?></caption>
+        <thead>
+        <tr>
+            <th class="col item" scope="col"><span><?= /* @escapeNotVerified */ __('Item') ?></span></th>
+            <th class="col price" scope="col"><span><?= /* @escapeNotVerified */ __('Price') ?></span></th>
+            <th class="col qty" scope="col"><span><?= /* @escapeNotVerified */ __('Qty') ?></span></th>
+            <th class="col subtotal" scope="col"><span><?= /* @escapeNotVerified */ __('Subtotal') ?></span></th>
+        </tr>
+        </thead>
+        <?php foreach ($block->getItemsForGrid()->getItems() as $_item): ?>
+            <?= $block->getItemHtml($_item) ?>
+        <?php endforeach ?>
+    </table>
+</div>

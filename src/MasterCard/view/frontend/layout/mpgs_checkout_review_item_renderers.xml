@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="checkout_item_price_renderers"/>
+    <body>
+        <referenceBlock name="mpgs.checkout.review.item.renderers">
+            <block class="Magento\Checkout\Block\Cart\Item\Renderer" as="default" template="OnTap_MasterCard::checkout/review/item/default.phtml" />
+        </referenceBlock>
+    </body>
+</page>
