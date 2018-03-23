@@ -5,8 +5,9 @@ define([
     'Magento_Checkout/js/model/quote',
     'Magento_Checkout/js/checkout-data',
     'Magento_Checkout/js/action/create-shipping-address',
-    'Magento_Checkout/js/action/select-shipping-address'
-], function (Component, $, registry, quote, checkoutData, createShippingAddress, selectShippingAddress) {
+    'Magento_Checkout/js/action/select-shipping-address',
+    'Magento_Checkout/js/model/checkout-data-resolver'
+], function (Component, $, registry, quote, checkoutData, createShippingAddress, selectShippingAddress, checkoutDataResolver) {
     'use strict';
     return Component.extend({
         initialize: function () {
@@ -17,10 +18,24 @@ define([
                 this.shippingFromWallet.region = this.shippingFromWallet.region.region;
             }
 
-            var newShippingAddress = createShippingAddress(this.shippingFromWallet);
-            selectShippingAddress(newShippingAddress);
-            checkoutData.setSelectedShippingAddress(newShippingAddress.getKey());
-            checkoutData.setNewCustomerShippingAddress($.extend(true, {}, this.shippingFromWallet));
+            registry.async('checkoutProvider')($.proxy(function (checkoutProvider) {
+                var shippingAddressData = createShippingAddress(this.shippingFromWallet);
+                // var shippingAddressData = checkoutData.getShippingAddressFromData();
+
+                if (shippingAddressData) {
+                    checkoutProvider.set(
+                        'shippingAddress',
+                        $.extend(true, {}, checkoutProvider.get('shippingAddress'), shippingAddressData)
+                    );
+                }
+                checkoutProvider.on('shippingAddress', function (shippingAddrsData) {
+                    checkoutData.setShippingAddressFromData(shippingAddrsData);
+                });
+
+                checkoutData.setSelectedShippingAddress(shippingAddressData.getKey());
+
+                checkoutDataResolver.resolveShippingAddress();
+            }, this));
 
             return this;
         }

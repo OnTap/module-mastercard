@@ -11,6 +11,11 @@
                             <item name="components" xsi:type="array">
                                 <item name="review-shipping-address" xsi:type="array">
                                     <item name="component" xsi:type="string">OnTap_MasterCard/js/view/review/shipping</item>
+                                    <item name="config" xsi:type="array">
+                                        <item name="deps" xsi:type="array">
+                                            <item name="0" xsi:type="string">checkoutProvider</item>
+                                        </item>
+                                    </item>
                                     <item name="children" xsi:type="array">
                                         <item name="shipping-address-selector" xsi:type="array">
                                             <item name="component" xsi:type="string">Magento_Checkout/js/view/shipping-address/list</item>
@@ -19,6 +24,9 @@
                                             </item>
                                         </item>
                                     </item>
+                                </item>
+                                <item name="checkoutProvider" xsi:type="array">
+                                    <item name="component" xsi:type="string">uiComponent</item>
                                 </item>
                             </item>
                         </argument>
@@ -37,40 +45,16 @@
                             <argument name="css_class" xsi:type="string">summary title</argument>
                         </arguments>
                     </block>
-                    <block class="OnTap\MasterCard\Block\Checkout\Review\Billing" name="mpgs.checkout.review.billing" template="OnTap_MasterCard::checkout/review/billing.phtml" after="checkout.cart.summary.title">
-
-                    </block>
+                    <block class="OnTap\MasterCard\Block\Checkout\Review\Billing" name="mpgs.checkout.review.billing" template="OnTap_MasterCard::checkout/review/billing.phtml" after="checkout.cart.summary.title" />
                     <block class="Magento\Checkout\Block\Cart\Shipping" name="checkout.cart.shipping" as="shipping" template="OnTap_MasterCard::checkout/review/summary.phtml" after="mpgs.checkout.review.billing">
                         <arguments>
                             <argument name="jsLayout" xsi:type="array">
-                                <item name="types" xsi:type="array">
-                                    <item name="form.input" xsi:type="array">
-                                        <item name="component" xsi:type="string">Magento_Ui/js/form/element/abstract</item>
-                                        <item name="config" xsi:type="array">
-                                            <item name="provider" xsi:type="string">checkoutProvider</item>
-                                            <item name="deps" xsi:type="array">
-                                                <item name="0" xsi:type="string">checkoutProvider</item>
-                                            </item>
-                                            <item name="template" xsi:type="string">ui/form/field</item>
-                                            <item name="elementTmpl" xsi:type="string">ui/form/element/input</item>
-                                        </item>
-                                    </item>
-                                </item>
                                 <item name="components" xsi:type="array">
-                                    <item name="summary-block-config" xsi:type="array">
-                                        <item name="component" xsi:type="string">uiComponent</item>
-                                        <item name="children" xsi:type="array">
-                                            <item name="shipping-rates-validation" xsi:type="array">
-                                                <item name="children" xsi:type="array">
-                                                    <!--Step configuration components-->
-                                                </item>
-                                            </item>
-                                        </item>
-                                    </item>
                                     <item name="block-summary" xsi:type="array">
                                         <item name="component" xsi:type="string">uiComponent</item>
                                         <item name="deps" xsi:type="array">
-                                            <item name="0" xsi:type="string">summary-block-config</item>
+                                            <item name="0" xsi:type="string">review-shipping-address</item>
+                                            <item name="1" xsi:type="string">checkoutProvider</item>
                                         </item>
                                         <item name="children" xsi:type="array">
                                             <item name="block-rates" xsi:type="array">
@@ -90,25 +74,8 @@
                                                 <item name="component" xsi:type="string">Magento_Checkout/js/view/cart/shipping-estimation</item>
                                                 <item name="provider" xsi:type="string">checkoutProvider</item>
                                                 <item name="sortOrder" xsi:type="string">1</item>
-                                                <item name="deps" xsi:type="array">
-                                                    <item name="0" xsi:type="string">block-summary.block-shipping.address-fieldsets</item>
-                                                </item>
-                                                <item name="children" xsi:type="array">
-                                                    <item name="address-fieldsets" xsi:type="array">
-                                                        <item name="component" xsi:type="string">uiComponent</item>
-                                                        <item name="config" xsi:type="array">
-                                                            <item name="deps" xsi:type="array">
-                                                                <item name="0" xsi:type="string">checkoutProvider</item>
-                                                            </item>
-                                                        </item>
-                                                        <item name="displayArea" xsi:type="string">address-fieldsets</item>
-                                                    </item>
-                                                </item>
                                             </item>
                                         </item>
-                                    </item>
-                                    <item name="checkoutProvider" xsi:type="array">
-                                        <item name="component" xsi:type="string">uiComponent</item>
                                     </item>
                                 </item>
                             </argument>
