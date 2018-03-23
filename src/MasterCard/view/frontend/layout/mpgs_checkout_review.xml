@@ -11,9 +11,30 @@
                             <item name="components" xsi:type="array">
                                 <item name="review-shipping-address" xsi:type="array">
                                     <item name="component" xsi:type="string">OnTap_MasterCard/js/view/review/shipping</item>
+                                    <item name="provider" xsi:type="string">checkoutProvider</item>
                                     <item name="config" xsi:type="array">
                                         <item name="deps" xsi:type="array">
                                             <item name="0" xsi:type="string">checkoutProvider</item>
+                                        </item>
+                                        <item name="popUpForm" xsi:type="array">
+                                            <item name="element" xsi:type="string">#new-shipping-address-modal</item>
+                                            <item name="options" xsi:type="array">
+                                                <item name="type" xsi:type="string">popup</item>
+                                                <item name="responsive" xsi:type="boolean">true</item>
+                                                <item name="innerScroll" xsi:type="boolean">true</item>
+                                                <item name="title" xsi:type="string" translate="true">Shipping Address</item>
+                                                <item name="trigger" xsi:type="string">new-shipping-address-modal</item>
+                                                <item name="buttons" xsi:type="array">
+                                                    <item name="save" xsi:type="array">
+                                                        <item name="text" xsi:type="string" translate="true">Save Address</item>
+                                                        <item name="class" xsi:type="string">action primary action-save-address</item>
+                                                    </item>
+                                                    <item name="cancel" xsi:type="array">
+                                                        <item name="text" xsi:type="string" translate="true">Cancel</item>
+                                                        <item name="class" xsi:type="string">action secondary action-hide-popup</item>
+                                                    </item>
+                                                </item>
+                                            </item>
                                         </item>
                                     </item>
                                     <item name="children" xsi:type="array">
@@ -21,6 +42,146 @@
                                             <item name="component" xsi:type="string">Magento_Checkout/js/view/shipping-address/list</item>
                                             <item name="config" xsi:type="array">
                                                 <item name="visible" xsi:type="boolean">true</item>
+                                            </item>
+                                        </item>
+                                        <item name="shipping-address-popup" xsi:type="array">
+                                            <item name="component" xsi:type="string">OnTap_MasterCard/js/view/review/popup-form</item>
+                                            <item name="children" xsi:type="array">
+                                                <item name="shipping-address-fieldset" xsi:type="array">
+                                                    <item name="component" xsi:type="string">uiComponent</item>
+                                                    <item name="displayArea" xsi:type="string">shipping-address-fields</item>
+                                                    <item name="children" xsi:type="array">
+                                                        <item name="firstname" xsi:type="array">
+                                                            <item name="component" xsi:type="string">Magento_Ui/js/form/element/abstract</item>
+                                                            <item name="config" xsi:type="array">
+                                                                <item name="customScope" xsi:type="string">shippingAddress</item>
+                                                                <item name="template" xsi:type="string">ui/form/field</item>
+                                                            </item>
+                                                            <item name="provider" xsi:type="string">checkoutProvider</item>
+                                                            <item name="dataScope" xsi:type="string">shippingAddress.firstname</item>
+                                                            <item name="label" xsi:type="string">First Name</item>
+                                                            <item name="sortOrder" xsi:type="string">1</item>
+                                                            <item name="validation" xsi:type="array">
+                                                                <item name="required-entry" xsi:type="boolean">true</item>
+                                                            </item>
+                                                        </item>
+                                                        <item name="lastname" xsi:type="array">
+                                                            <item name="component" xsi:type="string">Magento_Ui/js/form/element/abstract</item>
+                                                            <item name="config" xsi:type="array">
+                                                                <item name="customScope" xsi:type="string">shippingAddress</item>
+                                                                <item name="template" xsi:type="string">ui/form/field</item>
+                                                            </item>
+                                                            <item name="provider" xsi:type="string">checkoutProvider</item>
+                                                            <item name="dataScope" xsi:type="string">shippingAddress.lastname</item>
+                                                            <item name="label" xsi:type="string">Last Name</item>
+                                                            <item name="sortOrder" xsi:type="string">2</item>
+                                                            <item name="validation" xsi:type="array">
+                                                                <item name="required-entry" xsi:type="boolean">true</item>
+                                                            </item>
+                                                        </item>
+                                                        <item name="company" xsi:type="array">
+                                                            <item name="component" xsi:type="string">Magento_Ui/js/form/element/abstract</item>
+                                                            <item name="config" xsi:type="array">
+                                                                <item name="customScope" xsi:type="string">shippingAddress</item>
+                                                                <item name="template" xsi:type="string">ui/form/field</item>
+                                                            </item>
+                                                            <item name="provider" xsi:type="string">checkoutProvider</item>
+                                                            <item name="dataScope" xsi:type="string">shippingAddress.company</item>
+                                                            <item name="label" xsi:type="string">Company</item>
+                                                            <item name="sortOrder" xsi:type="string">3</item>
+                                                            <item name="validation" xsi:type="array">
+                                                                <item name="required-entry" xsi:type="boolean">false</item>
+                                                            </item>
+                                                        </item>
+                                                        <item name="street" xsi:type="array">
+                                                            <item name="component" xsi:type="string">Magento_Ui/js/form/element/abstract</item>
+                                                            <item name="config" xsi:type="array">
+                                                                <item name="customScope" xsi:type="string">shippingAddress</item>
+                                                                <item name="template" xsi:type="string">ui/form/field</item>
+                                                            </item>
+                                                            <item name="provider" xsi:type="string">checkoutProvider</item>
+                                                            <item name="dataScope" xsi:type="string">shippingAddress.street.0</item>
+                                                            <item name="label" xsi:type="string">Street</item>
+                                                            <item name="sortOrder" xsi:type="string">4</item>
+                                                            <item name="validation" xsi:type="array">
+                                                                <item name="required-entry" xsi:type="boolean">true</item>
+                                                            </item>
+                                                        </item>
+                                                        <item name="city" xsi:type="array">
+                                                            <item name="component" xsi:type="string">Magento_Ui/js/form/element/abstract</item>
+                                                            <item name="config" xsi:type="array">
+                                                                <item name="customScope" xsi:type="string">shippingAddress</item>
+                                                                <item name="template" xsi:type="string">ui/form/field</item>
+                                                            </item>
+                                                            <item name="provider" xsi:type="string">checkoutProvider</item>
+                                                            <item name="dataScope" xsi:type="string">shippingAddress.city</item>
+                                                            <item name="label" xsi:type="string">City</item>
+                                                            <item name="sortOrder" xsi:type="string">5</item>
+                                                            <item name="validation" xsi:type="array">
+                                                                <item name="required-entry" xsi:type="boolean">true</item>
+                                                            </item>
+                                                        </item>
+                                                        <item name="postcode" xsi:type="array">
+                                                            <item name="component" xsi:type="string">Magento_Ui/js/form/element/post-code</item>
+                                                            <item name="config" xsi:type="array">
+                                                                <item name="customScope" xsi:type="string">shippingAddress</item>
+                                                                <item name="template" xsi:type="string">ui/form/field</item>
+                                                            </item>
+                                                            <item name="provider" xsi:type="string">checkoutProvider</item>
+                                                            <item name="dataScope" xsi:type="string">shippingAddress.postcode</item>
+                                                            <item name="label" xsi:type="string">Zip/Postal Code</item>
+                                                            <item name="sortOrder" xsi:type="string">7</item>
+                                                            <item name="validation" xsi:type="array">
+                                                                <item name="required-entry" xsi:type="boolean">true</item>
+                                                            </item>
+                                                        </item>
+                                                        <item name="country_id" xsi:type="array">
+                                                            <item name="component" xsi:type="string">Magento_Ui/js/form/element/select</item>
+                                                            <item name="config" xsi:type="array">
+                                                                <item name="customScope" xsi:type="string">shippingAddress</item>
+                                                                <item name="template" xsi:type="string">ui/form/field</item>
+                                                                <item name="elementTmpl" xsi:type="string">ui/form/element/select</item>
+                                                            </item>
+                                                            <!-- XXX: populate with values from source.dictionaries.country_ids -->
+                                                            <item name="options" xsi:type="array">
+                                                                <item name="0" xsi:type="array">
+                                                                    <item name="label" xsi:type="string">Please select value</item>
+                                                                    <item name="value" xsi:type="string"></item>
+                                                                </item>
+                                                                <item name="1" xsi:type="array">
+                                                                    <item name="label" xsi:type="string">Estonia</item>
+                                                                    <item name="value" xsi:type="string">EE</item>
+                                                                </item>
+                                                                <item name="2" xsi:type="array">
+                                                                    <item name="label" xsi:type="string">Australia</item>
+                                                                    <item name="value" xsi:type="string">AU</item>
+                                                                </item>
+                                                            </item>
+                                                            <item name="provider" xsi:type="string">checkoutProvider</item>
+                                                            <item name="dataScope" xsi:type="string">shippingAddress.country_id</item>
+                                                            <item name="label" xsi:type="string">Country</item>
+                                                            <item name="sortOrder" xsi:type="string">8</item>
+                                                        </item>
+                                                        <item name="telephone" xsi:type="array">
+                                                            <item name="component" xsi:type="string">Magento_Ui/js/form/element/abstract</item>
+                                                            <item name="config" xsi:type="array">
+                                                                <item name="customScope" xsi:type="string">shippingAddress</item>
+                                                                <item name="template" xsi:type="string">ui/form/field</item>
+                                                                <item name="tooltip" xsi:type="array">
+                                                                    <item name="description" xsi:type="string" translate="true">For delivery questions.</item>
+                                                                </item>
+                                                            </item>
+                                                            <item name="provider" xsi:type="string">checkoutProvider</item>
+                                                            <item name="dataScope" xsi:type="string">shippingAddress.telephone</item>
+                                                            <item name="label" xsi:type="string">Phone number</item>
+                                                            <item name="sortOrder" xsi:type="string">9</item>
+                                                            <item name="validation" xsi:type="array">
+                                                                <item name="required-entry" xsi:type="boolean">true</item>
+                                                            </item>
+                                                        </item>
+
+                                                    </item>
+                                                </item>
                                             </item>
                                         </item>
                                     </item>
@@ -125,7 +286,6 @@
                     </container>
                     <block class="OnTap\MasterCard\Block\Checkout\Review\PlaceOrder" name="mpgs.checkout.review.placeorder" template="OnTap_MasterCard::checkout/review/place_order.phtml" />
                 </container>
-
 
             </block>
         </referenceContainer>

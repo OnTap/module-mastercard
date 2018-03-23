@@ -1,0 +1,9 @@
+<div id="new-shipping-address-modal" visible="$parent.isFormPopUpVisible()">
+    <form class="form form-shipping-address" id="co-shipping-form" data-bind="attr: {'data-hasrequired': $t('* Required Fields')}">
+        <div id="shipping-new-address-form" class="fieldset address">
+            <!-- ko foreach: getRegion('shipping-address-fields') -->
+            <!-- ko template: getTemplate() --><!-- /ko -->
+            <!--/ko-->
+        </div>
+    </form>
+</div>

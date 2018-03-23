@@ -16,6 +16,23 @@ define([
         }
 
         $(element).click(function (event) {
+            if (!quote.shippingMethod()) {
+                alert({
+                    content: $t('Please select a shipping method.')
+                });
+                return;
+            }
+
+            var method = quote.shippingMethod()['method_code'],
+                carrier = quote.shippingMethod()['carrier_code'];
+
+            if (!method || !carrier) {
+                alert({
+                    content: $t('Please select a shipping method.')
+                });
+                return;
+            }
+
             $('body').trigger('processStart');
 
             var action = setShippingInformationAction();

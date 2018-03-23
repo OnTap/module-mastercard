@@ -13,9 +13,13 @@ class Shipping extends \Magento\Checkout\Block\Cart\AbstractCart
      */
     public function getJsLayout()
     {
-        $this->jsLayout['components']['review-shipping-address']['config'] = [
+        $config = [];
+        if (isset($this->jsLayout['components']['review-shipping-address']['config'])) {
+            $config = $this->jsLayout['components']['review-shipping-address']['config'];
+        }
+        $this->jsLayout['components']['review-shipping-address']['config'] = array_merge($config, [
             'shippingFromWallet' => $this->getWalletShippingAddress()
-        ];
+        ]);
         return parent::getJsLayout();
     }
 
