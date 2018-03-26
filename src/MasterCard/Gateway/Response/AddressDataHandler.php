@@ -88,6 +88,7 @@ class AddressDataHandler implements HandlerInterface
             'telephone' => $customer['mobilePhone'],
             'email' => $customer['email'],
             'region' => $data['stateProvince'],
+            'region_id' => null,
         ]);
 
         $country = null;

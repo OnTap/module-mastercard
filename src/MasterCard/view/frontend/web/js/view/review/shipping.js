@@ -8,9 +8,10 @@ define([
     'Magento_Checkout/js/action/create-shipping-address',
     'Magento_Checkout/js/action/select-shipping-address',
     'Magento_Checkout/js/model/checkout-data-resolver',
+    'Magento_Checkout/js/model/address-converter',
     'Magento_Ui/js/modal/modal',
     'Magento_Checkout/js/model/shipping-address/form-popup-state'
-], function (Component, $, registry, customer, quote, checkoutData, createShippingAddress, selectShippingAddress, checkoutDataResolver, modal, formPopUpState) {
+], function (Component, $, registry, customer, quote, checkoutData, createShippingAddress, selectShippingAddress, checkoutDataResolver, addressConverter, modal, formPopUpState) {
     'use strict';
     return Component.extend({
         isFormPopUpVisible: formPopUpState.isVisible,
@@ -20,11 +21,6 @@ define([
         initialize: function () {
             this._super();
 
-            // xxx: data consistency hack
-            if (typeof this.shippingFromWallet.region === 'object') {
-                this.shippingFromWallet.region = this.shippingFromWallet.region.region;
-            }
-
             registry.async('checkoutProvider')($.proxy(function (checkoutProvider) {
                 var shippingAddressData = createShippingAddress(this.shippingFromWallet);
                 // var shippingAddressData = checkoutData.getShippingAddressFromData();
@@ -32,17 +28,17 @@ define([
                 if (shippingAddressData) {
                     checkoutProvider.set(
                         'shippingAddress',
-                        $.extend(true, {}, checkoutProvider.get('shippingAddress'), shippingAddressData)
+                        $.extend(true, {}, shippingAddressData)
                     );
                 }
-                checkoutProvider.on('shippingAddress', function (shippingAddrsData) {
-                    checkoutData.setShippingAddressFromData(shippingAddrsData);
-                });
+                checkoutProvider.on('shippingAddress', $.proxy(function (shippingAddrsData) {
+                    checkoutData.setShippingAddressFromData(shippingAddressData);
+                }, this));
 
                 checkoutData.setSelectedShippingAddress(shippingAddressData.getKey());
-
-                checkoutDataResolver.resolveShippingAddress();
             }, this));
+
+            //checkoutDataResolver.resolveShippingAddress();
 
             this.isFormPopUpVisible.subscribe($.proxy(function (value) {
                 if (value) {
@@ -63,6 +59,7 @@ define([
                 selectShippingAddress(newShippingAddress);
                 checkoutData.setSelectedShippingAddress(newShippingAddress.getKey());
                 checkoutData.setNewCustomerShippingAddress($.extend(true, {}, addressData));
+                checkoutDataResolver.resolveShippingAddress();
                 this.getPopUp().closeModal();
             }
         },
