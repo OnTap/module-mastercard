@@ -1,6 +1,8 @@
 <?php
     /** @var \OnTap\MasterCard\Block\Cart\ButtonRenderer $block */
 ?>
-<div class="mpgs-shortcut-buttons">
-    <?php echo $block->renderButtonHtml() ?>
-</div>
+<?php if ($block->hasShortcuts()): ?>
+    <div class="mpgs-shortcut-buttons">
+        <?php echo $block->renderButtonHtml() ?>
+    </div>
+<?php endif; ?>

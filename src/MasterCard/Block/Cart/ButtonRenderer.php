@@ -65,6 +65,14 @@ class ButtonRenderer extends Template
     }
 
     /**
+     * @return bool
+     */
+    public function hasShortcuts()
+    {
+        return $this->buttonBlock !== null;
+    }
+
+    /**
      * @return string
      */
     public function renderButtonHtml()
