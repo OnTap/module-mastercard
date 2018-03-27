@@ -1339,8 +1339,8 @@
             <argument name="commands" xsi:type="array">
                 <item name="direct" xsi:type="string">TnsThreeDSecureEnrollmentCommand</item>
                 <item name="hpf" xsi:type="string">TnsHpfThreeDSecureEnrollmentCommand</item>
-                <item name="amex_direct" xsi:type="string">MpgsAmexDirectEnrollmentCommand</item>
-                <item name="amex_hpf" xsi:type="string">MpgsAmexHpfEnrollmentCommand</item>
+                <item name="tns_direct_amex" xsi:type="string">MpgsAmexDirectEnrollmentCommand</item>
+                <item name="tns_hpf_amex" xsi:type="string">MpgsAmexHpfEnrollmentCommand</item>
             </argument>
         </arguments>
     </virtualType>

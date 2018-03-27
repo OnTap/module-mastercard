@@ -1,15 +1,13 @@
 <?php
     /** @var \OnTap\MasterCard\Block\Checkout\Review\PlaceOrder $block */
 ?>
-<ul class="checkout methods items checkout-methods-items">
-    <li class="item">
-        <button type="button"
-                data-role="proceed-to-checkout"
-                title="<?= /* @escapeNotVerified */ __('Place Order') ?>"
-                data-mage-init='{"OnTap_MasterCard/js/view/review/place-order":{"method": "<?php echo $block->getPaymentMethod() ?>", "email": "<?php echo $block->getEmail() ?>"}}'
-                class="action primary checkout<?= ($block->isDisabled()) ? ' disabled' : '' ?>"
-                <?php if ($block->isDisabled()):?>disabled="disabled"<?php endif; ?>>
-            <span><?= /* @escapeNotVerified */ __('Place Order') ?></span>
-        </button>
-    </li>
+<ul id="mpgs-checkout-review-place-order" data-bind="scope:'mpgs-checkout-review-place-order'" data-role="content" class="checkout methods items checkout-methods-items">
+    <!-- ko template: getTemplate() --><!-- /ko -->
+    <script type="text/x-magento-init">
+        {
+            "#mpgs-checkout-review-place-order": {
+                "Magento_Ui/js/core/app": <?= /* @escapeNotVerified */ $block->getJsLayout() ?>
+            }
+        }
+    </script>
 </ul>

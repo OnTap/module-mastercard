@@ -1,0 +1,12 @@
+<li class="item">
+    <!-- ko foreach: getRegion('threedsecure') -->
+    <!-- ko template: getTemplate() --><!-- /ko -->
+    <!--/ko-->
+    <button type="button"
+            data-role="proceed-to-checkout"
+            title="Place Order"
+            class="action primary checkout"
+            data-bind="click: placeOrderUi">
+        <span>Place Order</span>
+    </button>
+</li>

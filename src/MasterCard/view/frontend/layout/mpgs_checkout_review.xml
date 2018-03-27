@@ -45,7 +45,10 @@
                                             </item>
                                         </item>
                                         <item name="shipping-address-popup" xsi:type="array">
-                                            <item name="component" xsi:type="string">OnTap_MasterCard/js/view/review/popup-form</item>
+                                            <item name="component" xsi:type="string">Magento_Ui/js/form/form</item>
+                                            <item name="config" xsi:type="array">
+                                                <item name="template" xsi:type="string">OnTap_MasterCard/checkout/review/popup-form</item>
+                                            </item>
                                             <item name="children" xsi:type="array">
                                                 <item name="shipping-address-fieldset" xsi:type="array">
                                                     <item name="component" xsi:type="string">uiComponent</item>
@@ -193,11 +196,9 @@
                         </argument>
                     </arguments>
                 </block>
-
                 <block class="Magento\Checkout\Block\Cart\Grid" name="mpgs.checkout.review.items" as="cart-items" template="OnTap_MasterCard::checkout/review/items.phtml" after="cart.summary">
                     <block class="Magento\Framework\View\Element\RendererList" name="mpgs.checkout.review.item.renderers" as="renderer.list"/>
                 </block>
-
                 <container name="cart.summary" label="Cart Summary Container" htmlTag="div" htmlClass="cart-summary" after="-">
                     <block class="Magento\Framework\View\Element\Template" name="checkout.cart.summary.title" before="-" template="Magento_Theme::text.phtml">
                         <arguments>
@@ -284,9 +285,21 @@
                             </arguments>
                         </block>
                     </container>
-                    <block class="OnTap\MasterCard\Block\Checkout\Review\PlaceOrder" name="mpgs.checkout.review.placeorder" template="OnTap_MasterCard::checkout/review/place_order.phtml" />
+                    <block class="OnTap\MasterCard\Block\Checkout\Review\PlaceOrder" name="mpgs.checkout.review.placeorder" template="OnTap_MasterCard::checkout/review/place_order.phtml">
+                        <arguments>
+                            <argument name="jsLayout" xsi:type="array">
+                                <item name="components" xsi:type="array">
+                                    <item name="mpgs-checkout-review-place-order" xsi:type="array">
+                                        <item name="component" xsi:type="string">OnTap_MasterCard/js/view/review/place-order</item>
+                                        <item name="config" xsi:type="array">
+                                            <item name="template" xsi:type="string">OnTap_MasterCard/checkout/review/place-order</item>
+                                        </item>
+                                    </item>
+                                </item>
+                            </argument>
+                        </arguments>
+                    </block>
                 </container>
-
             </block>
         </referenceContainer>
         <referenceContainer name="page.messages" remove="true"/>

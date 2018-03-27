@@ -24,7 +24,7 @@ class HpfWallet extends \OnTap\MasterCard\Model\Method\Wallet implements WalletI
             'check_url' => $this->getUrlBuilder()->getUrl(
                 'tns/threedsecure/check',
                 [
-                    'method' => 'amex_hpf',
+                    'method' => 'tns_hpf_amex',
                     '_secure' => 1
                 ]
             ),
