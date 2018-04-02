@@ -13,12 +13,21 @@ define(
         'Magento_Checkout/js/action/set-payment-information',
         'uiLayout',
         'Magento_Checkout/js/model/full-screen-loader',
-        'Magento_Vault/js/view/payment/vault-enabler'
+        'Magento_Vault/js/view/payment/vault-enabler',
+        'Magento_Checkout/js/model/payment/additional-validators'
     ],
     function (
         $,
         ccFormComponent,
-        additionalValidators,paymentAdapter, alert, $t, setPaymentInformationAction, layout, fullScreenLoader, VaultEnabler) {
+        additionalValidators,
+        paymentAdapter,
+        alert,
+        $t,
+        setPaymentInformationAction,
+        layout,
+        fullScreenLoader,
+        VaultEnabler
+    ) {
         'use strict';
 
         return ccFormComponent.extend({
@@ -252,6 +261,10 @@ define(
             },
 
             startHpfSession: function () {
+                if (!additionalValidators.validate()) {
+                    return;
+                }
+
                 this.isPlaceOrderActionAllowed(false);
                 this.buttonTitle(this.buttonTitleDisabled);
                 this.inPayment = false;

@@ -81,6 +81,10 @@ class OrderDataBuilder implements BuilderInterface
 
         /** @var \Magento\Quote\Model\Quote $quote */
         $quote = $payment->getQuote();
+
+        $quote->setReservedOrderId(null);
+        $quote->reserveOrderId();
+
         $quote->collectTotals();
 
         $config = $this->configFactory->create();

@@ -1,7 +1,14 @@
-<li class="item">
+<li class="item payment-method _active">
+    <div class="checkout-agreements-block">
+        <!-- ko foreach: getRegion('before-place-order') -->
+        <!-- ko template: getTemplate() --><!-- /ko -->
+        <!--/ko-->
+    </div>
+
     <!-- ko foreach: getRegion('threedsecure') -->
     <!-- ko template: getTemplate() --><!-- /ko -->
     <!--/ko-->
+
     <button type="button"
             data-role="proceed-to-checkout"
             title="Place Order"

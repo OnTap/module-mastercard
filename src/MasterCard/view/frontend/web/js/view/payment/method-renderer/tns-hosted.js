@@ -11,9 +11,18 @@ define(
         'Magento_Ui/js/modal/alert',
         'OnTap_MasterCard/js/view/payment/hosted-adapter',
         'OnTap_MasterCard/js/action/create-session',
-        'mage/translate'
+        'Magento_Checkout/js/model/payment/additional-validators'
     ],
-    function (Component, $, quote, fullScreenLoader, alert, paymentAdapter, createSessionAction) {
+    function (
+        Component,
+        $,
+        quote,
+        fullScreenLoader,
+        alert,
+        paymentAdapter,
+        createSessionAction,
+        additionalValidators
+    ) {
         'use strict';
 
         return Component.extend({
@@ -40,6 +49,10 @@ define(
             },
 
             createPaymentSession: function () {
+                if (!additionalValidators.validate()) {
+                    return;
+                }
+
                 this.isPlaceOrderActionAllowed(false);
                 this.buttonTitle(this.buttonTitleDisabled);
 

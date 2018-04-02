@@ -8,8 +8,21 @@ define([
     'Magento_Checkout/js/action/place-order',
     'Magento_Checkout/js/action/redirect-on-success',
     'Magento_Checkout/js/model/quote',
-    'Magento_Checkout/js/checkout-data'
-], function (Component, layout, $, alert, $t, setShippingInformationAction, placeOrderAction, redirectOnSuccessAction, quote, checkoutData) {
+    'Magento_Checkout/js/checkout-data',
+    'Magento_Checkout/js/model/payment/additional-validators'
+], function (
+    Component,
+    layout,
+    $,
+    alert,
+    $t,
+    setShippingInformationAction,
+    placeOrderAction,
+    redirectOnSuccessAction,
+    quote,
+    checkoutData,
+    additionalValidators
+) {
     'use strict';
     return Component.extend({
         initialize: function () {
@@ -45,10 +58,13 @@ define([
         },
 
         threeDSecureCancelled: function () {
-
         },
 
         placeOrderUi: function () {
+            if (!additionalValidators.validate()) {
+                return;
+            }
+
             if (!window.isCustomerLoggedIn) {
                 quote.guestEmail = this.email;
                 checkoutData.setValidatedEmailValue(this.email);

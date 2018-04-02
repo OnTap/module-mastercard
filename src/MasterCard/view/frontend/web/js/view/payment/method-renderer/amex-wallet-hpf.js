@@ -11,7 +11,10 @@ define(
         'Magento_Checkout/js/action/set-payment-information',
         'Magento_Ui/js/model/messageList',
         'Magento_Checkout/js/model/full-screen-loader',
-        'uiLayout'
+        'uiLayout',
+        'Magento_Checkout/js/model/payment/additional-validators',
+        'Magento_Checkout/js/action/place-order',
+        'Magento_Checkout/js/action/redirect-on-success'
     ],
     function (
         Component,
@@ -21,7 +24,10 @@ define(
         setPaymentInformationAction,
         globalMessageList,
         loader,
-        layout
+        layout,
+        additionalValidators,
+        placeOrderAction,
+        redirectOnSuccessAction
     ) {
         'use strict';
         return Component.extend({
@@ -92,8 +98,17 @@ define(
                     }
                 };
 
+                var aecButton = $('#amex-express-checkout').get(0);
+
                 new MutationObserver($.proxy(this.adapterLoaded, this, true))
-                    .observe($('#amex-express-checkout').get(0), { childList: true });
+                    .observe(aecButton, { childList: true });
+
+                aecButton.addEventListener('click', $.proxy(function (e) {
+                    if (!additionalValidators.validate()) {
+                        e.stopImmediatePropagation();
+                        e.stopPropagation();
+                    }
+                }, this), true);
 
                 paymentAdapter.init(
                     this.getCode(),
@@ -129,11 +144,14 @@ define(
             },
 
             redirectPlaceOrder: function () {
-                this.adapterLoaded(false);
-                window.location.href = this.getConfig().callback_url + '?' + $.param({
-                    guestEmail: quote.guestEmail,
-                    quoteId: quote.getQuoteId()
-                });
+                loader.startLoader();
+                $.when(placeOrderAction(this.getData(), this.messageContainer))
+                    .done(function () {
+                        redirectOnSuccessAction.execute();
+                    })
+                    .fail(function () {
+                        loader.stopLoader();
+                    });
             },
 
             getData: function (session) {
