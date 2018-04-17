@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <!-- Copyright (c) 2016. On Tap Networks Limited. -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Checkout\Block\Cart\Sidebar">
+        <plugin name="proceedToCheckoutLinkPlugin" type="OnTap\MasterCard\Plugin\MiniCartPlugin" />
+    </type>
     <type name="OnTap\MasterCard\Model\Ui\Direct\ConfigProvider">
         <arguments>
             <argument name="config" xsi:type="object">TnsDirectConfig</argument>
@@ -51,6 +54,14 @@
             <argument name="tokenUiComponentProviders" xsi:type="array">
                 <item name="tns_direct" xsi:type="object">OnTap\MasterCard\Model\Ui\TokenUiComponentProvider</item>
                 <item name="tns_hpf" xsi:type="object">OnTap\MasterCard\Model\Ui\TokenUiComponentProvider</item>
+            </argument>
+        </arguments>
+    </type>
+    <!-- Allows payment methods to control what the 'Proceed to Checkout' button in minicart does -->
+    <type name="OnTap\MasterCard\Plugin\MiniCartPlugin">
+        <arguments>
+            <argument name="configPool" xsi:type="array">
+                <item name="amex" xsi:type="object">MpgsAmexConfig</item>
             </argument>
         </arguments>
     </type>
