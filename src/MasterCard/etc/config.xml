@@ -172,11 +172,14 @@
                 <model>Magento\Vault\Model\Method\NullPaymentProvider</model>
                 <active>1</active>
                 <title>Visa Checkout</title>
+                <visa_api_key backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+                <visa_shared_secret backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
                 <provider>tns_direct</provider>
             </mpgs_visa_wallet>
             <tns_direct_visa>
                 <model>MpgsDirectVisaWallet</model>
                 <js_component>OnTap_MasterCard/js/view/payment/method-renderer/visa-wallet-direct</js_component>
+                <sdk_component>https://sandbox-assets.secure.checkout.visa.com/checkout-widget/resources/js/integration/v1/sdk.js</sdk_component>
             </tns_direct_visa>
         </payment>
     </default>

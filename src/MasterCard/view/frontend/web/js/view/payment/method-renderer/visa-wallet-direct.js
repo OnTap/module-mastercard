@@ -2,14 +2,16 @@
  * Copyright (c) 2017. On Tap Networks Limited.
  */
 /*global define*/
+/*global V*/
 define(
     [
         'jquery',
         'OnTap_MasterCard/js/view/payment/method-renderer/base-adapter',
         'OnTap_MasterCard/js/action/create-session',
-        'OnTap_MasterCard/js/action/open-wallet'
+        'OnTap_MasterCard/js/action/update-session-from-wallet',
+        'Magento_Checkout/js/model/quote'
     ],
-    function ($, Component, createSessionAction, openWalletAction) {
+    function ($, Component, createSessionAction, updateSessionAction, quote) {
         'use strict';
         return Component.extend({
             defaults: {
@@ -18,46 +20,62 @@ define(
 
             loadAdapter: function () {
                 this.isPlaceOrderActionAllowed(false);
+                window.onVisaCheckoutReady = $.proxy(this.onVisaCheckoutReady, this);
 
-                var action = createSessionAction(
+                requirejs.load({
+                    config: {},
+                    contextName: '_'
+                }, 'visa_checkout', this.getConfig().sdk_component);
+
+                // Background operation, user interaction is allowed
+                createSessionAction(
                     'mpgs',
                     this.getData(),
                     this.messageContainer
                 );
-
-                $.when(action).fail($.proxy(function () {
-                    this.isPlaceOrderActionAllowed(true);
-                }, this)).done($.proxy(function (session) {
-                    this.openWallet(session);
-                }, this));
             },
-            
-            openWallet: function (session) {
-                var action = openWalletAction(
+
+            onVisaCheckoutReady: function () {
+                V.init({
+                    apikey: this.getConfig().api_key,
+                    paymentRequest: {
+                        subtotal: quote.totals().grand_total,
+                        currencyCode: quote.totals().quote_currency_code
+                    }
+                });
+
+                V.on("payment.success", $.proxy(this.onPaymentSuccess, this));
+                V.on("payment.cancel", $.proxy(this.onPaymentCancel, this));
+                V.on("payment.error", $.proxy(this.onPaymentError, this));
+
+                this.isPlaceOrderActionAllowed(true);
+                this.adapterLoaded(true);
+            },
+
+            onPaymentSuccess: function (payment) {
+                var xhr = updateSessionAction(
                     'mpgs',
+                    'visa',
                     {
-                        'sessionId': session[0],
-                        'type': 'MASTERPASS_ONLINE'
+                        callId: payment.callid
                     },
                     this.messageContainer
                 );
-
-                $.when(action).then(
-                    $.proxy(this.onOpenWalletData, this),
-                    $.proxy(this.onOpenWalletError, this)
-                );
+                console.log('success', payment);
             },
 
-            onOpenWalletData: function () {
-                console.log('onOpenWalletData %o', arguments);
-                this.isPlaceOrderActionAllowed(true);
-                this.adapterLoaded(true);
+            onPaymentCancel: function (payment) {
+                // @todo: implement
+                console.log('cancelled', payment);
             },
 
-            onOpenWalletError: function () {
-                console.log('onOpenWalletError %o', arguments);
-                this.isPlaceOrderActionAllowed(true);
-                this.adapterLoaded(true);
+            onPaymentError: function (error) {
+                // @todo: implement
+                console.log('error', error);
+            },
+
+            getConfig: function () {
+                return window.checkoutConfig.wallets[this.getCode()];
             }
         });
     }

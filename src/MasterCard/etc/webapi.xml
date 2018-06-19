@@ -49,8 +49,15 @@
         </resources>
     </route>
 
-    <route method="POST" url="/V1/mpgs/wallet/update-session">
-        <service class="OnTap\MasterCard\Api\WalletPaymentInterface" method="updateSessionFromWallet"/>
+    <route method="POST" url="/V1/mpgs/wallet/amex/update-session">
+        <service class="OnTap\MasterCard\Api\WalletPaymentInterface" method="updateSessionFromAmexWallet"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+
+    <route method="POST" url="/V1/mpgs/wallet/visa/update-session">
+        <service class="OnTap\MasterCard\Api\WalletPaymentInterface" method="updateSessionFromVisaWallet"/>
         <resources>
             <resource ref="anonymous" />
         </resources>

@@ -86,9 +86,44 @@ class WalletPayment implements WalletPaymentInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
+     * @throws \Magento\Framework\Exception\NotFoundException
+     * @throws \Magento\Payment\Gateway\Command\CommandException
      */
-    public function updateSessionFromWallet(
+    public function updateSessionFromVisaWallet(
+        $callId
+    ) {
+        $quote = $this->checkoutSession->getQuote();
+        $paymentDO = $this->paymentDataObjectFactory->create($quote->getPayment());
+
+        $paymentDO
+            ->getPayment()
+            ->setAdditionalInformation('walletProvider', 'VISA_CHECKOUT');
+
+        $this->commandPool
+            ->get(WalletPaymentInterface::UPDATE_VISA_WALLET_COMMAND)
+            ->execute([
+                'payment' => $paymentDO,
+                WalletPaymentInterface::CALL_ID => $callId
+            ]);
+
+        $quote->getPayment()->save();
+
+        $sessionData = $paymentDO->getPayment()->getAdditionalInformation('session');
+        $session = $this->sessionDataFactory->create(['data' => [
+            SessionDataInterface::SESSION_ID => $sessionData['id'],
+            SessionDataInterface::SESSION_VERSION => $sessionData['version']
+        ]]);
+
+        return $session;
+    }
+
+    /**
+     * {@inheritdoc}
+     * @throws \Magento\Framework\Exception\NotFoundException
+     * @throws \Magento\Payment\Gateway\Command\CommandException
+     */
+    public function updateSessionFromAmexWallet(
         $authCode,
         $selCardType,
         $transId,
@@ -98,7 +133,7 @@ class WalletPayment implements WalletPaymentInterface
 
         $paymentDO = $this->paymentDataObjectFactory->create($quote->getPayment());
         $this->commandPool
-            ->get(WalletPaymentInterface::UPDATE_WALLET_COMMAND)
+            ->get(WalletPaymentInterface::UPDATE_AMEX_WALLET_COMMAND)
             ->execute([
                 'payment' => $paymentDO,
                 WalletPaymentInterface::AUTH_CODE => $authCode,

@@ -14,6 +14,8 @@ class DirectWallet extends \OnTap\MasterCard\Model\Method\Wallet implements Wall
     public function getJsConfig()
     {
         return [
+            'sdk_component' => $this->getMethodConfig()->getValue('sdk_component'),
+            'api_key' => $this->getConfigData('visa_api_key'),
         ];
     }
 }

@@ -11,9 +11,10 @@ define(
     function (quote, urlBuilder, storage, errorProcessor) {
         'use strict';
 
-        return function (api, payload, messageContainer) {
-            var serviceUrl = urlBuilder.createUrl('/:api/wallet/update-session', {
-                api: api
+        return function (api, wallet, payload, messageContainer) {
+            var serviceUrl = urlBuilder.createUrl('/:api/wallet/:walletType/update-session', {
+                api: api,
+                walletType: wallet
             });
             return storage.post(serviceUrl, JSON.stringify(payload)).fail(
                 function (response) {

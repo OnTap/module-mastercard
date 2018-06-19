@@ -163,6 +163,7 @@ define(
             placeOrder: function () {
                 var action = updateSessionAction(
                     'mpgs',
+                    'amex',
                     this.params,
                     this.messageContainer
                 );

@@ -303,6 +303,7 @@
                 <item name="open_amex" xsi:type="string">MpgsDirectOpenWalletCommand</item>
                 <item name="open_masterpass" xsi:type="string">MpgsMasterpassOpenWalletCommand</item>
                 <item name="update_amex_wallet" xsi:type="string">MpgsDirectUpdateAmexWallet</item>
+                <item name="update_visa_wallet" xsi:type="string">MpgsDirectUpdateVisaWallet</item>
                 <item name="get_session" xsi:type="string">MpgsDirectGetSessionCommand</item>
             </argument>
         </arguments>
@@ -1272,6 +1273,27 @@
             </argument>
         </arguments>
     </virtualType>
+
+    <virtualType name="MpgsDirectUpdateVisaWalletDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="operation" xsi:type="string">UpdateWalletFromSession</item>
+                <item name="wallet" xsi:type="string">OnTap\MasterCard\Gateway\Request\WalletDataBuilder</item>
+                <item name="amex" xsi:type="string">OnTap\MasterCard\Gateway\Request\Visa\SessionFromWallet</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MpgsDirectUpdateVisaWallet" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">MpgsDirectUpdateVisaWalletDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">MpgsDirectSessionRequest</argument>
+            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
+            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\WalletValidator</argument>
+            <argument name="handler" xsi:type="object">MpgsSessionWalletHandler</argument>
+        </arguments>
+    </virtualType>
+
     <virtualType name="MpgsDirectUpdateAmexWallet" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
         <arguments>
             <argument name="requestBuilder" xsi:type="object">MpgsDirectUpdateAmexWalletDataBuilder</argument>

@@ -78,7 +78,7 @@ define([
         aecCallbackHandler: function (response) {
             this.startLoader();
 
-            var action = updateSessionFromWalletAction('mpgs', {
+            var action = updateSessionFromWalletAction('mpgs', 'amex', {
                 authCode: response.auth_code,
                 transId: response.transaction_id,
                 walletId: response.wallet_id,
