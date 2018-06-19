@@ -1292,6 +1292,23 @@
             <argument name="methodCode" xsi:type="string">mpgs_amex_wallet</argument>
         </arguments>
     </virtualType>
+    <virtualType name="MpgsMasterpassConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="string">mpgs_masterpass_wallet</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsDirectMasterpassWallet" type="OnTap\MasterCard\Model\Method\Masterpass\DirectWallet">
+        <arguments>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form\Cc</argument>
+            <argument name="infoBlockType" xsi:type="string">MpgsAmexInfoBlock</argument>
+            <argument name="config" xsi:type="object">MpgsMasterpassConfig</argument>
+            <argument name="valueHandlerPool" xsi:type="object">TnsValueHandlerPool</argument>
+            <argument name="code" xsi:type="string">tns_direct_masterpass</argument>
+            <argument name="provider" xsi:type="object">TnsDirectFacade</argument>
+            <argument name="providerConfig" xsi:type="object">TnsDirectConfig</argument>
+            <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
+        </arguments>
+    </virtualType>
     <virtualType name="MpgsDirectAmexWallet" type="OnTap\MasterCard\Model\Method\Amex\DirectWallet">
         <arguments>
             <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form\Cc</argument>
