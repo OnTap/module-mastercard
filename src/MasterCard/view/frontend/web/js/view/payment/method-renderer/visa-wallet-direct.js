@@ -13,7 +13,7 @@ define(
         'use strict';
         return Component.extend({
             defaults: {
-                template: 'OnTap_MasterCard/payment/masterpass_wallet'
+                template: 'OnTap_MasterCard/payment/visa_wallet'
             },
 
             loadAdapter: function () {

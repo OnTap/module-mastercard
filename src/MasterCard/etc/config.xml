@@ -161,15 +161,23 @@
             <mpgs_masterpass_wallet>
                 <model>Magento\Vault\Model\Method\NullPaymentProvider</model>
                 <active>1</active>
-                <title>MasterPass</title>
-                <client_id />
-                <env>qa</env>
+                <title>MasterPass Online</title>
                 <provider>tns_direct</provider>
             </mpgs_masterpass_wallet>
             <tns_direct_masterpass>
                 <model>MpgsDirectMasterpassWallet</model>
                 <js_component>OnTap_MasterCard/js/view/payment/method-renderer/masterpass-wallet-direct</js_component>
             </tns_direct_masterpass>
+            <mpgs_visa_wallet>
+                <model>Magento\Vault\Model\Method\NullPaymentProvider</model>
+                <active>1</active>
+                <title>Visa Checkout</title>
+                <provider>tns_direct</provider>
+            </mpgs_visa_wallet>
+            <tns_direct_visa>
+                <model>MpgsDirectVisaWallet</model>
+                <js_component>OnTap_MasterCard/js/view/payment/method-renderer/visa-wallet-direct</js_component>
+            </tns_direct_visa>
         </payment>
     </default>
 </config>
