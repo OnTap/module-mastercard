@@ -47,11 +47,12 @@ class OrderDataBuilder implements BuilderInterface
             if ($item->getParentItemId() !== null) {
                 continue;
             }
+            $unitPrice = $item->getRowTotal() - $item->getTotalDiscountAmount();
             $data[] = [
                 'name' => $item->getName(),
                 'description' => $item->getDescription(),
                 'sku' => $item->getSku(),
-                'unitPrice' => sprintf('%.2F', $item->getRowTotal() - $item->getTotalDiscountAmount()),
+                'unitPrice' => sprintf('%.2F', $unitPrice + $item->getDiscountTaxCompensationAmount()),
                 'quantity' => 1,
                 //'unitTaxAmount' => 0,
             ];
