@@ -54,7 +54,7 @@ define([
         startSession: function (callback) {
             this.logDebug("Starting payment session...");
             this.sessionUpdatedCallback = callback;
-            PaymentSession.updateSessionFromForm();
+            PaymentSession.updateSessionFromForm('card');
         },
         sessionUpdated: function (response) {
             this.logDebug("Session response received");

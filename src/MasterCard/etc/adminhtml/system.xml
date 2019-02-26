@@ -110,6 +110,27 @@
                         <frontend_class>validate-number</frontend_class>
                         <config_path>payment/tns_hpf/sort_order</config_path>
                     </field>
+                    <group id="advanced" translate="label" type="text" sortOrder="260" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Advanced Configuration</label>
+                        <field id="version_info" type="text" translate="label comment" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <frontend_model>HpfApiVersionInfoModel</frontend_model>
+                        </field>
+                        <field id="custom_create_token_request_data" translate="label" type="textarea" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Create Token Request Data</label>
+                            <frontend_class>validate-json</frontend_class>
+                            <config_path>payment/tns_hpf/custom_create_token_request_data</config_path>
+                        </field>
+                        <field id="custom_authorize_request_data" translate="label" type="textarea" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Authorize Request Data</label>
+                            <frontend_class>validate-json</frontend_class>
+                            <config_path>payment/tns_hpf/custom_authorize_request_data</config_path>
+                        </field>
+                        <field id="custom_sale_request_data" translate="label" type="textarea" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Sale Request Data</label>
+                            <frontend_class>validate-json</frontend_class>
+                            <config_path>payment/tns_hpf/custom_sale_request_data</config_path>
+                        </field>
+                    </group>
                 </group>
 
                 <group id="hosted" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -195,6 +216,17 @@
                         <frontend_class>validate-number</frontend_class>
                         <config_path>payment/tns_hosted/sort_order</config_path>
                     </field>
+                    <group id="advanced" translate="label" type="text" sortOrder="240" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Advanced Configuration</label>
+                        <field id="version_info" type="text" translate="label comment" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <frontend_model>HostedApiVersionInfoModel</frontend_model>
+                        </field>
+                        <field id="custom_create_session_request_data" translate="label" type="textarea" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Create Session Request Data</label>
+                            <frontend_class>validate-json</frontend_class>
+                            <config_path>payment/tns_hosted/custom_create_session_request_data</config_path>
+                        </field>
+                    </group>
                 </group>
 
                 <group id="direct" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -296,6 +328,27 @@
                         <frontend_class>validate-number</frontend_class>
                         <config_path>payment/tns_direct/sort_order</config_path>
                     </field>
+                    <group id="advanced" translate="label" type="text" sortOrder="290" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Advanced Configuration</label>
+                        <field id="version_info" type="text" translate="label comment" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                            <frontend_model>DirectApiVersionInfoModel</frontend_model>
+                        </field>
+                        <field id="custom_create_token_request_data" translate="label" type="textarea" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Create Token Request Data</label>
+                            <frontend_class>validate-json</frontend_class>
+                            <config_path>payment/tns_direct/custom_create_token_request_data</config_path>
+                        </field>
+                        <field id="custom_authorize_request_data" translate="label" type="textarea" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Authorize Request Data</label>
+                            <frontend_class>validate-json</frontend_class>
+                            <config_path>payment/tns_direct/custom_authorize_request_data</config_path>
+                        </field>
+                        <field id="custom_sale_request_data" translate="label" type="textarea" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                            <label>Sale Request Data</label>
+                            <frontend_class>validate-json</frontend_class>
+                            <config_path>payment/tns_direct/custom_sale_request_data</config_path>
+                        </field>
+                    </group>
                 </group>
             </group>
         </section>

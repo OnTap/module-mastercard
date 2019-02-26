@@ -1,6 +1,21 @@
 <?xml version="1.0"?>
 <!-- Copyright (c) 2016. On Tap Networks Limited. -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <virtualType name="HpfApiVersionInfoModel" type="OnTap\MasterCard\Block\Adminhtml\Api\Version">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">OnTap\MasterCard\Model\Ui\Hpf\ConfigProvider::METHOD_CODE</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="HostedApiVersionInfoModel" type="OnTap\MasterCard\Block\Adminhtml\Api\Version">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">OnTap\MasterCard\Model\Ui\Hosted\ConfigProvider::METHOD_CODE</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="DirectApiVersionInfoModel" type="OnTap\MasterCard\Block\Adminhtml\Api\Version">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">OnTap\MasterCard\Model\Ui\Direct\ConfigProvider::METHOD_CODE</argument>
+        </arguments>
+    </virtualType>
     <virtualType name="TnsDirectInfoBlock" type="OnTap\MasterCard\Block\Direct\Info">
         <arguments>
             <argument name="data" xsi:type="array">
