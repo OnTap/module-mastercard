@@ -5,12 +5,15 @@
 
 namespace OnTap\MasterCard\Controller\Threedsecure;
 
+use Magento\Framework\App\Request\InvalidRequestException;
+use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\App\Action\Context;
 use Magento\Checkout\Model\Session;
 use Magento\Framework\Controller\Result\RawFactory;
+use Magento\Framework\App\CsrfAwareActionInterface;
 
-class Response extends \Magento\Framework\App\Action\Action
+class Response extends \Magento\Framework\App\Action\Action implements CsrfAwareActionInterface
 {
     /**
      * @var Session
@@ -55,5 +58,21 @@ class Response extends \Magento\Framework\App\Action\Action
         $resultRaw = $this->rawFactory->create();
         return $resultRaw
             ->setContents("<script>window.parent.tnsThreeDSecureClose();</script>");
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createCsrfValidationException(RequestInterface $request): ?InvalidRequestException
+    {
+        return null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function validateForCsrf(RequestInterface $request): ?bool
+    {
+        return true;
     }
 }
