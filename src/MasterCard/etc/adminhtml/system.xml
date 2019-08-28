@@ -95,6 +95,11 @@
                         <config_path>payment/tns_hpf/useccv</config_path>
                         <comment>Be sure to Enable CVV in your MasterCard account</comment>
                     </field>
+                    <field id="vault_ccv" translate="label comment" type="select" sortOrder="135" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Require CCV for tokenized card transactions</label>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <config_path>payment/tns_hpf/vault_ccv</config_path>
+                    </field>
                     <field id="allowspecific" translate="label" type="allowspecific" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Payment from Applicable Countries</label>
                         <source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
@@ -307,6 +312,11 @@
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <config_path>payment/tns_direct/three_d_secure</config_path>
                         <comment>Be sure to Enable 3D-Secure in your MasterCard account</comment>
+                    </field>
+                    <field id="vault_ccv" translate="label comment" type="select" sortOrder="135" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Require CCV for tokenized card transactions</label>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <config_path>payment/tns_direct/vault_ccv</config_path>
                     </field>
                     <field id="cctypes" translate="label" type="multiselect" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Credit Card Types</label>

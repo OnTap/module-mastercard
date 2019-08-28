@@ -32,7 +32,7 @@
         <!-- ko template: getTemplate() --><!-- /ko -->
         <!--/ko-->
 
-        <fieldset class="fieldset fields ccard">
+        <fieldset class="fieldset fields ccard" data-bind="visible: useCcv">
             <div class="field cvv">
                 <label class="label" data-bind="attr: {'for': getId() + '_cvv'}">
                     <span><!-- ko i18n: 'Card Verification Number'--><!-- /ko --></span>
