@@ -46,4 +46,12 @@ class Config extends \OnTap\MasterCard\Gateway\Config\Config
             'component_url' => $this->getComponentUrl()
         ];
     }
+
+    /**
+     * @return string
+     */
+    public function getVaultComponent()
+    {
+        return 'OnTap_MasterCard/js/view/payment/method-renderer/hpf-vault';
+    }
 }
