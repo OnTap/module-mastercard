@@ -90,7 +90,7 @@ class TokenUiComponentProvider implements TokenUiComponentProviderInterface
         $component = $this->componentFactory->create(
             [
                 'config' => array_merge($config, $vaultConfig->getVaultConfig()),
-                'name' => 'OnTap_MasterCard/js/view/payment/method-renderer/vault'
+                'name' => $vaultConfig->getVaultComponent()
             ]
         );
 

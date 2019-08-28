@@ -180,4 +180,12 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     {
         return [];
     }
+
+    /**
+     * @return string
+     */
+    public function getVaultComponent()
+    {
+        return 'OnTap_MasterCard/js/view/payment/method-renderer/direct-vault';
+    }
 }

@@ -23,6 +23,7 @@
                 <item name="tns_hosted" xsi:type="string">tns_hosted</item>
                 <item name="tns_hpf" xsi:type="string">tns_hpf</item>
                 <item name="tns_hpf_vault" xsi:type="string">tns_hpf_vault</item>
+                <item name="tns_direct_vault" xsi:type="string">tns_direct_vault</item>
             </argument>
         </arguments>
     </type>

@@ -13,7 +13,7 @@ define([
 
     return VaultComponent.extend({
         defaults: {
-            template: 'OnTap_MasterCard/payment/vault',
+            template: 'OnTap_MasterCard/payment/hpf-vault',
             active: false,
             isConfigured: false,
             session: {},

@@ -305,6 +305,7 @@
         <arguments>
             <argument name="builders" xsi:type="array">
                 <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\TokenDataBuilder</item>
+                <item name="csc" xsi:type="string">OnTap\MasterCard\Gateway\Request\CscDataBuilder</item>
                 <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
                 <item name="extra" xsi:type="string">MpgsDirectAuthorizeExtraDataBuilder</item>
             </argument>
@@ -319,6 +320,7 @@
         <arguments>
             <argument name="builders" xsi:type="array">
                 <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\TokenDataBuilder</item>
+                <item name="csc" xsi:type="string">OnTap\MasterCard\Gateway\Request\CscDataBuilder</item>
                 <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
                 <item name="extra" xsi:type="string">MpgsDirectSaleExtraDataBuilder</item>
             </argument>
