@@ -889,6 +889,7 @@
     <virtualType name="MpgsHpfVaultSaleDataBuilder" type="TnsHpfSaleDataBuilder">
         <arguments>
             <argument name="builders" xsi:type="array">
+                <item name="session" xsi:type="string">OnTap\MasterCard\Gateway\Request\Hpf\SessionDataBuilder</item>
                 <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\TokenDataBuilder</item>
                 <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
                 <item name="extra" xsi:type="string">MpgsHpfSaleExtraDataBuilder</item>
@@ -903,6 +904,7 @@
     <virtualType name="MpgsHpfVaultAuthorizeDataBuilder" type="TnsHpfAuthorizeDataBuilder">
         <arguments>
             <argument name="builders" xsi:type="array">
+                <item name="session" xsi:type="string">OnTap\MasterCard\Gateway\Request\Hpf\SessionDataBuilder</item>
                 <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\TokenDataBuilder</item>
                 <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
                 <item name="extra" xsi:type="string">MpgsHpfAuthorizeExtraDataBuilder</item>

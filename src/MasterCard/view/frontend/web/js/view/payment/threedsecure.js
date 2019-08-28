@@ -30,8 +30,7 @@ define([
         checkUrl: null,
 
         initialize: function(config) {
-            this._super()
-                .initObservable();
+            this._super();
 
             this.onComplete = config.onComplete;
             this.onError = config.onError;
@@ -94,7 +93,7 @@ define([
         },
 
         isEnrolled: function (response) {
-            if (response.result == "CARD_ENROLLED") {
+            if (response.result == "Y") {
                 // Card is enrolled, proceed with ACS
                 this.iframe.attr('src', url.build('tns/threedsecure/form'));
                 this.modal.modal('openModal');

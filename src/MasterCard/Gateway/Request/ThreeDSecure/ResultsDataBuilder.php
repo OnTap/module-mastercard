@@ -39,17 +39,16 @@ class ResultsDataBuilder implements BuilderInterface
     {
         $tdsCheck = $paymentDO->getPayment()->getAdditionalInformation(CheckHandler::THREEDSECURE_CHECK);
 
-        switch ($tdsCheck['status']) {
-            case 'CARD_ENROLLED':
+        switch ($tdsCheck['veResEnrolled']) {
+            case 'Y':
                 $status = static::ENROLLED;
                 break;
 
-            case 'CARD_NOT_ENROLLED':
+            case 'N':
                 $status = static::NOT_ENROLLED;
                 break;
 
             default:
-            case 'CARD_DOES_NOT_SUPPORT_3DS':
                 $status = static::ENROLLMENT_STATUS_UNDETERMINED;
                 break;
         }

@@ -5,19 +5,23 @@
 
 namespace OnTap\MasterCard\Controller\Threedsecure;
 
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\App\Action\Context;
+use Exception;
 use Magento\Checkout\Model\Session;
-use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
+use Magento\Framework\App\Action\Action;
+use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\JsonFactory;
-use OnTap\MasterCard\Gateway\Response\ThreeDSecure\CheckHandler;
+use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\Exception\NotFoundException;
 use Magento\Payment\Gateway\Command\CommandPoolFactory;
+use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
+use OnTap\MasterCard\Gateway\Response\ThreeDSecure\CheckHandler;
 
 /**
  * Class Check
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class Check extends \Magento\Framework\App\Action\Action
+class Check extends Action
 {
     const CHECK_ENROLMENT = '3ds_enrollment';
     const CHECK_ENROLMENT_TYPE_DIRECT = 'TnsThreeDSecureEnrollmentCommand';
@@ -68,8 +72,8 @@ class Check extends \Magento\Framework\App\Action\Action
     /**
      * Dispatch request
      *
-     * @return \Magento\Framework\Controller\ResultInterface|ResponseInterface
-     * @throws \Magento\Framework\Exception\NotFoundException
+     * @return ResultInterface|ResponseInterface
+     * @throws NotFoundException
      */
     public function execute()
     {
@@ -98,9 +102,9 @@ class Check extends \Magento\Framework\App\Action\Action
                 ->getAdditionalInformation(CheckHandler::THREEDSECURE_CHECK);
 
             $jsonResult->setData([
-                'result' => $checkData['status']
+                'result' => $checkData['veResEnrolled']
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $jsonResult
                 ->setHttpResponseCode(400)
                 ->setData([

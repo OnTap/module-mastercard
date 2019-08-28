@@ -36,4 +36,14 @@ class Config extends \OnTap\MasterCard\Gateway\Config\Config
             $this->getMerchantId()
         );
     }
+
+    /**
+     * @return array
+     */
+    public function getVaultConfig()
+    {
+        return [
+            'component_url' => $this->getComponentUrl()
+        ];
+    }
 }

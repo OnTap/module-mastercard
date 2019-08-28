@@ -22,6 +22,7 @@
                 <item name="tns_direct" xsi:type="string">tns_direct</item>
                 <item name="tns_hosted" xsi:type="string">tns_hosted</item>
                 <item name="tns_hpf" xsi:type="string">tns_hpf</item>
+                <item name="tns_hpf_vault" xsi:type="string">tns_hpf_vault</item>
             </argument>
         </arguments>
     </type>
@@ -48,6 +49,14 @@
             <argument name="tokenUiComponentProviders" xsi:type="array">
                 <item name="tns_direct" xsi:type="object">OnTap\MasterCard\Model\Ui\TokenUiComponentProvider</item>
                 <item name="tns_hpf" xsi:type="object">OnTap\MasterCard\Model\Ui\TokenUiComponentProvider</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="OnTap\MasterCard\Gateway\Config\VaultConfigProvider">
+        <arguments>
+            <argument name="config" xsi:type="array">
+                <item name="tns_hpf" xsi:type="object">TnsHpfConfig</item>
+                <item name="tns_direct" xsi:type="object">TnsDirectConfig</item>
             </argument>
         </arguments>
     </type>

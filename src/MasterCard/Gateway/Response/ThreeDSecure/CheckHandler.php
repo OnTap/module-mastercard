@@ -28,7 +28,7 @@ class CheckHandler implements HandlerInterface
         $payment = $paymentDO->getPayment();
 
         $data = [
-            'status' => $response['3DSecure']['summaryStatus'],
+            'veResEnrolled' => $response['3DSecure']['veResEnrolled'],
             'xid' => $response['3DSecure']['xid'],
         ];
 

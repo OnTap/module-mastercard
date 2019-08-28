@@ -31,7 +31,7 @@ class ResultHandler implements HandlerInterface
         $payment->setAdditionalInformation(static::THREEDSECURE_RESULT, [
             'acsEci' => $response['3DSecure']['acsEci'],
             'authenticationToken' => $response['3DSecure']['authenticationToken'],
-            'status' => $response['3DSecure']['summaryStatus'],
+            'veResEnrolled' => $response['3DSecure']['veResEnrolled'],
             'xid' => $response['3DSecure']['xid'],
         ]);
 
