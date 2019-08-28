@@ -6,7 +6,10 @@
 namespace OnTap\MasterCard\Gateway\Config;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\UrlInterface;
+use Magento\Payment\Model\MethodInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Payment\Helper\Data;
 use Magento\Framework\App\ObjectManager;
@@ -72,6 +75,8 @@ class Config extends \Magento\Payment\Gateway\Config\Config
 
     /**
      * @return bool
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
      */
     public function isVaultEnabled()
     {
@@ -81,7 +86,8 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     }
 
     /**
-     * @return \Magento\Payment\Model\MethodInterface
+     * @return MethodInterface
+     * @throws LocalizedException
      */
     protected function getVaultPayment()
     {
@@ -165,5 +171,13 @@ class Config extends \Magento\Payment\Gateway\Config\Config
             return $this->getValue('webhook_url');
         }
         return $this->urlBuilder->getUrl(static::WEB_HOOK_RESPONSE_URL, ['_secure' => true]);
+    }
+
+    /**
+     * @return array
+     */
+    public function getVaultConfig()
+    {
+        return [];
     }
 }

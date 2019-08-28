@@ -91,14 +91,11 @@ class VerificationStrategyCommand implements CommandInterface
 
         $data = $paymentInfo->getAdditionalInformation(CheckHandler::THREEDSECURE_CHECK);
 
-        if (isset($data['status'])) {
-            if ($data['status'] == "CARD_DOES_NOT_SUPPORT_3DS") {
+        if (isset($data['veResEnrolled'])) {
+            if ($data['veResEnrolled'] == "N") {
                 return false;
             }
-            if ($data['status'] == "CARD_NOT_ENROLLED") {
-                return false;
-            }
-            if ($data['status'] == "CARD_ENROLLED") {
+            if ($data['veResEnrolled'] == "Y") {
                 return true;
             }
         }

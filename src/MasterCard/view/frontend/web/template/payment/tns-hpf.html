@@ -56,9 +56,9 @@
                 <button class="action primary checkout"
                         type="submit"
                         data-bind="
-                        click: startHpfSession,
-                        attr: {title: $t('Place Order')},
-                        css: {disabled: isCheckoutDisabled()}
+                            click: savePayment,
+                            attr: {title: $t('Place Order')},
+                            css: {disabled: isCheckoutDisabled()}
                         ">
                     <span data-bind="text: buttonTitle()"></span>
                 </button>

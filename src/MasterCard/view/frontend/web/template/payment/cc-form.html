@@ -4,7 +4,7 @@
             <span><!-- ko i18n: 'Credit Card Number'--><!-- /ko --></span>
         </label>
         <div class="control">
-            <input type="number" id="tns_hpf_cc_number" class="input-text" value="" readonly="readonly" />
+            <input type="number" id="tns_hpf_cc_number" class="input-text" value="" readonly />
         </div>
     </div>
     <div class="field date required" data-bind="attr: {id: getCode() + '_cc_type_exp_div'}">
@@ -15,7 +15,7 @@
             <div class="fields group group-2">
                 <div class="field no-label month">
                     <div class="control">
-                        <select class="select select-month"
+                        <select class="select select-month" required="" readonly
                                 data-bind="attr: {id: getCode() + '_expiration', 'data-container': getCode() + '-cc-month', 'data-validate': ''},
                                     enable: isActive($parents),
                                     options: getCcMonthsValues(),
@@ -28,7 +28,7 @@
                 </div>
                 <div class="field no-label year">
                     <div class="control">
-                        <select class="select select-year"
+                        <select class="select select-year" required="" readonly
                                 data-bind="attr: {id: getCode() + '_expiration_yr', 'data-container': getCode() + '-cc-year', 'data-validate': ''},
                                     enable: isActive($parents),
                                     options: getCcYearsValues(),
@@ -47,7 +47,7 @@
             <span><!-- ko i18n: 'Card Verification Number'--><!-- /ko --></span>
         </label>
         <div class="control _with-tooltip">
-            <input type="number" id="tns_hpf_cc_cid" class="input-text" value="" readonly="readonly" />
+            <input type="number" id="tns_hpf_cc_cid" class="input-text" value="" readonly />
 
             <div class="field-tooltip toggle">
                 <span class="field-tooltip-action action-cvv"
