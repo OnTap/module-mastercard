@@ -13,7 +13,8 @@ define(
         'uiLayout',
         'Magento_Checkout/js/model/full-screen-loader',
         'mage/translate',
-        'Magento_Vault/js/view/payment/vault-enabler'
+        'Magento_Vault/js/view/payment/vault-enabler',
+        'Magento_Payment/js/model/credit-card-validation/validator'
     ],
     function ($, ccFormComponent, additionalValidators, setPaymentInformationAction, checkEnrolmentAction, url, layout, fullScreenLoader, $t, VaultEnabler) {
         'use strict';
