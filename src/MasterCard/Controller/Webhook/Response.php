@@ -5,23 +5,26 @@
 
 namespace OnTap\MasterCard\Controller\Webhook;
 
+use Magento\Framework\Api\FilterBuilder;
+use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\CsrfAwareActionInterface;
+use Magento\Framework\App\Request\InvalidRequestException;
+use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\RawFactory;
-use Magento\Framework\App\Action\Context;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Payment\Gateway\Command\CommandPoolInterface;
+use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
+use Magento\Payment\Model\Method\LoggerFactory;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Api\TransactionRepositoryInterface;
-use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Framework\Api\FilterBuilder;
-use Magento\Payment\Model\Method\LoggerFactory;
-use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
-use Magento\Payment\Gateway\Command\CommandPoolInterface;
 
 /**
  * Class Response
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class Response extends \Magento\Framework\App\Action\Action
+class Response extends \Magento\Framework\App\Action\Action implements CsrfAwareActionInterface
 {
     const X_HEADER_SECRET = 'X-Notification-Secret';
     const X_HEADER_ATTEMPT = 'X-Notification-Attempt';
@@ -260,7 +263,6 @@ class Response extends \Magento\Framework\App\Action\Action
                     'transaction_id' => $data['transaction']['id'],
                     'order_id' => $data['order']['id']
                 ]);
-
         } catch (\Exception $e) {
             $errorMessage = sprintf(
                 __("MasterCard Payment Gateway Services WebHook Exception: '%s'"),
@@ -285,5 +287,31 @@ class Response extends \Magento\Framework\App\Action\Action
 
         $page->setStatusHeader(200);
         return $page->setContents('');
+    }
+
+    /**
+     * Create exception in case CSRF validation failed.
+     * Return null if default exception will suffice.
+     *
+     * @param RequestInterface $request
+     *
+     * @return InvalidRequestException|null
+     */
+    public function createCsrfValidationException(RequestInterface $request): ?InvalidRequestException
+    {
+        return null;
+    }
+
+    /**
+     * Perform custom request validation.
+     * Return null if default validation is needed.
+     *
+     * @param RequestInterface $request
+     *
+     * @return bool|null
+     */
+    public function validateForCsrf(RequestInterface $request): ?bool
+    {
+        return true;
     }
 }
