@@ -27,7 +27,8 @@ define([
                 .observe([
                     'active',
                     'isConfigured',
-                    'session'
+                    'session',
+                    'useCcv'
                 ]);
             return this;
         },
@@ -81,7 +82,7 @@ define([
         },
 
         onActiveChange: function (isActive) {
-            if (isActive) {
+            if (isActive && this.useCcv()) {
                 this.loadAdapter();
             }
         },
@@ -155,9 +156,13 @@ define([
         },
 
         savePayment: function () {
-            this.isPlaceOrderActionAllowed(false);
-            PaymentSession.updateSessionFromForm('card', undefined, this.getId());
-            return this;
+            if (this.useCcv()) {
+                this.isPlaceOrderActionAllowed(false);
+                PaymentSession.updateSessionFromForm('card', undefined, this.getId());
+                return this;
+            } else {
+                this.placeOrder();
+            }
         },
 
         getData: function () {

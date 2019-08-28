@@ -43,7 +43,8 @@ class Config extends \OnTap\MasterCard\Gateway\Config\Config
     public function getVaultConfig()
     {
         return [
-            'component_url' => $this->getComponentUrl()
+            'component_url' => $this->getComponentUrl(),
+            'useCcv' => (bool) $this->getValue('vault_ccv'),
         ];
     }
 

@@ -178,7 +178,9 @@ class Config extends \Magento\Payment\Gateway\Config\Config
      */
     public function getVaultConfig()
     {
-        return [];
+        return [
+            'useCcv' => (bool) $this->getValue('vault_ccv')
+        ];
     }
 
     /**

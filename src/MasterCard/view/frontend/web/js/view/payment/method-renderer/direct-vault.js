@@ -21,7 +21,8 @@ define([
             this._super()
                 .observe([
                     'active',
-                    'csc'
+                    'csc',
+                    'useCcv'
                 ]);
             return this;
         },
