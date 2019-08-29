@@ -74,6 +74,8 @@ class OrderDataBuilder implements BuilderInterface
         $paymentDO = SubjectReader::readPayment($buildSubject);
         $order = $paymentDO->getOrder();
 
+        $storeId = $order->getStoreId();
+
         /** @var Payment $payment */
         $payment = $paymentDO->getPayment();
 
@@ -88,7 +90,7 @@ class OrderDataBuilder implements BuilderInterface
                 'shippingAndHandlingAmount' => $payment->getShippingAmount(),
                 //'discount' => $this->getDiscountData($payment),
                 'taxAmount' => $payment->getOrder()->getTaxAmount(),
-                'notificationUrl' => $config->getWebhookNotificationUrl(),
+                'notificationUrl' => $config->getWebhookNotificationUrl($storeId),
             ]
         ];
     }

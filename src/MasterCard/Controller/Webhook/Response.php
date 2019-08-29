@@ -247,7 +247,9 @@ class Response extends \Magento\Framework\App\Action\Action
 
             $config = $this->configProviders[$order->getPayment()->getMethod()];
 
-            if ($config->getWebhookSecret() !== $responseSecret) {
+            $storeId = $order->getStoreId();
+
+            if ($config->getWebhookSecret($storeId) !== $responseSecret) {
                 throw new \Exception(__("Authorization failed"));
             }
 

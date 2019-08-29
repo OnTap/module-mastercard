@@ -22,6 +22,7 @@ class TransferFactorySession extends TransferFactory
      */
     protected function getUri(PaymentDataObjectInterface $payment)
     {
-        return $this->getGatewayUri() . 'session';
+        $storeId = $payment->getOrder()->getStoreId();
+        return $this->getGatewayUri($storeId) . 'session';
     }
 }

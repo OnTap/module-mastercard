@@ -22,6 +22,7 @@ class TransferFactoryCreateToken extends TransferFactory
      */
     protected function getUri(PaymentDataObjectInterface $payment)
     {
-        return $this->getGatewayUri() . 'token/';
+        $storeId = $payment->getOrder()->getStoreId();
+        return $this->getGatewayUri($storeId) . 'token/';
     }
 }

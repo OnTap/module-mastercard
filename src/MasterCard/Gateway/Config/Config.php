@@ -106,32 +106,35 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     }
 
     /**
+     * @param null $storeId
      * @return string
      */
-    public function getMerchantId()
+    public function getMerchantId($storeId = null)
     {
-        if ((bool) $this->getValue('test')) {
-            return static::TEST_PREFIX . $this->getValue('api_username');
+        if ((bool) $this->getValue('test', $storeId)) {
+            return static::TEST_PREFIX . $this->getValue('api_username', $storeId);
         } else {
-            return $this->getValue('api_username');
+            return $this->getValue('api_username', $storeId);
         }
     }
 
     /**
+     * @param null $storeId
      * @return string
      */
-    public function getMerchantPassword()
+    public function getMerchantPassword($storeId = null)
     {
-        return $this->getValue('api_password');
+        return $this->getValue('api_password', $storeId);
     }
 
     /**
+     * @param null $storeId
      * @return string
      */
-    public function getApiAreaUrl()
+    public function getApiAreaUrl($storeId = null)
     {
-        if ($this->getValue('api_gateway') == self::API_OTHER) {
-            $url = $this->getValue('api_gateway_other');
+        if ($this->getValue('api_gateway', $storeId) == self::API_OTHER) {
+            $url = $this->getValue('api_gateway_other', $storeId);
             if (empty($url)) {
                 return '';
             }
@@ -140,46 +143,50 @@ class Config extends \Magento\Payment\Gateway\Config\Config
             }
             return $url;
         }
-        return $this->getValue($this->getValue('api_gateway'));
+        return $this->getValue($this->getValue('api_gateway', $storeId), $storeId);
     }
 
     /**
+     * @param null $storeId
      * @return string
      */
-    public function getApiUrl()
+    public function getApiUrl($storeId = null)
     {
-        return $this->getApiAreaUrl() . 'api/rest/';
+        return $this->getApiAreaUrl($storeId) . 'api/rest/';
     }
 
     /**
+     * @param null $storeId
      * @return string
      */
-    public function getWebhookSecret()
+    public function getWebhookSecret($storeId = null)
     {
-        return $this->getValue('webhook_secret');
+        return $this->getValue('webhook_secret', $storeId);
     }
 
     /**
+     * @param null $storeId
      * @return mixed|null|string
      */
-    public function getWebhookNotificationUrl()
+    public function getWebhookNotificationUrl($storeId = null)
     {
-        if ($this->getWebhookSecret() && $this->getWebhookSecret() === "") {
+        if ($this->getWebhookSecret($storeId) && $this->getWebhookSecret($storeId) === "") {
             return null;
         }
-        if ($this->getValue('webhook_url') && $this->getValue('webhook_url') !== "") {
-            return $this->getValue('webhook_url');
+        if ($this->getValue('webhook_url', $storeId) && $this->getValue('webhook_url', $storeId) !== "") {
+            return $this->getValue('webhook_url', $storeId);
         }
         return $this->urlBuilder->getUrl(static::WEB_HOOK_RESPONSE_URL, ['_secure' => true]);
     }
 
     /**
+     * @param null $storeId
      * @return array
      */
-    public function getVaultConfig()
+    public function getVaultConfig($storeId = null)
     {
         return [
-            'useCcv' => (bool) $this->getValue('vault_ccv')
+            'useCcv' => (bool) $this->getValue('vault_ccv', $storeId)
         ];
     }
 

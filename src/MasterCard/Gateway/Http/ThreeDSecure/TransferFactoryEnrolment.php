@@ -17,6 +17,7 @@ class TransferFactoryEnrolment extends TransferFactory
     protected function getUri(PaymentDataObjectInterface $payment)
     {
         $threeDSecureId = uniqid(sprintf('3DS-'));
-        return $this->getGatewayUri() . '3DSecureId/' . $threeDSecureId;
+        $storeId = $payment->getOrder()->getStoreId();
+        return $this->getGatewayUri($storeId) . '3DSecureId/' . $threeDSecureId;
     }
 }
