@@ -5,9 +5,9 @@
 
 namespace OnTap\MasterCard\Gateway\Http\Hosted;
 
-use OnTap\MasterCard\Gateway\Http\TransferFactory;
-use OnTap\MasterCard\Gateway\Http\Client\Rest;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
+use OnTap\MasterCard\Gateway\Http\Client\Rest;
+use OnTap\MasterCard\Gateway\Http\TransferFactory;
 
 class TransferFactoryOrder extends TransferFactory
 {
@@ -23,6 +23,7 @@ class TransferFactoryOrder extends TransferFactory
     protected function getUri(PaymentDataObjectInterface $payment)
     {
         $orderId = $payment->getOrder()->getOrderIncrementId();
-        return $this->getGatewayUri() . 'order/'.$orderId;
+        $storeId = $payment->getOrder()->getStoreId();
+        return $this->getGatewayUri($storeId) . 'order/' . $orderId;
     }
 }

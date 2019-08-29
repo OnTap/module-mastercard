@@ -17,13 +17,14 @@ class GetTransferFactory extends TransferFactory
 
     /**
      * @param array $request
+     * @param null $storeId
      * @return string
      */
-    protected function getRequestUri($request)
+    protected function getRequestUri($request, $storeId = null)
     {
         $orderId = $request['order_id'];
         $txnId = $request['transaction_id'];
-        return $this->getGatewayUri() . 'order/'.$orderId.'/transaction/'.$txnId;
+        return $this->getGatewayUri($storeId) . 'order/' . $orderId . '/transaction/' . $txnId;
     }
 
     /**
@@ -33,13 +34,14 @@ class GetTransferFactory extends TransferFactory
      */
     public function create(array $request, PaymentDataObjectInterface $payment)
     {
+        $storeId = $payment->getOrder()->getStoreId();
         return $this->transferBuilder
             ->setMethod($this->httpMethod)
             ->setHeaders(['Content-Type' => 'application/json;charset=UTF-8'])
-            ->setBody((new \stdClass))
-            ->setAuthUsername($this->getMerchantUsername())
-            ->setAuthPassword($this->config->getMerchantPassword())
-            ->setUri($this->getRequestUri($request))
+            ->setBody((new \stdClass()))
+            ->setAuthUsername($this->getMerchantUsername($storeId))
+            ->setAuthPassword($this->config->getMerchantPassword($storeId))
+            ->setUri($this->getRequestUri($request, $storeId))
             ->build();
     }
 }

@@ -74,6 +74,8 @@ class OrderDataBuilder implements BuilderInterface
         /* @var QuoteAdapter $order */
         $order = $paymentDO->getOrder();
 
+        $storeId = $order->getStoreId();
+
         /** @var Payment $payment */
         $payment = $paymentDO->getPayment();
 
@@ -94,7 +96,7 @@ class OrderDataBuilder implements BuilderInterface
                 'item' => $this->getItemData(),
                 'shippingAndHandlingAmount' => $shipping->getShippingAmount(),
                 'taxAmount' => $quote->getShippingAddress()->getTaxAmount(), // @todo: Virtual goods have no shipping
-                'notificationUrl' => $config->getWebhookNotificationUrl(),
+                'notificationUrl' => $config->getWebhookNotificationUrl($storeId),
             ]
         ];
     }
