@@ -35,9 +35,14 @@ class ShippingDataBuilder implements BuilderInterface
     {
         $paymentDO = SubjectReader::readPayment($buildSubject);
         $order = $paymentDO->getOrder();
+        $payment = $paymentDO->getPayment();
+        $quote = $payment->getQuote();
+
+        if ($quote && $quote->isVirtual()) {
+            return [];
+        }
 
         $shippingAddress = $order->getShippingAddress();
-
         if ($shippingAddress === null) {
             return [];
         }
