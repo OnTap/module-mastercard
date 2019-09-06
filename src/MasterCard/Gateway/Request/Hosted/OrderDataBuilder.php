@@ -5,12 +5,12 @@
 
 namespace OnTap\MasterCard\Gateway\Request\Hosted;
 
-use Magento\Payment\Gateway\Request\BuilderInterface;
-use Magento\Payment\Gateway\Helper\SubjectReader;
-use Magento\Sales\Model\Order\Payment;
-use Magento\Payment\Gateway\Data\Quote\QuoteAdapter;
-use Magento\Checkout\Model\CartFactory;
 use Magento\Checkout\Model\Cart;
+use Magento\Checkout\Model\CartFactory;
+use Magento\Payment\Gateway\Data\Quote\QuoteAdapter;
+use Magento\Payment\Gateway\Helper\SubjectReader;
+use Magento\Payment\Gateway\Request\BuilderInterface;
+use Magento\Sales\Model\Order\Payment;
 use OnTap\MasterCard\Gateway\Config\ConfigFactory;
 
 class OrderDataBuilder implements BuilderInterface
@@ -88,6 +88,10 @@ class OrderDataBuilder implements BuilderInterface
 
         $shipping = $quote->getShippingAddress();
 
+        $taxAmount = $quote->isVirtual()
+            ? $quote->getBillingAddress()->getTaxAmount()
+            : $shipping->getTaxAmount();
+
         return [
             'order' => [
                 'amount' => sprintf('%.2F', $quote->getGrandTotal()),
@@ -95,7 +99,7 @@ class OrderDataBuilder implements BuilderInterface
                 'id' => $order->getOrderIncrementId(),
                 'item' => $this->getItemData(),
                 'shippingAndHandlingAmount' => $shipping->getShippingAmount(),
-                'taxAmount' => $quote->getShippingAddress()->getTaxAmount(), // @todo: Virtual goods have no shipping
+                'taxAmount' => $taxAmount,
                 'notificationUrl' => $config->getWebhookNotificationUrl($storeId),
             ]
         ];
