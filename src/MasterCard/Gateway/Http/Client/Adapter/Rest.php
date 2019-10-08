@@ -52,9 +52,7 @@ class Rest extends Curl
          */
         $header = isset($this->_config['header']) ? $this->_config['header'] : true;
         curl_setopt($this->_getResource(), CURLOPT_HEADER, $header);
-
-        // TODO: remove this hack
-        curl_setopt($this->_getResource(), CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($this->_getResource(), CURLOPT_SSL_VERIFYPEER, true);
 
         return $body;
     }
