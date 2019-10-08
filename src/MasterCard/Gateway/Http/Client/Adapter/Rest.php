@@ -53,6 +53,7 @@ class Rest extends Curl
         $header = isset($this->_config['header']) ? $this->_config['header'] : true;
         curl_setopt($this->_getResource(), CURLOPT_HEADER, $header);
         curl_setopt($this->_getResource(), CURLOPT_SSL_VERIFYPEER, true);
+        curl_setopt($this->_getResource(), CURLOPT_SSL_VERIFYHOST, 2);
 
         return $body;
     }
