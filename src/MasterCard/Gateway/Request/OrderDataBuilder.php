@@ -55,7 +55,7 @@ class OrderDataBuilder implements BuilderInterface
                 'name' => $item->getName(),
                 'description' => $item->getDescription(),
                 'sku' => $item->getSku(),
-                'unitPrice' => sprintf('%.2F', $item->getRowTotal() - $item->getDiscountAmount()),
+                'unitPrice' => sprintf('%.2F', $item->getBaseRowTotal() - $item->getBaseDiscountAmount()),
                 'quantity' => 1,
                 //'unitTaxAmount' => $item->getBaseTaxAmount(),
             ];
@@ -99,9 +99,9 @@ class OrderDataBuilder implements BuilderInterface
                 'amount' => sprintf('%.2F', SubjectReader::readAmount($buildSubject)),
                 'currency' => $order->getCurrencyCode(),
                 'item' => $this->getOrderItems($order->getItems()),
-                'shippingAndHandlingAmount' => $payment->getShippingAmount(),
+                'shippingAndHandlingAmount' => $payment->getBaseShippingAmount(),
                 //'discount' => $this->getDiscountData($payment),
-                'taxAmount' => $payment->getOrder()->getTaxAmount(),
+                'taxAmount' => $payment->getOrder()->getBaseTaxAmount(),
                 'notificationUrl' => $config->getWebhookNotificationUrl($storeId),
             ]
         ];

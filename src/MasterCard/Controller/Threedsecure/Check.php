@@ -106,7 +106,7 @@ class Check extends Action
                 ->get($this->getRequest()->getParam('method'))
                 ->execute([
                     'payment' => $paymentDataObject,
-                    'amount' => $quote->getGrandTotal(),
+                    'amount' => $quote->getBaseGrandTotal(),
                 ]);
 
             $checkData = $paymentDataObject
