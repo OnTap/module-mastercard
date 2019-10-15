@@ -59,12 +59,12 @@ class OrderDataBuilder implements BuilderInterface
             if ($item->getParentItemId() !== null) {
                 continue;
             }
-            $unitPrice = $item->getRowTotal() - $item->getTotalDiscountAmount();
+            $unitPrice = $item->getBaseRowTotal() - $item->getBaseTotalDiscountAmount();
             $data[] = [
                 'name' => $item->getName(),
                 'description' => $item->getDescription(),
                 'sku' => $item->getSku(),
-                'unitPrice' => sprintf('%.2F', $unitPrice + $item->getDiscountTaxCompensationAmount()),
+                'unitPrice' => sprintf('%.2F', $unitPrice + $item->getBaseDiscountTaxCompensationAmount()),
                 'quantity' => 1,
                 //'unitTaxAmount' => 0,
             ];
@@ -101,16 +101,16 @@ class OrderDataBuilder implements BuilderInterface
         $shipping = $quote->getShippingAddress();
 
         $taxAmount = $quote->isVirtual()
-            ? $quote->getBillingAddress()->getTaxAmount()
-            : $shipping->getTaxAmount();
+            ? $quote->getBillingAddress()->getBaseTaxAmount()
+            : $shipping->getBaseTaxAmount();
 
         return [
             'order' => [
-                'amount' => sprintf('%.2F', $quote->getGrandTotal()),
+                'amount' => sprintf('%.2F', $quote->getBaseGrandTotal()),
                 'currency' => $order->getCurrencyCode(),
                 'id' => $order->getOrderIncrementId(),
                 'item' => $this->getItemData(),
-                'shippingAndHandlingAmount' => $shipping->getShippingAmount(),
+                'shippingAndHandlingAmount' => $shipping->getBaseShippingAmount(),
                 'taxAmount' => $taxAmount,
                 'notificationUrl' => $config->getWebhookNotificationUrl($storeId),
             ]
