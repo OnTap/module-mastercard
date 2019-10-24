@@ -18,11 +18,14 @@
     <system>
         <section id="payment">
             <group id="tns" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>MasterCard Payment Gateway Services</label>
+                <label>Mastercard Payment Gateway Services</label>
                 <comment><![CDATA[Accept credit/debit cards in your Magento store.]]></comment>
                 <attribute type="expanded">1</attribute>
                 <fieldset_css>complex</fieldset_css>
-                <frontend_model>\Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>
+                <frontend_model>Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>
+                <field id="version_info" type="text" translate="label comment" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>OnTap\MasterCard\Block\Adminhtml\ModuleVersion</frontend_model>
+                </field>
 
                 <group id="hpf" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Hosted Payment Session</label>
