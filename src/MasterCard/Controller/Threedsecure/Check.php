@@ -36,7 +36,6 @@ use OnTap\MasterCard\Gateway\Response\ThreeDSecure\CheckHandler;
 class Check extends Action
 {
     const CHECK_ENROLMENT = '3ds_enrollment';
-    const CHECK_ENROLMENT_TYPE_DIRECT = 'TnsThreeDSecureEnrollmentCommand';
     const CHECK_ENROLMENT_TYPE_HPF = 'TnsHpfThreeDSecureEnrollmentCommand';
 
     /**
@@ -96,7 +95,6 @@ class Check extends Action
             $commandPool = $this->commandPoolFactory->create([
                 'commands' => [
                     'hpf' => static::CHECK_ENROLMENT_TYPE_HPF,
-                    'direct' => static::CHECK_ENROLMENT_TYPE_DIRECT,
                 ]
             ]);
 

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace OnTap\MasterCard\Block\Direct;
+namespace OnTap\MasterCard\Block;
 
 use Magento\Framework\Phrase;
 use Magento\Payment\Block\ConfigurableInfo;

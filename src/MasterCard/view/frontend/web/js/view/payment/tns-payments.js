@@ -27,10 +27,6 @@ define(
         'use strict';
         rendererList.push(
             {
-                type: 'tns_direct',
-                component: 'OnTap_MasterCard/js/view/payment/method-renderer/tns-direct'
-            },
-            {
                 type: 'tns_hosted',
                 component: 'OnTap_MasterCard/js/view/payment/method-renderer/tns-hosted'
             },

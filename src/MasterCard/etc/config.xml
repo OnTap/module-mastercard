@@ -17,54 +17,6 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
     <default>
         <payment>
-            <tns_direct>
-                <active>0</active>
-                <title>Credit or Debit Card</title>
-                <model>TnsDirectFacade</model>
-                <payment_action>authorize</payment_action>
-                <order_status>processing</order_status>
-
-                <api_version>52</api_version>
-                <api_gateway>api_eu</api_gateway>
-                <api_eu>https://eu-gateway.mastercard.com/</api_eu>
-                <api_as>https://ap-gateway.mastercard.com/</api_as>
-                <api_na>https://na-gateway.mastercard.com/</api_na>
-                <api_uat>https://secure.uat.tnspayments.com/</api_uat>
-                <custom_create_token_request_data>{}</custom_create_token_request_data>
-                <custom_sale_request_data>{}</custom_sale_request_data>
-                <custom_authorize_request_data>{}</custom_authorize_request_data>
-
-                <api_password backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
-                <webhook_secret backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
-
-                <cctypes>VI,MC,MI</cctypes>
-                <date_delim>-</date_delim>
-                <cc_year_length>4</cc_year_length>
-                <ccfields>card_cvn,card_expiry_date,card_number</ccfields>
-                <allowspecific>0</allowspecific>
-                <debug>0</debug>
-                <test>0</test>
-                <api_gateway>api_eu</api_gateway>
-                <three_d_secure>0</three_d_secure>
-
-                <!--<can_initialize>1</can_initialize>-->
-                <can_authorize>1</can_authorize>
-                <can_capture>1</can_capture>
-                <can_capture_partial>1</can_capture_partial>
-                <can_void>1</can_void>
-                <can_refund>1</can_refund>
-                <can_refund_partial_per_invoice>1</can_refund_partial_per_invoice>
-                <can_use_internal>1</can_use_internal>
-                <can_use_checkout>1</can_use_checkout>
-                <is_gateway>1</is_gateway>
-                <can_authorize_vault>1</can_authorize_vault>
-                <can_capture_vault>1</can_capture_vault>
-                <useccv>1</useccv>
-                <vault_ccv>1</vault_ccv>
-
-                <paymentInfoKeys>gateway_code,txn_result,card_scheme,card_number,card_expiry_date,auth_code</paymentInfoKeys>
-                <!--<privateInfoKeys></privateInfoKeys>-->
-            </tns_direct>
             <tns_hosted>
                 <active>0</active>
                 <title>Hosted Checkout</title>
@@ -150,10 +102,6 @@
                 <paymentInfoKeys>gateway_code,txn_result,card_scheme,card_number,card_expiry_date,session,auth_code</paymentInfoKeys>
                 <!--<privateInfoKeys></privateInfoKeys>-->
             </tns_hpf>
-            <tns_direct_vault>
-                <model>MpgsDirectVaultFacade</model>
-                <title>Stored Cards (MasterCard Direct)</title>
-            </tns_direct_vault>
             <tns_hpf_vault>
                 <model>MpgsHpfVaultFacade</model>
                 <title>Stored Cards (MasterCard HPF)</title>

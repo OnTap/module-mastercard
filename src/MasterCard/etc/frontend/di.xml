@@ -15,11 +15,6 @@
   ~ limitations under the License.
   -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <type name="OnTap\MasterCard\Model\Ui\Direct\ConfigProvider">
-        <arguments>
-            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
-        </arguments>
-    </type>
     <type name="OnTap\MasterCard\Model\Ui\Hosted\ConfigProvider">
         <arguments>
             <argument name="config" xsi:type="object">TnsHostedConfig</argument>
@@ -33,18 +28,15 @@
     <type name="Magento\Payment\Model\CcGenericConfigProvider">
         <arguments>
             <argument name="methodCodes" xsi:type="array">
-                <item name="tns_direct" xsi:type="string">tns_direct</item>
                 <item name="tns_hosted" xsi:type="string">tns_hosted</item>
                 <item name="tns_hpf" xsi:type="string">tns_hpf</item>
                 <item name="tns_hpf_vault" xsi:type="string">tns_hpf_vault</item>
-                <item name="tns_direct_vault" xsi:type="string">tns_direct_vault</item>
             </argument>
         </arguments>
     </type>
     <type name="Magento\Checkout\Model\CompositeConfigProvider">
         <arguments>
             <argument name="configProviders" xsi:type="array">
-                <item name="tns_direct" xsi:type="object">OnTap\MasterCard\Model\Ui\Direct\ConfigProvider</item>
                 <item name="tns_hosted" xsi:type="object">OnTap\MasterCard\Model\Ui\Hosted\ConfigProvider</item>
                 <item name="tns_hpf" xsi:type="object">OnTap\MasterCard\Model\Ui\Hpf\ConfigProvider</item>
             </argument>
@@ -53,7 +45,6 @@
     <type name="OnTap\MasterCard\Controller\Webhook\Response">
         <arguments>
             <argument name="configProviders" xsi:type="array">
-                <item name="tns_direct" xsi:type="object">TnsDirectConfig</item>
                 <item name="tns_hosted" xsi:type="object">TnsHostedConfig</item>
                 <item name="tns_hpf" xsi:type="object">TnsHpfConfig</item>
             </argument>
@@ -62,7 +53,6 @@
     <type name="Magento\Vault\Model\Ui\TokensConfigProvider">
         <arguments>
             <argument name="tokenUiComponentProviders" xsi:type="array">
-                <item name="tns_direct" xsi:type="object">OnTap\MasterCard\Model\Ui\TokenUiComponentProvider</item>
                 <item name="tns_hpf" xsi:type="object">OnTap\MasterCard\Model\Ui\TokenUiComponentProvider</item>
             </argument>
         </arguments>
@@ -71,7 +61,6 @@
         <arguments>
             <argument name="config" xsi:type="array">
                 <item name="tns_hpf" xsi:type="object">TnsHpfConfig</item>
-                <item name="tns_direct" xsi:type="object">TnsDirectConfig</item>
             </argument>
         </arguments>
     </type>

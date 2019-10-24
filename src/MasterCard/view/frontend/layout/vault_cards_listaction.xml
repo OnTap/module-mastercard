@@ -21,7 +21,6 @@
                 <block class="OnTap\MasterCard\Block\Customer\CardRenderer" name="mastercard.card.renderer" template="Magento_Vault::customer_account/credit_card.phtml">
                     <arguments>
                         <argument name="available_providers" xsi:type="array">
-                            <item name="tns_direct_vault" xsi:type="string">tns_direct</item>
                             <item name="tns_hpf_vault" xsi:type="string">tns_hpf</item>
                         </argument>
                     </arguments>

@@ -34,9 +34,6 @@
                                                                 <item name="tns" xsi:type="array">
                                                                     <item name="component" xsi:type="string">OnTap_MasterCard/js/view/payment/tns-payments</item>
                                                                     <item name="methods" xsi:type="array">
-                                                                        <item name="tns_direct" xsi:type="array">
-                                                                            <item name="isBillingAddressRequired" xsi:type="boolean">true</item>
-                                                                        </item>
                                                                         <item name="tns_hosted" xsi:type="array">
                                                                             <item name="isBillingAddressRequired" xsi:type="boolean">true</item>
                                                                         </item>

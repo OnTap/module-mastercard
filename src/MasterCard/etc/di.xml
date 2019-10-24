@@ -17,6 +17,18 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="OnTap\MasterCard\Api\SessionInformationManagementInterface" type="OnTap\MasterCard\Model\SessionInformationManagement" />
 
+    <virtualType name="MpgsHpfLogger" type="Magento\Payment\Model\Method\Logger">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsHpfConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MpgsHostedLogger" type="Magento\Payment\Model\Method\Logger">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsHpfConfig</argument>
+        </arguments>
+    </virtualType>
+
     <!-- Virtual operation classes that specify apiOperation generically -->
     <virtualType name="AuthorizeOperationDataBuilder" type="OnTap\MasterCard\Gateway\Request\OperationBuilder">
         <arguments>
@@ -59,29 +71,28 @@
         </arguments>
     </virtualType>
 
-    <type name="OnTap\MasterCard\Gateway\Http\Client\Rest">
+    <virtualType name="MpgsHpfRestClient" type="OnTap\MasterCard\Gateway\Http\Client\Rest">
         <arguments>
-            <argument name="logger" xsi:type="object">TnsLogger</argument>
+            <argument name="logger" xsi:type="object">MpgsHpfLogger</argument>
             <argument name="converter" xsi:type="object">OnTap\MasterCard\Gateway\Http\Converter\JsonToArray</argument>
             <argument name="adapter" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Adapter\Rest</argument>
         </arguments>
-    </type>
+    </virtualType>
 
-    <!-- Check 3D-Secure enrollment -->
-    <virtualType name="TnsThreeDSecureEnrollmentCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
+    <virtualType name="MpgsHostedRestClient" type="OnTap\MasterCard\Gateway\Http\Client\Rest">
         <arguments>
-            <argument name="requestBuilder" xsi:type="object">TnsThreeDSecureDataBuilder</argument>
-            <argument name="transferFactory" xsi:type="object">OnTap\MasterCard\Gateway\Http\ThreeDSecure\TransferFactoryEnrolment</argument>
-            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
-            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\ThreeDSecureValidator</argument>
-            <argument name="handler" xsi:type="object">OnTap\MasterCard\Gateway\Response\ThreeDSecure\CheckHandler</argument>
+            <argument name="logger" xsi:type="object">MpgsHostedLogger</argument>
+            <argument name="converter" xsi:type="object">OnTap\MasterCard\Gateway\Http\Converter\JsonToArray</argument>
+            <argument name="adapter" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Adapter\Rest</argument>
         </arguments>
     </virtualType>
+
+    <!-- Check 3D-Secure enrollment -->
     <virtualType name="TnsHpfThreeDSecureEnrollmentCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
         <arguments>
             <argument name="requestBuilder" xsi:type="object">TnsThreeDSecureDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">MpgsHpfTransferFactoryEnrolment</argument>
-            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
+            <argument name="client" xsi:type="object">MpgsHpfRestClient</argument>
             <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\ThreeDSecureValidator</argument>
             <argument name="handler" xsi:type="object">OnTap\MasterCard\Gateway\Response\ThreeDSecure\CheckHandler</argument>
         </arguments>
@@ -154,24 +165,14 @@
         <arguments>
             <argument name="requestBuilder" xsi:type="object">OnTap\MasterCard\Gateway\Request\RequestParamsBuilder</argument>
             <argument name="transferFactory" xsi:type="object">OnTap\MasterCard\Gateway\Http\GetTransferFactory</argument>
-            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
             <argument name="handler" xsi:type="object">OnTap\MasterCard\Gateway\Response\UpdateOrderHandler</argument>
             <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\ResponseValidator</argument>
         </arguments>
     </type>
-    <virtualType name="MpgsDirectUpdateOrderCommand" type="OnTap\MasterCard\Gateway\Command\UpdateOrderCommand">
-        <arguments>
-            <argument name="transferFactory" xsi:type="object">MpgsDirectGetTransferFactory</argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="MpgsDirectGetTransferFactory" type="OnTap\MasterCard\Gateway\Http\GetTransferFactory">
-        <arguments>
-            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
-        </arguments>
-    </virtualType>
     <virtualType name="MpgsHpfUpdateOrderCommand" type="OnTap\MasterCard\Gateway\Command\UpdateOrderCommand">
         <arguments>
             <argument name="transferFactory" xsi:type="object">MpgsHpfGetTransferFactory</argument>
+            <argument name="client" xsi:type="object">MpgsHpfRestClient</argument>
         </arguments>
     </virtualType>
     <virtualType name="MpgsHpfGetTransferFactory" type="OnTap\MasterCard\Gateway\Http\GetTransferFactory">
@@ -182,6 +183,7 @@
     <virtualType name="MpgsHostedUpdateOrderCommand" type="OnTap\MasterCard\Gateway\Command\UpdateOrderCommand">
         <arguments>
             <argument name="transferFactory" xsi:type="object">MpgsHostedGetTransferFactory</argument>
+            <argument name="client" xsi:type="object">MpgsHostedRestClient</argument>
         </arguments>
     </virtualType>
     <virtualType name="MpgsHostedGetTransferFactory" type="OnTap\MasterCard\Gateway\Http\GetTransferFactory">
@@ -197,7 +199,6 @@
     <virtualType name="WebhookCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
         <arguments>
             <argument name="commands" xsi:type="array">
-                <item name="tns_direct" xsi:type="string">MpgsDirectUpdateOrderCommand</item>
                 <item name="tns_hpf" xsi:type="string">MpgsHpfUpdateOrderCommand</item>
                 <item name="tns_hosted" xsi:type="string">MpgsHostedUpdateOrderCommand</item>
             </argument>
@@ -207,362 +208,15 @@
     <type name="Magento\Payment\Gateway\Command\CommandManagerPool">
         <arguments>
             <argument name="executors" xsi:type="array">
-                <item name="tns_direct" xsi:type="string">TnsDirectCommandManager</item>
                 <item name="tns_hpf" xsi:type="string">TnsHpfCommandManager</item>
             </argument>
         </arguments>
     </type>
 
-    <!-- ********** -->
-    <!-- DIRECT API -->
-    <!-- ********** -->
-    <virtualType name="TnsDirectCommandManager" type="Magento\Payment\Gateway\Command\CommandManager">
-        <arguments>
-            <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="TnsDirectInfoBlock" type="OnTap\MasterCard\Block\Direct\Info">
-        <arguments>
-            <argument name="data" xsi:type="array">
-                <item xsi:type="string" name="is_secure_mode">0</item>
-            </argument>
-            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="TnsDirectConfig" type="OnTap\MasterCard\Gateway\Config\Config">
-        <arguments>
-            <argument name="methodCode" xsi:type="const">OnTap\MasterCard\Model\Ui\Direct\ConfigProvider::METHOD_CODE</argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="TnsDirectCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
-        <arguments>
-            <argument name="commands" xsi:type="array">
-                <item name="3ds_process" xsi:type="string">TnsDirectThreeDSecureProcessCommand</item>
-                <item name="authorize" xsi:type="string">AuthorizeStrategyCommand</item>
-                <item name="authorize_simple" xsi:type="string">AuthorizeCommand</item>
-                <item name="capture" xsi:type="string">CaptureStrategyCommand</item>
-                <item name="capture_simple" xsi:type="string">TnsDirectSaleStrategyCommand</item>
-                <item name="sale" xsi:type="string">TnsDirectSaleCommand</item>
-                <item name="pre_auth_capture" xsi:type="string">TnsDirectPreAuthCaptureCommand</item>
-                <item name="refund" xsi:type="string">TnsDirectRefundCommand</item>
-                <item name="void" xsi:type="string">TnsDirectVoidCommand</item>
-                <item name="create_token" xsi:type="string">MpgsDirectCreateTokenCommand</item>
-                <item name="vault_sale" xsi:type="string">MpgsDirectVaultSaleCommand</item>
-                <item name="vault_authorize" xsi:type="string">MpgsDirectVaultAuthorizeCommand</item>
-            </argument>
-        </arguments>
-    </virtualType>
-
-    <!-- MPGS Direct Vault -->
-    <virtualType name="MpgsDirectVaultFacade" type="Magento\Vault\Model\Method\Vault">
-        <arguments>
-            <argument name="config" xsi:type="object">MpgsDirectVaultPaymentConfig</argument>
-            <argument name="valueHandlerPool" xsi:type="object">MpgsDirectVaultPaymentValueHandlerPool</argument>
-            <argument name="vaultProvider" xsi:type="object">TnsDirectFacade</argument>
-            <argument name="code" xsi:type="const">OnTap\MasterCard\Model\Ui\Direct\ConfigProvider::CC_VAULT_CODE</argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="MpgsDirectVaultPaymentConfig" type="Magento\Payment\Gateway\Config\Config">
-        <arguments>
-            <argument name="methodCode" xsi:type="const">OnTap\MasterCard\Model\Ui\Direct\ConfigProvider::CC_VAULT_CODE</argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="MpgsDirectVaultPaymentValueHandlerPool" type="VaultPaymentValueHandlerPool">
-        <arguments>
-            <argument name="handlers" xsi:type="array">
-                <item name="default" xsi:type="string">MpgsDirectVaultPaymentValueHandler</item>
-            </argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="MpgsDirectVaultPaymentValueHandler" type="VaultPaymentDefaultValueHandler">
-        <arguments>
-            <argument name="configInterface" xsi:type="object">MpgsDirectVaultPaymentConfig</argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="MpgsDirectCreateTokenCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
-        <arguments>
-            <argument name="requestBuilder" xsi:type="object">MpgsDirectCreateTokenDataBuilder</argument>
-            <argument name="transferFactory" xsi:type="object">OnTap\MasterCard\Gateway\Http\Vault\TransferFactoryCreateToken</argument>
-            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
-            <argument name="handler" xsi:type="object">MpgsDirectTokenCreateHandler</argument>
-            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\TokenCreateValidator</argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="MpgsDirectCreateTokenDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
-        <arguments>
-            <argument name="builders" xsi:type="array">
-                <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\Direct\CardDataBuilder</item>
-                <item name="extra" xsi:type="string">MpgsDirectCreateTokenExtraDataBuilder</item>
-            </argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="MpgsDirectCreateTokenExtraDataBuilder" type="OnTap\MasterCard\Gateway\Request\ExtraDataBuilder">
-        <arguments>
-            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
-            <argument name="field" xsi:type="string">custom_create_token_request_data</argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="MpgsDirectTokenCreateHandler" type="OnTap\MasterCard\Gateway\Response\TokenCreateHandler">
-        <arguments>
-            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="MpgsDirectVaultAuthorizeCommand" type="AuthorizeCommand">
-        <arguments>
-            <argument name="requestBuilder" xsi:type="object">MpgsDirectVaultAuthorizeDataBuilder</argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="MpgsDirectVaultAuthorizeDataBuilder" type="TnsDirectAuthorizeDataBuilder">
-        <arguments>
-            <argument name="builders" xsi:type="array">
-                <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\TokenDataBuilder</item>
-                <item name="csc" xsi:type="string">OnTap\MasterCard\Gateway\Request\CscDataBuilder</item>
-                <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
-                <item name="extra" xsi:type="string">MpgsDirectAuthorizeExtraDataBuilder</item>
-            </argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="MpgsDirectVaultSaleCommand" type="TnsDirectSaleCommand">
-        <arguments>
-            <argument name="requestBuilder" xsi:type="object">MpgsDirectVaultSaleDataBuilder</argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="MpgsDirectVaultSaleDataBuilder" type="TnsDirectSaleDataBuilder">
-        <arguments>
-            <argument name="builders" xsi:type="array">
-                <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\TokenDataBuilder</item>
-                <item name="csc" xsi:type="string">OnTap\MasterCard\Gateway\Request\CscDataBuilder</item>
-                <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
-                <item name="extra" xsi:type="string">MpgsDirectSaleExtraDataBuilder</item>
-            </argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="TnsDirectFacade" type="Magento\Payment\Model\Method\Adapter">
-        <arguments>
-            <argument name="code" xsi:type="const">OnTap\MasterCard\Model\Ui\Direct\ConfigProvider::METHOD_CODE</argument>
-            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form\Cc</argument>
-            <argument name="infoBlockType" xsi:type="string">TnsDirectInfoBlock</argument>
-            <argument name="valueHandlerPool" xsi:type="object">TnsValueHandlerPool</argument>
-            <argument name="validatorPool" xsi:type="object">TnsDirectValidatorPool</argument>
-            <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="TnsDirectValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
-        <arguments>
-            <argument name="validators" xsi:type="array">
-                <item name="country" xsi:type="string">TnsDirectCountryValidator</item>
-                <item name="currency" xsi:type="string">TnsDirectCurrencyValidator</item>
-            </argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="TnsDirectCurrencyValidator" type="OnTap\MasterCard\Gateway\Validator\CurrencyValidator">
-        <arguments>
-            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="TnsDirectCountryValidator" type="Magento\Payment\Gateway\Validator\CountryValidator">
-        <arguments>
-            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="TnsConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
-        <arguments>
-            <argument name="configInterface" xsi:type="object">TnsDirectConfig</argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="TnsValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
-        <arguments>
-            <argument name="handlers" xsi:type="array">
-                <item name="default" xsi:type="string">TnsConfigValueHandler</item>
-            </argument>
-        </arguments>
-    </virtualType>
-
-    <!-- Pure authorize command -->
-    <virtualType name="AuthorizeCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
-        <arguments>
-            <argument name="requestBuilder" xsi:type="object">TnsDirectAuthorizeDataBuilder</argument>
-            <argument name="transferFactory" xsi:type="object">OnTap\MasterCard\Gateway\Http\TransferFactory</argument>
-            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
-            <argument name="handler" xsi:type="object">TnsAuthorizeResponseHandler</argument>
-            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\ResponseValidator</argument>
-        </arguments>
-    </virtualType>
-
-    <!-- Authorize -->
-    <virtualType name="AuthorizeStrategyCommand" type="OnTap\MasterCard\Gateway\Command\VerificationStrategyCommand">
-        <arguments>
-            <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
-            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
-            <argument name="successCommand" xsi:type="string">authorize_simple</argument>
-        </arguments>
-    </virtualType>
-
-    <!-- Capture -->
-    <virtualType name="CaptureStrategyCommand" type="OnTap\MasterCard\Gateway\Command\VerificationStrategyCommand">
-        <arguments>
-            <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
-            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
-            <argument name="successCommand" xsi:type="string">capture_simple</argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="TnsDirectSaleStrategyCommand" type="OnTap\MasterCard\Gateway\Command\SaleStrategyCommand">
-        <arguments>
-            <argument name="commandPool" xsi:type="object">TnsDirectCommandPool</argument>
-        </arguments>
-    </virtualType>
-
-    <!-- Authorize + Capture command aka. Sale -->
-    <virtualType name="TnsDirectSaleCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
-        <arguments>
-            <argument name="requestBuilder" xsi:type="object">TnsDirectSaleDataBuilder</argument>
-            <argument name="transferFactory" xsi:type="object">OnTap\MasterCard\Gateway\Http\TransferFactory</argument>
-            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
-            <argument name="handler" xsi:type="object">TnsDirectSaleResponseHandler</argument>
-            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\ResponseValidator</argument>
-        </arguments>
-    </virtualType>
-
-    <!-- Capture a pre-authorized payment (DIRECT) -->
-    <virtualType name="TnsDirectPreAuthCaptureCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
-        <arguments>
-            <argument name="requestBuilder" xsi:type="object">TnsCaptureDataBuilder</argument>
-            <argument name="transferFactory" xsi:type="object">OnTap\MasterCard\Gateway\Http\TransferFactory</argument>
-            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
-            <argument name="handler" xsi:type="object">OnTap\MasterCard\Gateway\Response\TransactionIdHandler</argument>
-            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\ResponseValidator</argument>
-        </arguments>
-    </virtualType>
-
-    <!-- Void -->
-    <virtualType name="TnsDirectVoidCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
-        <arguments>
-            <argument name="requestBuilder" xsi:type="object">TnsVoidDataBuilder</argument>
-            <argument name="transferFactory" xsi:type="object">OnTap\MasterCard\Gateway\Http\TransferFactory</argument>
-            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
-            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\ResponseValidator</argument>
-        </arguments>
-    </virtualType>
-
-    <!-- Refund -->
-    <virtualType name="TnsDirectRefundCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
-        <arguments>
-            <argument name="requestBuilder" xsi:type="object">TnsRefundDataBuilder</argument>
-            <argument name="transferFactory" xsi:type="object">OnTap\MasterCard\Gateway\Http\TransferFactory</argument>
-            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
-            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\ResponseValidator</argument>
-        </arguments>
-    </virtualType>
-
-    <!-- Verify 3D-Secure results -->
-    <virtualType name="TnsDirectThreeDSecureProcessCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
-        <arguments>
-            <argument name="requestBuilder" xsi:type="object">Tns3DSecureVerifyDataBuilder</argument>
-            <argument name="transferFactory" xsi:type="object">OnTap\MasterCard\Gateway\Http\ThreeDSecure\TransferFactoryProcess</argument>
-            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
-            <argument name="validator" xsi:type="object">TnsDirectThreeDSecureResultValidator</argument>
-            <argument name="handler" xsi:type="object">OnTap\MasterCard\Gateway\Response\ThreeDSecure\ResultHandler</argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="TnsDirectThreeDSecureResultValidator" type="Magento\Payment\Gateway\Validator\ValidatorComposite">
-        <arguments>
-            <argument name="validators" xsi:type="array">
-                <item name="response" xsi:type="string">OnTap\MasterCard\Gateway\Validator\ThreeDSecureValidator</item>
-                <item name="session" xsi:type="string">OnTap\MasterCard\Gateway\Validator\ThreeDSecure\ProcessValidator</item>
-            </argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="TnsDirectThreeDSecureResultDataBuilder" type="OnTap\MasterCard\Gateway\Request\ThreeDSecure\ResultsDataBuilder">
-        <arguments>
-            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
-        </arguments>
-    </virtualType>
-
-    <type name="OnTap\MasterCard\Gateway\Http\TransferFactory">
-        <arguments>
-            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
-        </arguments>
-    </type>
-
-    <virtualType name="TnsLogger" type="Magento\Payment\Model\Method\Logger">
-        <arguments>
-            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="TnsDirectAuthorizeDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
-        <arguments>
-            <argument name="builders" xsi:type="array">
-                <item name="operation" xsi:type="string">AuthorizeOperationDataBuilder</item>
-                <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\Direct\CardDataBuilder</item>
-                <item name="order" xsi:type="string">OnTap\MasterCard\Gateway\Request\OrderDataBuilder</item>
-                <item name="billing" xsi:type="string">OnTap\MasterCard\Gateway\Request\BillingDataBuilder</item>
-                <item name="shipping" xsi:type="string">OnTap\MasterCard\Gateway\Request\ShippingDataBuilder</item>
-                <item name="customer" xsi:type="string">OnTap\MasterCard\Gateway\Request\CustomerDataBuilder</item>
-                <item name="3ds_results" xsi:type="string">TnsDirectThreeDSecureResultDataBuilder</item>
-                <item name="source" xsi:type="string">OnTap\MasterCard\Gateway\Request\SourceDataBuilder</item>
-                <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
-                <item name="extra" xsi:type="string">MpgsDirectAuthorizeExtraDataBuilder</item>
-            </argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="MpgsDirectAuthorizeExtraDataBuilder" type="OnTap\MasterCard\Gateway\Request\ExtraDataBuilder">
-        <arguments>
-            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
-            <argument name="field" xsi:type="string">custom_authorize_request_data</argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="TnsDirectSaleDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
-        <arguments>
-            <argument name="builders" xsi:type="array">
-                <item name="operation" xsi:type="string">SaleOperationDataBuilder</item>
-                <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\Direct\CardDataBuilder</item>
-                <item name="order" xsi:type="string">OnTap\MasterCard\Gateway\Request\OrderDataBuilder</item>
-                <item name="billing" xsi:type="string">OnTap\MasterCard\Gateway\Request\BillingDataBuilder</item>
-                <item name="shipping" xsi:type="string">OnTap\MasterCard\Gateway\Request\ShippingDataBuilder</item>
-                <item name="customer" xsi:type="string">OnTap\MasterCard\Gateway\Request\CustomerDataBuilder</item>
-                <item name="3ds_results" xsi:type="string">TnsDirectThreeDSecureResultDataBuilder</item>
-                <item name="source" xsi:type="string">OnTap\MasterCard\Gateway\Request\SourceDataBuilder</item>
-                <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
-                <item name="extra" xsi:type="string">MpgsDirectSaleExtraDataBuilder</item>
-            </argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="MpgsDirectSaleExtraDataBuilder" type="OnTap\MasterCard\Gateway\Request\ExtraDataBuilder">
-        <arguments>
-            <argument name="config" xsi:type="object">TnsDirectConfig</argument>
-            <argument name="field" xsi:type="string">custom_sale_request_data</argument>
-        </arguments>
-    </virtualType>
-
-
-    <virtualType name="TnsDirectSaleResponseHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
-        <arguments>
-            <argument name="handlers" xsi:type="array">
-                <item name="transaction" xsi:type="string">OnTap\MasterCard\Gateway\Response\TransactionIdHandler</item>
-                <item name="capture" xsi:type="string">OnTap\MasterCard\Gateway\Response\CaptureHandler</item>
-                <item name="payment" xsi:type="string">OnTap\MasterCard\Gateway\Response\PaymentHandler</item>
-            </argument>
-        </arguments>
-    </virtualType>
-
     <!-- *************** -->
     <!-- HOSTED CHECKOUT -->
     <!-- *************** -->
-    <virtualType name="TnsHostedInfoBlock" type="OnTap\MasterCard\Block\Direct\Info">
+    <virtualType name="TnsHostedInfoBlock" type="OnTap\MasterCard\Block\Info">
         <arguments>
             <argument name="data" xsi:type="array">
                 <item xsi:type="string" name="is_secure_mode">0</item>
@@ -655,7 +309,7 @@
         <arguments>
             <argument name="requestBuilder" xsi:type="object">TnsHostedSessionDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">OnTap\MasterCard\Gateway\Http\Hosted\TransferFactorySession</argument>
-            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
+            <argument name="client" xsi:type="object">MpgsHostedRestClient</argument>
             <argument name="handler" xsi:type="object">OnTap\MasterCard\Gateway\Response\Hosted\SessionHandler</argument>
             <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\ResponseValidator</argument>
         </arguments>
@@ -666,7 +320,7 @@
         <arguments>
             <argument name="requestBuilder" xsi:type="object">OnTap\MasterCard\Gateway\Request\Hosted\RetrieveOrderDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">OnTap\MasterCard\Gateway\Http\Hosted\TransferFactoryOrder</argument>
-            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
+            <argument name="client" xsi:type="object">MpgsHostedRestClient</argument>
             <argument name="handler" xsi:type="object">OnTap\MasterCard\Gateway\Response\Hosted\TransactionHandler</argument>
             <argument name="validator" xsi:type="object">TnsHostedOrderValidator</argument>
         </arguments>
@@ -677,7 +331,7 @@
         <arguments>
             <argument name="requestBuilder" xsi:type="object">TnsCaptureDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">HostedTransferFactory</argument>
-            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
+            <argument name="client" xsi:type="object">MpgsHostedRestClient</argument>
             <argument name="handler" xsi:type="object">OnTap\MasterCard\Gateway\Response\TransactionIdHandler</argument>
             <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\ResponseValidator</argument>
         </arguments>
@@ -688,7 +342,7 @@
         <arguments>
             <argument name="requestBuilder" xsi:type="object">TnsRefundDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">HostedTransferFactory</argument>
-            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
+            <argument name="client" xsi:type="object">MpgsHostedRestClient</argument>
             <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\ResponseValidator</argument>
         </arguments>
     </virtualType>
@@ -698,7 +352,7 @@
         <arguments>
             <argument name="requestBuilder" xsi:type="object">TnsVoidDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">HostedTransferFactory</argument>
-            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
+            <argument name="client" xsi:type="object">MpgsHostedRestClient</argument>
             <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\ResponseValidator</argument>
         </arguments>
     </virtualType>
@@ -761,7 +415,7 @@
         </arguments>
     </virtualType>
 
-    <virtualType name="TnsHpfInfoBlock" type="OnTap\MasterCard\Block\Direct\Info">
+    <virtualType name="TnsHpfInfoBlock" type="OnTap\MasterCard\Block\Info">
         <arguments>
             <argument name="data" xsi:type="array">
                 <item xsi:type="string" name="is_secure_mode">0</item>
@@ -867,7 +521,7 @@
         <arguments>
             <argument name="requestBuilder" xsi:type="object">MpgsHpfCreateTokenDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">MpgsHpfTrasferFactoryCreateToken</argument>
-            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
+            <argument name="client" xsi:type="object">MpgsHpfRestClient</argument>
             <argument name="handler" xsi:type="object">MpgsHpfTokenCreateHandler</argument>
             <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\TokenCreateValidator</argument>
         </arguments>
@@ -933,7 +587,7 @@
         <arguments>
             <argument name="requestBuilder" xsi:type="object">TnsVoidDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">TnsHpfTransferFactory</argument>
-            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
+            <argument name="client" xsi:type="object">MpgsHpfRestClient</argument>
             <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\ResponseValidator</argument>
         </arguments>
     </virtualType>
@@ -943,7 +597,7 @@
         <arguments>
             <argument name="requestBuilder" xsi:type="object">TnsRefundDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">TnsHpfTransferFactory</argument>
-            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
+            <argument name="client" xsi:type="object">MpgsHpfRestClient</argument>
             <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\ResponseValidator</argument>
         </arguments>
     </virtualType>
@@ -953,7 +607,7 @@
         <arguments>
             <argument name="requestBuilder" xsi:type="object">TnsHpfSaleDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">TnsHpfTransferFactory</argument>
-            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
+            <argument name="client" xsi:type="object">MpgsHpfRestClient</argument>
             <argument name="handler" xsi:type="object">TnsHpfSaleResponseHandler</argument>
             <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\ResponseValidator</argument>
         </arguments>
@@ -995,7 +649,7 @@
         <arguments>
             <argument name="requestBuilder" xsi:type="object">TnsCaptureDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">TnsHpfTransferFactory</argument>
-            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
+            <argument name="client" xsi:type="object">MpgsHpfRestClient</argument>
             <argument name="handler" xsi:type="object">OnTap\MasterCard\Gateway\Response\TransactionIdHandler</argument>
             <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\ResponseValidator</argument>
         </arguments>
@@ -1029,7 +683,7 @@
         <arguments>
             <argument name="requestBuilder" xsi:type="object">TnsHpfAuthorizeDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">TnsHpfTransferFactory</argument>
-            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
+            <argument name="client" xsi:type="object">MpgsHpfRestClient</argument>
             <argument name="handler" xsi:type="object">TnsAuthorizeResponseHandler</argument>
             <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\ResponseValidator</argument>
         </arguments>
@@ -1040,7 +694,7 @@
         <arguments>
             <argument name="requestBuilder" xsi:type="object">Tns3DSecureVerifyDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">MpgsHpfTransferFactoryProcess</argument>
-            <argument name="client" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Rest</argument>
+            <argument name="client" xsi:type="object">MpgsHpfRestClient</argument>
             <argument name="validator" xsi:type="object">TnsHpfThreeDSecureResultValidator</argument>
             <argument name="handler" xsi:type="object">OnTap\MasterCard\Gateway\Response\ThreeDSecure\ResultHandler</argument>
         </arguments>

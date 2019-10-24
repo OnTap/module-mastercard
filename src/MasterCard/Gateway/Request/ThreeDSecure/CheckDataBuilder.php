@@ -20,12 +20,10 @@ namespace OnTap\MasterCard\Gateway\Request\ThreeDSecure;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Framework\UrlInterface;
-use OnTap\MasterCard\Gateway\Request\Direct\CardDataBuilder;
 
-class CheckDataBuilder extends CardDataBuilder implements BuilderInterface
+class CheckDataBuilder implements BuilderInterface
 {
     const PAGE_GENERATION_MODE = 'CUSTOMIZED';
-    const PAGE_ENCODING = 'UTF_8';
     const RESPONSE_URL = 'tns/threedsecure/response';
 
     /**
@@ -68,26 +66,6 @@ class CheckDataBuilder extends CardDataBuilder implements BuilderInterface
         ];
 
         $code = $payment->getMethodInstance()->getCode();
-
-        if ($code === \OnTap\MasterCard\Model\Ui\Direct\ConfigProvider::METHOD_CODE) {
-            $data = array_merge($data, [
-                'sourceOfFunds' => [
-                    'provided' => [
-                        'card' => [
-                            'expiry' => [
-                                'month' => $this->formatMonth(
-                                    $payment->getAdditionalInformation(CardDataBuilder::CC_EXP_MONTH)
-                                ),
-                                'year' => $this->formatYear(
-                                    $payment->getAdditionalInformation(CardDataBuilder::CC_EXP_YEAR)
-                                ),
-                            ],
-                            'number' => $payment->getAdditionalInformation(CardDataBuilder::CC_NUMBER),
-                        ],
-                    ],
-                ],
-            ]);
-        }
 
         if ($code === \OnTap\MasterCard\Model\Ui\Hpf\ConfigProvider::METHOD_CODE) {
             $data = array_merge($data, [

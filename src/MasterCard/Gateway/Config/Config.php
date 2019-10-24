@@ -18,14 +18,9 @@
 namespace OnTap\MasterCard\Gateway\Config;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\UrlInterface;
-use Magento\Payment\Model\MethodInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Payment\Helper\Data;
-use Magento\Framework\App\ObjectManager;
-use OnTap\MasterCard\Model\Ui\Direct\ConfigProvider;
 
 class Config extends \Magento\Payment\Gateway\Config\Config
 {
@@ -55,7 +50,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     /**
      * @var string
      */
-    protected $method = 'tns_direct';
+    protected $method;
 
     /**
      * Config constructor.
@@ -83,38 +78,6 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     public function getMethod()
     {
         return $this->method;
-    }
-
-    /**
-     * @return bool
-     * @throws LocalizedException
-     * @throws NoSuchEntityException
-     */
-    public function isVaultEnabled()
-    {
-        $storeId = $this->storeManager->getStore()->getId();
-        $vaultPayment = $this->getVaultPayment();
-        return $vaultPayment->isActive($storeId);
-    }
-
-    /**
-     * @return MethodInterface
-     * @throws LocalizedException
-     */
-    protected function getVaultPayment()
-    {
-        return $this->getPaymentDataHelper()->getMethodInstance(ConfigProvider::CC_VAULT_CODE);
-    }
-
-    /**
-     * @return Data
-     */
-    protected function getPaymentDataHelper()
-    {
-        if ($this->paymentDataHelper === null) {
-            $this->paymentDataHelper = ObjectManager::getInstance()->get(Data::class);
-        }
-        return $this->paymentDataHelper;
     }
 
     /**
@@ -189,24 +152,5 @@ class Config extends \Magento\Payment\Gateway\Config\Config
             return $this->getValue('webhook_url', $storeId);
         }
         return $this->urlBuilder->getUrl(static::WEB_HOOK_RESPONSE_URL, ['_secure' => true]);
-    }
-
-    /**
-     * @param null $storeId
-     * @return array
-     */
-    public function getVaultConfig($storeId = null)
-    {
-        return [
-            'useCcv' => (bool) $this->getValue('vault_ccv', $storeId)
-        ];
-    }
-
-    /**
-     * @return string
-     */
-    public function getVaultComponent()
-    {
-        return 'OnTap_MasterCard/js/view/payment/method-renderer/direct-vault';
     }
 }

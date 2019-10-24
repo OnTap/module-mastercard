@@ -17,6 +17,10 @@
 
 namespace OnTap\MasterCard\Gateway\Config\Hpf;
 
+use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Payment\Helper\Data;
 use OnTap\MasterCard\Model\Ui\Hpf\ConfigProvider;
 
 class Config extends \OnTap\MasterCard\Gateway\Config\Config
@@ -29,7 +33,31 @@ class Config extends \OnTap\MasterCard\Gateway\Config\Config
     protected $method = 'tns_hpf';
 
     /**
+     * @return bool
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
+     */
+    public function isVaultEnabled()
+    {
+        $storeId = $this->storeManager->getStore()->getId();
+        $vaultPayment = $this->getVaultPayment();
+        return $vaultPayment->isActive($storeId);
+    }
+
+    /**
+     * @return Data
+     */
+    protected function getPaymentDataHelper()
+    {
+        if ($this->paymentDataHelper === null) {
+            $this->paymentDataHelper = ObjectManager::getInstance()->get(Data::class);
+        }
+        return $this->paymentDataHelper;
+    }
+
+    /**
      * @return \Magento\Payment\Model\MethodInterface
+     * @throws LocalizedException
      */
     protected function getVaultPayment()
     {
