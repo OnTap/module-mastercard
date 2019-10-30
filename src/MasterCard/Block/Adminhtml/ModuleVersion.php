@@ -65,7 +65,7 @@ class ModuleVersion extends Heading
     }
 
     /**
-     * @param $moduleName
+     * @param string $moduleName
      * @return string
      */
     protected function getVersionInfo($moduleName)
