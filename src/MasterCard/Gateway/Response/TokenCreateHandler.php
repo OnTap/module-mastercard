@@ -17,15 +17,20 @@
 
 namespace OnTap\MasterCard\Gateway\Response;
 
-use Magento\Payment\Gateway\Response\HandlerInterface;
-use Magento\Vault\Model\VaultPaymentInterface;
-use Magento\Payment\Gateway\Helper\SubjectReader;
-use Magento\Vault\Model\CreditCardTokenFactory;
-use Magento\Vault\Api\Data\PaymentTokenInterface;
-use Magento\Sales\Api\Data\OrderPaymentExtensionInterface;
-use Magento\Sales\Api\Data\OrderPaymentExtensionInterfaceFactory;
-use Magento\Payment\Model\InfoInterface;
+use DateInterval;
+use DateTime;
+use DateTimeZone;
+use InvalidArgumentException;
 use Magento\Payment\Gateway\ConfigInterface;
+use Magento\Payment\Gateway\Helper\SubjectReader;
+use Magento\Payment\Gateway\Response\HandlerInterface;
+use Magento\Payment\Model\InfoInterface;
+use Magento\Sales\Api\Data\OrderPaymentExtension;
+use Magento\Sales\Api\Data\OrderPaymentExtensionInterfaceFactory;
+use Magento\Vault\Api\Data\PaymentTokenInterface;
+use Magento\Vault\Model\CreditCardTokenFactory;
+use Magento\Vault\Model\VaultPaymentInterface;
+use Zend_Json;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -79,7 +84,7 @@ class TokenCreateHandler implements HandlerInterface
     protected function getToken(array $response)
     {
         if (!isset($response['token'])) {
-            throw new \InvalidArgumentException('Token not present in response');
+            throw new InvalidArgumentException('Token not present in response');
         }
         return $response['token'];
     }
@@ -91,7 +96,7 @@ class TokenCreateHandler implements HandlerInterface
      */
     private function convertDetailsToJSON($details)
     {
-        $json = \Zend_Json::encode($details);
+        $json = Zend_Json::encode($details);
         return $json ? $json : '{}';
     }
 
@@ -118,9 +123,7 @@ class TokenCreateHandler implements HandlerInterface
     }
 
     /**
-     * Get payment extension attributes
-     * @param InfoInterface $payment
-     * @return OrderPaymentExtensionInterface
+     * @inheritDoc
      */
     private function getExtensionAttributes(InfoInterface $payment)
     {
@@ -147,7 +150,7 @@ class TokenCreateHandler implements HandlerInterface
         $paymentToken->setGatewayToken($token);
 
         if (!isset($response['sourceOfFunds']['provided']['card'])) {
-            throw new \InvalidArgumentException(__("Card details not provided by tokenization"));
+            throw new InvalidArgumentException(__("Card details not provided by tokenization"));
         }
 
         $m = [];
@@ -175,7 +178,7 @@ class TokenCreateHandler implements HandlerInterface
      */
     private function getExpirationDate($exprMonth, $exprYear)
     {
-        $expDate = new \DateTime(
+        $expDate = new DateTime(
             $exprYear
             . '-'
             . $exprMonth
@@ -183,9 +186,9 @@ class TokenCreateHandler implements HandlerInterface
             . '01'
             . ' '
             . '00:00:00',
-            new \DateTimeZone('UTC')
+            new DateTimeZone('UTC')
         );
-        $expDate->add(new \DateInterval('P1M'));
+        $expDate->add(new DateInterval('P1M'));
         return $expDate->format('Y-m-d 00:00:00');
     }
 

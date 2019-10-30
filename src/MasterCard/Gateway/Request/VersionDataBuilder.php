@@ -17,12 +17,12 @@
 
 namespace OnTap\MasterCard\Gateway\Request;
 
-use Magento\Payment\Gateway\Request\BuilderInterface;
-use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\Composer\ComposerJsonFinder;
-use Magento\Framework\Component\ComponentRegistrarInterface;
-use Magento\Framework\Component\ComponentRegistrar;
 use Composer\IO\BufferIO;
+use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\Component\ComponentRegistrar;
+use Magento\Framework\Component\ComponentRegistrarInterface;
+use Magento\Framework\Composer\ComposerJsonFinder;
+use Magento\Payment\Gateway\Request\BuilderInterface;
 
 class VersionDataBuilder implements BuilderInterface
 {
@@ -48,11 +48,12 @@ class VersionDataBuilder implements BuilderInterface
      *
      * @param array $buildSubject
      * @return array
+     * @throws \Exception
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function build(array $buildSubject)
     {
-        $directoryList = new DirectoryList(BP);
+        $directoryList = new DirectoryList(dirname(__DIR__));
         $composerJsonFinder = new ComposerJsonFinder($directoryList);
         $productMetadata = new \Magento\Framework\App\ProductMetadata($composerJsonFinder);
 

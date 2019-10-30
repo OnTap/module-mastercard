@@ -58,10 +58,7 @@ class SaleStrategyCommand implements CommandInterface
         $paymentInfo = $paymentDO->getPayment();
         ContextHelper::assertOrderPayment($paymentInfo);
 
-        if (
-            $paymentInfo instanceof Order\Payment
-            && $paymentInfo->getAuthorizationTransaction()
-        ) {
+        if ($paymentInfo instanceof Order\Payment && $paymentInfo->getAuthorizationTransaction()) {
             // Capture an already authorized payment
             return $this->commandPool
                 ->get(self::PRE_AUTH_CAPTURE)

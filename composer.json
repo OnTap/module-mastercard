@@ -1,10 +1,11 @@
 {
   "name": "ontap/module-mastercard",
   "description": "Official Magento2 Plugin to integrate with MasterCard Payments",
-  "type": "magento2-module",
-  "version": "103.2.4",
+  "type": "library",
+  "version": "103.3.0",
   "license": "Apache-2.0",
   "require": {
+    "php": "^7.0",
     "magento/framework": "^102.0.0",
     "magento/module-sales": "^102.0.0",
     "magento/module-checkout": "^100.1.0",
@@ -13,11 +14,26 @@
     "magento/module-vault": "^100.2.0|^101.0.0"
   },
   "autoload": {
-    "files": [
-      "src/MasterCard/registration.php"
-    ],
     "psr-4": {
       "OnTap\\MasterCard\\": "src/MasterCard/"
     }
+  },
+  "require-dev": {
+    "phpstan/phpstan-shim": "^0.11",
+    "squizlabs/php_codesniffer": "^3.5"
+  },
+  "repositories": {
+    "0": {
+      "type": "composer",
+      "url": "https://repo.magento.com/"
+    }
+  },
+  "scripts": {
+    "phpcs": [
+      "phpcs --standard=ruleset.xml --extensions=php,phtml --encoding=utf-8 --tab-width=4 -sp src"
+    ],
+    "phpstan": [
+      "@php vendor/phpstan/phpstan-shim/phpstan.phar analyse -c phpstan-src.neon src --level 1 --no-progress"
+    ]
   }
 }

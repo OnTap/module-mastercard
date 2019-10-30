@@ -17,9 +17,9 @@
 
 namespace OnTap\MasterCard\Gateway\Validator;
 
+use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Validator\AbstractValidator;
 use Magento\Payment\Gateway\Validator\ResultInterface;
-use Magento\Payment\Gateway\Helper\SubjectReader;
 
 class ResponseValidator extends AbstractValidator
 {
@@ -128,7 +128,7 @@ class ResponseValidator extends AbstractValidator
 
         $errors = [];
 
-        switch($response['result']) {
+        switch ($response['result']) {
             case self::SUCCESS:
                 break;
 

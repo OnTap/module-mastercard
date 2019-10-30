@@ -1,0 +1,3 @@
+parameters:
+    ignoreErrors:
+        - '#Parameter \$[a-zA-Z0-9]+Factory of method [a-zA-Z0-9\\]+::__construct\(\) has invalid typehint type [a-zA-Z0-9\\]+Factory\.#'

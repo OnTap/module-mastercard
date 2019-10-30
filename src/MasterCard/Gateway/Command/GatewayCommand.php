@@ -17,15 +17,17 @@
 
 namespace OnTap\MasterCard\Gateway\Command;
 
+use Magento\Payment\Gateway\Command\CommandException;
+use Magento\Payment\Gateway\Command\GatewayCommand as BaseGatewayCommand;
 use Magento\Payment\Gateway\CommandInterface;
+use Magento\Payment\Gateway\ErrorMapper\ErrorMessageMapperInterface;
+use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Http\ClientInterface;
-use OnTap\MasterCard\Gateway\Http\TransferFactoryInterface;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Payment\Gateway\Validator\ValidatorInterface;
-use Magento\Payment\Gateway\Command\GatewayCommand as BaseGatewayCommand;
-use Magento\Payment\Gateway\Command\CommandException;
-use Magento\Payment\Gateway\Helper\SubjectReader;
+use OnTap\MasterCard\Gateway\Http\TransferFactoryInterface;
+use Psr\Log\LoggerInterface;
 
 class GatewayCommand extends BaseGatewayCommand implements CommandInterface
 {
@@ -55,19 +57,34 @@ class GatewayCommand extends BaseGatewayCommand implements CommandInterface
     private $validator;
 
     /**
+     * GatewayCommand constructor.
      * @param BuilderInterface $requestBuilder
-     * @param TransferFactoryInterface $transferFactory
+     * @param \Magento\Payment\Gateway\Http\TransferFactoryInterface $transferFactory
      * @param ClientInterface $client
-     * @param HandlerInterface $handler
-     * @param ValidatorInterface $validator
+     * @param LoggerInterface $logger
+     * @param HandlerInterface|null $handler
+     * @param ValidatorInterface|null $validator
+     * @param ErrorMessageMapperInterface|null $errorMessageMapper
      */
     public function __construct(
         BuilderInterface $requestBuilder,
-        TransferFactoryInterface $transferFactory,
+        \Magento\Payment\Gateway\Http\TransferFactoryInterface $transferFactory,
         ClientInterface $client,
+        LoggerInterface $logger,
         HandlerInterface $handler = null,
-        ValidatorInterface $validator = null
+        ValidatorInterface $validator = null,
+        ErrorMessageMapperInterface $errorMessageMapper = null
     ) {
+        parent::__construct(
+            $requestBuilder,
+            $transferFactory,
+            $client,
+            $logger,
+            $handler,
+            $validator,
+            $errorMessageMapper
+        );
+
         $this->requestBuilder = $requestBuilder;
         $this->transferFactory = $transferFactory;
         $this->client = $client;

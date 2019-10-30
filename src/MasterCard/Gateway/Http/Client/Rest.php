@@ -123,7 +123,6 @@ class Rest implements ClientInterface
             );
 
             $response = $this->converter->convert($this->read());
-
         } catch (\Exception $e) {
             throw new ClientException(__($e->getMessage()));
         } finally {
