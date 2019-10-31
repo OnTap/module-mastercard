@@ -19,3 +19,15 @@ test:7.1:
   image: php:7.1-cli-stretch
   script:
     - COMPOSER_ALLOW_SUPERUSER=1 make test
+
+build:
+  artifacts:
+    paths:
+      - module-mastercard.zip
+    expire_in: 30 days
+  only:
+    - /^build\/.*$/
+  except:
+    - branches
+  script:
+    - COMPOSER_ALLOW_SUPERUSER=1 make dist
