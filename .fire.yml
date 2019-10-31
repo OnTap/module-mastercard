@@ -1,6 +1,0 @@
-version: 2
-build_options:
-  branches_whitelist:
-    - master
-pipeline:
-  dockerfile: Dockerfile
