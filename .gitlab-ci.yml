@@ -1,0 +1,21 @@
+before_script:
+  - bash ci/docker_install.sh > /dev/null
+
+cache:
+  paths:
+    - vendor/
+
+test:7.3:
+  image: php:7.3-cli-stretch
+  script:
+    - COMPOSER_ALLOW_SUPERUSER=1 make test
+
+test:7.2:
+  image: php:7.2-cli-stretch
+  script:
+    - COMPOSER_ALLOW_SUPERUSER=1 make test
+
+test:7.1:
+  image: php:7.1-cli-stretch
+  script:
+    - COMPOSER_ALLOW_SUPERUSER=1 make test
