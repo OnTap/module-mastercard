@@ -1,41 +1,61 @@
-before_script:
-  - bash ci/docker_install.sh > /dev/null
+stages:
+  - build
+  - test
+  - compile
 
 cache:
   paths:
-    - vendor/
+    - .cache/
 
-test:7.3:
-  image: php:7.3-cli-stretch
-  only:
-    - branches
-  script:
-    - COMPOSER_ALLOW_SUPERUSER=1 make test
+variables:
+  COMPOSER_ALLOW_SUPERUSER: 1
+  COMPOSER_CACHE_DIR: "$CI_PROJECT_DIR/.cache/composer"
 
-test:7.2:
-  image: php:7.2-cli-stretch
-  only:
-    - branches
-  script:
-    - COMPOSER_ALLOW_SUPERUSER=1 make test
-
-test:7.1:
-  image: php:7.1-cli-stretch
-  only:
-    - branches
-  script:
-    - COMPOSER_ALLOW_SUPERUSER=1 make test
-
-build:
-  image: php:7.3-cli-stretch
+build:7.3:
+  image: ontap/php:7.3
   stage: build
   artifacts:
     paths:
-      - module-mastercard.zip
-    expire_in: 30 days
+      - _build/
+    expire_in: 1 hour
   only:
-    - /^build\/.*$/
-  except:
     - branches
   script:
-    - COMPOSER_ALLOW_SUPERUSER=1 make dist
+    - mkdir -p _build/magento
+    - git clone . _build/module
+    - cd _build/magento
+    - composer.phar create-project --no-install --repository=https://repo.magento.com/ magento/project-community-edition:2.3.3 .
+    - composer.phar config repositories.ontap composer https://packages.ontapgroup.com/
+    - composer.phar config repositories.modules path $CI_PROJECT_DIR/_build/module
+    - composer.phar require --dev --no-update --no-suggest ontap/ambassador:^1.0
+    - composer.phar require --no-update --no-suggest --prefer-source ontap/module-admin-analytics:^1.0
+    - composer.phar install --no-progress --no-suggest --optimize-autoloader
+    - php ./vendor/bin/install-ambassador
+
+test:phpcs:7.3:
+  image: ontap/php:7.3
+  stage: test
+  only:
+    - branches
+  script:
+    - cd _build/magento
+    - make phpcs
+
+test:phpstan:7.3:
+  image: ontap/php:7.3
+  stage: test
+  only:
+    - branches
+  script:
+    - cd _build/magento
+    - make phpstan
+
+setup:di:compile:7.3:
+  image: ontap/php:7.3
+  stage: compile
+  only:
+    - branches
+  script:
+    - cd _build/magento
+    - php bin/magento module:enable --all
+    - php -d memory_limit=1G bin/magento setup:di:compile --ansi --no-interaction
