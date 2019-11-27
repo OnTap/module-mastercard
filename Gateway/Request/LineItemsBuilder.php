@@ -80,17 +80,8 @@ class LineItemsBuilder implements BuilderInterface
         $config->setMethodCode($payment->getMethodInstance()->getCode());
 
         if ($config->isSendLineItems($order->getStoreId())) {
-            /** @var \Magento\Quote\Model\Quote|null $quote */
-            $quote = $payment->getQuote();
-
-            if ($quote !== null) {
-                $address = $quote->isVirtual() ? $quote->getBillingAddress() : $quote->getShippingAddress();
-                $shippingAmount = $address->getBaseShippingAmount();
-                $taxAmount = $address->getBaseTaxAmount();
-            } else {
-                $shippingAmount = $payment->getBaseShippingAmount();
-                $taxAmount = $payment->getOrder()->getBaseTaxAmount();
-            }
+            $shippingAmount = $payment->getBaseShippingAmount();
+            $taxAmount = $payment->getOrder()->getBaseTaxAmount();
 
             return [
                 'order' => [

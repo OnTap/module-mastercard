@@ -19,9 +19,6 @@ namespace OnTap\MasterCard\Gateway\Http\Client;
 
 use Zend_Http_Response;
 
-/**
- * Class ResponseFactory
- */
 class ResponseFactory
 {
     /**

@@ -418,7 +418,7 @@
             <argument name="builders" xsi:type="array">
                 <item name="operation" xsi:type="string">CreateSessionOperationDataBuilder</item>
                 <item name="interaction" xsi:type="string">OnTap\MasterCard\Gateway\Request\Hosted\InteractionBuilder</item>
-                <item name="order" xsi:type="string">OnTap\MasterCard\Gateway\Request\OrderDataBuilder</item>
+                <item name="order" xsi:type="string">OnTap\MasterCard\Gateway\Request\QuoteDataBuilder</item>
                 <item name="id" xsi:type="string">OnTap\MasterCard\Gateway\Request\OrderIdBuilder</item>
                 <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
                 <item name="extra" xsi:type="string">MpgsHostedCreateSessionExtraDataBuilder</item>

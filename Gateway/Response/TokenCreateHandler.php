@@ -17,15 +17,21 @@
 
 namespace OnTap\MasterCard\Gateway\Response;
 
+use DateInterval;
+use DateTime;
+use DateTimeZone;
+use Exception;
+use InvalidArgumentException;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Payment\Model\InfoInterface;
 use Magento\Sales\Api\Data\OrderPaymentExtensionInterface;
 use Magento\Sales\Api\Data\OrderPaymentExtensionInterfaceFactory;
+use Magento\Vault\Api\Data\PaymentTokenFactoryInterface;
 use Magento\Vault\Api\Data\PaymentTokenInterface;
-use Magento\Vault\Model\CreditCardTokenFactory;
 use Magento\Vault\Model\VaultPaymentInterface;
 use OnTap\MasterCard\Gateway\Config\ConfigInterface;
+use Zend_Json;
 
 class TokenCreateHandler implements HandlerInterface
 {
@@ -35,7 +41,7 @@ class TokenCreateHandler implements HandlerInterface
     protected $vaultPayment;
 
     /**
-     * @var CreditCardTokenFactory
+     * @var PaymentTokenFactoryInterface
      */
     protected $paymentTokenFactory;
 
@@ -53,13 +59,13 @@ class TokenCreateHandler implements HandlerInterface
      * TokenCreateHandler constructor.
      * @param ConfigInterface $config
      * @param VaultPaymentInterface $vaultPayment
-     * @param CreditCardTokenFactory $paymentTokenFactory
+     * @param PaymentTokenFactoryInterface $paymentTokenFactory
      * @param OrderPaymentExtensionInterfaceFactory $paymentExtensionFactory
      */
     public function __construct(
         ConfigInterface $config,
         VaultPaymentInterface $vaultPayment,
-        CreditCardTokenFactory $paymentTokenFactory,
+        PaymentTokenFactoryInterface $paymentTokenFactory,
         OrderPaymentExtensionInterfaceFactory $paymentExtensionFactory
     ) {
         $this->config = $config;
@@ -83,7 +89,7 @@ class TokenCreateHandler implements HandlerInterface
     protected function getToken(array $response)
     {
         if (!isset($response['token'])) {
-            throw new \InvalidArgumentException('Token not present in response');
+            throw new InvalidArgumentException('Token not present in response');
         }
         return $response['token'];
     }
@@ -95,7 +101,7 @@ class TokenCreateHandler implements HandlerInterface
      */
     private function convertDetailsToJSON($details)
     {
-        $json = \Zend_Json::encode($details);
+        $json = Zend_Json::encode($details);
         return $json ? $json : '{}';
     }
 
@@ -105,6 +111,7 @@ class TokenCreateHandler implements HandlerInterface
      * @param array $handlingSubject
      * @param array $response
      * @return void
+     * @throws Exception
      */
     public function handle(array $handlingSubject, array $response)
     {
@@ -139,11 +146,13 @@ class TokenCreateHandler implements HandlerInterface
     /**
      * @param array $response
      * @return PaymentTokenInterface
+     * @throws Exception
      */
     protected function getPaymentToken(array $response)
     {
         $token = $this->getToken($response);
         $paymentToken = $this->paymentTokenFactory->create();
+        $paymentToken->setType(PaymentTokenFactoryInterface::TOKEN_TYPE_CREDIT_CARD);
 
         if (empty($token)) {
             $paymentToken->setGatewayToken('');
@@ -153,7 +162,7 @@ class TokenCreateHandler implements HandlerInterface
         $paymentToken->setGatewayToken($token);
 
         if (!isset($response['sourceOfFunds']['provided']['card'])) {
-            throw new \InvalidArgumentException(__("Card details not provided by tokenization"));
+            throw new InvalidArgumentException(__("Card details not provided by tokenization"));
         }
 
         $m = [];
@@ -178,10 +187,11 @@ class TokenCreateHandler implements HandlerInterface
      * @param string $exprMonth
      * @param string $exprYear
      * @return string
+     * @throws Exception
      */
     private function getExpirationDate($exprMonth, $exprYear)
     {
-        $expDate = new \DateTime(
+        $expDate = new DateTime(
             $exprYear
             . '-'
             . $exprMonth
@@ -189,9 +199,9 @@ class TokenCreateHandler implements HandlerInterface
             . '01'
             . ' '
             . '00:00:00',
-            new \DateTimeZone('UTC')
+            new DateTimeZone('UTC')
         );
-        $expDate->add(new \DateInterval('P1M'));
+        $expDate->add(new DateInterval('P1M'));
         return $expDate->format('Y-m-d 00:00:00');
     }
 

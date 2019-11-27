@@ -49,7 +49,6 @@ class VersionDataBuilder implements BuilderInterface
      * @param array $buildSubject
      * @return array
      * @throws \Exception
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function build(array $buildSubject)
     {

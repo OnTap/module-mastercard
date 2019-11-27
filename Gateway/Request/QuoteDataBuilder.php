@@ -22,7 +22,7 @@ use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Sales\Model\Order\Payment;
 use OnTap\MasterCard\Gateway\Config\ConfigFactory;
 
-class OrderDataBuilder implements BuilderInterface
+class QuoteDataBuilder implements BuilderInterface
 {
     /**
      * @var ConfigFactory
@@ -57,7 +57,7 @@ class OrderDataBuilder implements BuilderInterface
         $config = $this->configFactory->create();
         $config->setMethodCode($payment->getMethod());
 
-        $total = $order->getGrandTotalAmount();
+        $total = $payment->getQuote()->getBaseGrandTotal();
 
         return [
             'order' => [

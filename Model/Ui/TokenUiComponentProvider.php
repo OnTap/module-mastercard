@@ -26,9 +26,6 @@ use OnTap\MasterCard\Gateway\Config\ConfigFactory;
 use OnTap\MasterCard\Gateway\Config\Config;
 use OnTap\MasterCard\Gateway\Config\VaultConfigProvider;
 
-/**
- * Class TokenUiComponentProvider
- */
 class TokenUiComponentProvider implements TokenUiComponentProviderInterface
 {
     /**

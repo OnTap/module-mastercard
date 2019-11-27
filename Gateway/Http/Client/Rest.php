@@ -16,15 +16,12 @@
  */
 namespace OnTap\MasterCard\Gateway\Http\Client;
 
-use Magento\Payment\Model\Method\Logger;
 use Magento\Payment\Gateway\Http\ClientException;
 use Magento\Payment\Gateway\Http\ClientInterface;
-use Magento\Payment\Gateway\Http\TransferInterface;
 use Magento\Payment\Gateway\Http\ConverterInterface;
+use Magento\Payment\Gateway\Http\TransferInterface;
+use Magento\Payment\Model\Method\Logger;
 
-/**
- * Class Rest
- */
 class Rest implements ClientInterface
 {
     /**

@@ -28,11 +28,6 @@ use Magento\Vault\Model\Ui\VaultConfigProvider;
 use OnTap\MasterCard\Gateway\Response\ThreeDSecure\CheckHandler;
 use OnTap\MasterCard\Gateway\Config\ConfigInterface;
 
-/**
- * Class VerificationStrategyCommand
- * @package OnTap\MasterCard\Gateway\Command
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
 class VerificationStrategyCommand implements CommandInterface
 {
     const PROCESS_3DS_RESULT = '3ds_process';

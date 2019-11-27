@@ -31,6 +31,7 @@ class SessionHandler implements HandlerInterface
      * @param array $handlingSubject
      * @param array $response
      * @return void
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function handle(array $handlingSubject, array $response)
     {
@@ -43,7 +44,6 @@ class SessionHandler implements HandlerInterface
         $payment->setAdditionalInformation('session', [
             'id' => $session['id'],
             'version' => $session['version'],
-            static::SUCCESS_INDICATOR => $response[static::SUCCESS_INDICATOR] //@todo remove this
         ]);
         $payment->setAdditionalInformation(static::SUCCESS_INDICATOR, $response[static::SUCCESS_INDICATOR]);
     }

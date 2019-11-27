@@ -20,9 +20,6 @@ namespace OnTap\MasterCard\Model\Adminhtml\Source;
 use Magento\Framework\Option\ArrayInterface;
 use Magento\Payment\Model\Method\AbstractMethod;
 
-/**
- * Class PaymentAction provides source for backend payment_action selector
- */
 class PaymentAction implements ArrayInterface
 {
     /**

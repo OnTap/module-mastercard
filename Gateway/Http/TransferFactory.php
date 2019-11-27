@@ -23,10 +23,6 @@ use Magento\Payment\Gateway\Http\TransferBuilder;
 use Magento\Payment\Gateway\Http\TransferInterface;
 use OnTap\MasterCard\Gateway\Http\Client\Rest;
 
-/**
- * Class TransferFactory
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
 class TransferFactory implements TransferFactoryInterface
 {
     /**

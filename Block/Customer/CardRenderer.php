@@ -19,11 +19,6 @@ namespace OnTap\MasterCard\Block\Customer;
 use Magento\Vault\Api\Data\PaymentTokenInterface;
 use Magento\Vault\Block\AbstractCardRenderer;
 
-/**
- * Class CardRenderer
- * @package OnTap\MasterCard\Block\Customer
- * @method array getAvailableProviders()
- */
 class CardRenderer extends AbstractCardRenderer
 {
     /**

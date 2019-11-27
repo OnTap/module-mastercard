@@ -29,10 +29,6 @@ use Magento\Payment\Gateway\Command\CommandPoolFactory;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
 use OnTap\MasterCard\Gateway\Response\ThreeDSecure\CheckHandler;
 
-/**
- * Class Check
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
 class Check extends Action
 {
     const CHECK_ENROLMENT = '3ds_enrollment';

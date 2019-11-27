@@ -33,10 +33,6 @@ use Magento\Payment\Model\Method\LoggerFactory;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Api\TransactionRepositoryInterface;
 
-/**
- * Class Response
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
 class Response extends \Magento\Framework\App\Action\Action implements CsrfAwareActionInterface
 {
     const X_HEADER_SECRET = 'X-Notification-Secret';
@@ -107,8 +103,6 @@ class Response extends \Magento\Framework\App\Action\Action implements CsrfAware
      * @param PaymentDataObjectFactory $paymentDataObjectFactory
      * @param CommandPoolInterface $commandPool
      * @param \OnTap\MasterCard\Gateway\Config\Config[] $configProviders
-     *
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         Context $context,
@@ -227,7 +221,6 @@ class Response extends \Magento\Framework\App\Action\Action implements CsrfAware
      *
      * @return \Magento\Framework\Controller\ResultInterface|ResponseInterface
      * @throws \Exception
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function execute()
     {

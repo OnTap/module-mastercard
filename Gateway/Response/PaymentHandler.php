@@ -17,6 +17,7 @@
 
 namespace OnTap\MasterCard\Gateway\Response;
 
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Sales\Model\Order\Payment;
@@ -30,6 +31,7 @@ class PaymentHandler implements HandlerInterface
      * @param array $handlingSubject
      * @param array $response
      * @return void
+     * @throws LocalizedException
      */
     public function handle(array $handlingSubject, array $response)
     {
@@ -55,7 +57,7 @@ class PaymentHandler implements HandlerInterface
     /**
      * @param Payment $payment
      * @param array $response
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
     public static function importPaymentResponse(Payment $payment, $response)
     {
