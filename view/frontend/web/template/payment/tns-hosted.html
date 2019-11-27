@@ -41,7 +41,7 @@
             <div class="primary">
                 <button data-role="review-save"
                         type="submit"
-                        data-bind="click: createPaymentSession, attr: {title: $t('Pay')}, css: {disabled: isCheckoutDisabled()}"
+                        data-bind="click: savePaymentAndCheckout, attr: {title: $t('Pay')}, css: {disabled: isCheckoutDisabled()}"
                         class="button action primary checkout">
                     <span data-bind="text: buttonTitle()"></span>
                 </button>

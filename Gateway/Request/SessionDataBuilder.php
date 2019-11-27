@@ -19,25 +19,10 @@ namespace OnTap\MasterCard\Gateway\Request;
 
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
-use Magento\Sales\Model\Order\Payment;
-use OnTap\MasterCard\Gateway\Config\ConfigFactory;
+use Magento\Payment\Gateway\Helper\ContextHelper;
 
-class OrderDataBuilder implements BuilderInterface
+class SessionDataBuilder implements BuilderInterface
 {
-    /**
-     * @var ConfigFactory
-     */
-    protected $configFactory;
-
-    /**
-     * OrderDataBuilder constructor.
-     * @param ConfigFactory $configFactory
-     */
-    public function __construct(ConfigFactory $configFactory)
-    {
-        $this->configFactory = $configFactory;
-    }
-
     /**
      * Builds ENV request
      *
@@ -47,26 +32,18 @@ class OrderDataBuilder implements BuilderInterface
     public function build(array $buildSubject)
     {
         $paymentDO = SubjectReader::readPayment($buildSubject);
-        $order = $paymentDO->getOrder();
 
-        $storeId = $order->getStoreId();
-
-        /** @var Payment $payment */
         $payment = $paymentDO->getPayment();
+        ContextHelper::assertOrderPayment($payment);
 
-        $config = $this->configFactory->create();
-        $config->setMethodCode($payment->getMethod());
-
-        $total = $order->getGrandTotalAmount();
-        if ($total === null) {
-            $total = $payment->getQuote()->getBaseGrandTotal();
-        }
+        $session = $payment->getAdditionalInformation('session');
 
         return [
-            'order' => [
-                'amount' => sprintf('%.2F', $total),
-                'currency' => $order->getCurrencyCode(),
-                'notificationUrl' => $config->getWebhookNotificationUrl($storeId),
+            'session' => [
+                'id' => $session['id'],
+            ],
+            'sourceOfFunds' => [
+                'type' => 'CARD'
             ]
         ];
     }

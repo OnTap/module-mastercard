@@ -127,6 +127,11 @@
                         <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
                         <config_path>payment/tns_hpf/specificcountry</config_path>
                     </field>
+                    <field id="send_line_items" translate="label" type="select" sortOrder="155" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Send Line Items</label>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <config_path>payment/tns_hpf/send_line_items</config_path>
+                    </field>
                     <field id="sort_order" translate="label" type="text" sortOrder="160" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Sort Order</label>
                         <frontend_class>validate-number</frontend_class>
@@ -232,6 +237,11 @@
                         <label>Payment from Specific Countries</label>
                         <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
                         <config_path>payment/tns_hosted/specificcountry</config_path>
+                    </field>
+                    <field id="send_line_items" translate="label" type="select" sortOrder="135" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Send Line Items</label>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <config_path>payment/tns_hosted/send_line_items</config_path>
                     </field>
                     <field id="sort_order" translate="label" type="text" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Sort Order</label>

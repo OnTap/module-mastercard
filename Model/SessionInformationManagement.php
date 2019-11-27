@@ -77,21 +77,20 @@ class SessionInformationManagement implements SessionInformationManagementInterf
 
     /**
      * {@inheritDoc}
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function createNewPaymentSession(
         $cartId,
         \Magento\Quote\Api\Data\PaymentInterface $paymentMethod,
         \Magento\Quote\Api\Data\AddressInterface $billingAddress = null
     ) {
-        if ($billingAddress) {
-            $this->billingAddressManagement->assign($cartId, $billingAddress);
-        }
-
         /** @var \Magento\Quote\Model\Quote $quote */
         $quote = $this->quoteRepository->getActive($cartId);
 
-        $quote->setReservedOrderId('');
-        $quote->reserveOrderId();
+        $quote->getPayment()->setQuote($quote);
+        $quote->getPayment()->importData(
+            $paymentMethod->getData()
+        );
 
         $this->commandPool
             ->get(static::CREATE_HOSTED_SESSION)
@@ -99,9 +98,8 @@ class SessionInformationManagement implements SessionInformationManagementInterf
                 'payment' => $this->paymentDataObjectFactory->create($quote->getPayment())
             ]);
 
+        $this->quoteRepository->save($quote);
         $session = $quote->getPayment()->getAdditionalInformation('session');
-
-        $quote->save();
 
         return [
             'id' => (string) $session['id'],

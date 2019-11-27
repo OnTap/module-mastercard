@@ -19,8 +19,8 @@ namespace OnTap\MasterCard\Gateway\Config;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\UrlInterface;
-use Magento\Store\Model\StoreManagerInterface;
 use Magento\Payment\Helper\Data;
+use Magento\Store\Model\StoreManagerInterface;
 
 class Config extends \Magento\Payment\Gateway\Config\Config
 {
@@ -155,10 +155,11 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     }
 
     /**
+     * @param int|null $storeId
      * @return bool
      */
-    public function isVaultEnabled()
+    public function isSendLineItems($storeId = null)
     {
-        return false;
+        return (bool) $this->getValue('send_line_items', $storeId);
     }
 }

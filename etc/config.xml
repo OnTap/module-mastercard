@@ -29,8 +29,9 @@
                 <model>TnsHostedFacade</model>
                 <payment_action>authorize</payment_action>
                 <order_status>processing</order_status>
+                <send_line_items>1</send_line_items>
 
-                <api_version>43</api_version>
+                <api_version>53</api_version>
                 <api_gateway>api_eu</api_gateway>
                 <api_eu>https://eu-gateway.mastercard.com/</api_eu>
                 <api_as>https://ap-gateway.mastercard.com/</api_as>
@@ -66,8 +67,9 @@
                 <model>TnsHpfFacade</model>
                 <payment_action>authorize</payment_action>
                 <order_status>processing</order_status>
+                <send_line_items>1</send_line_items>
 
-                <api_version>52</api_version>
+                <api_version>53</api_version>
                 <api_gateway>api_eu</api_gateway>
                 <api_eu>https://eu-gateway.mastercard.com/</api_eu>
                 <api_as>https://ap-gateway.mastercard.com/</api_as>

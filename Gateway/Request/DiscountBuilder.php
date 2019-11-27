@@ -17,12 +17,11 @@
 
 namespace OnTap\MasterCard\Gateway\Request;
 
-use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
-use Magento\Sales\Model\Order\Payment;
+use Magento\Payment\Gateway\Request\BuilderInterface;
 use OnTap\MasterCard\Gateway\Config\ConfigFactory;
 
-class OrderDataBuilder implements BuilderInterface
+class DiscountBuilder implements BuilderInterface
 {
     /**
      * @var ConfigFactory
@@ -30,7 +29,7 @@ class OrderDataBuilder implements BuilderInterface
     protected $configFactory;
 
     /**
-     * OrderDataBuilder constructor.
+     * LineItemsBuilder constructor.
      * @param ConfigFactory $configFactory
      */
     public function __construct(ConfigFactory $configFactory)
@@ -39,35 +38,33 @@ class OrderDataBuilder implements BuilderInterface
     }
 
     /**
-     * Builds ENV request
-     *
-     * @param array $buildSubject
-     * @return array
+     * @inheritDoc
      */
     public function build(array $buildSubject)
     {
         $paymentDO = SubjectReader::readPayment($buildSubject);
+        $payment = $paymentDO->getPayment();
         $order = $paymentDO->getOrder();
 
-        $storeId = $order->getStoreId();
-
-        /** @var Payment $payment */
-        $payment = $paymentDO->getPayment();
-
         $config = $this->configFactory->create();
-        $config->setMethodCode($payment->getMethod());
+        $config->setMethodCode($payment->getMethodInstance()->getCode());
 
-        $total = $order->getGrandTotalAmount();
-        if ($total === null) {
-            $total = $payment->getQuote()->getBaseGrandTotal();
+        if ($config->isSendLineItems($order->getStoreId())) {
+            $discountAmount = $payment->getOrder()->getBaseDiscountAmount() * -1;
+
+            if ($discountAmount > 0) {
+                return [
+                    'order' => [
+                        'discount' => [
+                            'amount' => sprintf('%.2F', $discountAmount)
+                        ]
+                    ]
+                ];
+            } else {
+                return [];
+            }
+        } else {
+            return [];
         }
-
-        return [
-            'order' => [
-                'amount' => sprintf('%.2F', $total),
-                'currency' => $order->getCurrencyCode(),
-                'notificationUrl' => $config->getWebhookNotificationUrl($storeId),
-            ]
-        ];
     }
 }

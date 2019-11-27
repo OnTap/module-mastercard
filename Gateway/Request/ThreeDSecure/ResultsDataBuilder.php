@@ -17,10 +17,10 @@
 
 namespace OnTap\MasterCard\Gateway\Request\ThreeDSecure;
 
-use Magento\Payment\Gateway\Request\BuilderInterface;
-use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\ConfigInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
+use Magento\Payment\Gateway\Helper\SubjectReader;
+use Magento\Payment\Gateway\Request\BuilderInterface;
 use OnTap\MasterCard\Gateway\Response\ThreeDSecure\CheckHandler;
 
 class ResultsDataBuilder implements BuilderInterface
@@ -81,16 +81,8 @@ class ResultsDataBuilder implements BuilderInterface
         }
 
         $paymentDO = SubjectReader::readPayment($buildSubject);
-        //$tdsResult = $paymentDO->getPayment()->getAdditionalInformation(ResultHandler::THREEDSECURE_RESULT);
-
         return [
             '3DSecureId' => $paymentDO->getPayment()->getAdditionalInformation('3DSecureId'),
-            /*'3DSecure' => [
-                'acsEci' => $tdsResult['acsEci'],
-                'authenticationToken' => $tdsResult['authenticationToken'],
-                'xid' => $tdsResult['xid'],
-                'enrollmentStatus' => $this->getEnrollmentStatus($paymentDO)
-            ]*/
         ];
     }
 }

@@ -19,18 +19,27 @@ namespace OnTap\MasterCard\Gateway\Request\Hosted;
 
 use Magento\Payment\Gateway\Request\BuilderInterface;
 
-class RetrieveOrderDataBuilder implements BuilderInterface
+class InteractionBuilder implements BuilderInterface
 {
     /**
-     * Builds ENV request
-     *
-     * @param array $buildSubject
-     * @return array
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @inheritDoc
      */
     public function build(array $buildSubject)
     {
-        // Rest API requires no additional data here
-        return [];
+        return [
+            'interaction' => [
+                'merchant' => [
+                    'name' => 'Magento'
+                ],
+                'displayControl' => [
+                    'customerEmail' => 'HIDE',
+                    'billingAddress' => 'HIDE',
+                    'orderSummary' => 'HIDE',
+                    'paymentTerms' => 'HIDE',
+                    'shipping' => 'HIDE',
+                ],
+                'operation' => 'NONE'
+            ]
+        ];
     }
 }

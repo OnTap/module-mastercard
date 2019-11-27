@@ -23,10 +23,11 @@ define(
         'Magento_Checkout/js/model/full-screen-loader',
         'Magento_Ui/js/modal/alert',
         'OnTap_MasterCard/js/view/payment/hosted-adapter',
+        'Magento_Checkout/js/action/set-payment-information',
         'OnTap_MasterCard/js/action/create-session',
         'mage/translate'
     ],
-    function (Component, $, ko, quote, fullScreenLoader, alert, paymentAdapter, createSessionAction, $t) {
+    function (Component, $, ko, quote, fullScreenLoader, alert, paymentAdapter, setPaymentInformationAction, createSessionAction, $t) {
         'use strict';
 
         return Component.extend({
@@ -89,10 +90,20 @@ define(
                 this.adapterLoaded(true);
             },
 
-            createPaymentSession: function () {
+            savePaymentAndCheckout: function () {
                 this.isPlaceOrderActionAllowed(false);
                 this.buttonTitle(this.buttonTitleDisabled);
 
+                var action = setPaymentInformationAction(this.messageContainer, this.getData());
+
+                $.when(action).fail($.proxy(function () {
+                    this.isPlaceOrderActionAllowed(true);
+                }, this)).done(
+                    this.createPaymentSession.bind(this)
+                );
+            },
+
+            createPaymentSession: function () {
                 var action = createSessionAction(
                     this.getData(),
                     this.messageContainer
@@ -110,7 +121,6 @@ define(
 
                         paymentAdapter.configureApi(
                             config.merchant_username,
-                            quote,
                             session[0],
                             session[1]
                         );

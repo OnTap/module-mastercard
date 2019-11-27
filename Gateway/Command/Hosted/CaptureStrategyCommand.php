@@ -17,17 +17,18 @@
 
 namespace OnTap\MasterCard\Gateway\Command\Hosted;
 
+use Magento\Framework\Exception\NotFoundException;
 use Magento\Payment\Gateway\Command;
 use Magento\Payment\Gateway\CommandInterface;
 use Magento\Payment\Gateway\ConfigInterface;
-use Magento\Sales\Model\Order\Payment;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use Magento\Payment\Gateway\Helper\ContextHelper;
 use Magento\Payment\Gateway\Helper\SubjectReader;
+use Magento\Sales\Model\Order\Payment;
 
 class CaptureStrategyCommand implements CommandInterface
 {
-    const RETRIEVE_ORDER = 'retrieve_order';
+    const SALE = 'sale';
     const CAPTURE = 'capture_simple';
 
     /**
@@ -57,6 +58,8 @@ class CaptureStrategyCommand implements CommandInterface
      *
      * @param array $commandSubject
      * @return null|Command\ResultInterface
+     * @throws Command\CommandException
+     * @throws NotFoundException
      */
     public function execute(array $commandSubject)
     {
@@ -69,12 +72,12 @@ class CaptureStrategyCommand implements CommandInterface
 
         if ($paymentInfo->getAuthorizationTransaction()) {
             return $this->commandPool
-                ->get(static::CAPTURE)
+                ->get(self::CAPTURE)
                 ->execute($commandSubject);
         }
 
         return $this->commandPool
-            ->get(static::RETRIEVE_ORDER)
+            ->get(self::SALE)
             ->execute($commandSubject);
     }
 }

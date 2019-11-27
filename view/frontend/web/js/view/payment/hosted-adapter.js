@@ -35,30 +35,9 @@ define([
             node.setAttribute('data-cancel', 'window.tnsCancelCallback');
             node.setAttribute('data-complete', 'window.tnsCompletedCallback');
         },
-        safeNumber: function (num) {
-            return parseFloat(num).toFixed(2);
-        },
-        configureApi: function (merchant, quote, sessionId, sessionVersion) {
-            var totals = quote.totals();
+        configureApi: function (merchant, sessionId, sessionVersion) {
             Checkout.configure({
                 merchant: merchant,
-                order: {
-                    amount: this.safeNumber(totals.base_grand_total),
-                    currency: totals.quote_currency_code,
-                    description: 'Ordered items'
-                },
-                interaction: {
-                    merchant: {
-                        name: 'Magento'
-                    },
-                    displayControl: {
-                        customerEmail: 'HIDE',
-                        billingAddress: 'HIDE',
-                        orderSummary: 'HIDE',
-                        paymentTerms: 'HIDE',
-                        shipping: 'HIDE'
-                    }
-                },
                 session: {
                     id: sessionId,
                     version: sessionVersion
