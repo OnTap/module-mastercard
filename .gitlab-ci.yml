@@ -28,7 +28,9 @@ build:7.3:
     - composer.phar config repositories.ontap composer https://packages.ontapgroup.com/
     - composer.phar config repositories.modules path $CI_PROJECT_DIR/_build/module
     - composer.phar require --dev --no-update --no-suggest ontap/ambassador:^1.0
-    - composer.phar require --no-update --no-suggest --prefer-source ontap/module-mastercard:*
+    - composer.phar config minimum-stability dev
+    - composer.phar config prefer-stable true
+    - composer.phar require --no-update --no-suggest --prefer-source ontap/module-mastercard:dev-master
     - composer.phar install --no-progress --no-suggest --optimize-autoloader
     - php ./vendor/bin/install-ambassador
 
