@@ -17,6 +17,7 @@
 
 namespace OnTap\MasterCard\Controller\Threedsecure;
 
+use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Request\InvalidRequestException;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\ResponseInterface;
@@ -24,8 +25,11 @@ use Magento\Framework\App\Action\Context;
 use Magento\Checkout\Model\Session;
 use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Framework\App\CsrfAwareActionInterface;
+use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 
-class Response extends \Magento\Framework\App\Action\Action implements CsrfAwareActionInterface
+class Response extends Action implements CsrfAwareActionInterface
 {
     /**
      * @var Session
@@ -56,8 +60,9 @@ class Response extends \Magento\Framework\App\Action\Action implements CsrfAware
     /**
      * Dispatch request
      *
-     * @return \Magento\Framework\Controller\ResultInterface|ResponseInterface
-     * @throws \Magento\Framework\Exception\NotFoundException
+     * @return ResultInterface|ResponseInterface
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
      */
     public function execute()
     {

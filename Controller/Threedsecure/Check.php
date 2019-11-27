@@ -24,6 +24,8 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\NotFoundException;
 use Magento\Payment\Gateway\Command\CommandPoolFactory;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
@@ -80,7 +82,8 @@ class Check extends Action
      * Dispatch request
      *
      * @return ResultInterface|ResponseInterface
-     * @throws NotFoundException
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
      */
     public function execute()
     {

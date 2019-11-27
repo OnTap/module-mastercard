@@ -21,6 +21,10 @@ use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\Action;
+use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\LayoutFactory;
 use Magento\Checkout\Model\Session;
 use OnTap\MasterCard\Gateway\Response\ThreeDSecure\CheckHandler;
@@ -64,12 +68,13 @@ class Form extends Action
     /**
      * Dispatch request
      *
-     * @return \Magento\Framework\Controller\ResultInterface|ResponseInterface
-     * @throws \Magento\Framework\Exception\NotFoundException
+     * @return ResultInterface|ResponseInterface
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
      */
     public function execute()
     {
-        /* @var \Magento\Framework\View\Element\Template $block */
+        /* @var Template $block */
         $block = $this->layoutFactory
             ->create()
             ->createBlock('\OnTap\MasterCard\Block\Threedsecure\Form');
