@@ -24,7 +24,7 @@ build:7.3:
   script:
     - mkdir -p _build/magento
     - git clone . _build/module
-    - (cd _build/module && git checkout -b master)
+    - (cd _build/module && git checkout -b $CI_COMMIT_REF_NAME)
     - cd _build/magento
     - composer.phar create-project --no-install --repository=https://repo.magento.com/ magento/project-community-edition:2.3.3 .
     - composer.phar config repositories.ontap composer https://packages.ontapgroup.com/
@@ -32,7 +32,7 @@ build:7.3:
     - composer.phar require --dev --no-update --no-suggest ontap/ambassador:^1.0
     - composer.phar config minimum-stability dev
     - composer.phar config prefer-stable true
-    - composer.phar require --no-update --no-suggest --prefer-source ontap/module-mastercard:dev-master
+    - composer.phar require --no-update --no-suggest --prefer-source ontap/module-mastercard:dev-$CI_COMMIT_REF_NAME
     - composer.phar install --no-progress --no-suggest --optimize-autoloader
     - php ./vendor/bin/install-ambassador
 
