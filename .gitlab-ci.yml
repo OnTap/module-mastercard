@@ -24,6 +24,7 @@ build:7.3:
   script:
     - mkdir -p _build/magento
     - git clone . _build/module
+    - (cd _build/module && git checkout -b master)
     - cd _build/magento
     - composer.phar create-project --no-install --repository=https://repo.magento.com/ magento/project-community-edition:2.3.3 .
     - composer.phar config repositories.ontap composer https://packages.ontapgroup.com/
