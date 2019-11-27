@@ -176,6 +176,10 @@
                         <label>Title</label>
                         <config_path>payment/tns_hosted/title</config_path>
                     </field>
+                    <field id="form_title" translate="label" type="text" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Payment Modal Title</label>
+                        <config_path>payment/tns_hosted/form_title</config_path>
+                    </field>
                     <field id="api_username" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>API Username</label>
                         <config_path>payment/tns_hosted/api_username</config_path>

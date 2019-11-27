@@ -26,6 +26,7 @@
             <tns_hosted>
                 <active>0</active>
                 <title>Hosted Checkout</title>
+                <form_title>Magento</form_title>
                 <model>TnsHostedFacade</model>
                 <payment_action>authorize</payment_action>
                 <order_status>processing</order_status>
@@ -59,7 +60,6 @@
                 <can_capture_partial>1</can_capture_partial>
 
                 <paymentInfoKeys>gateway_code,txn_result,card_scheme,card_number,card_expiry_date,auth_code</paymentInfoKeys>
-                <!--<privateInfoKeys></privateInfoKeys>-->
             </tns_hosted>
             <tns_hpf>
                 <active>0</active>
@@ -108,7 +108,6 @@
                 <vault_ccv>1</vault_ccv>
 
                 <paymentInfoKeys>gateway_code,txn_result,card_scheme,card_number,card_expiry_date,session,auth_code</paymentInfoKeys>
-                <!--<privateInfoKeys></privateInfoKeys>-->
             </tns_hpf>
             <tns_hpf_vault>
                 <model>MpgsHpfVaultFacade</model>

@@ -17,19 +17,47 @@
 
 namespace OnTap\MasterCard\Gateway\Request\Hosted;
 
+use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Request\BuilderInterface;
+use Magento\Sales\Model\Order\Payment;
+use OnTap\MasterCard\Gateway\Config\ConfigFactory;
 
 class InteractionBuilder implements BuilderInterface
 {
+    /**
+     * @var ConfigFactory
+     */
+    protected $configFactory;
+
+    /**
+     * OrderDataBuilder constructor.
+     * @param ConfigFactory $configFactory
+     */
+    public function __construct(ConfigFactory $configFactory)
+    {
+        $this->configFactory = $configFactory;
+    }
+
     /**
      * @inheritDoc
      */
     public function build(array $buildSubject)
     {
+        $paymentDO = SubjectReader::readPayment($buildSubject);
+        $order = $paymentDO->getOrder();
+
+        $storeId = $order->getStoreId();
+
+        /** @var Payment $payment */
+        $payment = $paymentDO->getPayment();
+
+        $config = $this->configFactory->create();
+        $config->setMethodCode($payment->getMethod());
+
         return [
             'interaction' => [
                 'merchant' => [
-                    'name' => 'Magento'
+                    'name' => $config->getValue('form_title', $storeId)
                 ],
                 'displayControl' => [
                     'customerEmail' => 'HIDE',
