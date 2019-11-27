@@ -58,7 +58,7 @@ class OrderDataBuilder implements BuilderInterface
         $config->setMethodCode($payment->getMethod());
 
         $total = $order->getGrandTotalAmount();
-        if ($total === null) {
+        if ($total == null) {
             $total = $payment->getQuote()->getBaseGrandTotal();
         }
 
