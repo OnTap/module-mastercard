@@ -21,6 +21,7 @@
         </label>
         <div class="control">
             <input type="number" id="tns_hpf_cc_number" class="input-text" value="" readonly />
+            <div class="field-error" id="tns_hpf_cc_number-error" data-bind="visible: false">This is a required field.</div>
         </div>
     </div>
     <div class="field date required" data-bind="attr: {id: getCode() + '_cc_type_exp_div'}">
@@ -40,6 +41,7 @@
                                     optionsCaption: $t('Month'),
                                     value: creditCardExpMonth">
                         </select>
+                        <div class="field-error" id="tns_hpf_expiration-error" data-bind="visible: false">This is a required field.</div>
                     </div>
                 </div>
                 <div class="field no-label year">
@@ -53,6 +55,7 @@
                                     optionsCaption: $t('Year'),
                                     value: creditCardExpYear">
                         </select>
+                        <div class="field-error" id="tns_hpf_expiration_yr-error" data-bind="visible: false">This is a required field.</div>
                     </div>
                 </div>
             </div>
@@ -64,6 +67,7 @@
         </label>
         <div class="control _with-tooltip">
             <input type="number" id="tns_hpf_cc_cid" class="input-text" value="" readonly />
+            <div class="field-error" id="tns_hpf_cc_cid-error" data-bind="visible: false">This is a required field.</div>
 
             <div class="field-tooltip toggle">
                 <span class="field-tooltip-action action-cvv"

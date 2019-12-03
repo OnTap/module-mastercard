@@ -19,14 +19,13 @@ define(
         'jquery',
         'Magento_Checkout/js/view/payment/default',
         'Magento_Checkout/js/model/payment/additional-validators',
-        'Magento_Ui/js/modal/alert',
         'mage/translate',
         'Magento_Checkout/js/action/set-payment-information',
         'uiLayout',
         'Magento_Checkout/js/model/full-screen-loader',
         'Magento_Vault/js/view/payment/vault-enabler'
     ],
-    function ($, ccFormComponent, additionalValidators, alert, $t, setPaymentInformationAction, layout, fullScreenLoader, VaultEnabler) {
+    function ($, ccFormComponent, additionalValidators, $t, setPaymentInformationAction, layout, fullScreenLoader, VaultEnabler) {
         'use strict';
 
         return ccFormComponent.extend({
@@ -188,22 +187,26 @@ define(
             },
 
             formSessionUpdate: function (response) {
+                var fields = this.getCardFields();
+                for (var field in fields.card) {
+                    if (!fields.card.hasOwnProperty(field)) {
+                        continue;
+                    }
+                    $(fields.card[field] + '-error').hide();
+                }
+
                 if (response.status === "fields_in_error") {
                     if (response.errors) {
-                        var errors = this.errorMap(),
-                            message = "";
+                        var errors = this.errorMap();
                         for (var err in response.errors) {
                             if (!response.errors.hasOwnProperty(err)) {
                                 continue;
                             }
-                            message += '<p>' + errors[err] + '</p>';
+                            var message = errors[err],
+                                elem_id = fields.card[err] + '-error';
+
+                            $(elem_id).text(message).show();
                         }
-                        alert({
-                            content: message,
-                            closed: function () {
-                                this.isPlaceOrderActionAllowed(true);
-                            }.bind(this)
-                        });
                         fullScreenLoader.stopLoader();
                     }
                 }
@@ -250,6 +253,7 @@ define(
             getCardFields: function () {
                 return {
                     card: {
+                        cardNumber: "#tns_hpf_cc_number",
                         number: "#tns_hpf_cc_number",
                         expiryMonth: "#tns_hpf_expiration",
                         expiryYear: "#tns_hpf_expiration_yr",
