@@ -150,6 +150,7 @@ define(
             completedCallback: function(resultIndicator, sessionVersion) {
                 this.resultIndicator = resultIndicator;
                 this.sessionVersion = sessionVersion;
+                this.isPlaceOrderActionAllowed(true);
                 this.placeOrder();
             },
 
