@@ -218,6 +218,7 @@ define(
                             $.proxy(this.threeDSecureCheckFailed, this)
                         );
                     } else {
+                        this.isPlaceOrderActionAllowed(true);
                         this.placeOrder();
                     }
                 }
@@ -290,6 +291,7 @@ define(
             },
 
             threeDSecureCheckSuccess: function () {
+                this.isPlaceOrderActionAllowed(true);
                 this.placeOrder();
             },
 
