@@ -18,7 +18,7 @@
     <default>
         <mpgs>
             <adminnotification>
-                <feed_url>https://www.ontapgroup.com/mastercard.rss</feed_url>
+                <feed_url>https://raw.githubusercontent.com/Mastercard-Gateway/gateway-modules-common/master/magento2.rss</feed_url>
                 <frequency>1</frequency>
             </adminnotification>
         </mpgs>
