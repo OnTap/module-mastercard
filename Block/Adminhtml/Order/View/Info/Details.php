@@ -70,4 +70,18 @@ class Details extends \Magento\Framework\View\Element\Template
         }
         return '-';
     }
+
+    /**
+     * @return string
+     */
+    public function toHtml()
+    {
+        if (!in_array($this->getPayment()->getMethod(), [
+            \OnTap\MasterCard\Model\Ui\Hpf\ConfigProvider::METHOD_CODE,
+            \OnTap\MasterCard\Model\Ui\Hosted\ConfigProvider::METHOD_CODE,
+        ])) {
+            return '';
+        }
+        return parent::toHtml();
+    }
 }
