@@ -17,12 +17,12 @@
 
 namespace OnTap\MasterCard\Gateway\Request;
 
-use Composer\IO\BufferIO;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Component\ComponentRegistrar;
 use Magento\Framework\Component\ComponentRegistrarInterface;
 use Magento\Framework\Composer\ComposerJsonFinder;
 use Magento\Payment\Gateway\Request\BuilderInterface;
+use Magento\Framework\Composer\ComposerFactory;
 
 class VersionDataBuilder implements BuilderInterface
 {
@@ -60,12 +60,12 @@ class VersionDataBuilder implements BuilderInterface
             ComponentRegistrar::MODULE,
             self::MODULE_NAME
         );
+
         $directoryList = new DirectoryList($path);
         $composerJsonFinder = new ComposerJsonFinder($directoryList);
-        $moduleMetaData = \Composer\Factory::create(
-            new BufferIO(),
-            $composerJsonFinder->findComposerJson()
-        );
+
+        $composerFactory = new ComposerFactory($directoryList, $composerJsonFinder);
+        $moduleMetaData = $composerFactory->create();
 
         $versionString = sprintf(
             static::VERSION_PATTERN,
