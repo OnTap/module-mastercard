@@ -17,8 +17,8 @@
 
 namespace OnTap\MasterCard\Gateway\Request;
 
-use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
+use Magento\Payment\Gateway\Request\BuilderInterface;
 
 class CustomerDataBuilder implements BuilderInterface
 {
@@ -44,7 +44,7 @@ class CustomerDataBuilder implements BuilderInterface
                 'email' => $billingAddress->getEmail(),
                 'firstName' => $billingAddress->getFirstname(),
                 'lastName' => $billingAddress->getLastname(),
-                'phone' => $billingAddress->getTelephone()
+                'phone' => $billingAddress->getTelephone() ?: null
             ]
         ];
     }

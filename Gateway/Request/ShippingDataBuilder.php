@@ -81,7 +81,7 @@ class ShippingDataBuilder implements BuilderInterface
                     'email' => $shippingAddress->getEmail(),
                     'firstName' => $shippingAddress->getFirstname(),
                     'lastName' => $shippingAddress->getLastname(),
-                    'phone' => $shippingAddress->getTelephone()
+                    'phone' => $shippingAddress->getTelephone() ?: null
                 ]
             ]
         ];
