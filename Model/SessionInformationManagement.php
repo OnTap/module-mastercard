@@ -76,8 +76,7 @@ class SessionInformationManagement implements SessionInformationManagementInterf
     }
 
     /**
-     * {@inheritDoc}
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @inheritDoc
      */
     public function createNewPaymentSession(
         $cartId,
@@ -108,7 +107,7 @@ class SessionInformationManagement implements SessionInformationManagementInterf
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function createNewGuestPaymentSession(
         $cartId,

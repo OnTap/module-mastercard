@@ -22,7 +22,7 @@ interface SessionInformationManagementInterface
     /**
      * createNewPaymentSession
      *
-     * @param int $cartId
+     * @param string $cartId
      * @param \Magento\Quote\Api\Data\PaymentInterface $paymentMethod
      * @param \Magento\Quote\Api\Data\AddressInterface|null $billingAddress
      * @throws \Magento\Framework\Exception\CouldNotSaveException
@@ -35,7 +35,7 @@ interface SessionInformationManagementInterface
     );
 
     /**
-     * @param int $cartId
+     * @param string $cartId
      * @param string $email
      * @param \Magento\Quote\Api\Data\PaymentInterface $paymentMethod
      * @param \Magento\Quote\Api\Data\AddressInterface|null $billingAddress
