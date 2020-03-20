@@ -3,6 +3,7 @@
   "description": "Official Magento2 Plugin to integrate with MasterCard Payments",
   "type": "magento2-module",
   "license": "Apache-2.0",
+  "version": "103.3.2",
   "require": {
     "magento/framework": "^102.0.0",
     "magento/module-sales": "^102.0.0",
