@@ -122,7 +122,8 @@ define(
                         paymentAdapter.configureApi(
                             config.merchant_username,
                             session[0],
-                            session[1]
+                            session[1],
+                            config.form_locale
                         );
 
                         paymentAdapter.showPayment();

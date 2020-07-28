@@ -162,4 +162,9 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     {
         return (bool) $this->getValue('send_line_items', $storeId);
     }
+
+    public function getFormLocale($storeId = null)
+    {
+        return $this->getValue('form_locale', $storeId);
+    }
 }

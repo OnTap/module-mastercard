@@ -200,6 +200,11 @@
                         <config_path>payment/tns_hosted/webhook_url</config_path>
                         <comment>If left blank, will be chosen automatically</comment>
                     </field>
+                    <field id="form_locale" translate="label comment" type="text" sortOrder="82" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Form Locale</label>
+                        <config_path>payment/tns_hosted/form_locale</config_path>
+                        <comment>Override browser based locale by specifying a language identifier or IETF language tag e.g. en_US, es, fr_CA.</comment>
+                    </field>
                     <field id="api_gateway" translate="label" type="select" sortOrder="89" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Gateway</label>
                         <source_model>OnTap\MasterCard\Model\Adminhtml\Source\Gateway</source_model>

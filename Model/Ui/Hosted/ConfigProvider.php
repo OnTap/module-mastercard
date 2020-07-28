@@ -59,6 +59,7 @@ class ConfigProvider implements ConfigProviderInterface
                 self::METHOD_CODE => [
                     'merchant_username' => $this->config->getMerchantId(),
                     'component_url' => $this->config->getComponentUrl(),
+                    'form_locale' => $this->config->getFormLocale(),
                 ]
             ]
         ];
