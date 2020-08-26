@@ -126,6 +126,8 @@ class GatewayCommand implements CommandInterface
                 $response
             );
         }
+
+        return null;
     }
 
     /**

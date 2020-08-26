@@ -39,13 +39,18 @@ class CustomerDataBuilder implements BuilderInterface
             return [];
         }
 
+        $customerData = [
+            'email' => $billingAddress->getEmail(),
+            'firstName' => $billingAddress->getFirstname(),
+            'lastName' => $billingAddress->getLastname(),
+        ];
+
+        if ($billingAddress->getTelephone()) {
+            $customerData['phone'] = $billingAddress->getTelephone();
+        }
+
         return [
-            'customer' => [
-                'email' => $billingAddress->getEmail(),
-                'firstName' => $billingAddress->getFirstname(),
-                'lastName' => $billingAddress->getLastname(),
-                'phone' => $billingAddress->getTelephone() ?: null
-            ]
+            'customer' => $customerData,
         ];
     }
 }

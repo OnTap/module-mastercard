@@ -66,23 +66,30 @@ class ShippingDataBuilder implements BuilderInterface
             $regionCode = null;
         }
 
+        $shippingAddressData = [
+            'city' => $shippingAddress->getCity(),
+            'company' => $shippingAddress->getCompany() != "" ? $shippingAddress->getCompany() : null,
+            'country' => $country->getThreeLetterAbbreviation(),
+            'postcodeZip' => $shippingAddress->getPostcode(),
+            'stateProvince' => $regionCode,
+            'street' => $shippingAddress->getStreetLine1(),
+            'street2' => $shippingAddress->getStreetLine2() != "" ? $shippingAddress->getStreetLine2() : null
+        ];
+
+        $contactData = [
+            'email' => $shippingAddress->getEmail(),
+            'firstName' => $shippingAddress->getFirstname(),
+            'lastName' => $shippingAddress->getLastname(),
+        ];
+
+        if ($shippingAddress->getTelephone()) {
+            $contactData['phone'] = $shippingAddress->getTelephone();
+        }
+
         return [
             'shipping' => [
-                'address' => [
-                    'city' => $shippingAddress->getCity(),
-                    'company' => $shippingAddress->getCompany() != "" ? $shippingAddress->getCompany() : null,
-                    'country' => $country->getThreeLetterAbbreviation(),
-                    'postcodeZip' => $shippingAddress->getPostcode(),
-                    'stateProvince' => $regionCode,
-                    'street' => $shippingAddress->getStreetLine1(),
-                    'street2' => $shippingAddress->getStreetLine2() != "" ? $shippingAddress->getStreetLine2() : null
-                ],
-                'contact' => [
-                    'email' => $shippingAddress->getEmail(),
-                    'firstName' => $shippingAddress->getFirstname(),
-                    'lastName' => $shippingAddress->getLastname(),
-                    'phone' => $shippingAddress->getTelephone() ?: null
-                ]
+                'address' => $shippingAddressData,
+                'contact' => $contactData
             ]
         ];
     }

@@ -8,8 +8,9 @@ cache:
     - .cache/
 
 variables:
+  COMPOSER_MIRROR_PATH_REPOS: 1
   COMPOSER_ALLOW_SUPERUSER: 1
-  COMPOSER_MEMORY_LIMIT: 2048M
+  COMPOSER_MEMORY_LIMIT: -1
   COMPOSER_CACHE_DIR: "$CI_PROJECT_DIR/.cache/composer"
 
 build:7.3:
@@ -24,15 +25,15 @@ build:7.3:
   script:
     - mkdir -p _build/magento
     - git clone . _build/module
-    - (cd _build/module && git checkout -b $CI_COMMIT_REF_NAME)
+    - (cd _build/module && git checkout -b master && sed -i '/"version"/d' composer.json)
     - cd _build/magento
-    - composer.phar create-project --no-install --repository=https://repo.magento.com/ magento/project-community-edition:2.3.3 .
+    - composer.phar create-project --no-install --repository=https://repo.magento.com/ magento/project-community-edition:2.3.5 .
     - composer.phar config repositories.ontap composer https://packages.ontapgroup.com/
     - composer.phar config repositories.modules path $CI_PROJECT_DIR/_build/module
     - composer.phar require --dev --no-update --no-suggest ontap/ambassador:^1.0
     - composer.phar config minimum-stability dev
     - composer.phar config prefer-stable true
-    - composer.phar require --no-update --no-suggest --prefer-source ontap/module-mastercard:dev-$CI_COMMIT_REF_NAME
+    - composer.phar require --no-update --no-suggest ontap/module-mastercard:dev-master
     - composer.phar install --no-progress --no-suggest --optimize-autoloader
     - php ./vendor/bin/install-ambassador
 
