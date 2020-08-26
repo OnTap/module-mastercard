@@ -143,5 +143,7 @@ class VerificationStrategyCommand implements CommandInterface
         $this->commandPool
             ->get($this->successCommand)
             ->execute($commandSubject);
+
+        return null;
     }
 }
