@@ -68,9 +68,10 @@ class Response extends Action implements CsrfAwareActionInterface
     {
         $paRes = $this->getRequest()->getParam('PaRes');
 
-        $payment = $this->session->getQuote()->getPayment();
+        $quote = $this->session->getQuote();
+        $payment = $quote->getPayment();
         $payment->setAdditionalInformation('PaRes', $paRes);
-        $payment->save();
+        $quote->save();
 
         $resultRaw = $this->rawFactory->create();
         return $resultRaw
