@@ -17,14 +17,17 @@
 
 namespace OnTap\MasterCard\Gateway\Request\ThreeDSecure;
 
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Framework\UrlInterface;
+use OnTap\MasterCard\Model\Ui\Hpf\ConfigProvider;
 
 class CheckDataBuilder implements BuilderInterface
 {
-    const PAGE_GENERATION_MODE = 'CUSTOMIZED';
-    const RESPONSE_URL = 'tns/threedsecure/response';
+    public const PAGE_GENERATION_MODE = 'CUSTOMIZED';
+    public const RESPONSE_URL = 'tns/threedsecure/response';
+    public const RESPONSE_SID_PARAMETER = 'tns_sid';
 
     /**
      * @var UrlInterface
@@ -32,7 +35,6 @@ class CheckDataBuilder implements BuilderInterface
     protected $urlHelper;
 
     /**
-     * ThreeDSecureDataBuilder constructor.
      * @param UrlInterface $urlHelper
      */
     public function __construct(UrlInterface $urlHelper)
@@ -45,6 +47,8 @@ class CheckDataBuilder implements BuilderInterface
      *
      * @param array $buildSubject
      * @return array
+     *
+     * @throws LocalizedException
      */
     public function build(array $buildSubject)
     {
@@ -67,7 +71,7 @@ class CheckDataBuilder implements BuilderInterface
 
         $code = $payment->getMethodInstance()->getCode();
 
-        if ($code === \OnTap\MasterCard\Model\Ui\Hpf\ConfigProvider::METHOD_CODE) {
+        if ($code === ConfigProvider::METHOD_CODE) {
             $data = array_merge($data, [
                 'session' => [
                     'id' => $payment->getAdditionalInformation('session')
