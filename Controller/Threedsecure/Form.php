@@ -77,7 +77,7 @@ class Form extends Action
         /* @var Template $block */
         $block = $this->layoutFactory
             ->create()
-            ->createBlock('\OnTap\MasterCard\Block\Threedsecure\Form');
+            ->createBlock(\OnTap\MasterCard\Block\Threedsecure\Form::class);
 
         $payment = $this->session->getQuote()->getPayment();
 

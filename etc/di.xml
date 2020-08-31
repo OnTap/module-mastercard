@@ -350,7 +350,7 @@
             </argument>
         </arguments>
     </virtualType>
-    
+
     <!-- Capture -->
     <virtualType name="TnsHostedCaptureStrategyCommand" type="OnTap\MasterCard\Gateway\Command\Hosted\CaptureStrategyCommand">
         <arguments>
@@ -779,4 +779,8 @@
             <argument name="config" xsi:type="object">TnsHpfConfig</argument>
         </arguments>
     </virtualType>
+
+    <type name="Magento\Framework\Session\SessionManager">
+        <plugin name="OnTap_MasterCard::Magento\Framework\Session\SessionManager::beforeStart" type="OnTap\MasterCard\Plugin\Magento\Framework\Session\SessionManagerPlugin" />
+    </type>
 </config>
