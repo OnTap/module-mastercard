@@ -86,8 +86,13 @@ class Config extends \Magento\Payment\Gateway\Config\Config
      */
     public function getMerchantId($storeId = null)
     {
+        $currentMerchantId = $this->getValue('api_username', $storeId);
         if ((bool) $this->getValue('test', $storeId)) {
-            return static::TEST_PREFIX . $this->getValue('api_username', $storeId);
+            if (substr($currentMerchantId, 0, strlen(self::TEST_PREFIX)) === self::TEST_PREFIX) {
+                return $this->getValue('api_username', $storeId);
+            } else {
+                return self::TEST_PREFIX . $this->getValue('api_username', $storeId);
+            }
         } else {
             return $this->getValue('api_username', $storeId);
         }

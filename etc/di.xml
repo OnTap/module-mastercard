@@ -169,6 +169,32 @@
             <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\ResponseValidator</argument>
         </arguments>
     </type>
+    <virtualType name="HpfInformationTransferFactory" type="OnTap\MasterCard\Gateway\Http\InformationTransferFactory">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsHpfConfig</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsCheckHpfGatewayCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">OnTap\MasterCard\Gateway\Request\NullDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">HpfInformationTransferFactory</argument>
+            <argument name="client" xsi:type="object">MpgsHpfRestClient</argument>
+            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\PaymentOptionsInquiryValidator</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="HostedInformationTransferFactory" type="OnTap\MasterCard\Gateway\Http\InformationTransferFactory">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsHostedConfig</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsCheckHostedGatewayCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">OnTap\MasterCard\Gateway\Request\NullDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">HostedInformationTransferFactory</argument>
+            <argument name="client" xsi:type="object">MpgsHostedRestClient</argument>
+            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\PaymentOptionsInquiryValidator</argument>
+        </arguments>
+    </virtualType>
     <virtualType name="MpgsHpfUpdateOrderCommand" type="OnTap\MasterCard\Gateway\Command\UpdateOrderCommand">
         <arguments>
             <argument name="transferFactory" xsi:type="object">MpgsHpfGetTransferFactory</argument>
@@ -204,6 +230,19 @@
             </argument>
         </arguments>
     </virtualType>
+    <virtualType name="MetaCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="check_gateway_tns_hpf" xsi:type="string">MpgsCheckHpfGatewayCommand</item>
+                <item name="check_gateway_tns_hosted" xsi:type="string">MpgsCheckHostedGatewayCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="OnTap\MasterCard\Observer\ConfigSaveAfter">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">MetaCommandPool</argument>
+        </arguments>
+    </type>
 
     <type name="Magento\Payment\Gateway\Command\CommandManagerPool">
         <arguments>
@@ -782,5 +821,14 @@
 
     <type name="Magento\Framework\Session\SessionManager">
         <plugin name="OnTap_MasterCard::Magento\Framework\Session\SessionManager::beforeStart" type="OnTap\MasterCard\Plugin\Magento\Framework\Session\SessionManagerPlugin" />
+    </type>
+
+    <type name="OnTap\MasterCard\Observer\ConfigSaveAfter">
+        <arguments>
+            <argument name="methods" xsi:type="array">
+                <item name="tns_hpf" xsi:type="string">tns_hpf</item>
+                <item name="tns_hosted" xsi:type="string">tns_hosted</item>
+            </argument>
+        </arguments>
     </type>
 </config>
