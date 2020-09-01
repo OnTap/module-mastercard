@@ -15,6 +15,7 @@ use Magento\Payment\Gateway\Command\CommandPoolInterface;
 use OnTap\MasterCard\Model\SelectedStore;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
+use Psr\Log\LoggerInterface;
 
 class ConfigSaveAfter implements ObserverInterface
 {
@@ -59,6 +60,11 @@ class ConfigSaveAfter implements ObserverInterface
     protected $config;
 
     /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * ConfigSaveAfter constructor.
      * @param WebsiteRepositoryInterface $websiteRepository
      * @param GroupRepositoryInterface $groupRepository
@@ -67,6 +73,7 @@ class ConfigSaveAfter implements ObserverInterface
      * @param CommandPoolInterface $commandPool
      * @param SelectedStore $selectedStore
      * @param ScopeConfigInterface $config
+     * @param LoggerInterface $logger
      * @param array $methods
      */
     public function __construct(
@@ -77,6 +84,7 @@ class ConfigSaveAfter implements ObserverInterface
         CommandPoolInterface $commandPool,
         SelectedStore $selectedStore,
         ScopeConfigInterface $config,
+        LoggerInterface $logger,
         $methods = []
     ) {
         $this->websiteRepository = $websiteRepository;
@@ -86,6 +94,7 @@ class ConfigSaveAfter implements ObserverInterface
         $this->commandPool = $commandPool;
         $this->selectedStore = $selectedStore;
         $this->config = $config;
+        $this->logger = $logger;
         $this->methods = $methods;
     }
 
@@ -97,52 +106,58 @@ class ConfigSaveAfter implements ObserverInterface
         $request = $observer->getRequest();
         $configData = $observer->getData('configData');
 
-        if (empty($configData['section'])) {
-            return;
-        }
-
-        if ($configData['section'] !== 'payment') {
-            return;
-        }
-
-        $websiteId = $request->getParam('website');
-        $storeId = $request->getParam('store');
-
-        if (empty($storeId) && !empty($websiteId)) {
-            $website = $this->websiteRepository->getById($websiteId);
-            $storeGroupId = $website->getDefaultGroupId();
-            $group = $this->groupRepository->get($storeGroupId);
-            $storeId = $group->getDefaultStoreId();
-        }
-
-        $this->selectedStore->setStoreId($storeId);
-
-        foreach ($this->methods as $method => $label) {
-            /** @var \OnTap\MasterCard\Gateway\Config\Config $config */
-            $config = $this->configFactory->create();
-            $config->setMethodCode($method);
-
-            $merchantId = $config->getMerchantId($storeId);
-            $password = $config->getMerchantPassword($storeId);
-            $apiUrl = $config->getApiUrl($storeId);
-
-            $enabled = "1" === $this->config->getValue(
-                sprintf('payment/%s/active', $method),
-                ($storeId !== null) ? ScopeInterface::SCOPE_STORE : ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
-                $storeId
-            );
-
-            if (!$enabled || !$merchantId || !$password || !$apiUrl) {
-                continue;
+        try {
+            if (empty($configData['section'])) {
+                return;
             }
 
-            try {
-                $command = $this->commandPool->get(sprintf('check_gateway_%s', $method));
-                $command->execute([]);
-                $this->messageManager->addSuccessMessage(__('"%1" test was successful.', __($label)));
-            } catch (\Exception $e) {
-                $this->messageManager->addWarningMessage(__('There was a problem communicating with "%1": %2', __($label), $e->getMessage()));
+            if ($configData['section'] !== 'payment') {
+                return;
             }
+
+            $websiteId = $request->getParam('website');
+            $storeId = $request->getParam('store');
+
+            if (empty($storeId) && !empty($websiteId)) {
+                $website = $this->websiteRepository->getById($websiteId);
+                $storeGroupId = $website->getDefaultGroupId();
+                $group = $this->groupRepository->get($storeGroupId);
+                $storeId = $group->getDefaultStoreId();
+            }
+
+            $this->selectedStore->setStoreId($storeId);
+
+            foreach ($this->methods as $method => $label) {
+                /** @var \OnTap\MasterCard\Gateway\Config\Config $config */
+                $config = $this->configFactory->create();
+                $config->setMethodCode($method);
+
+                $merchantId = $config->getMerchantId($storeId);
+                $password = $config->getMerchantPassword($storeId);
+                $apiUrl = $config->getApiUrl($storeId);
+
+                $enabled = "1" === $this->config->getValue(
+                    sprintf('payment/%s/active', $method),
+                    ($storeId !== null) ? ScopeInterface::SCOPE_STORE : ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
+                    $storeId
+                );
+
+                if (!$enabled || !$merchantId || !$password || !$apiUrl) {
+                    continue;
+                }
+
+                try {
+                    $command = $this->commandPool->get(sprintf('check_gateway_%s', $method));
+                    $command->execute([]);
+                    $this->messageManager->addSuccessMessage(__('"%1" test was successful.', __($label)));
+                } catch (\Exception $e) {
+                    $this->messageManager->addWarningMessage(__('There was a problem communicating with "%1": %2', __($label), $e->getMessage()));
+                }
+            }
+        } catch (\Exception $e) {
+            $this->logger->critical('Error occurred while testing MasterCard configuration: ' . $e->getMessage(), [
+                'exception' => $e
+            ]);
         }
     }
 }
