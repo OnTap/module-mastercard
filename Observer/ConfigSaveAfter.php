@@ -13,6 +13,8 @@ use Magento\Framework\Message\ManagerInterface;
 use OnTap\MasterCard\Gateway\Config\ConfigFactory;
 use Magento\Payment\Gateway\Command\CommandPoolInterface;
 use OnTap\MasterCard\Model\SelectedStore;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface;
 
 class ConfigSaveAfter implements ObserverInterface
 {
@@ -52,6 +54,11 @@ class ConfigSaveAfter implements ObserverInterface
     protected $methods;
 
     /**
+     * @var ScopeConfigInterface
+     */
+    protected $config;
+
+    /**
      * ConfigSaveAfter constructor.
      * @param WebsiteRepositoryInterface $websiteRepository
      * @param GroupRepositoryInterface $groupRepository
@@ -59,6 +66,7 @@ class ConfigSaveAfter implements ObserverInterface
      * @param ConfigFactory $configFactory
      * @param CommandPoolInterface $commandPool
      * @param SelectedStore $selectedStore
+     * @param ScopeConfigInterface $config
      * @param array $methods
      */
     public function __construct(
@@ -68,6 +76,7 @@ class ConfigSaveAfter implements ObserverInterface
         ConfigFactory $configFactory,
         CommandPoolInterface $commandPool,
         SelectedStore $selectedStore,
+        ScopeConfigInterface $config,
         $methods = []
     ) {
         $this->websiteRepository = $websiteRepository;
@@ -76,6 +85,7 @@ class ConfigSaveAfter implements ObserverInterface
         $this->configFactory = $configFactory;
         $this->commandPool = $commandPool;
         $this->selectedStore = $selectedStore;
+        $this->config = $config;
         $this->methods = $methods;
     }
 
@@ -115,7 +125,12 @@ class ConfigSaveAfter implements ObserverInterface
             $merchantId = $config->getMerchantId($storeId);
             $password = $config->getMerchantPassword($storeId);
             $apiUrl = $config->getApiUrl($storeId);
-            $enabled = (bool) $config->getValue('active', $storeId);
+
+            $enabled = "1" === $this->config->getValue(
+                sprintf('payment/%s/active', $method),
+                ($storeId !== null) ? ScopeInterface::SCOPE_STORE : ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
+                $storeId
+            );
 
             if (!$enabled || !$merchantId || !$password || !$apiUrl) {
                 continue;
@@ -126,7 +141,7 @@ class ConfigSaveAfter implements ObserverInterface
                 $command->execute([]);
                 $this->messageManager->addSuccessMessage(__('"%1" test was successful.', __($label)));
             } catch (\Exception $e) {
-                $this->messageManager->addWarningMessage(__('There was a problem communicating with %1: %2', __($label), $e->getMessage()));
+                $this->messageManager->addWarningMessage(__('There was a problem communicating with "%1": %2', __($label), $e->getMessage()));
             }
         }
     }
