@@ -13,7 +13,7 @@ variables:
   COMPOSER_MEMORY_LIMIT: -1
   COMPOSER_CACHE_DIR: "$CI_PROJECT_DIR/.cache/composer"
 
-build:7.3:
+build:magento-2.3:
   image: ontap/php:7.3
   stage: build
   artifacts:
@@ -25,7 +25,7 @@ build:7.3:
   script:
     - mkdir -p _build/magento
     - git clone . _build/module
-    - (cd _build/module && git checkout -b master && sed -i '/"version"/d' composer.json)
+    - (cd _build/module && git checkout -b build && sed -i '/"version"/d' composer.json)
     - cd _build/magento
     - composer.phar create-project --no-install --repository=https://repo.magento.com/ magento/project-community-edition:2.3.5 .
     - composer.phar config repositories.ontap composer https://packages.ontapgroup.com/
@@ -33,11 +33,35 @@ build:7.3:
     - composer.phar require --dev --no-update --no-suggest ontap/ambassador:^1.0
     - composer.phar config minimum-stability dev
     - composer.phar config prefer-stable true
-    - composer.phar require --no-update --no-suggest ontap/module-mastercard:dev-master
+    - composer.phar require --no-update --no-suggest ontap/module-mastercard:dev-build
     - composer.phar install --no-progress --no-suggest --optimize-autoloader
     - php ./vendor/bin/install-ambassador
 
-test:phpcs:7.3:
+build:magento-2.4:
+    image: ontap/php:7.3
+    stage: build
+    artifacts:
+        paths:
+            - _build/
+        expire_in: 1 hour
+    only:
+        - branches
+    script:
+        - mkdir -p _build/magento
+        - git clone . _build/module
+        - (cd _build/module && git checkout -b build && sed -i '/"version"/d' composer.json)
+        - cd _build/magento
+        - composer.phar create-project --no-install --repository=https://repo.magento.com/ magento/project-community-edition:2.4.0 .
+        - composer.phar config repositories.ontap composer https://packages.ontapgroup.com/
+        - composer.phar config repositories.modules path $CI_PROJECT_DIR/_build/module
+        - composer.phar require --dev --no-update --no-suggest ontap/ambassador:^1.0
+        - composer.phar config minimum-stability dev
+        - composer.phar config prefer-stable true
+        - composer.phar require --no-update --no-suggest ontap/module-mastercard:dev-build
+        - composer.phar install --no-progress --no-suggest --optimize-autoloader
+        - php ./vendor/bin/install-ambassador
+
+test:phpcs:
   image: ontap/php:7.3
   stage: test
   only:
@@ -46,7 +70,7 @@ test:phpcs:7.3:
     - cd _build/magento
     - make phpcs
 
-test:phpstan:7.3:
+test:phpstan:
   image: ontap/php:7.3
   stage: test
   only:
@@ -55,7 +79,7 @@ test:phpstan:7.3:
     - cd _build/magento
     - make phpstan
 
-setup:di:compile:7.3:
+test:compile:
   image: ontap/php:7.3
   stage: compile
   only:
