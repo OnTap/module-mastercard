@@ -48,13 +48,6 @@ define([
         /**
          * @returns {String}
          */
-        getId: function () {
-            return 'tns_hpf_vault_' + this.index;
-        },
-
-        /**
-         * @returns {String}
-         */
         getMaskedCard: function () {
             return this.details.cc_number;
         },
@@ -140,6 +133,7 @@ define([
                         }
                         if (response.status === "ok") {
                             this.session(response.session);
+                            this.isPlaceOrderActionAllowed(true);
                             this.placeOrder();
                         }
                     }.bind(this)
