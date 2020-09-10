@@ -1,7 +1,6 @@
 stages:
   - build
   - test
-  - compile
 
 cache:
   paths:
@@ -81,7 +80,7 @@ test:phpstan:
 
 test:compile:
   image: ontap/php:7.3
-  stage: compile
+  stage: test
   only:
     - branches
   script:
