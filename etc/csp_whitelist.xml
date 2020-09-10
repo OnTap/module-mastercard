@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) On Tap Networks Limited.
+  -->
+
+<csp_whitelist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Csp:etc/csp_whitelist.xsd">
+    <policies>
+        <policy id="script-src">
+            <values>
+                <value id="eu-gateway_mastercard_com" type="host">eu-gateway.mastercard.com</value>
+                <value id="ap-gateway_mastercard_com" type="host">ap-gateway.mastercard.com</value>
+                <value id="na-gateway_mastercard_com" type="host">na-gateway.mastercard.com</value>
+                <value id="gateway_mastercard_com" type="host">*.gateway.mastercard.com</value>
+            </values>
+        </policy>
+        <policy id="frame-src">
+            <values>
+                <value id="eu-gateway_mastercard_com" type="host">eu-gateway.mastercard.com</value>
+                <value id="ap-gateway_mastercard_com" type="host">ap-gateway.mastercard.com</value>
+                <value id="na-gateway_mastercard_com" type="host">na-gateway.mastercard.com</value>
+                <value id="gateway_mastercard_com" type="host">*.gateway.mastercard.com</value>
+            </values>
+        </policy>
+        <policy id="form-action">
+            <values>
+                <value id="eu-gateway_mastercard_com" type="host">eu-gateway.mastercard.com</value>
+                <value id="ap-gateway_mastercard_com" type="host">ap-gateway.mastercard.com</value>
+                <value id="na-gateway_mastercard_com" type="host">na-gateway.mastercard.com</value>
+                <value id="gateway_mastercard_com" type="host">*.gateway.mastercard.com</value>
+            </values>
+        </policy>
+    </policies>
+</csp_whitelist>
