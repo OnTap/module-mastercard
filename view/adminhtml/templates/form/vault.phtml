@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/** @var \Magento\Framework\View\Element\Template $block */
 use Magento\Vault\Model\Ui\TokenUiComponentProviderInterface;
 
 // @codingStandardsIgnoreFile
 
-/** @var \Magento\Framework\View\Element\Template $block */
 $details = $block->getData('details');
 $icon = $block->getData('icons')[$details['type']];
 $id = $block->escapeHtml($block->getData('id'));
