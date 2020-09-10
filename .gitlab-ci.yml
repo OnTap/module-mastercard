@@ -12,7 +12,7 @@ variables:
   COMPOSER_MEMORY_LIMIT: -1
   COMPOSER_CACHE_DIR: "$CI_PROJECT_DIR/.cache/composer"
 
-build:magento-2.3:
+magento-2.3:build:
   image: ontap/php:7.3
   stage: build
   artifacts:
@@ -36,7 +36,38 @@ build:magento-2.3:
     - composer.phar install --no-progress --no-suggest --optimize-autoloader
     - php ./vendor/bin/install-ambassador
 
-build:magento-2.4:
+magento-2.3:phpcs:
+    image: ontap/php:7.3
+    stage: test
+    needs: ["magento-2.3:build"]
+    only:
+        - branches
+    script:
+        - cd _build/magento
+        - make phpcs
+
+magento-2.3:phpstan:
+    image: ontap/php:7.3
+    stage: test
+    needs: ["magento-2.3:build"]
+    only:
+        - branches
+    script:
+        - cd _build/magento
+        - make phpstan
+
+magento-2.3:compile:
+    image: ontap/php:7.3
+    stage: test
+    needs: ["magento-2.3:build"]
+    only:
+        - branches
+    script:
+        - cd _build/magento
+        - php bin/magento module:enable --all
+        - php -d memory_limit=1G bin/magento setup:di:compile --ansi --no-interaction
+
+magento-2.4:build:
     image: ontap/php:7.3
     stage: build
     artifacts:
@@ -60,27 +91,30 @@ build:magento-2.4:
         - composer.phar install --no-progress --no-suggest --optimize-autoloader
         - php ./vendor/bin/install-ambassador
 
-test:phpcs:
+magento-2.4:phpcs:
   image: ontap/php:7.3
   stage: test
+  needs: ["magento-2.4:build"]
   only:
     - branches
   script:
     - cd _build/magento
     - make phpcs
 
-test:phpstan:
+magento-2.4:phpstan:
   image: ontap/php:7.3
   stage: test
+  needs: ["magento-2.4:build"]
   only:
     - branches
   script:
     - cd _build/magento
     - make phpstan
 
-test:compile:
+magento-2.4:compile:
   image: ontap/php:7.3
   stage: test
+  needs: ["magento-2.4:build"]
   only:
     - branches
   script:
