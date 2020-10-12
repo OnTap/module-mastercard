@@ -40,7 +40,7 @@ magento-2.3:build:
       - _build/
     expire_in: 1 hour
   only:
-    - branches
+    - merge_requests
   script:
     - mkdir -p _build/magento
     - git clone . _build/module
