@@ -1,4 +1,5 @@
 stages:
+  - sonarqube
   - build
   - test
 
@@ -13,7 +14,7 @@ variables:
   COMPOSER_CACHE_DIR: "$CI_PROJECT_DIR/.cache/composer"
 
 sonarqube-check:
-  stage: test
+  stage: sonarqube
   image:
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
@@ -60,7 +61,7 @@ magento-2.3:phpcs:
     stage: test
     needs: ["magento-2.3:build"]
     only:
-        - branches
+        - merge_requests
     script:
         - cd _build/magento
         - make phpcs
@@ -70,7 +71,7 @@ magento-2.3:phpstan:
     stage: test
     needs: ["magento-2.3:build"]
     only:
-        - branches
+        - merge_requests
     script:
         - cd _build/magento
         - make phpstan
@@ -80,7 +81,7 @@ magento-2.3:compile:
     stage: test
     needs: ["magento-2.3:build"]
     only:
-        - branches
+        - merge_requests
     script:
         - cd _build/magento
         - php bin/magento module:enable --all
@@ -94,7 +95,7 @@ magento-2.4:build:
             - _build/
         expire_in: 1 hour
     only:
-        - branches
+        - merge_requests
     script:
         - mkdir -p _build/magento
         - git clone . _build/module
@@ -115,7 +116,7 @@ magento-2.4:phpcs:
   stage: test
   needs: ["magento-2.4:build"]
   only:
-    - branches
+    - merge_requests
   script:
     - cd _build/magento
     - make phpcs
@@ -125,7 +126,7 @@ magento-2.4:phpstan:
   stage: test
   needs: ["magento-2.4:build"]
   only:
-    - branches
+    - merge_requests
   script:
     - cd _build/magento
     - make phpstan
@@ -135,7 +136,7 @@ magento-2.4:compile:
   stage: test
   needs: ["magento-2.4:build"]
   only:
-    - branches
+    - merge_requests
   script:
     - cd _build/magento
     - php bin/magento module:enable --all
