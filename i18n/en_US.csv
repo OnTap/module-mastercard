@@ -83,6 +83,8 @@ Debug,Debug
 "New Order Status","New Order Status"
 "Enable 3-D Secure","Enable 3-D Secure"
 "Be sure to Enable 3D-Secure in your MasterCard account","Be sure to Enable 3D-Secure in your MasterCard account"
+"Choose 3-D Secure version","Choose 3-D Secure version"
+"Be sure to Enable 3D-Secure or 3D-Secure V2 in your MasterCard account","Be sure to Enable 3D-Secure or 3D-Secure V2 in your MasterCard account"
 "Accepted Currency","Accepted Currency"
 "Credit Card Verification","Credit Card Verification"
 "Be sure to Enable CVV in your MasterCard account","Be sure to Enable CVV in your MasterCard account"
