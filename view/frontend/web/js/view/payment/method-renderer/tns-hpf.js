@@ -50,8 +50,16 @@ define(
                 this._super();
                 this.vaultEnabler = VaultEnabler();
                 this.vaultEnabler.setPaymentCode(this.getVaultCode());
+                this.redirectAfterPlaceOrder = !this.is3Ds2Enabled();
 
                 return this;
+            },
+
+            afterPlaceOrder: function () {
+                if (!this.is3Ds2Enabled()) {
+                    return;
+                }
+                console.log('3DS2 flow ----START-----');
             },
 
             getId: function () {
@@ -268,7 +276,11 @@ define(
             },
 
             is3DsEnabled: function () {
-                return this.getConfig()['three_d_secure'];
+                return this.getConfig()['three_d_secure'] && this.getConfig()['three_d_secure_version'] === 1;
+            },
+
+            is3Ds2Enabled: function() {
+                return this.getConfig()['three_d_secure'] && this.getConfig()['three_d_secure_version'] === 2;
             },
 
             initChildren: function () {

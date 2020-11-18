@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2019 Mastercard
+ * Copyright (c) 2016-2020 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 
 namespace OnTap\MasterCard\Gateway\Command;
 
+use Magento\Framework\App\Area;
 use Magento\Framework\App\State;
 use Magento\Payment\Gateway\Command;
 use Magento\Payment\Gateway\CommandInterface;
@@ -82,7 +83,7 @@ class VerificationStrategyCommand implements CommandInterface
         $paymentInfo = $paymentDO->getPayment();
 
         // Don't use 3DS in admin
-        if ($this->state->getAreaCode() === \Magento\Framework\App\Area::AREA_ADMINHTML) {
+        if ($this->state->getAreaCode() === Area::AREA_ADMINHTML) {
             return false;
         }
 
@@ -125,6 +126,10 @@ class VerificationStrategyCommand implements CommandInterface
         $paymentInfo = $paymentDO->getPayment();
         ContextHelper::assertOrderPayment($paymentInfo);
 
+        if ($this->is3DS2Supported()) {
+            // TODO 3DS2 payment flow (save order status as pending payment)
+            return null;
+        }
         if ($this->isThreeDSSupported($paymentDO)) {
             $this->commandPool
                 ->get(static::PROCESS_3DS_RESULT)
@@ -145,5 +150,16 @@ class VerificationStrategyCommand implements CommandInterface
             ->execute($commandSubject);
 
         return null;
+    }
+
+    /**
+     * Returns true if 3DS activated in admin and selected 3DS2 version of API
+     *
+     * @return bool
+     */
+    private function is3DS2Supported()
+    {
+        return (int)$this->config->getValue('three_d_secure') === 1
+            && (int)$this->config->getValue('three_d_secure_version') === 2;
     }
 }
