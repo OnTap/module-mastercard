@@ -94,9 +94,14 @@ class InitiateAuth extends Action
             $this->commandPool
                 ->get('init_auth')
                 ->execute([
-                    'payment' => $paymentDataObject,
-                    'amount' => $order->getBaseGrandTotal(),
+                    'payment' => $paymentDataObject
                 ]);
+
+//            $this->commandPool
+//                ->get('auth_pay')
+//                ->execute([
+//                    'payment' => $paymentDataObject
+//                ]);
         } catch (Exception $e) {
             $jsonResult
                 ->setHttpResponseCode(400)
