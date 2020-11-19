@@ -20,7 +20,7 @@ namespace OnTap\MasterCard\Gateway\Request\Authentication;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 
-class OrderIdBuilder implements BuilderInterface
+class OrderCurrencyBuilder implements BuilderInterface
 {
     /**
      * @inheritDoc
