@@ -45,6 +45,7 @@ define(
             placeOrderHandler: null,
             validateHandler: null,
             sessionId: null,
+            orderId: null,
 
             initialize: function () {
                 this._super();
@@ -59,7 +60,20 @@ define(
                 if (!this.is3Ds2Enabled()) {
                     return;
                 }
+
+                $.post(
+                    '/tns/threedsecureV2/initiateAuth',
+                    {}
+                ).done(function (res) {
+                    console.log('initiateAuth', res);
+                })
                 console.log('3DS2 flow ----START-----');
+            },
+
+            getPlaceOrderDeferredObject: function () {
+                return this._super().done(function (orderId) {
+                    this.orderId = orderId;
+                }.bind(this));
             },
 
             getId: function () {

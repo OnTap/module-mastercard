@@ -128,6 +128,7 @@ class VerificationStrategyCommand implements CommandInterface
 
         if ($this->is3DS2Supported()) {
             // TODO 3DS2 payment flow (save order status as pending payment)
+            $paymentInfo->setIsTransactionPending(true);
             return null;
         }
         if ($this->isThreeDSSupported($paymentDO)) {
