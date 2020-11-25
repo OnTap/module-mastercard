@@ -24,7 +24,8 @@ define(
         'uiLayout',
         'Magento_Checkout/js/model/full-screen-loader',
         'Magento_Vault/js/view/payment/vault-enabler',
-        'Magento_Ui/js/modal/modal'
+        'Magento_Ui/js/modal/modal',
+        'Magento_Checkout/js/action/redirect-on-success'
     ],
     function (
         $,
@@ -35,10 +36,12 @@ define(
         layout,
         fullScreenLoader,
         VaultEnabler,
-        modal
+        modal,
+        redirectOnSuccessAction
     ) {
         'use strict';
 
+        var orderId = null;
         return ccFormComponent.extend({
             defaults: {
                 template: 'OnTap_MasterCard/payment/tns-hpf',
@@ -66,13 +69,38 @@ define(
                 return this;
             },
 
+            /**
+             * @return {*}
+             */
+            getPlaceOrderDeferredObject: function () {
+                return this._super().done(function (res) {
+                    orderId = res;
+                    return res;
+                });
+            },
+
             afterPlaceOrder: function () {
                 if (!this.is3Ds2Enabled()) {
                     return;
                 }
 
+                $.post(
+                    '/tns/threedsecureV2/authStrategy',
+                    {
+                        order_id: orderId
+                    }
+                ).done(function (res) {
+                    // FAST FLOW
+                    if (res.version === 'NONE' && res.action === 'redirectOnSuccess') {
+                        redirectOnSuccessAction.execute();
+                    }
+                    console.log(res);
+                });
+
+
                 // TODO move in action (do composition)
 
+                return;
                 $.post(
                     // TODO use url builder
                     '/tns/threedsecureV2/initiateAuth',

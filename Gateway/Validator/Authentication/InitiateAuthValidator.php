@@ -55,6 +55,12 @@ class InitiateAuthValidator extends AbstractValidator
         $version = $this->arrayManager->get('authentication/version', $response);
         $transactionId = $this->arrayManager->get('transaction/id', $response);
         $gatewayRecommendation = $this->arrayManager->get('response/gatewayRecommendation', $response);
+        $error = $this->arrayManager->get('error', $response);
+
+        if (isset($error)) {
+            return $this->createResult(false, ['Error']); // TODO map errors on correct errors for customers
+        }
+
         if ($version === 'NONE' && $transactionId && $gatewayRecommendation === 'PROCEED') {
             return $this->createResult(true);
         }

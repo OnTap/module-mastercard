@@ -19,6 +19,7 @@ namespace OnTap\MasterCard\Gateway\Command;
 
 use Magento\Framework\App\Area;
 use Magento\Framework\App\State;
+use Magento\Framework\Exception\NotFoundException;
 use Magento\Payment\Gateway\Command;
 use Magento\Payment\Gateway\Command\CommandException;
 use Magento\Payment\Gateway\CommandInterface;
@@ -34,6 +35,7 @@ class VerificationStrategyCommand implements CommandInterface
 {
     const PROCESS_3DS_RESULT = '3ds_process';
     const CREATE_TOKEN = 'create_token';
+    const INITIATE_AUTH = 'init_auth';
 
     /**
      * @var Command\CommandPoolInterface
@@ -129,9 +131,8 @@ class VerificationStrategyCommand implements CommandInterface
 
         if ($this->is3DS2Supported($paymentDO)) {
             // TODO 3DS2 payment flow (save order status as pending payment)
-            $this->commandPool->get('init_auth')->execute($commandSubject);
-            throw new CommandException(__('Error'));
-            $this->treeDS2Flow($paymentInfo);
+
+            $this->treeDS2Flow($commandSubject);
             return null;
         }
         if ($this->isThreeDSSupported($paymentDO)) {
@@ -181,13 +182,46 @@ class VerificationStrategyCommand implements CommandInterface
             && (int)$this->config->getValue('three_d_secure_version') === 2;
     }
 
-    private function treeDS2Flow(Payment $payment)
+    /**
+     * @param array $commandSubject
+     * @return null
+     * @throws CommandException
+     * @throws NotFoundException
+     */
+    private function treeDS2Flow(array $commandSubject)
     {
-        // TODO 3DS2 payment flow (save order status as pending payment)
-        // fetch devise info from payment additionalInfo
-        // Move Auth Init and Auth Pay requests
-        // put required data to payment additionalInfo
+        $paymentDO = SubjectReader::readPayment($commandSubject);
 
-        $payment->setIsTransactionPending(true);
+        /** @var Payment $paymentInfo */
+        $paymentInfo = $paymentDO->getPayment();
+        ContextHelper::assertOrderPayment($paymentInfo);
+
+        $this->commandPool
+            ->get(self::INITIATE_AUTH)
+            ->execute($commandSubject);
+
+        if ($this->isNone3DSAuthSupported($paymentInfo)) {
+            $this->commandPool
+                ->get($this->successCommand)
+                ->execute($commandSubject);
+            return null;
+        }
+
+        $paymentInfo->setIsTransactionPending(true);
+
+        return null;
+    }
+
+    /**
+     * Is None 3DS auth supported
+     *
+     * The case when we can pay without 3DS
+     * @param Payment $paymentInfo
+     * @return bool
+     */
+    private function isNone3DSAuthSupported(Payment $paymentInfo)
+    {
+        return $paymentInfo->getAdditionalInformation('auth_version') === 'NONE'
+            && $paymentInfo->getAdditionalInformation('response_gateway_recommendation') === 'PROCEED';
     }
 }
