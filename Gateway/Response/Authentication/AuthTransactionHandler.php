@@ -21,7 +21,7 @@ use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Sales\Model\Order\Payment;
 
-class InitiateAuthHandler implements HandlerInterface
+class AuthTransactionHandler implements HandlerInterface
 {
     /**
      * Handles response
@@ -37,6 +37,6 @@ class InitiateAuthHandler implements HandlerInterface
         /** @var Payment $payment */
         $payment = $paymentDO->getPayment();
 
-        $payment->setAdditionalInformation('auth_init_transaction_id', $response['transaction']['id']);
+        $payment->setAdditionalInformation('transaction_id', $response['transaction']['id']);
     }
 }

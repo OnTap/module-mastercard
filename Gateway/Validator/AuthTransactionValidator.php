@@ -15,28 +15,25 @@
  * limitations under the License.
  */
 
-namespace OnTap\MasterCard\Gateway\Response\Authentication;
+namespace OnTap\MasterCard\Gateway\Validator;
 
+use Magento\Payment\Gateway\Validator\AbstractValidator;
+use Magento\Payment\Gateway\Validator\ResultInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
-use Magento\Payment\Gateway\Response\HandlerInterface;
-use Magento\Sales\Model\Order\Payment;
 
-class InitiateAuthHandler implements HandlerInterface
+class AuthTransactionValidator extends AbstractValidator
 {
     /**
-     * Handles response
+     * Performs domain-related validation for business object
      *
-     * @param array $handlingSubject
-     * @param array $response
-     * @return void
+     * @param array $validationSubject
+     * @return ResultInterface
      */
-    public function handle(array $handlingSubject, array $response)
+    public function validate(array $validationSubject)
     {
-        $paymentDO = SubjectReader::readPayment($handlingSubject);
+        $response = SubjectReader::readResponse($validationSubject);
 
-        /** @var Payment $payment */
-        $payment = $paymentDO->getPayment();
-
-        $payment->setAdditionalInformation('auth_init_transaction_id', $response['transaction']['id']);
+        // TODO validate
+        return $this->createResult(true);
     }
 }

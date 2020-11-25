@@ -17,12 +17,32 @@
 
 namespace OnTap\MasterCard\Gateway\Validator\Authentication;
 
+use Magento\Framework\Stdlib\ArrayManager;
 use Magento\Payment\Gateway\Validator\AbstractValidator;
 use Magento\Payment\Gateway\Validator\ResultInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
+use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
 
 class InitiateAuthValidator extends AbstractValidator
 {
+    /**
+     * @var ArrayManager
+     */
+    private $arrayManager;
+
+    /**
+     * InitiateAuthValidator constructor.
+     * @param ResultInterfaceFactory $resultFactory
+     * @param ArrayManager $arrayManager
+     */
+    public function __construct(
+        ResultInterfaceFactory $resultFactory,
+        ArrayManager $arrayManager
+    ) {
+        parent::__construct($resultFactory);
+        $this->arrayManager = $arrayManager;
+    }
+
     /**
      * Performs domain-related validation for business object
      *
@@ -32,8 +52,20 @@ class InitiateAuthValidator extends AbstractValidator
     public function validate(array $validationSubject)
     {
         $response = SubjectReader::readResponse($validationSubject);
+        $version = $this->arrayManager->get('authentication/version', $response);
+        $transactionId = $this->arrayManager->get('transaction/id', $response);
+        $gatewayRecommendation = $this->arrayManager->get('response/gatewayRecommendation', $response);
+        if ($version === 'NONE' && $transactionId && $gatewayRecommendation === 'PROCEED') {
+            return $this->createResult(true);
+        }
+
+        $result = $this->arrayManager->get('result', $response);
+
+        if ($result === 'SUCCESS' && $transactionId) {
+            return $this->createResult(true);
+        }
 
         // TODO validate
-        return $this->createResult(true);
+        return $this->createResult(false, ['Transaction declined']);
     }
 }

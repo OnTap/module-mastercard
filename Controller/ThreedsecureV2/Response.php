@@ -114,9 +114,8 @@ class Response extends Action implements CsrfAwareActionInterface
         $payment = $order->getPayment();
 
         $paymentDTO = $this->dataObjectFactory->create($payment);
-        // TODO rename pay on auth transaction action
         // TODO handle errors
-        $this->commandPool->get('pay')->execute(['payment' => $paymentDTO]);
+        $this->commandPool->get('auth_transaction')->execute(['payment' => $paymentDTO]);
 
         $order->setState(Order::STATE_PROCESSING)->setStatus(Order::STATE_PROCESSING);
         $this->orderRepository->save($order);

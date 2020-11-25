@@ -125,18 +125,18 @@
             <argument name="requestBuilder" xsi:type="object">TnsThreeDSecure2PayDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">TnsHpfTransferFactoryInitAuth</argument>
             <argument name="client" xsi:type="object">MpgsHpfRestClient</argument>
-            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\Authentication\InitiateAuthValidator</argument>
-            <argument name="handler" xsi:type="object">OnTap\MasterCard\Gateway\Response\Authentication\InitiateAuthHandler</argument>
+            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\Authentication\AuthPayerValidator</argument>
+            <argument name="handler" xsi:type="object">OnTap\MasterCard\Gateway\Response\Authentication\AuthPayerHandler</argument>
         </arguments>
     </virtualType>
 
-    <virtualType name="TnsHpfPayCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
+    <virtualType name="TnsHpfAuthTransactionCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
         <arguments>
             <argument name="requestBuilder" xsi:type="object">TnsAuthTransactionDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">TnsHpfTransferFactory</argument>
             <argument name="client" xsi:type="object">MpgsHpfRestClient</argument>
-            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\Authentication\InitiateAuthValidator</argument>
-            <argument name="handler" xsi:type="object">OnTap\MasterCard\Gateway\Response\Authentication\InitiateAuthHandler</argument>
+            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\AuthTransactionValidator</argument>
+            <argument name="handler" xsi:type="object">OnTap\MasterCard\Gateway\Response\Authentication\AuthTransactionHandler</argument>
         </arguments>
     </virtualType>
 
@@ -194,7 +194,7 @@
                 <item name="operation" xsi:type="string">AuthorizeOperationDataBuilder</item>
                 <item name="session" xsi:type="string">OnTap\MasterCard\Gateway\Request\Hpf\SessionDataBuilder</item>
                 <item name="order" xsi:type="string">OnTap\MasterCard\Gateway\Request\OrderDataBuilder</item>
-                <item name="authentication" xsi:type="string">OnTap\MasterCard\Gateway\Request\Authentication\AuthenticationPayBuilder</item>
+                <item name="authentication_transaction_id" xsi:type="string">OnTap\MasterCard\Gateway\Request\Authentication\AuthenticationTransactionIdBuilder</item>
                 <item name="order_reference" xsi:type="string">OnTap\MasterCard\Gateway\Request\Authentication\OrderReferenceBuilder</item>
                 <item name="line_items" xsi:type="string">OnTap\MasterCard\Gateway\Request\LineItemsBuilder</item>
                 <item name="discount" xsi:type="string">OnTap\MasterCard\Gateway\Request\DiscountBuilder</item>
@@ -645,7 +645,7 @@
                 <item name="vault_authorize" xsi:type="string">MpgsHpfVaultAuthorizeCommand</item>
                 <item name="init_auth" xsi:type="string">TnsHpfThreeDSecure2InitAuthCommand</item>
                 <item name="auth_pay" xsi:type="string">TnsHpfThreeDSecure2AuthPayCommand</item>
-                <item name="pay" xsi:type="string">TnsHpfPayCommand</item>
+                <item name="auth_transaction" xsi:type="string">TnsHpfAuthTransactionCommand</item>
             </argument>
         </arguments>
     </virtualType>
@@ -887,7 +887,7 @@
                 <item name="operation" xsi:type="string">AuthorizeOperationDataBuilder</item>
                 <item name="session" xsi:type="string">OnTap\MasterCard\Gateway\Request\Hpf\SessionDataBuilder</item>
                 <item name="order" xsi:type="string">OnTap\MasterCard\Gateway\Request\OrderDataBuilder</item>
-                <item name="authentication" xsi:type="string">OnTap\MasterCard\Gateway\Request\Authentication\AuthenticationPayBuilder</item>
+                <item name="authentication_transaction_id" xsi:type="string">OnTap\MasterCard\Gateway\Request\Authentication\AuthenticationTransactionIdBuilder</item>
                 <item name="order_reference" xsi:type="string">OnTap\MasterCard\Gateway\Request\Authentication\OrderReferenceBuilder</item>
                 <item name="line_items" xsi:type="string">OnTap\MasterCard\Gateway\Request\LineItemsBuilder</item>
                 <item name="discount" xsi:type="string">OnTap\MasterCard\Gateway\Request\DiscountBuilder</item>

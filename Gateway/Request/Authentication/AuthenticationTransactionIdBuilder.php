@@ -15,28 +15,26 @@
  * limitations under the License.
  */
 
-namespace OnTap\MasterCard\Gateway\Response\Authentication;
+declare(strict_types=1);
 
+namespace OnTap\MasterCard\Gateway\Request\Authentication;
+
+use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
-use Magento\Payment\Gateway\Response\HandlerInterface;
-use Magento\Sales\Model\Order\Payment;
 
-class InitiateAuthHandler implements HandlerInterface
+class AuthenticationTransactionIdBuilder implements BuilderInterface
 {
     /**
-     * Handles response
-     *
-     * @param array $handlingSubject
-     * @param array $response
-     * @return void
+     * @inheritDoc
      */
-    public function handle(array $handlingSubject, array $response)
+    public function build(array $buildSubject)
     {
-        $paymentDO = SubjectReader::readPayment($handlingSubject);
+        $payment = SubjectReader::readPayment($buildSubject);
 
-        /** @var Payment $payment */
-        $payment = $paymentDO->getPayment();
-
-        $payment->setAdditionalInformation('auth_init_transaction_id', $response['transaction']['id']);
+        return [
+            'authentication' => [
+                'transactionId' => $payment->getPayment()->getAdditionalInformation('auth_init_transaction_id')
+            ]
+        ];
     }
 }

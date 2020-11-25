@@ -20,6 +20,7 @@ namespace OnTap\MasterCard\Gateway\Command;
 use Magento\Framework\App\Area;
 use Magento\Framework\App\State;
 use Magento\Payment\Gateway\Command;
+use Magento\Payment\Gateway\Command\CommandException;
 use Magento\Payment\Gateway\CommandInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use Magento\Payment\Gateway\Helper\ContextHelper;
@@ -128,6 +129,8 @@ class VerificationStrategyCommand implements CommandInterface
 
         if ($this->is3DS2Supported($paymentDO)) {
             // TODO 3DS2 payment flow (save order status as pending payment)
+            $this->commandPool->get('init_auth')->execute($commandSubject);
+            throw new CommandException(__('Error'));
             $this->treeDS2Flow($paymentInfo);
             return null;
         }
