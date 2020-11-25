@@ -23,9 +23,20 @@ define(
         'Magento_Checkout/js/action/set-payment-information',
         'uiLayout',
         'Magento_Checkout/js/model/full-screen-loader',
-        'Magento_Vault/js/view/payment/vault-enabler'
+        'Magento_Vault/js/view/payment/vault-enabler',
+        'Magento_Ui/js/modal/modal'
     ],
-    function ($, ccFormComponent, additionalValidators, $t, setPaymentInformationAction, layout, fullScreenLoader, VaultEnabler) {
+    function (
+        $,
+        ccFormComponent,
+        additionalValidators,
+        $t,
+        setPaymentInformationAction,
+        layout,
+        fullScreenLoader,
+        VaultEnabler,
+        modal
+    ) {
         'use strict';
 
         return ccFormComponent.extend({
@@ -45,7 +56,6 @@ define(
             placeOrderHandler: null,
             validateHandler: null,
             sessionId: null,
-            orderId: null,
 
             initialize: function () {
                 this._super();
@@ -61,19 +71,72 @@ define(
                     return;
                 }
 
+                // TODO move in action (do composition)
+
                 $.post(
+                    // TODO use url builder
                     '/tns/threedsecureV2/initiateAuth',
-                    {}
+                    {
+                        browserDetails: {
+                            javaEnabled: navigator.javaEnabled(),
+                            language: navigator.language,
+                            screenHeight: window.screen.height,
+                            screenWidth: window.screen.width,
+                            timeZone: new Date().getTimezoneOffset(),
+                            colorDepth: screen.colorDepth,
+                            acceptHeaders: 'application/json',
+                            '3DSecureChallengeWindowSize': 'FULL_SCREEN'
+                        }
+                    }
                 ).done(function (res) {
-                    console.log('initiateAuth', res);
+                    // TODO open modal if ACS required, do not open if 3DS2 without window
+                    window.treeDS2Completed = function () {
+                        this.modal.modal('closeModal');
+                        setTimeout(function () {
+                            this.modal.remove();
+                        }.bind(this), 1000)
+                    }.bind(this);
+                    var div = document.createElement('div');
+                    $('body').append(div);
+
+
+                    this.modal = $(div);
+
+                    // TODO move modal logic in separate UI or module
+                    modal({
+                        type: 'slide',
+                        title: $.mage.__('Process Secure Payment'),
+                        buttons: [],
+                        closed: $.proxy(this.onModalClose, this),
+                        clickableOverlay: false
+                    }, this.modal);
+
+                    // var div = document.getElementById('three-ds-placeholder')
+                    div.innerHTML = res.redirectHtml;
+                    eval(document.getElementById('authenticate-payer-script').text);
+                    // console.log('initiateAuth', res);
+
+                    this.iframe = $('iframe', this.modal);
+
+                    this.modal.css({
+                        height: '100%'
+                    });
+                    this.modal.parent().css({
+                        height: '80%'
+                    });
+
+                    this.iframe.css({
+                        height: '100%',
+                        width: '100%'
+                    });
+
+                    this.modal.modal('openModal');
                 })
                 console.log('3DS2 flow ----START-----');
             },
 
-            getPlaceOrderDeferredObject: function () {
-                return this._super().done(function (orderId) {
-                    this.orderId = orderId;
-                }.bind(this));
+            onModalClose: function () {
+                alert('closed');
             },
 
             getId: function () {

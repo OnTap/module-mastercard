@@ -18,6 +18,7 @@
 namespace OnTap\MasterCard\Gateway\Command;
 
 use Magento\Payment\Gateway\Command\CommandException;
+use Magento\Payment\Gateway\Command\Result\ArrayResultFactory;
 use Magento\Payment\Gateway\CommandInterface;
 use Magento\Payment\Gateway\ErrorMapper\ErrorMessageMapperInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
@@ -71,13 +72,19 @@ class GatewayCommand implements CommandInterface
     private $errorMessageMapper;
 
     /**
+     * @var ArrayResultFactory
+     */
+    private  $arrayResultFactory;
+
+    /**
      * @param BuilderInterface $requestBuilder
      * @param TransferFactoryInterface $transferFactory
      * @param ClientInterface $client
      * @param LoggerInterface $logger
-     * @param HandlerInterface $handler
-     * @param ValidatorInterface $validator
+     * @param HandlerInterface|null $handler
+     * @param ValidatorInterface|null $validator
      * @param ErrorMessageMapperInterface|null $errorMessageMapper
+     * @param ArrayResultFactory $arrayResultFactory
      */
     public function __construct(
         BuilderInterface $requestBuilder,
@@ -86,7 +93,8 @@ class GatewayCommand implements CommandInterface
         LoggerInterface $logger,
         HandlerInterface $handler = null,
         ValidatorInterface $validator = null,
-        ErrorMessageMapperInterface $errorMessageMapper = null
+        ErrorMessageMapperInterface $errorMessageMapper = null,
+        ArrayResultFactory $arrayResultFactory
     ) {
         $this->requestBuilder = $requestBuilder;
         $this->transferFactory = $transferFactory;
@@ -95,6 +103,7 @@ class GatewayCommand implements CommandInterface
         $this->validator = $validator;
         $this->logger = $logger;
         $this->errorMessageMapper = $errorMessageMapper;
+        $this->arrayResultFactory = $arrayResultFactory;
     }
 
     /**
@@ -126,8 +135,10 @@ class GatewayCommand implements CommandInterface
                 $response
             );
         }
-
-        return null;
+        // TODO return null, save all what I need to payment additional info
+        return $this->arrayResultFactory->create(['array' => [
+            'response' => $response
+        ]]);
     }
 
     /**

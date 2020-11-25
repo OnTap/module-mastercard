@@ -130,6 +130,16 @@
         </arguments>
     </virtualType>
 
+    <virtualType name="TnsHpfPayCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">TnsAuthTransactionDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">TnsHpfTransferFactory</argument>
+            <argument name="client" xsi:type="object">MpgsHpfRestClient</argument>
+            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\Authentication\InitiateAuthValidator</argument>
+            <argument name="handler" xsi:type="object">OnTap\MasterCard\Gateway\Response\Authentication\InitiateAuthHandler</argument>
+        </arguments>
+    </virtualType>
+
     <virtualType name="TnsHpfTransferFactoryInitAuth" type="OnTap\MasterCard\Gateway\Http\Authentication\TransferFactoryInitiateAuth">
         <arguments>
             <argument name="config" xsi:type="object">TnsHpfConfig</argument>
@@ -157,6 +167,7 @@
                 <item name="operation" xsi:type="string">InitiateAuthOperationDataBuilder</item>
                 <item name="session" xsi:type="string">OnTap\MasterCard\Gateway\Request\Authentication\SessionDataBuilder</item>
                 <item name="order_currency" xsi:type="string">OnTap\MasterCard\Gateway\Request\Authentication\OrderCurrencyBuilder</item>
+                <item name="authentication" xsi:type="string">OnTap\MasterCard\Gateway\Request\Authentication\AuthenticationBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -168,6 +179,30 @@
                 <item name="session" xsi:type="string">OnTap\MasterCard\Gateway\Request\Authentication\SessionDataBuilder</item>
                 <item name="order_currency" xsi:type="string">OnTap\MasterCard\Gateway\Request\Authentication\OrderCurrencyBuilder</item>
                 <item name="order_amount" xsi:type="string">OnTap\MasterCard\Gateway\Request\Authentication\OrderAmountBuilder</item>
+                <item name="billing" xsi:type="string">OnTap\MasterCard\Gateway\Request\BillingDataBuilder</item>
+                <item name="shipping" xsi:type="string">OnTap\MasterCard\Gateway\Request\ShippingDataBuilder</item>
+                <item name="customer" xsi:type="string">OnTap\MasterCard\Gateway\Request\CustomerDataBuilder</item>
+                <item name="device" xsi:type="string">OnTap\MasterCard\Gateway\Request\Authentication\DeviceBuilder</item>
+                <item name="authentication" xsi:type="string">OnTap\MasterCard\Gateway\Request\Authentication\AuthenticationPayerBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="TnsAuthTransactionDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="operation" xsi:type="string">AuthorizeOperationDataBuilder</item>
+                <item name="session" xsi:type="string">OnTap\MasterCard\Gateway\Request\Hpf\SessionDataBuilder</item>
+                <item name="order" xsi:type="string">OnTap\MasterCard\Gateway\Request\OrderDataBuilder</item>
+                <item name="authentication" xsi:type="string">OnTap\MasterCard\Gateway\Request\Authentication\AuthenticationPayBuilder</item>
+                <item name="order_reference" xsi:type="string">OnTap\MasterCard\Gateway\Request\Authentication\OrderReferenceBuilder</item>
+                <item name="line_items" xsi:type="string">OnTap\MasterCard\Gateway\Request\LineItemsBuilder</item>
+                <item name="discount" xsi:type="string">OnTap\MasterCard\Gateway\Request\DiscountBuilder</item>
+                <item name="billing" xsi:type="string">OnTap\MasterCard\Gateway\Request\BillingDataBuilder</item>
+                <item name="shipping" xsi:type="string">OnTap\MasterCard\Gateway\Request\ShippingDataBuilder</item>
+                <item name="customer" xsi:type="string">OnTap\MasterCard\Gateway\Request\CustomerDataBuilder</item>
+                <item name="source" xsi:type="string">OnTap\MasterCard\Gateway\Request\SourceDataBuilder</item>
+                <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -610,9 +645,16 @@
                 <item name="vault_authorize" xsi:type="string">MpgsHpfVaultAuthorizeCommand</item>
                 <item name="init_auth" xsi:type="string">TnsHpfThreeDSecure2InitAuthCommand</item>
                 <item name="auth_pay" xsi:type="string">TnsHpfThreeDSecure2AuthPayCommand</item>
+                <item name="pay" xsi:type="string">TnsHpfPayCommand</item>
             </argument>
         </arguments>
     </virtualType>
+
+    <type name="OnTap\MasterCard\Controller\ThreedsecureV2\Response">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">TnsHpfCommandPool</argument>
+        </arguments>
+    </type>
 
     <!-- HPF Vault -->
     <virtualType name="MpgsHpfVaultFacade" type="Magento\Vault\Model\Method\Vault">
@@ -845,6 +887,8 @@
                 <item name="operation" xsi:type="string">AuthorizeOperationDataBuilder</item>
                 <item name="session" xsi:type="string">OnTap\MasterCard\Gateway\Request\Hpf\SessionDataBuilder</item>
                 <item name="order" xsi:type="string">OnTap\MasterCard\Gateway\Request\OrderDataBuilder</item>
+                <item name="authentication" xsi:type="string">OnTap\MasterCard\Gateway\Request\Authentication\AuthenticationPayBuilder</item>
+                <item name="order_reference" xsi:type="string">OnTap\MasterCard\Gateway\Request\Authentication\OrderReferenceBuilder</item>
                 <item name="line_items" xsi:type="string">OnTap\MasterCard\Gateway\Request\LineItemsBuilder</item>
                 <item name="discount" xsi:type="string">OnTap\MasterCard\Gateway\Request\DiscountBuilder</item>
                 <item name="billing" xsi:type="string">OnTap\MasterCard\Gateway\Request\BillingDataBuilder</item>

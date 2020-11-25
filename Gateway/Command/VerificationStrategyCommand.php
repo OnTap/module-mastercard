@@ -126,9 +126,9 @@ class VerificationStrategyCommand implements CommandInterface
         $paymentInfo = $paymentDO->getPayment();
         ContextHelper::assertOrderPayment($paymentInfo);
 
-        if ($this->is3DS2Supported()) {
+        if ($this->is3DS2Supported($paymentDO)) {
             // TODO 3DS2 payment flow (save order status as pending payment)
-            $paymentInfo->setIsTransactionPending(true);
+            $this->treeDS2Flow($paymentInfo);
             return null;
         }
         if ($this->isThreeDSSupported($paymentDO)) {
@@ -156,11 +156,35 @@ class VerificationStrategyCommand implements CommandInterface
     /**
      * Returns true if 3DS activated in admin and selected 3DS2 version of API
      *
+     * @param PaymentDataObjectInterface $paymentDO
      * @return bool
      */
-    private function is3DS2Supported()
+    private function is3DS2Supported(PaymentDataObjectInterface $paymentDO)
     {
+        /** @var Payment $paymentInfo */
+        $paymentInfo = $paymentDO->getPayment();
+
+        // Don't use 3DS in admin
+        if ($this->state->getAreaCode() === Area::AREA_ADMINHTML) {
+            return false;
+        }
+
+        // Don't use 3DS with pre-authorized transactions
+        if ($paymentInfo->getAuthorizationTransaction()) {
+            return false;
+        }
+
         return (int)$this->config->getValue('three_d_secure') === 1
             && (int)$this->config->getValue('three_d_secure_version') === 2;
+    }
+
+    private function treeDS2Flow(Payment $payment)
+    {
+        // TODO 3DS2 payment flow (save order status as pending payment)
+        // fetch devise info from payment additionalInfo
+        // Move Auth Init and Auth Pay requests
+        // put required data to payment additionalInfo
+
+        $payment->setIsTransactionPending(true);
     }
 }

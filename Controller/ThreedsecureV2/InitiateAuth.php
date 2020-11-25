@@ -91,17 +91,25 @@ class InitiateAuth extends Action
         try {
             $paymentDataObject = $this->paymentDataObjectFactory->create($order->getPayment());
 
-            $this->commandPool
+            $result = $this->commandPool
                 ->get('init_auth')
                 ->execute([
                     'payment' => $paymentDataObject
                 ]);
 
-//            $this->commandPool
-//                ->get('auth_pay')
-//                ->execute([
-//                    'payment' => $paymentDataObject
-//                ]);
+            $response2 = $this->commandPool
+                ->get('auth_pay')
+                ->execute([
+                    'payment' => $paymentDataObject,
+                    'browserDetails' => $this->getRequest()->getParam('browserDetails')
+                ]);
+
+            $order->getPayment()->save();
+
+            if ($result && $response2) {
+                // TODO take html code from payment additional info instead of response
+                $jsonResult->setData($response2->get()['response']['authentication']);
+            }
         } catch (Exception $e) {
             $jsonResult
                 ->setHttpResponseCode(400)

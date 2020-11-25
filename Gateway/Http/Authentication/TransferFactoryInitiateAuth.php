@@ -28,11 +28,14 @@ class TransferFactoryInitiateAuth extends TransferFactory
      */
     protected function getUri(PaymentDataObjectInterface $payment)
     {
-        $paymentMethod = $payment->getPayment();
-        $transactionId = $paymentMethod->getAdditionalInformation('transaction_id')
-            ?: $this->createTxnId($payment);
-        $storeId = $payment->getOrder()->getStoreId();
         $orderId = $payment->getOrder()->getOrderIncrementId();
+        // TODO rename transaction_id on init_transaction_id
+        $transactionId = $payment->getPayment()->getAdditionalInformation('transaction_id');
+        if (!$transactionId || explode('-', $transactionId)[0] !== $orderId) {
+            $transactionId = $this->createTxnId($payment);
+        }
+        $storeId = $payment->getOrder()->getStoreId();
+
         return $this->getGatewayUri($storeId) . 'order/' . $orderId . '/transaction/' . $transactionId;
     }
 }

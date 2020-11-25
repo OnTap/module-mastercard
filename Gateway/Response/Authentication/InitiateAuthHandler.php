@@ -37,7 +37,7 @@ class InitiateAuthHandler implements HandlerInterface
         /** @var Payment $payment */
         $payment = $paymentDO->getPayment();
 
+        // TODO rename as init_transaction_id, It should be used for capture and refund requests later, cannot be overridden
         $payment->setAdditionalInformation('transaction_id', $response['transaction']['id']);
-        $payment->save();
     }
 }
