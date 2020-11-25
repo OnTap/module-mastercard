@@ -17,26 +17,9 @@
 
 namespace OnTap\MasterCard\Gateway\Response\Authentication;
 
-use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Response\HandlerInterface;
-use Magento\Sales\Model\Order\Payment;
 
-class AuthPayerHandler implements HandlerInterface
+class AuthPayerHandler extends InitiateAuthHandler implements HandlerInterface
 {
-    /**
-     * Handles response
-     *
-     * @param array $handlingSubject
-     * @param array $response
-     * @return void
-     */
-    public function handle(array $handlingSubject, array $response)
-    {
-        $paymentDO = SubjectReader::readPayment($handlingSubject);
-
-        /** @var Payment $payment */
-        $payment = $paymentDO->getPayment();
-
-        $payment->setAdditionalInformation('auth_init_transaction_id', $response['transaction']['id']);
-    }
+    // TODO use directly original class (rename it on something common)
 }

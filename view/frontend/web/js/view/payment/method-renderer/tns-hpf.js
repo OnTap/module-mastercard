@@ -54,7 +54,8 @@ define(
                     onActiveChange: 'active'
                 },
                 creditCardExpYear: '',
-                creditCardExpMonth: ''
+                creditCardExpMonth: '',
+                initAuthContainerSelector: '[data-role="init-auth-form-container"]'
             },
             placeOrderHandler: null,
             validateHandler: null,
@@ -84,27 +85,35 @@ define(
                     return;
                 }
 
+                // TODO use decomposition in code style
+                this.isPlaceOrderActionAllowed(false);
                 $.post(
                     '/tns/threedsecureV2/authStrategy',
                     {
                         order_id: orderId
                     }
-                ).done(function (res) {
-                    // FAST FLOW
-                    if (res.version === 'NONE' && res.action === 'redirectOnSuccess') {
+                ).done($.proxy(function (res) {
+                    if (res.action === 'redirectOnSuccess') {
                         redirectOnSuccessAction.execute();
                     }
-                    console.log(res);
-                });
 
+                    if (res.action === 'initAuth') {
+                        return this.authInit(res.html);
+                    }
+                }, this)).always($.proxy(function () {
+                    this.isPlaceOrderActionAllowed(false);
+                }, this));
+            },
 
-                // TODO move in action (do composition)
+            authInit: function (html) {
+                var container = $(this.initAuthContainerSelector);
+                container.html(html);
+                eval($('#initiate-authentication-script').text());
 
-                return;
-                $.post(
-                    // TODO use url builder
-                    '/tns/threedsecureV2/initiateAuth',
+                return $.when($.post(
+                    '/tns/threedsecureV2/authPayer',
                     {
+                        order_id: orderId,
                         browserDetails: {
                             javaEnabled: navigator.javaEnabled(),
                             language: navigator.language,
@@ -116,19 +125,19 @@ define(
                             '3DSecureChallengeWindowSize': 'FULL_SCREEN'
                         }
                     }
-                ).done(function (res) {
+                )).done($.proxy(function (res) {
                     // TODO open modal if ACS required, do not open if 3DS2 without window
-                    window.treeDS2Completed = function () {
+                    window.treeDS2Completed = $.proxy(function () {
                         this.modal.modal('closeModal');
-                        setTimeout(function () {
+                        setTimeout($.proxy(function () {
                             this.modal.remove();
-                        }.bind(this), 1000)
-                    }.bind(this);
-                    var div = document.createElement('div');
-                    $('body').append(div);
-
-
-                    this.modal = $(div);
+                        }, this), 1000);
+                        redirectOnSuccessAction.execute();
+                    }, this);
+                    if (!this.modal) {
+                        this.modal = $(document.createElement('div'));
+                        $('body').append(this.modal);
+                    }
 
                     // TODO move modal logic in separate UI or module
                     modal({
@@ -139,10 +148,8 @@ define(
                         clickableOverlay: false
                     }, this.modal);
 
-                    // var div = document.getElementById('three-ds-placeholder')
-                    div.innerHTML = res.redirectHtml;
-                    eval(document.getElementById('authenticate-payer-script').text);
-                    // console.log('initiateAuth', res);
+                    this.modal.html(res.html);
+                    eval($('#authenticate-payer-script').text());
 
                     this.iframe = $('iframe', this.modal);
 
@@ -158,13 +165,14 @@ define(
                         width: '100%'
                     });
 
-                    this.modal.modal('openModal');
-                })
-                console.log('3DS2 flow ----START-----');
+                    if (res.action === 'challenge') {
+                        this.modal.modal('openModal');
+                    }
+                }, this));
             },
 
             onModalClose: function () {
-                alert('closed');
+                //alert('closed');
             },
 
             getId: function () {

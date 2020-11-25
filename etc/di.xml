@@ -939,4 +939,10 @@
             <argument name="commandPool" xsi:type="object">TnsHpfCommandPool</argument>
         </arguments>
     </type>
+
+    <type name="OnTap\MasterCard\Controller\ThreedsecureV2\AuthPayer">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">TnsHpfCommandPool</argument>
+        </arguments>
+    </type>
 </config>

@@ -27,23 +27,29 @@ use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\UrlInterface;
-use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Payment\Gateway\Command\CommandPool;
+use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
+use Magento\Payment\Model\InfoInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
-use Magento\Sales\Model\Order;
 use OnTap\MasterCard\Model\Ui\Hpf\ConfigProvider;
 
-class AuthStrategy extends Action implements HttpPostActionInterface
+class AuthPayer extends Action implements HttpPostActionInterface
 {
+    /**
+     * @var PaymentDataObjectFactory
+     */
+    private $paymentDataObjectFactory;
+
     /**
      * @var JsonFactory
      */
     private $jsonFactory;
 
     /**
-     * @var UrlInterface
+     * @var CommandPool
      */
-    private $url;
+    private $commandPool;
+
     /**
      * @var OrderRepositoryInterface
      */
@@ -51,21 +57,24 @@ class AuthStrategy extends Action implements HttpPostActionInterface
 
     /**
      * Check constructor.
+     * @param PaymentDataObjectFactory $paymentDataObjectFactory
      * @param JsonFactory $jsonFactory
+     * @param CommandPool $commandPool
      * @param Context $context
      * @param OrderRepositoryInterface $orderRepository
-     * @param UrlInterface $url
      */
     public function __construct(
+        PaymentDataObjectFactory $paymentDataObjectFactory,
         JsonFactory $jsonFactory,
+        CommandPool $commandPool,
         Context $context,
-        OrderRepositoryInterface $orderRepository,
-        UrlInterface $url
+        OrderRepositoryInterface $orderRepository
     ) {
         parent::__construct($context);
+        $this->paymentDataObjectFactory = $paymentDataObjectFactory;
         $this->jsonFactory = $jsonFactory;
+        $this->commandPool = $commandPool;
         $this->orderRepository = $orderRepository;
-        $this->url = $url;
     }
 
     /**
@@ -77,33 +86,38 @@ class AuthStrategy extends Action implements HttpPostActionInterface
      */
     public function execute()
     {
-        $orderId = (int)$this->getRequest()->getParam('order_id');
-
         $jsonResult = $this->jsonFactory->create();
+        $orderId = $this->getRequest()->getParam('order_id');
+        // TODO extract from payment method additional information and put in response
         try {
             $order = $this->orderRepository->get($orderId);
-
+            /** @var InfoInterface $payment */
             $payment = $order->getPayment();
-
-            $paymentInformation = $payment->getAdditionalInformation();
 
             if ($payment->getMethod() !== ConfigProvider::METHOD_CODE) {
                 throw new InputException(__('Payment method is invalid'));
             }
 
-            if ($this->isNone3DSSupportedMethods($order)) {
-                $jsonResult->setData([
-                    'action' => 'redirectOnSuccess'
+            $paymentDataObject = $this->paymentDataObjectFactory->create($payment);
+
+            $this->commandPool
+                ->get('auth_pay')
+                ->execute([
+                    'payment' => $paymentDataObject,
+                    'browserDetails' => $this->getRequest()->getParam('browserDetails')
                 ]);
-                return $jsonResult;
-            }
 
+            $order->getPayment()->save();
+
+            // TODO take html code from payment additional info instead of response
             $jsonResult->setData([
-                'action' => 'initAuth',
-                'html' => $paymentInformation['auth_redirect_html']
+                'html' => $payment->getAdditionalInformation('auth_redirect_html'),
+                'action' => $payment->getAdditionalInformation('result') === 'PROCEED'
+                    ? 'challenge'
+                    : 'frictionless'
             ]);
-
         } catch (Exception $e) {
+            // Todo handle error, cancel order and restore active quote
             $jsonResult
                 ->setHttpResponseCode(400)
                 ->setData([
@@ -112,27 +126,5 @@ class AuthStrategy extends Action implements HttpPostActionInterface
         }
 
         return $jsonResult;
-    }
-
-    /**
-     * @param OrderInterface $order
-     * @return bool
-     */
-    private function isNone3DSSupportedMethods(OrderInterface $order): bool
-    {
-        $payment = $order->getPayment();
-
-        $paymentInformation = $payment->getAdditionalInformation();
-        $authVersion = $paymentInformation['auth_version'] ?? '';
-        $gatewayRecommendation = $paymentInformation['response_gateway_recommendation'] ?? '';
-        if ($authVersion !== 'NONE' || $gatewayRecommendation !== 'PROCEED') {
-            return false;
-        }
-
-        if ($order->getState() !== Order::STATE_PROCESSING) {
-            return false;
-        }
-
-        return true;
     }
 }

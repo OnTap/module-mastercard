@@ -17,12 +17,32 @@
 
 namespace OnTap\MasterCard\Gateway\Validator\Authentication;
 
+use Magento\Framework\Stdlib\ArrayManager;
 use Magento\Payment\Gateway\Validator\AbstractValidator;
 use Magento\Payment\Gateway\Validator\ResultInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
+use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
 
 class AuthPayerValidator extends AbstractValidator
 {
+    /**
+     * @var ArrayManager
+     */
+    private $arrayManager;
+
+    /**
+     * InitiateAuthValidator constructor.
+     * @param ResultInterfaceFactory $resultFactory
+     * @param ArrayManager $arrayManager
+     */
+    public function __construct(
+        ResultInterfaceFactory $resultFactory,
+        ArrayManager $arrayManager
+    ) {
+        parent::__construct($resultFactory);
+        $this->arrayManager = $arrayManager;
+    }
+
     /**
      * Performs domain-related validation for business object
      *
@@ -33,7 +53,27 @@ class AuthPayerValidator extends AbstractValidator
     {
         $response = SubjectReader::readResponse($validationSubject);
 
-        // TODO validate
+        $error = $this->arrayManager->get('error', $response);
+        $result = $this->arrayManager->get('result', $response);
+
+        if (isset($error)) {
+            return $this->createResult(false, ['Error']); // TODO map errors on correct errors for customers
+        }
+
+        $version = $this->arrayManager->get('authentication/version', $response);
+
+        if ($version !== '3DS1' && $version !== '3DS2') {
+            return $this->createResult(false, [
+                'Unsupported version of 3DS'
+            ]);
+        }
+
+        if ($result !== 'SUCCESS' && $result !== 'PROCEED') {
+            return $this->createResult(false, [
+                'Error'
+            ]);
+        }
+
         return $this->createResult(true);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2019 Mastercard
+ * Copyright (c) 2016-2020 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@
 namespace OnTap\MasterCard\Gateway\Command;
 
 use Magento\Payment\Gateway\Command\CommandException;
-use Magento\Payment\Gateway\Command\Result\ArrayResultFactory;
 use Magento\Payment\Gateway\CommandInterface;
 use Magento\Payment\Gateway\ErrorMapper\ErrorMessageMapperInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
@@ -72,11 +71,6 @@ class GatewayCommand implements CommandInterface
     private $errorMessageMapper;
 
     /**
-     * @var ArrayResultFactory
-     */
-    private  $arrayResultFactory;
-
-    /**
      * @param BuilderInterface $requestBuilder
      * @param TransferFactoryInterface $transferFactory
      * @param ClientInterface $client
@@ -84,7 +78,6 @@ class GatewayCommand implements CommandInterface
      * @param HandlerInterface|null $handler
      * @param ValidatorInterface|null $validator
      * @param ErrorMessageMapperInterface|null $errorMessageMapper
-     * @param ArrayResultFactory $arrayResultFactory
      */
     public function __construct(
         BuilderInterface $requestBuilder,
@@ -93,8 +86,7 @@ class GatewayCommand implements CommandInterface
         LoggerInterface $logger,
         HandlerInterface $handler = null,
         ValidatorInterface $validator = null,
-        ErrorMessageMapperInterface $errorMessageMapper = null,
-        ArrayResultFactory $arrayResultFactory
+        ErrorMessageMapperInterface $errorMessageMapper = null
     ) {
         $this->requestBuilder = $requestBuilder;
         $this->transferFactory = $transferFactory;
@@ -103,7 +95,6 @@ class GatewayCommand implements CommandInterface
         $this->validator = $validator;
         $this->logger = $logger;
         $this->errorMessageMapper = $errorMessageMapper;
-        $this->arrayResultFactory = $arrayResultFactory;
     }
 
     /**
@@ -135,10 +126,7 @@ class GatewayCommand implements CommandInterface
                 $response
             );
         }
-        // TODO return null, save all what I need to payment additional info
-        return $this->arrayResultFactory->create(['array' => [
-            'response' => $response
-        ]]);
+        return null;
     }
 
     /**
