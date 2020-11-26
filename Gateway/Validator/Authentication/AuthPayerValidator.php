@@ -55,6 +55,8 @@ class AuthPayerValidator extends AbstractValidator
 
         $error = $this->arrayManager->get('error', $response);
         $result = $this->arrayManager->get('result', $response);
+        $gatewayRecommendation = $this->arrayManager->get('response/gatewayRecommendation', $response);
+        $transactionId = $this->arrayManager->get('transaction/id', $response);
 
         if (isset($error)) {
             return $this->createResult(false, ['Error']); // TODO map errors on correct errors for customers
@@ -62,13 +64,17 @@ class AuthPayerValidator extends AbstractValidator
 
         $version = $this->arrayManager->get('authentication/version', $response);
 
+        if ($version === 'NONE' && $transactionId && $gatewayRecommendation === 'PROCEED') {
+            return $this->createResult(true);
+        }
+
         if ($version !== '3DS1' && $version !== '3DS2') {
             return $this->createResult(false, [
                 'Unsupported version of 3DS'
             ]);
         }
 
-        if ($result !== 'SUCCESS' && $result !== 'PROCEED') {
+        if ($result !== 'SUCCESS' && $result !== 'PROCEED' && $result !== 'PENDING') {
             return $this->createResult(false, [
                 'Error'
             ]);

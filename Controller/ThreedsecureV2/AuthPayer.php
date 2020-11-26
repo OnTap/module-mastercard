@@ -107,12 +107,12 @@ class AuthPayer extends Action implements HttpPostActionInterface
                     'browserDetails' => $this->getRequest()->getParam('browserDetails')
                 ]);
 
-            $order->getPayment()->save();
+            $payment->save();
 
             // TODO take html code from payment additional info instead of response
             $jsonResult->setData([
                 'html' => $payment->getAdditionalInformation('auth_redirect_html'),
-                'action' => $payment->getAdditionalInformation('result') === 'PROCEED'
+                'action' => $payment->getAdditionalInformation('auth_payment_interaction') === 'REQUIRED'
                     ? 'challenge'
                     : 'frictionless'
             ]);

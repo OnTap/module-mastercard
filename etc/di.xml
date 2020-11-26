@@ -588,9 +588,15 @@
         <arguments>
             <argument name="handlers" xsi:type="array">
                 <item name="default" xsi:type="string">TnsHpfConfigValueHandler</item>
+                <item name="can_initialize" xsi:type="string">OnTap\MasterCard\Gateway\Config\Is3DS2EnabledHandler</item>
             </argument>
         </arguments>
     </virtualType>
+    <type name="OnTap\MasterCard\Gateway\Config\Is3DS2EnabledHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">TnsHpfConfig</argument>
+        </arguments>
+    </type>
     <virtualType name="TnsHpfConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
         <arguments>
             <argument name="configInterface" xsi:type="object">TnsHpfConfig</argument>
@@ -644,6 +650,7 @@
                 <item name="vault_sale" xsi:type="string">MpgsHpfVaultSaleCommand</item>
                 <item name="vault_authorize" xsi:type="string">MpgsHpfVaultAuthorizeCommand</item>
                 <item name="init_auth" xsi:type="string">TnsHpfThreeDSecure2InitAuthCommand</item>
+                <item name="initialize" xsi:type="string">TnsHpfThreeDSecure2InitAuthCommand</item>
                 <item name="auth_pay" xsi:type="string">TnsHpfThreeDSecure2AuthPayCommand</item>
                 <item name="auth_transaction" xsi:type="string">TnsHpfAuthTransactionCommand</item>
             </argument>

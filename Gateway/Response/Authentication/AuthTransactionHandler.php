@@ -15,11 +15,14 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace OnTap\MasterCard\Gateway\Response\Authentication;
 
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Sales\Model\Order\Payment;
+use OnTap\MasterCard\Gateway\Response\PaymentHandler;
 
 class AuthTransactionHandler implements HandlerInterface
 {
@@ -37,6 +40,8 @@ class AuthTransactionHandler implements HandlerInterface
         /** @var Payment $payment */
         $payment = $paymentDO->getPayment();
 
-        $payment->setAdditionalInformation('transaction_id', $response['transaction']['id']);
+        $payment->setTransactionId($response['transaction']['id']);
+        $payment->setIsTransactionClosed(false);
+        PaymentHandler::importPaymentResponse($payment, $response);
     }
 }

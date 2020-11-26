@@ -130,10 +130,9 @@ class VerificationStrategyCommand implements CommandInterface
         ContextHelper::assertOrderPayment($paymentInfo);
 
         if ($this->is3DS2Supported($paymentDO)) {
-            // TODO 3DS2 payment flow (save order status as pending payment)
-
             $this->treeDS2Flow($commandSubject);
             return null;
+            // TODO check VAULT with 3DS2 method (we just need to skip next if and do nothing if 3ds2 enabled. Pay attention on hosted payment method.)
         }
         if ($this->isThreeDSSupported($paymentDO)) {
             $this->commandPool
@@ -197,31 +196,8 @@ class VerificationStrategyCommand implements CommandInterface
         ContextHelper::assertOrderPayment($paymentInfo);
 
         $this->commandPool
-            ->get(self::INITIATE_AUTH)
+            ->get($this->successCommand)
             ->execute($commandSubject);
-
-        if ($this->isNone3DSAuthSupported($paymentInfo)) {
-            $this->commandPool
-                ->get($this->successCommand)
-                ->execute($commandSubject);
-            return null;
-        }
-
-        $paymentInfo->setIsTransactionPending(true);
-
         return null;
-    }
-
-    /**
-     * Is None 3DS auth supported
-     *
-     * The case when we can pay without 3DS
-     * @param Payment $paymentInfo
-     * @return bool
-     */
-    private function isNone3DSAuthSupported(Payment $paymentInfo)
-    {
-        return $paymentInfo->getAdditionalInformation('auth_version') === 'NONE'
-            && $paymentInfo->getAdditionalInformation('response_gateway_recommendation') === 'PROCEED';
     }
 }

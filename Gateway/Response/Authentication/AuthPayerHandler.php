@@ -15,11 +15,51 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace OnTap\MasterCard\Gateway\Response\Authentication;
 
+use Magento\Framework\Stdlib\ArrayManager;
+use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Response\HandlerInterface;
+use Magento\Sales\Model\Order\Payment;
 
-class AuthPayerHandler extends InitiateAuthHandler implements HandlerInterface
+class AuthPayerHandler implements HandlerInterface
 {
-    // TODO use directly original class (rename it on something common)
+    /**
+     * @var ArrayManager
+     */
+    private $arrayManager;
+
+    /**
+     * InitiateAuthHandler constructor.
+     * @param ArrayManager $arrayManager
+     */
+    public function __construct(
+        ArrayManager $arrayManager
+    )
+    {
+        $this->arrayManager = $arrayManager;
+    }
+
+    /**
+     * Handles response
+     *
+     * @param array $handlingSubject
+     * @param array $response
+     * @return void
+     */
+    public function handle(array $handlingSubject, array $response)
+    {
+        $paymentDO = SubjectReader::readPayment($handlingSubject);
+
+        /** @var Payment $payment */
+        $payment = $paymentDO->getPayment();
+
+        $payment->setAdditionalInformation('auth_payment_interaction', $this->arrayManager->get('authentication/payerInteraction', $response));
+        $payment->setAdditionalInformation('auth_redirect_html', $this->arrayManager->get('authentication/redirectHtml', $response));
+        $payment->setAdditionalInformation('result', $this->arrayManager->get('result', $response));
+        $payment->setAdditionalInformation('response_gateway_recommendation', $this->arrayManager->get('response/gatewayRecommendation', $response));
+        $payment->setAdditionalInformation('transaction_type', $this->arrayManager->get('transaction/type', $response));
+    }
 }

@@ -18,7 +18,6 @@
 namespace OnTap\MasterCard\Controller\ThreedsecureV2;
 
 use Magento\Checkout\Model\Session;
-use Magento\Framework\Api\SearchCriteriaBuilderFactory;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\CsrfAwareActionInterface;
@@ -32,7 +31,8 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Payment\Gateway\Command\CommandPool;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
 use Magento\Sales\Api\OrderRepositoryInterface;
-use Magento\Sales\Model\Order;
+use Magento\Sales\Model\Order\Payment\Operations\AuthorizeOperation;
+use OnTap\MasterCard\Model\Service\GetOrderByIncrementId;
 
 class Response extends Action implements CsrfAwareActionInterface
 {
@@ -62,9 +62,19 @@ class Response extends Action implements CsrfAwareActionInterface
     private $orderRepository;
 
     /**
-     * @var SearchCriteriaBuilderFactory
+     * @var AuthorizeOperation
      */
-    private $searchCriteriaBuilderFactory;
+    private $authorizeOperation;
+
+    /**
+     * @var GetOrderByIncrementId
+     */
+    private $getOrderByIncrementId;
+
+    /**
+     * @var Context
+     */
+    private $context;
 
     /**
      * Response constructor.
@@ -74,7 +84,8 @@ class Response extends Action implements CsrfAwareActionInterface
      * @param CommandPool $commandPool
      * @param PaymentDataObjectFactory $dataObjectFactory
      * @param OrderRepositoryInterface $orderRepository
-     * @param SearchCriteriaBuilderFactory $searchCriteriaBuilderFactory
+     * @param AuthorizeOperation $authorizeOperation
+     * @param GetOrderByIncrementId $getOrderByIncrementId
      */
     public function __construct(
         Context $context,
@@ -83,7 +94,8 @@ class Response extends Action implements CsrfAwareActionInterface
         CommandPool $commandPool,
         PaymentDataObjectFactory $dataObjectFactory,
         OrderRepositoryInterface $orderRepository,
-        SearchCriteriaBuilderFactory $searchCriteriaBuilderFactory
+        AuthorizeOperation $authorizeOperation,
+        GetOrderByIncrementId $getOrderByIncrementId
     ) {
         parent::__construct($context);
         $this->session = $session;
@@ -91,7 +103,9 @@ class Response extends Action implements CsrfAwareActionInterface
         $this->commandPool = $commandPool;
         $this->dataObjectFactory = $dataObjectFactory;
         $this->orderRepository = $orderRepository;
-        $this->searchCriteriaBuilderFactory = $searchCriteriaBuilderFactory;
+        $this->authorizeOperation = $authorizeOperation;
+        $this->getOrderByIncrementId = $getOrderByIncrementId;
+        $this->context = $context;
     }
 
     /**
@@ -104,20 +118,14 @@ class Response extends Action implements CsrfAwareActionInterface
     public function execute()
     {
         $orderId = $this->getRequest()->getParam('order_id');
-        $searchCriteriaBuilder = $this->searchCriteriaBuilderFactory->create();
-        $searchCriteriaBuilder->addFilter(Order::INCREMENT_ID, $orderId);
-        $orders = $this->orderRepository->getList($searchCriteriaBuilder->create())->getItems();
-        $order = reset($orders);
-        if (!$order) {
-            throw new \Exception('Order doen\'t exist');
-        }
+
+        $order = $this->getOrderByIncrementId->execute($orderId);
         $payment = $order->getPayment();
-
-        $paymentDTO = $this->dataObjectFactory->create($payment);
+        $totalDue = $order->getTotalDue();
+        $baseTotalDue = $order->getBaseTotalDue();
+        $this->authorizeOperation->authorize($payment, true, $baseTotalDue);
+        $payment->setAmountAuthorized($totalDue);
         // TODO handle errors
-        $this->commandPool->get('auth_transaction')->execute(['payment' => $paymentDTO]);
-
-        $order->setState(Order::STATE_PROCESSING)->setStatus(Order::STATE_PROCESSING);
         $this->orderRepository->save($order);
 
         $resultRaw = $this->rawFactory->create();
