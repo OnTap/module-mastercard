@@ -17,7 +17,7 @@
 
 namespace OnTap\MasterCard\Controller\ThreedsecureV2;
 
-use Magento\Checkout\Model\Session;
+use Exception;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\CsrfAwareActionInterface;
@@ -27,7 +27,6 @@ use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Payment\Gateway\Command\CommandPool;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
 use Magento\Sales\Api\OrderRepositoryInterface;
@@ -36,11 +35,6 @@ use OnTap\MasterCard\Model\Service\GetOrderByIncrementId;
 
 class Response extends Action implements CsrfAwareActionInterface
 {
-    /**
-     * @var Session
-     */
-    private $session;
-
     /**
      * @var RawFactory
      */
@@ -79,7 +73,6 @@ class Response extends Action implements CsrfAwareActionInterface
     /**
      * Response constructor.
      * @param Context $context
-     * @param Session $session
      * @param RawFactory $rawFactory
      * @param CommandPool $commandPool
      * @param PaymentDataObjectFactory $dataObjectFactory
@@ -89,7 +82,6 @@ class Response extends Action implements CsrfAwareActionInterface
      */
     public function __construct(
         Context $context,
-        Session $session,
         RawFactory $rawFactory,
         CommandPool $commandPool,
         PaymentDataObjectFactory $dataObjectFactory,
@@ -98,7 +90,6 @@ class Response extends Action implements CsrfAwareActionInterface
         GetOrderByIncrementId $getOrderByIncrementId
     ) {
         parent::__construct($context);
-        $this->session = $session;
         $this->rawFactory = $rawFactory;
         $this->commandPool = $commandPool;
         $this->dataObjectFactory = $dataObjectFactory;
@@ -112,25 +103,30 @@ class Response extends Action implements CsrfAwareActionInterface
      * Dispatch request
      *
      * @return ResultInterface|ResponseInterface
-     * @throws LocalizedException
-     * @throws NoSuchEntityException
      */
     public function execute()
     {
-        $orderId = $this->getRequest()->getParam('order_id');
-
-        $order = $this->getOrderByIncrementId->execute($orderId);
-        $payment = $order->getPayment();
-        $totalDue = $order->getTotalDue();
-        $baseTotalDue = $order->getBaseTotalDue();
-        $this->authorizeOperation->authorize($payment, true, $baseTotalDue);
-        $payment->setAmountAuthorized($totalDue);
-        // TODO handle errors
-        $this->orderRepository->save($order);
-
         $resultRaw = $this->rawFactory->create();
+        $orderId = $this->getRequest()->getParam('order_id');
+        $result = $this->getRequest()->getParam('result');
+
+        try {
+            if ($result !== 'SUCCESS') {
+                throw new LocalizedException(__('Please try again'));
+            }
+            $order = $this->getOrderByIncrementId->execute($orderId);
+            $payment = $order->getPayment();
+            $totalDue = $order->getTotalDue();
+            $baseTotalDue = $order->getBaseTotalDue();
+            $this->authorizeOperation->authorize($payment, true, $baseTotalDue);
+            $payment->setAmountAuthorized($totalDue);
+            $this->orderRepository->save($order);
+        } catch (Exception $exception) {
+            return $resultRaw
+                ->setContents("<script>window.parent.treeDS2Failed()</script>");
+        }
         return $resultRaw
-            ->setContents("<script>console.log(window.parent); window.parent.treeDS2Completed()</script>");
+            ->setContents("<script>window.parent.treeDS2Completed()</script>");
     }
 
     /**

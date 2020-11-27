@@ -195,6 +195,15 @@ class VerificationStrategyCommand implements CommandInterface
         $paymentInfo = $paymentDO->getPayment();
         ContextHelper::assertOrderPayment($paymentInfo);
 
+        // Vault enabled from configuration
+        // 'Save for later use' checked on frontend
+        if ($this->config->isVaultEnabled() &&
+            $paymentInfo->getAdditionalInformation(VaultConfigProvider::IS_ACTIVE_CODE)) {
+            $this->commandPool
+                ->get(static::CREATE_TOKEN)
+                ->execute($commandSubject);
+        }
+
         $this->commandPool
             ->get($this->successCommand)
             ->execute($commandSubject);

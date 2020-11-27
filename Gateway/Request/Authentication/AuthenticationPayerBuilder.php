@@ -19,24 +19,35 @@ declare(strict_types=1);
 
 namespace OnTap\MasterCard\Gateway\Request\Authentication;
 
+use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\UrlInterface;
 use Magento\Payment\Gateway\Request\BuilderInterface;
+use OnTap\MasterCard\Gateway\Request\ThreeDSecure\CheckDataBuilder;
 
 class AuthenticationPayerBuilder implements BuilderInterface
 {
+    public const RESPONSE_URL = 'tns/threedsecureV2/response';
+
     /**
      * @var UrlInterface
      */
     private $url;
+    /**
+     * @var SessionManagerInterface
+     */
+    private $session;
 
     /**
      * AuthenticationPayerBuilder constructor.
      * @param UrlInterface $url
+     * @param SessionManagerInterface $session
      */
     public function __construct(
-        UrlInterface $url
+        UrlInterface $url,
+        SessionManagerInterface $session
     ) {
         $this->url = $url;
+        $this->session = $session;
     }
 
     /**
@@ -44,9 +55,19 @@ class AuthenticationPayerBuilder implements BuilderInterface
      */
     public function build(array $buildSubject)
     {
+        $url = $this->url->setUseSession(true)->getUrl(
+            self::RESPONSE_URL,
+            [
+                '_secure' => true,
+                '_query' => [
+                    CheckDataBuilder::RESPONSE_SID_PARAMETER => $this->session->getSessionId(),
+                ],
+            ]
+        );
+
         return [
             'authentication' => [
-                'redirectResponseUrl' => $this->url->getUrl('tns/threedsecureV2/response')
+                'redirectResponseUrl' => $url
             ]
         ];
     }
