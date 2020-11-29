@@ -66,7 +66,7 @@ class InteractionBuilder implements BuilderInterface
                     'paymentTerms' => 'HIDE',
                     'shipping' => 'HIDE',
                 ],
-                'operation' => 'NONE'
+                'operation' => 'AUTHORIZE'
             ]
         ];
     }

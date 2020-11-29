@@ -31,6 +31,7 @@ class OrderIdBuilder implements BuilderInterface
 
         /** @var \Magento\Quote\Model\Quote $quote */
         $quote = $paymentDO->getPayment()->getQuote();
+        $quote->setReservedOrderId(null);
         $quote->reserveOrderId();
 
         return [
