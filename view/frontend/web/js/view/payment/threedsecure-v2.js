@@ -21,8 +21,8 @@ define([
     'mage/url',
     'Magento_Ui/js/modal/modal',
     'Magento_Checkout/js/model/full-screen-loader',
-    'OnTap_MasterCard/js/action/get-auth-strategy',
-    'OnTap_MasterCard/js/action/authorize-payer'
+    'OnTap_MasterCard/js/action/authenticate-payer',
+    'OnTap_MasterCard/js/action/initiate-authentication'
 ], function (
     ko,
     $,
@@ -30,8 +30,8 @@ define([
     url,
     modal,
     fullScreenLoader,
-    getAuthStrategyAction,
-    authorizePayerAction
+    authenticatePayerAction,
+    initiateAuthenticationAction
 ) {
     'use strict';
 
@@ -49,7 +49,7 @@ define([
         messageContainer: null,
         isPlaceOrderActionAllowed: null,
 
-        initialize: function(config) {
+        initialize: function (config) {
             this._super();
 
             this.onComplete = config.onComplete;
@@ -70,32 +70,27 @@ define([
             return false;
         },
 
-        threeDSecureV2Open: function (parent, orderId) {
+        threeDSecureV2Start: function () {
 
             this.acsComplete = false;
             fullScreenLoader.startLoader();
-
-            getAuthStrategyAction.execute(orderId, this.messageContainer)
-                .done($.proxy(function (res) {
-                    if (res.action === 'redirectOnSuccess') {
-                        this.onComplete();
-                    }
-
-                    if (res.action === 'initAuth') {
-                        return this.authInit(res.html, orderId);
-                    }
-                }, this)).always($.proxy(function () {
-                this.isPlaceOrderActionAllowed(false);
-            }, this));
+            this.isPlaceOrderActionAllowed(false);
+            initiateAuthenticationAction.execute(this.messageContainer)
+                .done($.proxy(this.onInitiateAuthentication, this))
+                .fail($.proxy(this.onError, this));
         },
 
-        authInit: function (html, orderId) {
-            $('#' + this.getId() + '_threedsecure_v2_container').html(html);
+        /**
+         * @param res {object}
+         * @param res.html {String}
+         * @returns {jQuery.Deferred}
+         */
+        onInitiateAuthentication: function (res) {
+            $('#' + this.getId() + '_threedsecure_v2_container').html(res.html);
             eval($('#initiate-authentication-script').text());
 
             return $.when(
-                authorizePayerAction.execute({
-                    order_id: orderId,
+                authenticatePayerAction.execute({
                     browserDetails: {
                         javaEnabled: navigator.javaEnabled(),
                         language: navigator.language,
@@ -107,46 +102,54 @@ define([
                         '3DSecureChallengeWindowSize': 'FULL_SCREEN'
                     }
                 }, this.messageContainer)
-            ).done($.proxy(function (res) {
-                window.treeDS2Completed = $.proxy(this.modalCompleted, this);
-                window.treeDS2Failed = $.proxy(function() {
-                    this.modal.modal('closeModal');
-                    this.onError();
-                }, this);
-                this.modal = $('#' + this.getId() + '_threedsecure_v2_modal');
+            ).done($.proxy(this.onAuthenticatePayer, this));
+        },
 
-                modal({
-                    type: 'slide',
-                    title: $.mage.__('Process Secure Payment'),
-                    buttons: [],
-                    closed: $.proxy(this.onModalClose, this),
-                    clickableOverlay: false
-                }, this.modal);
+        /**
+         * @param res {object}
+         * @param res.html {String}
+         * @param res.action {String}
+         */
+        onAuthenticatePayer: function (res) {
+            window.treeDS2Completed = $.proxy(this.modalCompleted, this);
 
-                this.modal.html(res.html);
-                eval($('#authenticate-payer-script').text());
+            this.modal = $('#' + this.getId() + '_threedsecure_v2_modal');
 
-                this.iframe = $('iframe', this.modal);
+            modal({
+                type: 'slide',
+                title: $.mage.__('Process Secure Payment'),
+                buttons: [],
+                closed: $.proxy(this.onModalClose, this),
+                clickableOverlay: false
+            }, this.modal);
 
-                this.modal.css({
-                    height: '100%'
+            this.modal.html(res.html);
+            eval($('#authenticate-payer-script').text());
+
+            this.iframe = $('iframe', this.modal);
+
+            this.modal.css({
+                height: '100%'
+            });
+            this.modal.parent().css({
+                height: '80%'
+            });
+
+            this.iframe.css({
+                height: '100%',
+                width: '100%'
+            });
+
+            this.iframe.parent().css({
+                height: '100%'
+            });
+
+            if (res.action === 'challenge') {
+                this.modal.modal('openModal');
+                this.iframe.on('load', function () {
+                    fullScreenLoader.stopLoader();
                 });
-                this.modal.parent().css({
-                    height: '80%'
-                });
-
-                this.iframe.css({
-                    height: '100%',
-                    width: '100%'
-                });
-
-                if (res.action === 'challenge') {
-                    this.modal.modal('openModal');
-                    this.iframe.on('load', function () {
-                        fullScreenLoader.stopLoader();
-                    });
-                }
-            }, this));
+            }
         },
 
         modalCompleted: function () {

@@ -25,27 +25,10 @@ define(
         'use strict';
 
         return {
-            apiUrl: '/tns/threedsecureV2/authPayer',
-            /**
-             *
-             * @param {Object} payload
-             * @param {String} payload.order_id
-             * @param {Object} payload.browserDetails
-             * @param {Boolean} payload.browserDetails.javaEnabled
-             * @param {String} payload.browserDetails.language
-             * @param {Number} payload.browserDetails.screenHeight
-             * @param {Number} payload.browserDetails.screenWidth
-             * @param {Number} payload.browserDetails.timeZone
-             * @param {Number} payload.browserDetails.colorDepth
-             * @param {String} payload.browserDetails.acceptHeaders
-             * @param {String} payload.browserDetails['3DSecureChallengeWindowSize']
-             *
-             * @param messageContainer
-             * @returns {*}
-             */
-            execute: function (payload, messageContainer) {
+            apiUrl: '/tns/threedsecureV2/initiateAuthentication',
+            execute: function (messageContainer) {
 
-                return $.post(this.apiUrl, payload)
+                return $.post(this.apiUrl, {})
                     .fail(
                         function (response) {
                             errorProcessor.process(response, messageContainer);

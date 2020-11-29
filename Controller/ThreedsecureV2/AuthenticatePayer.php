@@ -20,50 +20,60 @@ declare(strict_types=1);
 namespace OnTap\MasterCard\Controller\ThreedsecureV2;
 
 use Exception;
+use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\Exception\NoSuchEntityException;
-use OnTap\MasterCard\Model\Service\CancelOrderService;
-use OnTap\MasterCard\Model\Service\ReorderService;
+use Magento\Payment\Gateway\Command\CommandPool;
+use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
 
-class CancelOrder extends Action implements HttpPostActionInterface
+class AuthenticatePayer extends Action implements HttpPostActionInterface
 {
+    const COMMAND_NAME = 'authenticate_payer';
+
+    /**
+     * @var PaymentDataObjectFactory
+     */
+    private $paymentDataObjectFactory;
+
     /**
      * @var JsonFactory
      */
     private $jsonFactory;
 
     /**
-     * @var CancelOrderService
+     * @var CommandPool
      */
-    private $cancelOrderService;
+    private $commandPool;
 
     /**
-     * @var ReorderService
+     * @var Session
      */
-    private $reorderService;
+    private $checkoutSession;
 
     /**
      * Check constructor.
+     * @param PaymentDataObjectFactory $paymentDataObjectFactory
      * @param JsonFactory $jsonFactory
+     * @param CommandPool $commandPool
      * @param Context $context
-     * @param CancelOrderService $cancelOrderService
-     * @param ReorderService $reorderService
+     * @param Session $checkoutSession
      */
     public function __construct(
+        PaymentDataObjectFactory $paymentDataObjectFactory,
         JsonFactory $jsonFactory,
+        CommandPool $commandPool,
         Context $context,
-        CancelOrderService $cancelOrderService,
-        ReorderService $reorderService
+        Session $checkoutSession
     ) {
         parent::__construct($context);
+        $this->paymentDataObjectFactory = $paymentDataObjectFactory;
         $this->jsonFactory = $jsonFactory;
-        $this->cancelOrderService = $cancelOrderService;
-        $this->reorderService = $reorderService;
+        $this->commandPool = $commandPool;
+        $this->checkoutSession = $checkoutSession;
     }
 
     /**
@@ -73,14 +83,30 @@ class CancelOrder extends Action implements HttpPostActionInterface
      */
     public function execute()
     {
-        $orderId = (int)$this->getRequest()->getParam('order_id');
-
         $jsonResult = $this->jsonFactory->create();
+
         try {
-            $order = $this->cancelOrderService->execute($orderId);
-            $this->reorderService->execute($order);
-        } catch (NoSuchEntityException $noSuchEntityException) {
-            return $jsonResult;
+            $quote = $this->checkoutSession->getQuote();
+            $payment = $quote->getPayment();
+            $paymentDataObject = $this->paymentDataObjectFactory->create($payment);
+
+            $this->commandPool
+                ->get(self::COMMAND_NAME)
+                ->execute([
+                    'payment' => $paymentDataObject,
+                    'amount' => $quote->getBaseGrandTotal(),
+                    'remote_ip' => $quote->getRemoteIp(),
+                    'browserDetails' => $this->getRequest()->getParam('browserDetails')
+                ]);
+
+            $payment->save();
+
+            $jsonResult->setData([
+                'html' => $payment->getAdditionalInformation('auth_redirect_html'),
+                'action' => $payment->getAdditionalInformation('auth_payment_interaction') === 'REQUIRED'
+                    ? 'challenge'
+                    : 'frictionless'
+            ]);
         } catch (Exception $e) {
             $jsonResult
                 ->setHttpResponseCode(400)

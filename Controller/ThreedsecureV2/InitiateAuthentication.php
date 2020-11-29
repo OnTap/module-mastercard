@@ -24,13 +24,12 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Payment\Gateway\Command\CommandPool;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
 
-class InitiateAuth extends Action
+class InitiateAuthentication extends Action
 {
+    const COMMAND_NAME = 'initiate_authentication';
     /**
      * @var Session
      */
@@ -77,39 +76,30 @@ class InitiateAuth extends Action
      * Dispatch request
      *
      * @return ResultInterface|ResponseInterface
-     * @throws LocalizedException
-     * @throws NoSuchEntityException
      */
     public function execute()
     {
         $jsonResult = $this->jsonFactory->create();
-        $order = $this->checkoutSession->getLastRealOrder();
-        // TODO extract from payment method additional information and put in response
-        $jsonResult->setData([
-            'order' => $this->checkoutSession->getLastRealOrder()->getId()
-        ]);
         try {
-            $paymentDataObject = $this->paymentDataObjectFactory->create($order->getPayment());
+            $quote = $this->checkoutSession->getQuote();
+            $payment = $quote->getPayment();
+            $paymentDataObject = $this->paymentDataObjectFactory->create($payment);
 
-            $result = $this->commandPool
-                ->get('init_auth')
+            $quote->setReservedOrderId(null)->reserveOrderId();
+
+            $quote->save();
+
+            $this->commandPool
+                ->get(self::COMMAND_NAME)
                 ->execute([
                     'payment' => $paymentDataObject
                 ]);
 
-            $response2 = $this->commandPool
-                ->get('auth_pay')
-                ->execute([
-                    'payment' => $paymentDataObject,
-                    'browserDetails' => $this->getRequest()->getParam('browserDetails')
-                ]);
+            $payment->save();
 
-            $order->getPayment()->save();
+            $html = $payment->getAdditionalInformation('auth_redirect_html');
 
-            if ($result && $response2) {
-                // TODO take html code from payment additional info instead of response
-                $jsonResult->setData($response2->get()['response']['authentication']);
-            }
+            $jsonResult->setData(compact('html'));
         } catch (Exception $e) {
             $jsonResult
                 ->setHttpResponseCode(400)

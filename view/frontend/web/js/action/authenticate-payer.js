@@ -25,9 +25,24 @@ define(
         'use strict';
 
         return {
-            apiUrl: '/tns/threedsecureV2/authStrategy',
-            execute: function (orderId, messageContainer) {
-                var payload = {order_id: orderId};
+            apiUrl: '/tns/threedsecureV2/authenticatePayer',
+            /**
+             *
+             * @param {Object} payload
+             * @param {Object} payload.browserDetails
+             * @param {Boolean} payload.browserDetails.javaEnabled
+             * @param {String} payload.browserDetails.language
+             * @param {Number} payload.browserDetails.screenHeight
+             * @param {Number} payload.browserDetails.screenWidth
+             * @param {Number} payload.browserDetails.timeZone
+             * @param {Number} payload.browserDetails.colorDepth
+             * @param {String} payload.browserDetails.acceptHeaders
+             * @param {String} payload.browserDetails['3DSecureChallengeWindowSize']
+             *
+             * @param messageContainer
+             * @returns {*}
+             */
+            execute: function (payload, messageContainer) {
 
                 return $.post(this.apiUrl, payload)
                     .fail(

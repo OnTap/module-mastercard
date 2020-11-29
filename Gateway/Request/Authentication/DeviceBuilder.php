@@ -19,7 +19,7 @@ declare(strict_types=1);
 
 namespace OnTap\MasterCard\Gateway\Request\Authentication;
 
-use Magento\Payment\Gateway\Helper\SubjectReader;
+use InvalidArgumentException;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 
 class DeviceBuilder implements BuilderInterface
@@ -29,13 +29,41 @@ class DeviceBuilder implements BuilderInterface
      */
     public function build(array $buildSubject)
     {
-        $paymentDO = SubjectReader::readPayment($buildSubject);
-
         return [
             'device' => [
-                'browserDetails' => $buildSubject['browserDetails'] ?? [],
-                'ipAddress' => $paymentDO->getOrder()->getRemoteIp()
+                'browserDetails' => $this->readBrowserDetails($buildSubject),
+                'ipAddress' => $this->readRemoteIp($buildSubject)
             ]
         ];
+    }
+
+    /**
+     * Reads payment from subject
+     *
+     * @param array $subject
+     * @return array
+     */
+    private function readBrowserDetails(array $subject)
+    {
+        if (!isset($subject['browserDetails'])) {
+            throw new InvalidArgumentException('Browser detail data array should be provided');
+        }
+
+        return $subject['browserDetails'];
+    }
+
+    /**
+     * Reads payment from subject
+     *
+     * @param array $subject
+     * @return string
+     */
+    private function readRemoteIp(array $subject)
+    {
+        if (!isset($subject['remote_ip'])) {
+            throw new InvalidArgumentException('Remote Ip should be provided');
+        }
+
+        return $subject['remote_ip'];
     }
 }
