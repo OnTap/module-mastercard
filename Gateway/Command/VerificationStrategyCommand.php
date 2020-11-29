@@ -19,9 +19,7 @@ namespace OnTap\MasterCard\Gateway\Command;
 
 use Magento\Framework\App\Area;
 use Magento\Framework\App\State;
-use Magento\Framework\Exception\NotFoundException;
 use Magento\Payment\Gateway\Command;
-use Magento\Payment\Gateway\Command\CommandException;
 use Magento\Payment\Gateway\CommandInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use Magento\Payment\Gateway\Helper\ContextHelper;
@@ -35,7 +33,6 @@ class VerificationStrategyCommand implements CommandInterface
 {
     const PROCESS_3DS_RESULT = '3ds_process';
     const CREATE_TOKEN = 'create_token';
-    const INITIATE_AUTH = 'init_auth';
 
     /**
      * @var Command\CommandPoolInterface
@@ -129,12 +126,7 @@ class VerificationStrategyCommand implements CommandInterface
         $paymentInfo = $paymentDO->getPayment();
         ContextHelper::assertOrderPayment($paymentInfo);
 
-        if ($this->is3DS2Supported($paymentDO)) {
-            $this->treeDS2Flow($commandSubject);
-            return null;
-            // TODO check VAULT with 3DS2 method (we just need to skip next if and do nothing if 3ds2 enabled. Pay attention on hosted payment method.)
-        }
-        if ($this->isThreeDSSupported($paymentDO)) {
+        if (!$this->is3DS2Supported($paymentDO) && $this->isThreeDSSupported($paymentDO)) {
             $this->commandPool
                 ->get(static::PROCESS_3DS_RESULT)
                 ->execute($commandSubject);
@@ -179,34 +171,5 @@ class VerificationStrategyCommand implements CommandInterface
 
         return (int)$this->config->getValue('three_d_secure') === 1
             && (int)$this->config->getValue('three_d_secure_version') === 2;
-    }
-
-    /**
-     * @param array $commandSubject
-     * @return null
-     * @throws CommandException
-     * @throws NotFoundException
-     */
-    private function treeDS2Flow(array $commandSubject)
-    {
-        $paymentDO = SubjectReader::readPayment($commandSubject);
-
-        /** @var Payment $paymentInfo */
-        $paymentInfo = $paymentDO->getPayment();
-        ContextHelper::assertOrderPayment($paymentInfo);
-
-        // Vault enabled from configuration
-        // 'Save for later use' checked on frontend
-        if ($this->config->isVaultEnabled() &&
-            $paymentInfo->getAdditionalInformation(VaultConfigProvider::IS_ACTIVE_CODE)) {
-            $this->commandPool
-                ->get(static::CREATE_TOKEN)
-                ->execute($commandSubject);
-        }
-
-        $this->commandPool
-            ->get($this->successCommand)
-            ->execute($commandSubject);
-        return null;
     }
 }

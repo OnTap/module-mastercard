@@ -27,9 +27,7 @@ class OrderAmountBuilder implements BuilderInterface
      */
     public function build(array $buildSubject)
     {
-        $paymentDO = SubjectReader::readPayment($buildSubject);
-
-        $amount = $paymentDO->getOrder()->getGrandTotalAmount();
+        $amount = SubjectReader::readAmount($buildSubject);
 
         return [
             'order' => [

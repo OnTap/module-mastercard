@@ -24,7 +24,7 @@ use Magento\Framework\UrlInterface;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use OnTap\MasterCard\Gateway\Request\ThreeDSecure\CheckDataBuilder;
 
-class AuthenticationPayerBuilder implements BuilderInterface
+class AuthenticatePayerBuilder implements BuilderInterface
 {
     public const RESPONSE_URL = 'tns/threedsecureV2/response';
 

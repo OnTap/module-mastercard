@@ -23,7 +23,7 @@ use Magento\Payment\Gateway\Validator\ResultInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
 
-class InitiateAuthValidator extends AbstractValidator
+class AuthenticatePayerValidator extends AbstractValidator
 {
     /**
      * @var ArrayManager
@@ -52,26 +52,34 @@ class InitiateAuthValidator extends AbstractValidator
     public function validate(array $validationSubject)
     {
         $response = SubjectReader::readResponse($validationSubject);
-        $version = $this->arrayManager->get('authentication/version', $response);
-        $transactionId = $this->arrayManager->get('transaction/id', $response);
-        $gatewayRecommendation = $this->arrayManager->get('response/gatewayRecommendation', $response);
+
         $error = $this->arrayManager->get('error', $response);
+        $result = $this->arrayManager->get('result', $response);
+        $gatewayRecommendation = $this->arrayManager->get('response/gatewayRecommendation', $response);
+        $transactionId = $this->arrayManager->get('transaction/id', $response);
 
         if (isset($error)) {
             return $this->createResult(false, ['Error']); // TODO map errors on correct errors for customers
         }
 
+        $version = $this->arrayManager->get('authentication/version', $response);
+
         if ($version === 'NONE' && $transactionId && $gatewayRecommendation === 'PROCEED') {
             return $this->createResult(true);
         }
 
-        $result = $this->arrayManager->get('result', $response);
-
-        if ($result === 'SUCCESS' && $transactionId) {
-            return $this->createResult(true);
+        if ($version !== '3DS1' && $version !== '3DS2') {
+            return $this->createResult(false, [
+                'Unsupported version of 3DS'
+            ]);
         }
 
-        // TODO validate
-        return $this->createResult(false, ['Transaction declined']);
+        if ($result !== 'SUCCESS' && $result !== 'PROCEED' && $result !== 'PENDING') {
+            return $this->createResult(false, [
+                'Error'
+            ]);
+        }
+
+        return $this->createResult(true);
     }
 }

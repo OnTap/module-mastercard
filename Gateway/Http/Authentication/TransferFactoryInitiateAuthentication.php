@@ -20,7 +20,7 @@ namespace OnTap\MasterCard\Gateway\Http\Authentication;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use OnTap\MasterCard\Gateway\Http\TransferFactory;
 
-class TransferFactoryInitiateAuth extends TransferFactory
+class TransferFactoryInitiateAuthentication extends TransferFactory
 {
     /**
      * @param PaymentDataObjectInterface $payment

@@ -23,7 +23,7 @@ use Magento\Payment\Gateway\Validator\ResultInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
 
-class AuthPayerValidator extends AbstractValidator
+class InitiateAuthenticationValidator extends AbstractValidator
 {
     /**
      * @var ArrayManager
@@ -52,34 +52,25 @@ class AuthPayerValidator extends AbstractValidator
     public function validate(array $validationSubject)
     {
         $response = SubjectReader::readResponse($validationSubject);
-
-        $error = $this->arrayManager->get('error', $response);
-        $result = $this->arrayManager->get('result', $response);
-        $gatewayRecommendation = $this->arrayManager->get('response/gatewayRecommendation', $response);
+        $version = $this->arrayManager->get('authentication/version', $response);
         $transactionId = $this->arrayManager->get('transaction/id', $response);
+        $gatewayRecommendation = $this->arrayManager->get('response/gatewayRecommendation', $response);
+        $error = $this->arrayManager->get('error', $response);
 
         if (isset($error)) {
-            return $this->createResult(false, ['Error']); // TODO map errors on correct errors for customers
+            return $this->createResult(false, ['Error']);
         }
-
-        $version = $this->arrayManager->get('authentication/version', $response);
 
         if ($version === 'NONE' && $transactionId && $gatewayRecommendation === 'PROCEED') {
             return $this->createResult(true);
         }
 
-        if ($version !== '3DS1' && $version !== '3DS2') {
-            return $this->createResult(false, [
-                'Unsupported version of 3DS'
-            ]);
+        $result = $this->arrayManager->get('result', $response);
+
+        if ($result === 'SUCCESS' && $transactionId) {
+            return $this->createResult(true);
         }
 
-        if ($result !== 'SUCCESS' && $result !== 'PROCEED' && $result !== 'PENDING') {
-            return $this->createResult(false, [
-                'Error'
-            ]);
-        }
-
-        return $this->createResult(true);
+        return $this->createResult(false, ['Transaction declined']);
     }
 }

@@ -25,11 +25,10 @@ define(
         'use strict';
 
         return {
-            apiUrl: '/tns/threedsecureV2/authPayer',
+            apiUrl: '/tns/threedsecureV2/authenticatePayer',
             /**
              *
              * @param {Object} payload
-             * @param {String} payload.order_id
              * @param {Object} payload.browserDetails
              * @param {Boolean} payload.browserDetails.javaEnabled
              * @param {String} payload.browserDetails.language

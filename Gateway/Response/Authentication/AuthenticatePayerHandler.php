@@ -24,7 +24,7 @@ use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Sales\Model\Order\Payment;
 
-class AuthPayerHandler implements HandlerInterface
+class AuthenticatePayerHandler implements HandlerInterface
 {
     /**
      * @var ArrayManager
@@ -37,8 +37,7 @@ class AuthPayerHandler implements HandlerInterface
      */
     public function __construct(
         ArrayManager $arrayManager
-    )
-    {
+    ) {
         $this->arrayManager = $arrayManager;
     }
 

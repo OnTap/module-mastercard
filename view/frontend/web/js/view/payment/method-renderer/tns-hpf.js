@@ -23,14 +23,7 @@ define(
         'Magento_Checkout/js/action/set-payment-information',
         'uiLayout',
         'Magento_Checkout/js/model/full-screen-loader',
-        'Magento_Vault/js/view/payment/vault-enabler',
-        'Magento_Ui/js/modal/modal',
-        'Magento_Checkout/js/action/redirect-on-success',
-        'OnTap_MasterCard/js/action/cancel-order',
-        'Magento_Customer/js/customer-data',
-        'Magento_Checkout/js/action/set-shipping-information',
-        'Magento_Checkout/js/model/error-processor',
-        'Magento_Ui/js/model/messages'
+        'Magento_Vault/js/view/payment/vault-enabler'
     ],
     function (
         $,
@@ -40,18 +33,10 @@ define(
         setPaymentInformationAction,
         layout,
         fullScreenLoader,
-        VaultEnabler,
-        modal,
-        redirectOnSuccessAction,
-        cancelOrder,
-        customerData,
-        setShippingInformationAction,
-        errorProcessor,
-        Message
+        VaultEnabler
     ) {
         'use strict';
 
-        var orderId = null;
         return ccFormComponent.extend({
             defaults: {
                 template: 'OnTap_MasterCard/payment/tns-hpf',
@@ -74,27 +59,8 @@ define(
                 this._super();
                 this.vaultEnabler = VaultEnabler();
                 this.vaultEnabler.setPaymentCode(this.getVaultCode());
-                this.redirectAfterPlaceOrder = !this.is3Ds2Enabled();
 
                 return this;
-            },
-
-            /**
-             * @return {*}
-             */
-            getPlaceOrderDeferredObject: function () {
-                return this._super().done(function (res) {
-                    orderId = res;
-                    return res;
-                });
-            },
-
-            afterPlaceOrder: function () {
-                if (!this.is3Ds2Enabled()) {
-                    return;
-                }
-                this.isPlaceOrderActionAllowed(false);
-                this.delegate('threeDSecureV2Open', this, orderId);
             },
 
             getId: function () {
@@ -255,11 +221,12 @@ define(
                 }
                 if (response.status === "ok") {
                     this.sessionId = response.session.id;
-                    if (this.is3DsEnabled()) {
-                        var action = setPaymentInformationAction(this.messageContainer, this.getData());
+                    var action
+                    if (this.is3DsEnabled() || this.is3Ds2Enabled()) {
+                        action = setPaymentInformationAction(this.messageContainer, this.getData());
 
                         $.when(action).done($.proxy(function() {
-                            this.delegate('threeDSecureOpen', this);
+                            this.delegate(this.is3Ds2Enabled() ? 'threeDSecureV2Start' : 'threeDSecureOpen', this);
                         }, this)).fail(
                             $.proxy(this.threeDSecureCheckFailed, this)
                         );
@@ -320,40 +287,34 @@ define(
 
             initChildren: function () {
                 this._super();
-                var config = this.getConfig();
 
-                var threeDSecureComponent = {
-                    parent: this.name,
-                    name: this.name + '.threedsecure',
-                    displayArea: 'threedsecure',
-                    component: 'OnTap_MasterCard/js/view/payment/threedsecure',
-                    config: {
-                        id: this.item.method,
-                        messages: this.messageContainer,
-                        checkUrl: config.check_url,
-                        onComplete: $.proxy(this.threeDSecureCheckSuccess, this),
-                        onError: $.proxy(this.threeDSecureCheckFailed, this),
-                        onCancel: $.proxy(this.threeDSecureCancelled, this)
-                    }
-                };
-
-                var threeDSecureV2Component = {
-                    parent: this.name,
-                    name: this.name + '.threedsecureV2',
-                    displayArea: 'threedsecure',
-                    component: 'OnTap_MasterCard/js/view/payment/threedsecure-v2',
-                    config: {
-                        id: this.item.method,
-                        messages: this.messageContainer,
-                        onComplete: $.proxy(this.threeDSecureV2CheckSuccess, this),
-                        onError: $.proxy(this.threeDSecureV2CheckFailed, this),
-                        onCancel: $.proxy(this.threeDSecureV2Cancelled, this),
-                        isPlaceOrderActionAllowed: $.proxy(this.isPlaceOrderActionAllowed, this)
-                    }
-                };
-                layout([threeDSecureComponent, threeDSecureV2Component]);
+                layout(this.createChildrenComponents([
+                    { name: 'threedsecure', component: 'threedsecure' },
+                    { name: 'threedsecureV2', component: 'threedsecure-v2' }
+                ]));
 
                 return this;
+            },
+
+            createChildrenComponents: function (items) {
+                var config = this.getConfig();
+                return items.map($.proxy(function (item) {
+                    return {
+                        parent: this.name,
+                        name: this.name + '.' + item.name,
+                        displayArea: 'threedsecure',
+                        component: 'OnTap_MasterCard/js/view/payment/' + item.component,
+                        config: {
+                            id: this.item.method,
+                            messages: this.messageContainer,
+                            checkUrl: config.check_url,
+                            onComplete: $.proxy(this.threeDSecureCheckSuccess, this),
+                            onError: $.proxy(this.threeDSecureCheckFailed, this),
+                            onCancel: $.proxy(this.threeDSecureCancelled, this),
+                            isPlaceOrderActionAllowed: $.proxy(this.isPlaceOrderActionAllowed, this)
+                        }
+                    };
+                }, this));
             },
 
             threeDSecureCheckSuccess: function () {
@@ -369,33 +330,6 @@ define(
 
             threeDSecureCancelled: function () {
                 this.isPlaceOrderActionAllowed(true);
-            },
-
-            threeDSecureV2CheckSuccess: function () {
-                redirectOnSuccessAction.execute();
-            },
-
-            threeDSecureV2CheckFailed: function () {
-                console.error('3DS check failed', arguments);
-                this.threeDSecureCancelled();
-                errorProcessor.process({
-                    message: $t('Transaction declined by 3D-Secure validation.')
-                }, this.messageContainer)
-            },
-
-            threeDSecureV2Cancelled: function () {
-                // silence cancel action
-                return cancelOrder.execute(orderId, new Message()).done(function () {
-                    return customerData.reload(
-                        ['cart', 'checkout-data', 'messages'],
-                        false
-                    );
-                }).done(function () {
-                    return setShippingInformationAction();
-                }).done($.proxy(function () {
-                    this.isPlaceOrderActionAllowed(true);
-                    fullScreenLoader.stopLoader();
-                }, this));
             }
         });
     }
