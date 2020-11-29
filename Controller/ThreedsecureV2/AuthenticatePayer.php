@@ -15,26 +15,24 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace OnTap\MasterCard\Controller\ThreedsecureV2;
 
 use Exception;
 use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Payment\Gateway\Command\CommandPool;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
 
-class InitiateAuth extends Action
+class AuthenticatePayer extends Action implements HttpPostActionInterface
 {
-    /**
-     * @var Session
-     */
-    private $checkoutSession;
+    const COMMAND_NAME = 'authenticate_payer';
 
     /**
      * @var PaymentDataObjectFactory
@@ -52,64 +50,63 @@ class InitiateAuth extends Action
     private $commandPool;
 
     /**
+     * @var Session
+     */
+    private $checkoutSession;
+
+    /**
      * Check constructor.
-     * @param Session $checkoutSession
      * @param PaymentDataObjectFactory $paymentDataObjectFactory
      * @param JsonFactory $jsonFactory
      * @param CommandPool $commandPool
      * @param Context $context
+     * @param Session $checkoutSession
      */
     public function __construct(
-        Session $checkoutSession,
         PaymentDataObjectFactory $paymentDataObjectFactory,
         JsonFactory $jsonFactory,
         CommandPool $commandPool,
-        Context $context
+        Context $context,
+        Session $checkoutSession
     ) {
         parent::__construct($context);
-        $this->checkoutSession = $checkoutSession;
         $this->paymentDataObjectFactory = $paymentDataObjectFactory;
         $this->jsonFactory = $jsonFactory;
         $this->commandPool = $commandPool;
+        $this->checkoutSession = $checkoutSession;
     }
 
     /**
      * Dispatch request
      *
      * @return ResultInterface|ResponseInterface
-     * @throws LocalizedException
-     * @throws NoSuchEntityException
      */
     public function execute()
     {
         $jsonResult = $this->jsonFactory->create();
-        $order = $this->checkoutSession->getLastRealOrder();
-        // TODO extract from payment method additional information and put in response
-        $jsonResult->setData([
-            'order' => $this->checkoutSession->getLastRealOrder()->getId()
-        ]);
+
         try {
-            $paymentDataObject = $this->paymentDataObjectFactory->create($order->getPayment());
+            $quote = $this->checkoutSession->getQuote();
+            $payment = $quote->getPayment();
+            $paymentDataObject = $this->paymentDataObjectFactory->create($payment);
 
-            $result = $this->commandPool
-                ->get('init_auth')
-                ->execute([
-                    'payment' => $paymentDataObject
-                ]);
-
-            $response2 = $this->commandPool
-                ->get('auth_pay')
+            $this->commandPool
+                ->get(self::COMMAND_NAME)
                 ->execute([
                     'payment' => $paymentDataObject,
+                    'amount' => $quote->getBaseGrandTotal(),
+                    'remote_ip' => $quote->getRemoteIp(),
                     'browserDetails' => $this->getRequest()->getParam('browserDetails')
                 ]);
 
-            $order->getPayment()->save();
+            $payment->save();
 
-            if ($result && $response2) {
-                // TODO take html code from payment additional info instead of response
-                $jsonResult->setData($response2->get()['response']['authentication']);
-            }
+            $jsonResult->setData([
+                'html' => $payment->getAdditionalInformation('auth_redirect_html'),
+                'action' => $payment->getAdditionalInformation('auth_payment_interaction') === 'REQUIRED'
+                    ? 'challenge'
+                    : 'frictionless'
+            ]);
         } catch (Exception $e) {
             $jsonResult
                 ->setHttpResponseCode(400)

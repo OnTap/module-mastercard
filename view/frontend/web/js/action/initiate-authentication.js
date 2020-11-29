@@ -25,11 +25,10 @@ define(
         'use strict';
 
         return {
-            apiUrl: '/tns/threedsecureV2/authStrategy',
-            execute: function (orderId, messageContainer) {
-                var payload = {order_id: orderId};
+            apiUrl: '/tns/threedsecureV2/initiateAuthentication',
+            execute: function (messageContainer) {
 
-                return $.post(this.apiUrl, payload)
+                return $.post(this.apiUrl, {})
                     .fail(
                         function (response) {
                             errorProcessor.process(response, messageContainer);

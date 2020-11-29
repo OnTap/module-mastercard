@@ -18,23 +18,23 @@
 namespace OnTap\MasterCard\Controller\ThreedsecureV2;
 
 use Exception;
+use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\Exception\InputException;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Payment\Gateway\Command\CommandPool;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
-use Magento\Payment\Model\InfoInterface;
-use Magento\Sales\Api\OrderRepositoryInterface;
-use OnTap\MasterCard\Model\Ui\Hpf\ConfigProvider;
 
-class AuthPayer extends Action implements HttpPostActionInterface
+class InitiateAuthentication extends Action
 {
+    const COMMAND_NAME = 'initiate_authentication';
+    /**
+     * @var Session
+     */
+    private $checkoutSession;
+
     /**
      * @var PaymentDataObjectFactory
      */
@@ -51,73 +51,56 @@ class AuthPayer extends Action implements HttpPostActionInterface
     private $commandPool;
 
     /**
-     * @var OrderRepositoryInterface
-     */
-    private $orderRepository;
-
-    /**
      * Check constructor.
+     * @param Session $checkoutSession
      * @param PaymentDataObjectFactory $paymentDataObjectFactory
      * @param JsonFactory $jsonFactory
      * @param CommandPool $commandPool
      * @param Context $context
-     * @param OrderRepositoryInterface $orderRepository
      */
     public function __construct(
+        Session $checkoutSession,
         PaymentDataObjectFactory $paymentDataObjectFactory,
         JsonFactory $jsonFactory,
         CommandPool $commandPool,
-        Context $context,
-        OrderRepositoryInterface $orderRepository
+        Context $context
     ) {
         parent::__construct($context);
+        $this->checkoutSession = $checkoutSession;
         $this->paymentDataObjectFactory = $paymentDataObjectFactory;
         $this->jsonFactory = $jsonFactory;
         $this->commandPool = $commandPool;
-        $this->orderRepository = $orderRepository;
     }
 
     /**
      * Dispatch request
      *
      * @return ResultInterface|ResponseInterface
-     * @throws LocalizedException
-     * @throws NoSuchEntityException
      */
     public function execute()
     {
         $jsonResult = $this->jsonFactory->create();
-        $orderId = $this->getRequest()->getParam('order_id');
-        // TODO extract from payment method additional information and put in response
         try {
-            $order = $this->orderRepository->get($orderId);
-            /** @var InfoInterface $payment */
-            $payment = $order->getPayment();
-
-            if ($payment->getMethod() !== ConfigProvider::METHOD_CODE) {
-                throw new InputException(__('Payment method is invalid'));
-            }
-
+            $quote = $this->checkoutSession->getQuote();
+            $payment = $quote->getPayment();
             $paymentDataObject = $this->paymentDataObjectFactory->create($payment);
 
+            $quote->setReservedOrderId(null)->reserveOrderId();
+
+            $quote->save();
+
             $this->commandPool
-                ->get('auth_pay')
+                ->get(self::COMMAND_NAME)
                 ->execute([
-                    'payment' => $paymentDataObject,
-                    'browserDetails' => $this->getRequest()->getParam('browserDetails')
+                    'payment' => $paymentDataObject
                 ]);
 
             $payment->save();
 
-            // TODO take html code from payment additional info instead of response
-            $jsonResult->setData([
-                'html' => $payment->getAdditionalInformation('auth_redirect_html'),
-                'action' => $payment->getAdditionalInformation('auth_payment_interaction') === 'REQUIRED'
-                    ? 'challenge'
-                    : 'frictionless'
-            ]);
+            $html = $payment->getAdditionalInformation('auth_redirect_html');
+
+            $jsonResult->setData(compact('html'));
         } catch (Exception $e) {
-            // Todo handle error, cancel order and restore active quote
             $jsonResult
                 ->setHttpResponseCode(400)
                 ->setData([
