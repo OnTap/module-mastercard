@@ -163,6 +163,7 @@ define(
                 this.sessionVersion = sessionVersion;
                 this.isPlaceOrderActionAllowed(true);
                 this.placeOrder();
+                fullScreenLoader.stopLoader();
             },
 
             /**
