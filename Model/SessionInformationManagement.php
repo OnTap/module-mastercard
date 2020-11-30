@@ -132,7 +132,7 @@ class SessionInformationManagement implements SessionInformationManagementInterf
         $quote = $this->getCartRepository()->get($cartId);
 
         $billingAddress->setEmail($email);
-        return $this->createNewPaymentSession($quote->getId(), $paymentMethod, $billingAddress);
+        return $this->createNewPaymentSession((string)$quote->getId(), $paymentMethod, $billingAddress);
     }
 
     /**
