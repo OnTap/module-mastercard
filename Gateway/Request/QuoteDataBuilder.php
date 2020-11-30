@@ -63,8 +63,7 @@ class QuoteDataBuilder implements BuilderInterface
             'order' => [
                 'amount' => sprintf('%.2F', $total),
                 'currency' => $order->getCurrencyCode(),
-                'notificationUrl' => $config->getWebhookNotificationUrl($storeId),
-                'description' => 'test'
+                'notificationUrl' => $config->getWebhookNotificationUrl($storeId)
             ]
         ];
     }
