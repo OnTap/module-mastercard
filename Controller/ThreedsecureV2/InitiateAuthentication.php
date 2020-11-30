@@ -85,7 +85,7 @@ class InitiateAuthentication extends Action
             $payment = $quote->getPayment();
             $paymentDataObject = $this->paymentDataObjectFactory->create($payment);
 
-            $quote->setReservedOrderId(null)->reserveOrderId();
+            $quote->setReservedOrderId('')->reserveOrderId();
 
             $quote->save();
 
