@@ -55,11 +55,23 @@ class InitiateAuthenticationHandler implements HandlerInterface
         /** @var Payment $payment */
         $payment = $paymentDO->getPayment();
 
-        $payment->setAdditionalInformation('auth_version', $this->arrayManager->get('authentication/version', $response));
-        $payment->setAdditionalInformation('auth_redirect_html', $this->arrayManager->get('authentication/redirectHtml', $response));
+        $payment->setAdditionalInformation(
+            'auth_version',
+            $this->arrayManager->get('authentication/version', $response)
+        );
+        $payment->setAdditionalInformation(
+            'auth_redirect_html',
+            $this->arrayManager->get('authentication/redirectHtml', $response)
+        );
         $payment->setAdditionalInformation('result', $this->arrayManager->get('result', $response));
-        $payment->setAdditionalInformation('response_gateway_recommendation', $this->arrayManager->get('response/gatewayRecommendation', $response));
-        $payment->setAdditionalInformation('auth_init_transaction_id', $this->arrayManager->get('transaction/id', $response));
+        $payment->setAdditionalInformation(
+            'response_gateway_recommendation',
+            $this->arrayManager->get('response/gatewayRecommendation', $response)
+        );
+        $payment->setAdditionalInformation(
+            'auth_init_transaction_id',
+            $this->arrayManager->get('transaction/id', $response)
+        );
         $payment->setAdditionalInformation('transaction_type', $this->arrayManager->get('transaction/type', $response));
     }
 }

@@ -43,6 +43,7 @@ class Rest extends Curl
         $this->_applyConfig();
 
         // set url to post to
+        // @codingStandardsIgnoreStart
         curl_setopt($this->_getResource(), CURLOPT_URL, $url);
         curl_setopt($this->_getResource(), CURLOPT_RETURNTRANSFER, true);
 
@@ -69,6 +70,7 @@ class Rest extends Curl
         curl_setopt($this->_getResource(), CURLOPT_HEADER, $header);
         curl_setopt($this->_getResource(), CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($this->_getResource(), CURLOPT_SSL_VERIFYHOST, 2);
+        // @codingStandardsIgnoreStop
 
         return $body;
     }

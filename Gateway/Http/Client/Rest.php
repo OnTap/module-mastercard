@@ -45,7 +45,7 @@ class Rest implements ClientInterface
     const PATCH   = 'PATCH';
 
     /**
-     * Request timeout
+     * @const int Request timeout
      */
     const REQUEST_TIMEOUT = 360;
 

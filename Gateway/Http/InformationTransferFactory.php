@@ -59,7 +59,12 @@ class InformationTransferFactory implements TransferFactoryInterface
             ->setHeaders(['Content-Type' => 'application/json;charset=UTF-8'])
             ->setAuthUsername('merchant.' . $merchantId)
             ->setAuthPassword($this->config->getMerchantPassword($storeId))
-            ->setUri($this->config->getApiUrl($storeId) . 'version/' . $version . '/merchant/' . $merchantId . '/paymentOptionsInquiry')
+            ->setUri(
+                $this->config->getApiUrl($storeId)
+                . 'version/' . $version
+                . '/merchant/' . $merchantId
+                . '/paymentOptionsInquiry'
+            )
             ->build();
     }
 }

@@ -102,7 +102,8 @@ define([
                         '3DSecureChallengeWindowSize': 'FULL_SCREEN'
                     }
                 }, this.messageContainer)
-            ).done($.proxy(this.onAuthenticatePayer, this));
+            ).done($.proxy(this.onAuthenticatePayer, this))
+            .fail($.proxy(this.onError, this));
         },
 
         /**
