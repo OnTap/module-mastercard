@@ -5,7 +5,7 @@
   "license": "Apache-2.0",
   "version": "103.4.0",
   "require": {
-    "magento/magento2-base": "^2.3|^2.4"
+    "magento/framework": "^103.0.0|^102.0.0"
   },
   "autoload": {
     "files": [

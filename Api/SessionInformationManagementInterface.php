@@ -26,7 +26,7 @@ interface SessionInformationManagementInterface
      * @param \Magento\Quote\Api\Data\PaymentInterface $paymentMethod
      * @param \Magento\Quote\Api\Data\AddressInterface|null $billingAddress
      * @throws \Magento\Framework\Exception\CouldNotSaveException
-     * @return array
+     * @return mixed
      */
     public function createNewPaymentSession(
         $cartId,
@@ -39,7 +39,7 @@ interface SessionInformationManagementInterface
      * @param string $email
      * @param \Magento\Quote\Api\Data\PaymentInterface $paymentMethod
      * @param \Magento\Quote\Api\Data\AddressInterface|null $billingAddress
-     * @return array
+     * @return mixed
      */
     public function createNewGuestPaymentSession(
         $cartId,
