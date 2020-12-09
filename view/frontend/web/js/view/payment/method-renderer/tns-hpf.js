@@ -278,11 +278,11 @@ define(
             },
 
             is3DsEnabled: function () {
-                return this.getConfig()['three_d_secure'] && this.getConfig()['three_d_secure_version'] === 1;
+                return this.getConfig()['three_d_secure_version'] === 1;
             },
 
-            is3Ds2Enabled: function() {
-                return this.getConfig()['three_d_secure'] && this.getConfig()['three_d_secure_version'] === 2;
+            is3Ds2Enabled: function () {
+                return this.getConfig()['three_d_secure_version'] === 2;
             },
 
             initChildren: function () {

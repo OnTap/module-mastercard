@@ -31,8 +31,9 @@ class TreeDSecureVersion implements OptionSourceInterface
     public function toOptionArray()
     {
         return [
-            ['value' => 1, 'label' => __('3DS')],
-            ['value' => 2, 'label' => __('EMV 3DS (3DS2)')]
+            ['value' => 0, 'label' => __('Disabled')],
+            ['value' => 1, 'label' => __('Enabled 3-D Secure')],
+            ['value' => 2, 'label' => __('Enabled EMV 3-D Secure (3DS2)')]
         ];
     }
 
@@ -44,8 +45,9 @@ class TreeDSecureVersion implements OptionSourceInterface
     public function toArray()
     {
         return [
-            1 => __('3DS'),
-            2 => __('EMV 3DS (3DS2)')
+            0 => __('Disabled'),
+            1 => __('Enabled 3-D Secure'),
+            2 => __('Enabled EMV 3-D Secure (3DS2)')
         ];
     }
 }

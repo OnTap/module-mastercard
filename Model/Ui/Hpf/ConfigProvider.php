@@ -61,8 +61,7 @@ class ConfigProvider implements ConfigProviderInterface
                     'merchant_username' => $this->config->getMerchantId(),
                     'component_url' => $this->config->getComponentUrl(),
                     'debug' => (bool) $this->config->getValue('debug'),
-                    'three_d_secure' => (bool) $this->config->getValue('three_d_secure'),
-                    'three_d_secure_version' => (int) $this->config->getValue('three_d_secure_version'),
+                    'three_d_secure_version' => (int) $this->config->getValue('three_d_secure'),
                     'ccVaultCode' => static::CC_VAULT_CODE,
                     'check_url' => $this->urlBuilder->getUrl(
                         'tns/threedsecure/check',

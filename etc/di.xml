@@ -766,7 +766,6 @@
                 <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\Hpf\SessionDataBuilder</item>
                 <item name="order" xsi:type="string">OnTap\MasterCard\Gateway\Request\OrderDataBuilder</item>
                 <item name="authentication_transaction_id" xsi:type="string">OnTap\MasterCard\Gateway\Request\Authentication\AuthenticationTransactionIdBuilder</item>
-                <item name="order_reference" xsi:type="string">OnTap\MasterCard\Gateway\Request\Authentication\OrderReferenceBuilder</item>
                 <item name="line_items" xsi:type="string">OnTap\MasterCard\Gateway\Request\LineItemsBuilder</item>
                 <item name="discount" xsi:type="string">OnTap\MasterCard\Gateway\Request\DiscountBuilder</item>
                 <item name="billing" xsi:type="string">OnTap\MasterCard\Gateway\Request\BillingDataBuilder</item>
@@ -863,7 +862,6 @@
                 <item name="session" xsi:type="string">OnTap\MasterCard\Gateway\Request\Hpf\SessionDataBuilder</item>
                 <item name="order" xsi:type="string">OnTap\MasterCard\Gateway\Request\OrderDataBuilder</item>
                 <item name="authentication_transaction_id" xsi:type="string">OnTap\MasterCard\Gateway\Request\Authentication\AuthenticationTransactionIdBuilder</item>
-                <item name="order_reference" xsi:type="string">OnTap\MasterCard\Gateway\Request\Authentication\OrderReferenceBuilder</item>
                 <item name="line_items" xsi:type="string">OnTap\MasterCard\Gateway\Request\LineItemsBuilder</item>
                 <item name="discount" xsi:type="string">OnTap\MasterCard\Gateway\Request\DiscountBuilder</item>
                 <item name="billing" xsi:type="string">OnTap\MasterCard\Gateway\Request\BillingDataBuilder</item>

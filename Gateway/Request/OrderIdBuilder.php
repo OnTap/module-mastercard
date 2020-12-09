@@ -19,6 +19,7 @@ namespace OnTap\MasterCard\Gateway\Request;
 
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Request\BuilderInterface;
+use Magento\Quote\Model\Quote;
 
 class OrderIdBuilder implements BuilderInterface
 {
@@ -29,15 +30,29 @@ class OrderIdBuilder implements BuilderInterface
     {
         $paymentDO = SubjectReader::readPayment($buildSubject);
 
-        /** @var \Magento\Quote\Model\Quote $quote */
+        /** @var Quote $quote */
         $quote = $paymentDO->getPayment()->getQuote();
-        $quote->setReservedOrderId('');
-        $quote->reserveOrderId();
+
+        $this->refreshOrderIdReservation($quote);
 
         return [
             'order' => [
                 'id' => $quote->getReservedOrderId()
             ]
         ];
+    }
+
+    /**
+     * Refresh Order Id Reservation
+     *
+     * If quote already used in payment gateway and failed
+     * then new session should contain another order id
+     *
+     * @param Quote $quote
+     */
+    private function refreshOrderIdReservation(Quote $quote)
+    {
+        $quote->setReservedOrderId('');
+        $quote->reserveOrderId();
     }
 }

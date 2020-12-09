@@ -126,7 +126,7 @@ class VerificationStrategyCommand implements CommandInterface
         $paymentInfo = $paymentDO->getPayment();
         ContextHelper::assertOrderPayment($paymentInfo);
 
-        if (!$this->is3DS2Supported($paymentDO) && $this->isThreeDSSupported($paymentDO)) {
+        if ($this->isThreeDSSupported($paymentDO)) {
             $this->commandPool
                 ->get(static::PROCESS_3DS_RESULT)
                 ->execute($commandSubject);
@@ -146,30 +146,5 @@ class VerificationStrategyCommand implements CommandInterface
             ->execute($commandSubject);
 
         return null;
-    }
-
-    /**
-     * Returns true if 3DS activated in admin and selected 3DS2 version of API
-     *
-     * @param PaymentDataObjectInterface $paymentDO
-     * @return bool
-     */
-    private function is3DS2Supported(PaymentDataObjectInterface $paymentDO)
-    {
-        /** @var Payment $paymentInfo */
-        $paymentInfo = $paymentDO->getPayment();
-
-        // Don't use 3DS in admin
-        if ($this->state->getAreaCode() === Area::AREA_ADMINHTML) {
-            return false;
-        }
-
-        // Don't use 3DS with pre-authorized transactions
-        if ($paymentInfo->getAuthorizationTransaction()) {
-            return false;
-        }
-
-        return (int)$this->config->getValue('three_d_secure') === 1
-            && (int)$this->config->getValue('three_d_secure_version') === 2;
     }
 }
