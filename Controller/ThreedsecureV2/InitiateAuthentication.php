@@ -26,6 +26,7 @@ use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Payment\Gateway\Command\CommandPool;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
+use Psr\Log\LoggerInterface;
 
 class InitiateAuthentication extends Action
 {
@@ -51,25 +52,33 @@ class InitiateAuthentication extends Action
     private $commandPool;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Check constructor.
      * @param Session $checkoutSession
      * @param PaymentDataObjectFactory $paymentDataObjectFactory
      * @param JsonFactory $jsonFactory
      * @param CommandPool $commandPool
      * @param Context $context
+     * @param LoggerInterface $logger
      */
     public function __construct(
         Session $checkoutSession,
         PaymentDataObjectFactory $paymentDataObjectFactory,
         JsonFactory $jsonFactory,
         CommandPool $commandPool,
-        Context $context
+        Context $context,
+        LoggerInterface $logger
     ) {
         parent::__construct($context);
         $this->checkoutSession = $checkoutSession;
         $this->paymentDataObjectFactory = $paymentDataObjectFactory;
         $this->jsonFactory = $jsonFactory;
         $this->commandPool = $commandPool;
+        $this->logger = $logger;
     }
 
     /**
@@ -101,10 +110,11 @@ class InitiateAuthentication extends Action
 
             $jsonResult->setData(compact('html'));
         } catch (Exception $e) {
+            $this->logger->warning($e);
             $jsonResult
                 ->setHttpResponseCode(400)
                 ->setData([
-                    'message' => $e->getMessage()
+                    'message' => __('Transaction declined')
                 ]);
         }
 

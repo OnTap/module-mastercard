@@ -29,6 +29,7 @@ use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Payment\Gateway\Command\CommandPool;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
+use Psr\Log\LoggerInterface;
 
 class AuthenticatePayer extends Action implements HttpPostActionInterface
 {
@@ -55,25 +56,33 @@ class AuthenticatePayer extends Action implements HttpPostActionInterface
     private $checkoutSession;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Check constructor.
      * @param PaymentDataObjectFactory $paymentDataObjectFactory
      * @param JsonFactory $jsonFactory
      * @param CommandPool $commandPool
      * @param Context $context
      * @param Session $checkoutSession
+     * @param LoggerInterface $logger
      */
     public function __construct(
         PaymentDataObjectFactory $paymentDataObjectFactory,
         JsonFactory $jsonFactory,
         CommandPool $commandPool,
         Context $context,
-        Session $checkoutSession
+        Session $checkoutSession,
+        LoggerInterface $logger
     ) {
         parent::__construct($context);
         $this->paymentDataObjectFactory = $paymentDataObjectFactory;
         $this->jsonFactory = $jsonFactory;
         $this->commandPool = $commandPool;
         $this->checkoutSession = $checkoutSession;
+        $this->logger = $logger;
     }
 
     /**
@@ -108,10 +117,11 @@ class AuthenticatePayer extends Action implements HttpPostActionInterface
                     : 'frictionless'
             ]);
         } catch (Exception $e) {
+            $this->logger->warning($e);
             $jsonResult
                 ->setHttpResponseCode(400)
                 ->setData([
-                    'message' => $e->getMessage()
+                    'message' => __('Transaction declined')
                 ]);
         }
 

@@ -910,12 +910,14 @@
     <type name="OnTap\MasterCard\Controller\ThreedsecureV2\AuthenticatePayer">
         <arguments>
             <argument name="commandPool" xsi:type="object">TnsHpfCommandPool</argument>
+            <argument name="logger" xsi:type="object">Magento\Payment\Model\Method\VirtualLogger</argument>
         </arguments>
     </type>
 
     <type name="OnTap\MasterCard\Controller\ThreedsecureV2\InitiateAuthentication">
         <arguments>
             <argument name="commandPool" xsi:type="object">TnsHpfCommandPool</argument>
+            <argument name="logger" xsi:type="object">Magento\Payment\Model\Method\VirtualLogger</argument>
         </arguments>
     </type>
 </config>
