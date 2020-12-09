@@ -110,7 +110,7 @@ class InitiateAuthentication extends Action
 
             $jsonResult->setData(compact('html'));
         } catch (Exception $e) {
-            $this->logger->warning($e);
+            $this->logger->warning((string)$e);
             $jsonResult
                 ->setHttpResponseCode(400)
                 ->setData([
