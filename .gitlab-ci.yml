@@ -4,15 +4,18 @@ stages:
   - test_static
   - test_dependency_injection
 
+
 cache:
   paths:
     - .cache/
+
 
 variables:
   COMPOSER_MIRROR_PATH_REPOS: 1
   COMPOSER_ALLOW_SUPERUSER: 1
   COMPOSER_MEMORY_LIMIT: -1
   COMPOSER_CACHE_DIR: "$CI_PROJECT_DIR/.cache/composer"
+
 
 sonarqube-check:
   stage: sonarqube
@@ -32,6 +35,7 @@ sonarqube-check:
   only:
     - merge_requests
     - master
+
 
 .magento:build: &magento-build
   artifacts:
@@ -53,6 +57,7 @@ sonarqube-check:
     - composer.phar config prefer-stable true
     - composer.phar require --no-suggest --optimize-autoloader ontap/module-mastercard:dev-build
     - php ./vendor/bin/install-ambassador
+
 
 magento-2.3.6:build:
   image: ontap/magento:2.3.6
@@ -91,36 +96,14 @@ magento-2.3.6:compile:
     - php -d memory_limit=1G bin/magento setup:di:compile --ansi --no-interaction
 
 
+
 magento-2.4.1:build:
   image: ontap/magento:2.4.1
   stage: build
   <<: *magento-build
 
-magento-2.4.1:build:
-    image: ontap/php:7.3
-    stage: build
-    artifacts:
-        paths:
-            - _build/
-        expire_in: 1 hour
-    only:
-        - merge_requests
-    script:
-      - mkdir -p _build
-      - mv /magento _build/magento
-      - git clone . _build/module
-      - (cd _build/module && git checkout -b build && sed -i '/"version"/d' composer.json && cat composer.json)
-      - cd _build/magento
-      - composer.phar config repositories.ontap composer https://packages.ontapgroup.com/
-      - composer.phar config repositories.modules path $CI_PROJECT_DIR/_build/module
-      - composer.phar require --dev --no-update --no-suggest ontap/ambassador:^1.0
-      - composer.phar config minimum-stability dev
-      - composer.phar config prefer-stable true
-      - composer.phar require --no-suggest --optimize-autoloader ontap/module-mastercard:dev-build
-      - php ./vendor/bin/install-ambassador
-
 magento-2.4.1:phpcs:
-  image: ontap/php:7.3
+  image: ontap/php:7.4
   stage: test_static
   needs: ["magento-2.4.1:build"]
   only:
@@ -130,7 +113,7 @@ magento-2.4.1:phpcs:
     - make phpcs
 
 magento-2.4.1:phpstan:
-  image: ontap/php:7.3
+  image: ontap/php:7.4
   stage: test_static
   needs: ["magento-2.4.1:build"]
   only:
@@ -140,7 +123,7 @@ magento-2.4.1:phpstan:
     - make phpstan
 
 magento-2.4.1:compile:
-  image: ontap/php:7.3
+  image: ontap/php:7.4
   stage: test_dependency_injection
   needs: ["magento-2.4.1:build"]
   only:
