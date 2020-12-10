@@ -77,7 +77,7 @@ class SessionInformationManagement implements SessionInformationManagementInterf
         PaymentDataObjectFactory $paymentDataObjectFactory,
         QuoteIdMaskFactory $quoteIdMaskFactory,
         BillingAddressManagementInterface $billingAddressManagement,
-        GuestCartRepositoryInterface $cartRepository = null
+        GuestCartRepositoryInterface $cartRepository
     ) {
         $this->commandPool = $commandPool;
         $this->quoteRepository = $quoteRepository;
@@ -129,18 +129,9 @@ class SessionInformationManagement implements SessionInformationManagementInterf
         PaymentInterface $paymentMethod,
         AddressInterface $billingAddress = null
     ) {
-        $quote = $this->getCartRepository()->get($cartId);
+        $quote = $this->cartRepository->get($cartId);
 
         $billingAddress->setEmail($email);
         return $this->createNewPaymentSession((string)$quote->getId(), $paymentMethod, $billingAddress);
-    }
-
-    /**
-     * @return GuestCartRepositoryInterface
-     */
-    private function getCartRepository()
-    {
-        return $this->cartRepository ?: ObjectManager::getInstance()
-            ->get(GuestCartRepositoryInterface::class);
     }
 }
