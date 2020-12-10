@@ -69,7 +69,7 @@ class SessionInformationManagement implements SessionInformationManagementInterf
      * @param PaymentDataObjectFactory $paymentDataObjectFactory
      * @param QuoteIdMaskFactory $quoteIdMaskFactory
      * @param BillingAddressManagementInterface $billingAddressManagement
-     * @param GuestCartRepositoryInterface|null $cartRepository
+     * @param GuestCartRepositoryInterface $cartRepository
      */
     public function __construct(
         CommandPoolInterface $commandPool,
