@@ -73,7 +73,9 @@ class Version extends \Magento\Config\Block\System\Config\Form\Field\Heading
     public function render(\Magento\Framework\Data\Form\Element\AbstractElement $element)
     {
         return sprintf(
-            '<tr class="system-fieldset-sub-head" id="row_%s"><td colspan="5"><div style="background-color:#eee;padding:1em;border:1px solid #ddd;">%s</div></td></tr>',
+            '<tr class="system-fieldset-sub-head" id="row_%s">'
+            . '<td colspan="5"><div style="background-color:#eee;padding:1em;border:1px solid #ddd;">%s</div></td>'
+            . '</tr>',
             $element->getHtmlId(),
             $this->getVersionInfo()
         );

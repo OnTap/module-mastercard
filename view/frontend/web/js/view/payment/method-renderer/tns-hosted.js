@@ -97,6 +97,7 @@ define(
                 var action = setPaymentInformationAction(this.messageContainer, this.getData());
 
                 $.when(action).fail($.proxy(function () {
+                    fullScreenLoader.stopLoader();
                     this.isPlaceOrderActionAllowed(true);
                 }, this)).done(
                     this.createPaymentSession.bind(this)
@@ -162,6 +163,7 @@ define(
                 this.sessionVersion = sessionVersion;
                 this.isPlaceOrderActionAllowed(true);
                 this.placeOrder();
+                fullScreenLoader.stopLoader();
             },
 
             /**

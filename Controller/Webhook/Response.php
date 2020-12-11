@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2019 Mastercard
+ * Copyright (c) 2016-2020 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,23 +17,34 @@
 
 namespace OnTap\MasterCard\Controller\Webhook;
 
+use Exception;
 use Magento\Framework\Api\FilterBuilder;
 use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\CsrfAwareActionInterface;
+use Magento\Framework\App\Request\Http;
 use Magento\Framework\App\Request\InvalidRequestException;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\RawFactory;
+use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Payment\Gateway\Command\CommandPoolInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
 use Magento\Payment\Model\InfoInterface;
 use Magento\Payment\Model\Method\LoggerFactory;
+use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Api\TransactionRepositoryInterface;
+use OnTap\MasterCard\Gateway\Config\Config;
+use Psr\Log\LoggerInterface;
+use Zend_Json;
+use Zend_Json_Decoder;
+use Zend_Json_Exception;
 
-class Response extends \Magento\Framework\App\Action\Action implements CsrfAwareActionInterface
+class Response extends Action implements CsrfAwareActionInterface
 {
     const X_HEADER_SECRET = 'X-Notification-Secret';
     const X_HEADER_ATTEMPT = 'X-Notification-Attempt';
@@ -76,7 +87,7 @@ class Response extends \Magento\Framework\App\Action\Action implements CsrfAware
     protected $configProviders;
 
     /**
-     * @var \Psr\Log\LoggerInterface
+     * @var LoggerInterface
      */
     protected $logger;
 
@@ -99,10 +110,10 @@ class Response extends \Magento\Framework\App\Action\Action implements CsrfAware
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param FilterBuilder $filterBuilder
      * @param LoggerFactory $loggerFactory
-     * @param \Psr\Log\LoggerInterface $logger
+     * @param LoggerInterface $logger
      * @param PaymentDataObjectFactory $paymentDataObjectFactory
      * @param CommandPoolInterface $commandPool
-     * @param \OnTap\MasterCard\Gateway\Config\Config[] $configProviders
+     * @param Config[] $configProviders
      */
     public function __construct(
         Context $context,
@@ -112,7 +123,7 @@ class Response extends \Magento\Framework\App\Action\Action implements CsrfAware
         SearchCriteriaBuilder $searchCriteriaBuilder,
         FilterBuilder $filterBuilder,
         LoggerFactory $loggerFactory,
-        \Psr\Log\LoggerInterface $logger,
+        LoggerInterface $logger,
         PaymentDataObjectFactory $paymentDataObjectFactory,
         CommandPoolInterface $commandPool,
         array $configProviders = []
@@ -135,7 +146,7 @@ class Response extends \Magento\Framework\App\Action\Action implements CsrfAware
      *
      * @param string $txnId
      * @param string $orderId
-     * @return \Magento\Sales\Api\Data\OrderInterface
+     * @return OrderInterface
      * @throws NoSuchEntityException
      */
     protected function getOrderByTransactionId($txnId, $orderId)
@@ -193,7 +204,7 @@ class Response extends \Magento\Framework\App\Action\Action implements CsrfAware
      */
     protected function logWebHookRequest($message, $callable = 'info')
     {
-        /* @var \Magento\Framework\App\Request\Http $request */
+        /* @var Http $request */
         $request = $this->getRequest();
 
         $logData = [
@@ -204,27 +215,28 @@ class Response extends \Magento\Framework\App\Action\Action implements CsrfAware
             $logData['data'] = $this->getData();
         }
 
+        // @codingStandardsIgnoreLine
         call_user_func_array([$this->logger, $callable], [$message, $logData]);
     }
 
     /**
      * @return array
-     * @throws \Zend_Json_Exception
+     * @throws Zend_Json_Exception
      */
     protected function getData()
     {
-        return \Zend_Json_Decoder::decode($this->getRequest()->getContent(), \Zend_Json::TYPE_ARRAY);
+        return Zend_Json_Decoder::decode($this->getRequest()->getContent(), Zend_Json::TYPE_ARRAY);
     }
 
     /**
      * Dispatch request
      *
-     * @return \Magento\Framework\Controller\ResultInterface|ResponseInterface
-     * @throws \Exception
+     * @return ResultInterface|ResponseInterface
+     * @throws Exception
      */
     public function execute()
     {
-        /* @var \Magento\Framework\App\Request\Http $request */
+        /* @var Http $request */
         $request = $this->getRequest();
 
         $page = $this->rawFactory->create();
@@ -237,19 +249,19 @@ class Response extends \Magento\Framework\App\Action\Action implements CsrfAware
 
         try {
             if (!$request->isSecure()) {
-                throw new \Exception(__("Failed - Connection not secure"));
+                throw new LocalizedException(__("Failed - Connection not secure"));
             }
 
             if ($responseSecret === false) {
-                throw new \Exception(__("Authorization not provided"));
+                throw new LocalizedException(__("Authorization not provided"));
             }
 
             if (!isset($data['transaction']) || !isset($data['transaction']['id'])) {
-                throw new \Exception(__("Invalid data received (Transaction ID)"));
+                throw new LocalizedException(__("Invalid data received (Transaction ID)"));
             }
 
             if (!isset($data['order']) || !isset($data['order']['id'])) {
-                throw new \Exception(__("Invalid data received (Order ID)"));
+                throw new LocalizedException(__("Invalid data received (Order ID)"));
             }
 
             $order = $this->getOrderByTransactionId($data['transaction']['id'], $data['order']['id']);
@@ -259,7 +271,7 @@ class Response extends \Magento\Framework\App\Action\Action implements CsrfAware
             $storeId = $order->getStoreId();
 
             if ($config->getWebhookSecret($storeId) !== $responseSecret) {
-                throw new \Exception(__("Authorization failed"));
+                throw new LocalizedException(__("Authorization failed"));
             }
 
             /** @var InfoInterface $payment */
@@ -273,7 +285,7 @@ class Response extends \Magento\Framework\App\Action\Action implements CsrfAware
                     'transaction_id' => $data['transaction']['id'],
                     'order_id' => $data['order']['id']
                 ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $errorMessage = sprintf(
                 __("MasterCard Payment Gateway Services WebHook Exception: '%s'"),
                 $e->getMessage()

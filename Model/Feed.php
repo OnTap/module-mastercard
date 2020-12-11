@@ -121,7 +121,9 @@ class Feed
         $feedXml = $this->getFeedData();
 
         if ($feedXml && property_exists($feedXml, 'channel') && property_exists($feedXml->channel, 'item')) {
-            $installDate = strtotime($this->deploymentConfig->get(ConfigOptionsListConstants::CONFIG_PATH_INSTALL_DATE));
+            $installDate = strtotime(
+                $this->deploymentConfig->get(ConfigOptionsListConstants::CONFIG_PATH_INSTALL_DATE)
+            );
             foreach ($feedXml->channel->item as $item) {
                 $itemPublicationDate = strtotime((string)$item->pubDate);
                 if ($installDate <= $itemPublicationDate) {
@@ -219,6 +221,7 @@ class Feed
      */
     private function escapeString(SimpleXMLElement $data)
     {
+        // @codingStandardsIgnoreLine
         return htmlspecialchars((string)$data);
     }
 }

@@ -49,17 +49,22 @@ class PaymentHandler implements HandlerInterface
      * @param string $field
      * @return string|null
      */
+    // @codingStandardsIgnoreStart
     public static function safeValue($data, $field)
+    // @codingStandardsIgnoreStop
     {
         return isset($data[$field]) ? $data[$field] : null;
     }
+
 
     /**
      * @param Payment $payment
      * @param array $response
      * @throws LocalizedException
      */
+    // @codingStandardsIgnoreStart
     public static function importPaymentResponse(Payment $payment, $response)
+    // @codingStandardsIgnoreStop
     {
         $payment->setAdditionalInformation('gateway_code', $response['response']['gatewayCode']);
         $payment->setAdditionalInformation('txn_result', $response['result']);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 Mastercard
+ * Copyright (c) 2016-2020 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,16 @@ define(
         'Magento_Checkout/js/model/full-screen-loader',
         'Magento_Vault/js/view/payment/vault-enabler'
     ],
-    function ($, ccFormComponent, additionalValidators, $t, setPaymentInformationAction, layout, fullScreenLoader, VaultEnabler) {
+    function (
+        $,
+        ccFormComponent,
+        additionalValidators,
+        $t,
+        setPaymentInformationAction,
+        layout,
+        fullScreenLoader,
+        VaultEnabler
+    ) {
         'use strict';
 
         return ccFormComponent.extend({
@@ -212,11 +221,12 @@ define(
                 }
                 if (response.status === "ok") {
                     this.sessionId = response.session.id;
-                    if (this.is3DsEnabled()) {
-                        var action = setPaymentInformationAction(this.messageContainer, this.getData());
+                    var action
+                    if (this.is3DsEnabled() || this.is3Ds2Enabled()) {
+                        action = setPaymentInformationAction(this.messageContainer, this.getData());
 
                         $.when(action).done($.proxy(function() {
-                            this.delegate('threeDSecureOpen', this);
+                            this.delegate(this.is3Ds2Enabled() ? 'threeDSecureV2Start' : 'threeDSecureOpen', this);
                         }, this)).fail(
                             $.proxy(this.threeDSecureCheckFailed, this)
                         );
@@ -268,30 +278,43 @@ define(
             },
 
             is3DsEnabled: function () {
-                return this.getConfig()['three_d_secure'];
+                return this.getConfig()['three_d_secure_version'] === 1;
+            },
+
+            is3Ds2Enabled: function () {
+                return this.getConfig()['three_d_secure_version'] === 2;
             },
 
             initChildren: function () {
                 this._super();
-                var config = this.getConfig();
 
-                var threeDSecureComponent = {
-                    parent: this.name,
-                    name: this.name + '.threedsecure',
-                    displayArea: 'threedsecure',
-                    component: 'OnTap_MasterCard/js/view/payment/threedsecure',
-                    config: {
-                        id: this.item.method,
-                        messages: this.messageContainer,
-                        checkUrl: config.check_url,
-                        onComplete: $.proxy(this.threeDSecureCheckSuccess, this),
-                        onError: $.proxy(this.threeDSecureCheckFailed, this),
-                        onCancel: $.proxy(this.threeDSecureCancelled, this)
-                    }
-                };
-                layout([threeDSecureComponent]);
+                layout(this.createChildrenComponents([
+                    { name: 'threedsecure', component: 'threedsecure' },
+                    { name: 'threedsecureV2', component: 'threedsecure-v2' }
+                ]));
 
                 return this;
+            },
+
+            createChildrenComponents: function (items) {
+                var config = this.getConfig();
+                return items.map($.proxy(function (item) {
+                    return {
+                        parent: this.name,
+                        name: this.name + '.' + item.name,
+                        displayArea: 'threedsecure',
+                        component: 'OnTap_MasterCard/js/view/payment/' + item.component,
+                        config: {
+                            id: this.item.method,
+                            messages: this.messageContainer,
+                            checkUrl: config.check_url,
+                            onComplete: $.proxy(this.threeDSecureCheckSuccess, this),
+                            onError: $.proxy(this.threeDSecureCheckFailed, this),
+                            onCancel: $.proxy(this.threeDSecureCancelled, this),
+                            isPlaceOrderActionAllowed: $.proxy(this.isPlaceOrderActionAllowed, this)
+                        }
+                    };
+                }, this));
             },
 
             threeDSecureCheckSuccess: function () {
