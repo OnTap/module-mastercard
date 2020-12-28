@@ -90,6 +90,12 @@ class Check extends Action
         $quote = $this->checkoutSession->getQuote();
         $jsonResult = $this->jsonFactory->create();
         try {
+            // reserve new order increment id to avoid a situation
+            // when old order id has invalid state in the payment gateway
+            $quote->setReservedOrderId('')->reserveOrderId();
+
+            $quote->save();
+
             // @todo: Commands require specific config, so they need to be defined separately in the di.xml
             $commandPool = $this->commandPoolFactory->create([
                 'commands' => [
