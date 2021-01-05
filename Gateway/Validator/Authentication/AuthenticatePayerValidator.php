@@ -74,10 +74,9 @@ class AuthenticatePayerValidator extends AbstractValidator
             ]);
         }
 
-        if ($result !== 'SUCCESS' && $result !== 'PROCEED' && $result !== 'PENDING') {
-            return $this->createResult(false, [
-                'Error'
-            ]);
+        $statuses = ['SUCCESS', 'PROCEED', 'PENDING'];
+        if (!in_array($result, $statuses) || $gatewayRecommendation !== 'PROCEED') {
+            return $this->createResult(false, ['Transaction declined']);
         }
 
         return $this->createResult(true);
