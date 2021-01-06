@@ -67,10 +67,11 @@ class InitiateAuthenticationValidator extends AbstractValidator
 
         $result = $this->arrayManager->get('result', $response);
 
-        if ($result === 'SUCCESS' && $transactionId) {
-            return $this->createResult(true);
+        $statuses = ['SUCCESS', 'PROCEED', 'PENDING'];
+        if (!in_array($result, $statuses) && !$transactionId || $gatewayRecommendation !== 'PROCEED') {
+            return $this->createResult(false, ['Transaction declined']);
         }
 
-        return $this->createResult(false, ['Transaction declined']);
+        return $this->createResult(true);
     }
 }
