@@ -11,6 +11,7 @@ cache:
 
 
 variables:
+  MODULE_DIR: 'vendor/ontap/module-mastercard'
   COMPOSER_MIRROR_PATH_REPOS: 1
   COMPOSER_ALLOW_SUPERUSER: 1
   COMPOSER_MEMORY_LIMIT: -1
@@ -52,11 +53,10 @@ sonarqube-check:
     - cd _build/magento
     - composer.phar config repositories.ontap composer https://packages.ontapgroup.com/
     - composer.phar config repositories.modules path $CI_PROJECT_DIR/_build/module
-    - composer.phar require --dev --no-update --no-suggest ontap/ambassador:^1.0
+    - composer.phar require --dev --no-update --no-suggest ontap/ambassador:^1.2
     - composer.phar config minimum-stability dev
     - composer.phar config prefer-stable true
-    - composer.phar require --no-suggest --optimize-autoloader ontap/module-mastercard:dev-build
-    - php ./vendor/bin/install-ambassador
+    - composer.phar require --no-suggest ontap/module-mastercard:dev-build
 
 
 magento-2.3.6:build:
@@ -71,7 +71,7 @@ magento-2.3.6:phpcs:
   only:
     - merge_requests
   script:
-    - cd _build/magento
+    - cd _build/magento/$MODULE_DIR
     - make phpcs
 
 magento-2.3.6:phpstan:
@@ -81,7 +81,7 @@ magento-2.3.6:phpstan:
   only:
     - merge_requests
   script:
-    - cd _build/magento
+    - cd _build/magento/$MODULE_DIR
     - make phpstan
 
 magento-2.3.6:compile:
@@ -109,7 +109,7 @@ magento-2.4.1:phpcs:
   only:
     - merge_requests
   script:
-    - cd _build/magento
+    - cd _build/magento/$MODULE_DIR
     - make phpcs
 
 magento-2.4.1:phpstan:
@@ -119,7 +119,7 @@ magento-2.4.1:phpstan:
   only:
     - merge_requests
   script:
-    - cd _build/magento
+    - cd _build/magento/$MODULE_DIR
     - make phpstan
 
 magento-2.4.1:compile:
