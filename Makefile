@@ -19,4 +19,5 @@ endif
 include $(MOD_PATH)/Makefile
 
 dist: ## Create a distributable archive
+	@set -ex; \
 	git archive HEAD -o ./module-mastercard.zip
