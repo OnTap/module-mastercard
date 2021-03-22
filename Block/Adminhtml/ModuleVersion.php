@@ -105,7 +105,9 @@ class ModuleVersion extends Heading
     public function render(AbstractElement $element)
     {
         return sprintf(
-            '<tr class="system-fieldset-sub-head" id="row_%s"><td colspan="5"><div style="background-color:#fff;">%s</div></td></tr>',
+            '<tr class="system-fieldset-sub-head" id="row_%s">'
+            . '<td colspan="5"><div style="background-color:#fff;">%s</div></td>'
+            . '</tr>',
             $element->getHtmlId(),
             $this->getVersionInfo('OnTap_MasterCard')
         );

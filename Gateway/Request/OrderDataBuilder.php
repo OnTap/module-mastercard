@@ -59,11 +59,14 @@ class OrderDataBuilder implements BuilderInterface
 
         $total = $order->getGrandTotalAmount();
 
+        $orderId = $paymentDO->getOrder()->getOrderIncrementId();
+
         return [
             'order' => [
                 'amount' => sprintf('%.2F', $total),
                 'currency' => $order->getCurrencyCode(),
                 'notificationUrl' => $config->getWebhookNotificationUrl($storeId),
+                'reference' => $orderId,
             ]
         ];
     }

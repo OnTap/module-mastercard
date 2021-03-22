@@ -5,16 +5,16 @@
 
 namespace OnTap\MasterCard\Observer;
 
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
-use Magento\Store\Api\WebsiteRepositoryInterface;
-use Magento\Store\Api\GroupRepositoryInterface;
 use Magento\Framework\Message\ManagerInterface;
-use OnTap\MasterCard\Gateway\Config\ConfigFactory;
 use Magento\Payment\Gateway\Command\CommandPoolInterface;
-use OnTap\MasterCard\Model\SelectedStore;
-use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Api\GroupRepositoryInterface;
+use Magento\Store\Api\WebsiteRepositoryInterface;
 use Magento\Store\Model\ScopeInterface;
+use OnTap\MasterCard\Gateway\Config\ConfigFactory;
+use OnTap\MasterCard\Model\SelectedStore;
 use Psr\Log\LoggerInterface;
 
 class ConfigSaveAfter implements ObserverInterface
@@ -151,7 +151,13 @@ class ConfigSaveAfter implements ObserverInterface
                     $command->execute([]);
                     $this->messageManager->addSuccessMessage(__('"%1" test was successful.', __($label)));
                 } catch (\Exception $e) {
-                    $this->messageManager->addWarningMessage(__('There was a problem communicating with "%1": %2', __($label), $e->getMessage()));
+                    $this->messageManager->addWarningMessage(
+                        __(
+                            'There was a problem communicating with "%1": %2',
+                            __($label),
+                            $e->getMessage()
+                        )
+                    );
                 }
             }
         } catch (\Exception $e) {

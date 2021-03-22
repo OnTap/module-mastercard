@@ -17,12 +17,14 @@
 
 namespace OnTap\MasterCard\Model;
 
-use Magento\Quote\Api\GuestCartRepositoryInterface;
-use OnTap\MasterCard\Api\SessionInformationManagementInterface;
-use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
 use Magento\Payment\Gateway\Command\CommandPoolInterface;
 use Magento\Quote\Api\BillingAddressManagementInterface;
+use Magento\Quote\Api\CartRepositoryInterface;
+use Magento\Quote\Api\Data\AddressInterface;
+use Magento\Quote\Api\Data\PaymentInterface;
+use Magento\Quote\Api\GuestCartRepositoryInterface;
+use OnTap\MasterCard\Api\SessionInformationManagementInterface;
 
 class SessionInformationManagement implements SessionInformationManagementInterface
 {
@@ -80,8 +82,8 @@ class SessionInformationManagement implements SessionInformationManagementInterf
      */
     public function createNewPaymentSession(
         $cartId,
-        \Magento\Quote\Api\Data\PaymentInterface $paymentMethod,
-        \Magento\Quote\Api\Data\AddressInterface $billingAddress = null
+        PaymentInterface $paymentMethod,
+        AddressInterface $billingAddress = null
     ) {
         $cartId = (int) $cartId;
 
@@ -114,8 +116,8 @@ class SessionInformationManagement implements SessionInformationManagementInterf
     public function createNewGuestPaymentSession(
         $cartId,
         $email,
-        \Magento\Quote\Api\Data\PaymentInterface $paymentMethod,
-        \Magento\Quote\Api\Data\AddressInterface $billingAddress = null
+        PaymentInterface $paymentMethod,
+        AddressInterface $billingAddress = null
     ) {
         $quote = $this->cartRepository->get($cartId);
 

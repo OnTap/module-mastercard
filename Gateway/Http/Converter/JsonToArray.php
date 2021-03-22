@@ -17,21 +17,34 @@
 
 namespace OnTap\MasterCard\Gateway\Http\Converter;
 
+use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Payment\Gateway\Http\ConverterException;
 use Magento\Payment\Gateway\Http\ConverterInterface;
-use Zend_Json;
-use Zend_Json_Decoder;
-use Zend_Json_Exception;
 
 class JsonToArray implements ConverterInterface
 {
+    /**
+     * @var Json
+     */
+    private $json;
+
+    /**
+     * JsonToArray constructor.
+     * @param Json $json
+     */
+    public function __construct(
+        Json $json
+    ) {
+        $this->json = $json;
+    }
+
     /**
      * Converts gateway response to ENV structure
      *
      * @param mixed $response
      * @return array
      * @throws ConverterException
-     * @throws Zend_Json_Exception
+     * @throws \InvalidArgumentException
      */
     public function convert($response)
     {
@@ -39,6 +52,6 @@ class JsonToArray implements ConverterInterface
             throw new ConverterException(__('Wrong response type'));
         }
 
-        return Zend_Json_Decoder::decode($response, Zend_Json::TYPE_ARRAY);
+        return $this->json->unserialize($response);
     }
 }

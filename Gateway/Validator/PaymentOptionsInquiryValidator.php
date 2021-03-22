@@ -34,7 +34,9 @@ class PaymentOptionsInquiryValidator extends AbstractValidator
             if ($message === '') {
                 $message = __('General Error');
             }
+            // @codingStandardsIgnoreStart
             throw new \Exception($message);
+            // @codingStandardsIgnoreEnd
         }
 
         return $this->createResult(true);
