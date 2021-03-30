@@ -25,8 +25,8 @@ use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 
 /**
-* Patch is mechanism, that allows to do atomic upgrade data changes
-*/
+ * Patch is mechanism, that allows to do atomic upgrade data changes
+ */
 class UninstallDirectMethod implements
     DataPatchInterface
 {

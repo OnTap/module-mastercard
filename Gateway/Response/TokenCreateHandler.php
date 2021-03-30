@@ -205,12 +205,14 @@ class TokenCreateHandler implements HandlerInterface
         return $expDate->format('Y-m-d 00:00:00');
     }
 
+    // @codingStandardsIgnoreStart
     /**
      * @param string $brand
      * @return string
      */
     public static function getCcTypeFromBrand($brand)
     {
+        // @codingStandardsIgnoreStop
         $brands = [
             'MASTERCARD' => 'MC',
             'VISA' => 'VI',

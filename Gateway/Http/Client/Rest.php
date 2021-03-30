@@ -16,6 +16,7 @@
  */
 namespace OnTap\MasterCard\Gateway\Http\Client;
 
+use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Payment\Gateway\Http\ClientException;
 use Magento\Payment\Gateway\Http\ClientInterface;
 use Magento\Payment\Gateway\Http\ConverterInterface;
@@ -45,7 +46,7 @@ class Rest implements ClientInterface
     const PATCH   = 'PATCH';
 
     /**
-     * Request timeout
+     * @const int Request timeout
      */
     const REQUEST_TIMEOUT = 360;
 
@@ -68,6 +69,10 @@ class Rest implements ClientInterface
      * @var \Zend_Http_Client_Adapter_Interface
      */
     private $adapter;
+    /**
+     * @var Json
+     */
+    private $json;
 
     /**
      * Constructor
@@ -76,17 +81,20 @@ class Rest implements ClientInterface
      * @param ConverterInterface $converter
      * @param ResponseFactory $responseFactory
      * @param \Zend_Http_Client_Adapter_Interface $adapter
+     * @param Json $json
      */
     public function __construct(
         Logger $logger,
         ConverterInterface $converter,
         ResponseFactory $responseFactory,
-        \Zend_Http_Client_Adapter_Interface $adapter
+        \Zend_Http_Client_Adapter_Interface $adapter,
+        Json $json
     ) {
         $this->logger = $logger;
         $this->converter = $converter;
         $this->responseFactory = $responseFactory;
         $this->adapter = $adapter;
+        $this->json = $json;
     }
 
     /**
@@ -116,7 +124,7 @@ class Rest implements ClientInterface
                 \Zend_Uri_Http::fromString($transferObject->getUri()),
                 self::HTTP_1,
                 $headers,
-                \Zend_Json_Encoder::encode($transferObject->getBody())
+                $this->json->serialize($transferObject->getBody())
             );
 
             $response = $this->converter->convert($this->read());

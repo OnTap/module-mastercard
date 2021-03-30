@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2019 Mastercard
+ * Copyright (c) 2016-2020 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace OnTap\MasterCard\Controller\Threedsecure;
+namespace OnTap\MasterCard\Controller\ThreedsecureV2;
 
 use Exception;
 use Magento\Checkout\Model\Session;
@@ -24,18 +24,13 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\Exception\NotFoundException;
-use Magento\Payment\Gateway\Command\CommandPoolFactory;
+use Magento\Payment\Gateway\Command\CommandPool;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
-use OnTap\MasterCard\Gateway\Response\ThreeDSecure\CheckHandler;
+use Psr\Log\LoggerInterface;
 
-class Check extends Action
+class InitiateAuthentication extends Action
 {
-    const CHECK_ENROLMENT = '3ds_enrollment';
-    const CHECK_ENROLMENT_TYPE_HPF = 'TnsHpfThreeDSecureEnrollmentCommand';
-
+    const COMMAND_NAME = 'initiate_authentication';
     /**
      * @var Session
      */
@@ -52,78 +47,74 @@ class Check extends Action
     private $jsonFactory;
 
     /**
-     * @var CommandPoolFactory
+     * @var CommandPool
      */
-    private $commandPoolFactory;
+    private $commandPool;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     /**
      * Check constructor.
-     * @param CommandPoolFactory $commandPoolFactory
      * @param Session $checkoutSession
      * @param PaymentDataObjectFactory $paymentDataObjectFactory
      * @param JsonFactory $jsonFactory
+     * @param CommandPool $commandPool
      * @param Context $context
+     * @param LoggerInterface $logger
      */
     public function __construct(
-        CommandPoolFactory $commandPoolFactory,
         Session $checkoutSession,
         PaymentDataObjectFactory $paymentDataObjectFactory,
         JsonFactory $jsonFactory,
-        Context $context
+        CommandPool $commandPool,
+        Context $context,
+        LoggerInterface $logger
     ) {
         parent::__construct($context);
-        $this->commandPoolFactory = $commandPoolFactory;
         $this->checkoutSession = $checkoutSession;
         $this->paymentDataObjectFactory = $paymentDataObjectFactory;
         $this->jsonFactory = $jsonFactory;
+        $this->commandPool = $commandPool;
+        $this->logger = $logger;
     }
 
     /**
      * Dispatch request
      *
      * @return ResultInterface|ResponseInterface
-     * @throws LocalizedException
-     * @throws NoSuchEntityException
      */
     public function execute()
     {
-        $quote = $this->checkoutSession->getQuote();
         $jsonResult = $this->jsonFactory->create();
         try {
-            // reserve new order increment id to avoid a situation
-            // when old order id has invalid state in the payment gateway
+            $quote = $this->checkoutSession->getQuote();
+            $payment = $quote->getPayment();
+            $paymentDataObject = $this->paymentDataObjectFactory->create($payment);
+
             $quote->setReservedOrderId('')->reserveOrderId();
 
             $quote->save();
 
-            // @todo: Commands require specific config, so they need to be defined separately in the di.xml
-            $commandPool = $this->commandPoolFactory->create([
-                'commands' => [
-                    'hpf' => static::CHECK_ENROLMENT_TYPE_HPF,
-                ]
-            ]);
-
-            $paymentDataObject = $this->paymentDataObjectFactory->create($quote->getPayment());
-
-            $commandPool
-                ->get($this->getRequest()->getParam('method'))
+            $this->commandPool
+                ->get(self::COMMAND_NAME)
                 ->execute([
-                    'payment' => $paymentDataObject,
-                    'amount' => $quote->getBaseGrandTotal(),
+                    'payment' => $paymentDataObject
                 ]);
 
-            $checkData = $paymentDataObject
-                ->getPayment()
-                ->getAdditionalInformation(CheckHandler::THREEDSECURE_CHECK);
+            $payment->save();
 
-            $jsonResult->setData([
-                'result' => $checkData['veResEnrolled']
-            ]);
+            $html = $payment->getAdditionalInformation('auth_redirect_html');
+
+            $jsonResult->setData(compact('html'));
         } catch (Exception $e) {
+            $this->logger->error((string)$e);
             $jsonResult
                 ->setHttpResponseCode(400)
                 ->setData([
-                    'message' => $e->getMessage()
+                    'message' => __('An error occurred while processing your transaction')
                 ]);
         }
 

@@ -97,7 +97,7 @@
                     </field>
                     <field id="three_d_secure" translate="label comment" type="select" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Enable 3-D Secure</label>
-                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <source_model>OnTap\MasterCard\Model\Config\Source\TreeDSecureVersion</source_model>
                         <config_path>payment/tns_hpf/three_d_secure</config_path>
                         <comment>Be sure to Enable 3D-Secure in your MasterCard account</comment>
                     </field>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2019 Mastercard
+ * Copyright (c) 2016-2020 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,44 +15,27 @@
  * limitations under the License.
  */
 
-namespace OnTap\MasterCard\Gateway\Request;
+namespace OnTap\MasterCard\Gateway\Request\Authentication;
 
-use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Request\BuilderInterface;
-use Magento\Quote\Model\Quote;
+use Magento\Payment\Gateway\Helper\SubjectReader;
 
-class OrderIdBuilder implements BuilderInterface
+class SessionDataBuilder implements BuilderInterface
 {
     /**
-     * @inheritDoc
+     * @param array $buildSubject
+     * @return array
      */
     public function build(array $buildSubject)
     {
         $paymentDO = SubjectReader::readPayment($buildSubject);
 
-        /** @var Quote $quote */
-        $quote = $paymentDO->getPayment()->getQuote();
-
-        $this->refreshOrderIdReservation($quote);
+        $payment = $paymentDO->getPayment();
 
         return [
-            'order' => [
-                'id' => $quote->getReservedOrderId()
+            'session' => [
+                'id' => $payment->getAdditionalInformation('session')
             ]
         ];
-    }
-
-    /**
-     * Refresh Order Id Reservation
-     *
-     * If quote already used in payment gateway and failed
-     * then new session should contain another order id
-     *
-     * @param Quote $quote
-     */
-    private function refreshOrderIdReservation(Quote $quote)
-    {
-        $quote->setReservedOrderId('');
-        $quote->reserveOrderId();
     }
 }

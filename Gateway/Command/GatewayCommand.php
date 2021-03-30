@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2019 Mastercard
+ * Copyright (c) 2016-2020 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,8 +75,8 @@ class GatewayCommand implements CommandInterface
      * @param TransferFactoryInterface $transferFactory
      * @param ClientInterface $client
      * @param LoggerInterface $logger
-     * @param HandlerInterface $handler
-     * @param ValidatorInterface $validator
+     * @param HandlerInterface|null $handler
+     * @param ValidatorInterface|null $validator
      * @param ErrorMessageMapperInterface|null $errorMessageMapper
      */
     public function __construct(
@@ -126,7 +126,6 @@ class GatewayCommand implements CommandInterface
                 $response
             );
         }
-
         return null;
     }
 
