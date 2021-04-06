@@ -33,6 +33,10 @@ define(
             {
                 type: 'tns_hpf',
                 component: 'OnTap_MasterCard/js/view/payment/method-renderer/tns-hpf'
+            },
+            {
+                type: 'mpgs_ach',
+                component: 'OnTap_MasterCard/js/view/payment/method-renderer/mpgs-ach'
             }
         );
         /** Add view logic here if needed */
