@@ -31,9 +31,10 @@
                 <payment_action>authorize</payment_action>
                 <order_status>processing</order_status>
                 <send_line_items>1</send_line_items>
+                <currency>USD</currency>
 
                 <api_version>58</api_version>
-                <api_gateway>api_eu</api_gateway>
+                <api_gateway>api_na</api_gateway>
                 <api_eu>https://eu-gateway.mastercard.com/</api_eu>
                 <api_as>https://ap-gateway.mastercard.com/</api_as>
                 <api_na>https://na-gateway.mastercard.com/</api_na>
@@ -45,7 +46,7 @@
 
                 <debug>0</debug>
                 <test>0</test>
-                <api_gateway>api_eu</api_gateway>
+                <api_gateway>api_na</api_gateway>
                 <allowspecific>0</allowspecific>
                 <can_initialize>0</can_initialize>
                 <can_use_checkout>1</can_use_checkout>
@@ -68,9 +69,10 @@
                 <payment_action>authorize</payment_action>
                 <order_status>processing</order_status>
                 <send_line_items>1</send_line_items>
+                <currency>USD</currency>
 
                 <api_version>58</api_version>
-                <api_gateway>api_eu</api_gateway>
+                <api_gateway>api_na</api_gateway>
                 <api_eu>https://eu-gateway.mastercard.com/</api_eu>
                 <api_as>https://ap-gateway.mastercard.com/</api_as>
                 <api_na>https://na-gateway.mastercard.com/</api_na>
@@ -113,6 +115,43 @@
                 <model>MpgsHpfVaultFacade</model>
                 <title>Stored Cards (MasterCard HPF)</title>
             </tns_hpf_vault>
+            <mpgs_ach>
+                <active>0</active>
+                <title>Automated Clearing House (ACH)</title>
+                <model>MpgsAchFacade</model>
+
+                <order_status>processing</order_status>
+                <send_line_items>1</send_line_items>
+                <currency>USD</currency>
+
+                <api_version>58</api_version>
+                <api_gateway>api_na</api_gateway>
+                <api_eu>https://eu-gateway.mastercard.com/</api_eu>
+                <api_as>https://ap-gateway.mastercard.com/</api_as>
+                <api_na>https://na-gateway.mastercard.com/</api_na>
+                <api_uat>https://secure.uat.tnspayments.com/</api_uat>
+
+                <api_password backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+                <webhook_secret backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+
+                <debug>0</debug>
+                <test>0</test>
+                <allowspecific>0</allowspecific>
+                <can_initialize>0</can_initialize>
+                <can_use_checkout>1</can_use_checkout>
+                <can_use_internal>0</can_use_internal>
+
+                <can_refund>0</can_refund>
+                <can_refund_partial_per_invoice>0</can_refund_partial_per_invoice>
+                <can_void>0</can_void>
+                <can_order>0</can_order>
+                <can_authorize>1</can_authorize>
+                <can_capture>0</can_capture>
+                <can_capture_partial>0</can_capture_partial>
+                <is_gateway>1</is_gateway>
+
+                <paymentInfoKeys>gateway_code,txn_result,card_scheme,card_number,card_expiry_date,auth_code</paymentInfoKeys>
+            </mpgs_ach>
         </payment>
     </default>
 </config>

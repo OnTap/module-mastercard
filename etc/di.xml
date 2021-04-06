@@ -920,4 +920,62 @@
             <argument name="logger" xsi:type="object">Magento\Payment\Model\Method\VirtualLogger</argument>
         </arguments>
     </type>
+
+    <!-- ACH Payments -->
+    <virtualType name="MpgsAchFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">OnTap\MasterCard\Model\Ui\Ach\ConfigProvider::METHOD_CODE</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form\Cc</argument>
+            <argument name="infoBlockType" xsi:type="string">MpgsAchInfoBlock</argument>
+            <argument name="valueHandlerPool" xsi:type="object">MpgsAchValueHandlerPool</argument>
+            <argument name="validatorPool" xsi:type="object">MpgsAchValidatorPool</argument>
+            <argument name="commandPool" xsi:type="object">MpgsAchCommandPool</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsAchConfig" type="OnTap\MasterCard\Gateway\Config\Ach\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">OnTap\MasterCard\Model\Ui\Ach\ConfigProvider::METHOD_CODE</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsAchValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="country" xsi:type="string">MpgsAchCountryValidator</item>
+                <item name="currency" xsi:type="string">MpgsAchCurrencyValidator</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsAchCurrencyValidator" type="OnTap\MasterCard\Gateway\Validator\CurrencyValidator">
+        <arguments>
+            <argument name="config" xsi:type="object">MpgsAchConfig</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsAchCountryValidator" type="Magento\Payment\Gateway\Validator\CountryValidator">
+        <arguments>
+            <argument name="config" xsi:type="object">MpgsAchConfig</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsAchCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <!-- TODO: ADD COMMANDS -->
+    </virtualType>
+    <virtualType name="MpgsAchValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">TnsAchConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="TnsAchConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">MpgsAchConfig</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsAchInfoBlock" type="OnTap\MasterCard\Block\Info">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item xsi:type="string" name="is_secure_mode">0</item>
+            </argument>
+            <argument name="config" xsi:type="object">MpgsAchConfig</argument>
+        </arguments>
+    </virtualType>
 </config>

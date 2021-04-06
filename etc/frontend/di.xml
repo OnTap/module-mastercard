@@ -25,12 +25,18 @@
             <argument name="config" xsi:type="object">TnsHpfConfig</argument>
         </arguments>
     </type>
+    <type name="OnTap\MasterCard\Model\Ui\Ach\ConfigProvider">
+        <arguments>
+            <argument name="config" xsi:type="object">MpgsAchConfig</argument>
+        </arguments>
+    </type>
     <type name="Magento\Payment\Model\CcGenericConfigProvider">
         <arguments>
             <argument name="methodCodes" xsi:type="array">
                 <item name="tns_hosted" xsi:type="string">tns_hosted</item>
                 <item name="tns_hpf" xsi:type="string">tns_hpf</item>
                 <item name="tns_hpf_vault" xsi:type="string">tns_hpf_vault</item>
+                <item name="mpgs_ach" xsi:type="string">mpgs_ach</item>
             </argument>
         </arguments>
     </type>
@@ -39,6 +45,7 @@
             <argument name="configProviders" xsi:type="array">
                 <item name="tns_hosted" xsi:type="object">OnTap\MasterCard\Model\Ui\Hosted\ConfigProvider</item>
                 <item name="tns_hpf" xsi:type="object">OnTap\MasterCard\Model\Ui\Hpf\ConfigProvider</item>
+                <item name="mpgs_ach" xsi:type="object">OnTap\MasterCard\Model\Ui\Ach\ConfigProvider</item>
             </argument>
         </arguments>
     </type>
@@ -47,6 +54,7 @@
             <argument name="configProviders" xsi:type="array">
                 <item name="tns_hosted" xsi:type="object">TnsHostedConfig</item>
                 <item name="tns_hpf" xsi:type="object">TnsHpfConfig</item>
+                <item name="mpgs_ach" xsi:type="object">MpgsAchConfig</item>
             </argument>
         </arguments>
     </type>

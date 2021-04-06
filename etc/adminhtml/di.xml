@@ -25,6 +25,11 @@
             <argument name="methodCode" xsi:type="const">OnTap\MasterCard\Model\Ui\Hosted\ConfigProvider::METHOD_CODE</argument>
         </arguments>
     </virtualType>
+    <virtualType name="MpgsAchApiVersionInfoModel" type="OnTap\MasterCard\Block\Adminhtml\Api\Version">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">OnTap\MasterCard\Model\Ui\Ach\ConfigProvider::METHOD_CODE</argument>
+        </arguments>
+    </virtualType>
     <virtualType name="TnsHostedInfoBlock" type="OnTap\MasterCard\Block\Info">
         <arguments>
             <argument name="data" xsi:type="array">
@@ -39,6 +44,14 @@
                 <item xsi:type="string" name="is_secure_mode">0</item>
             </argument>
             <argument name="config" xsi:type="object">TnsHpfConfig</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsAchInfoBlock" type="OnTap\MasterCard\Block\Info">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item xsi:type="string" name="is_secure_mode">0</item>
+            </argument>
+            <argument name="config" xsi:type="object">MpgsAchConfig</argument>
         </arguments>
     </virtualType>
 </config>
