@@ -312,6 +312,11 @@
                             <field id="api_gateway">api_other</field>
                         </depends>
                     </field>
+                    <field id="integration" translate="label" type="select" sortOrder="94" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Integraton Model</label>
+                        <source_model>OnTap\MasterCard\Model\Config\Source\Integration</source_model>
+                        <config_path>payment/mpgs_ach/integration</config_path>
+                    </field>
                     <field id="test" translate="label" type="select" sortOrder="95" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Test Mode</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>

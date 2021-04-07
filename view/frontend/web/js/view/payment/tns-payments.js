@@ -36,7 +36,7 @@ define(
             },
             {
                 type: 'mpgs_ach',
-                component: 'OnTap_MasterCard/js/view/payment/method-renderer/mpgs-ach'
+                component: 'OnTap_MasterCard/js/view/payment/method-renderer/ach'
             }
         );
         /** Add view logic here if needed */

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 Mastercard
+ * Copyright (c) 2016-2021 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,13 @@
 /*global define*/
 define(
     [
-        'Magento_Checkout/js/view/payment/default'
+        'OnTap_MasterCard/js/view/payment/ach-component'
     ],
     function (Component) {
         'use strict';
-
         return Component.extend({
             defaults: {
-                template: 'OnTap_MasterCard/payment/mpgs-ach',
-            },
-
-            /**
-             * Returns payment method instructions.
-             * @return {*}
-             */
-            getInstructions: function () {
-                return '';
+                template: 'OnTap_MasterCard/payment/ach/hosted-session',
             }
         });
     }

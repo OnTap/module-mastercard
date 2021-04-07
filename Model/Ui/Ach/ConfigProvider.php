@@ -20,10 +20,13 @@ namespace OnTap\MasterCard\Model\Ui\Ach;
 use Magento\Framework\UrlInterface;
 use Magento\Payment\Gateway\ConfigInterface;
 use Magento\Checkout\Model\ConfigProviderInterface;
+use OnTap\MasterCard\Model\Config\Source\Integration;
 
 class ConfigProvider implements ConfigProviderInterface
 {
     const METHOD_CODE = 'mpgs_ach';
+    const SESSION_COMPONENT_URI = '%sform/version/%s/merchant/%s/session.js';
+    const CHECKOUT_COMPONENT_URI = '%scheckout/version/%s/checkout.js';
 
     /**
      * @var ConfigInterface
@@ -54,12 +57,35 @@ class ConfigProvider implements ConfigProviderInterface
      */
     public function getConfig()
     {
+        $config = [
+            'merchant_username' => $this->config->getMerchantId(),
+            'integration_mode' => $this->config->getValue('integration'),
+        ];
+
+        $mode = $this->config->getValue('integration') ?? Integration::HOSTED_CHECKOUT;
+
+        $integrationConfig = [
+            Integration::HOSTED_CHECKOUT => [
+                'renderer' => 'hosted-checkout',
+                'component_url' => sprintf(
+                    static::CHECKOUT_COMPONENT_URI,
+                    $this->config->getApiAreaUrl(),
+                    $this->config->getValue('api_version')
+                )
+            ],
+            Integration::HOSTED_SESSION => [
+                'renderer' => 'hosted-session',
+                'component_url' => sprintf(
+                    static::SESSION_COMPONENT_URI,
+                    $this->config->getApiAreaUrl(),
+                    $this->config->getValue('api_version'),
+                    $this->config->getMerchantId()
+                )
+            ]
+        ];
         return [
             'payment' => [
-                self::METHOD_CODE => [
-                    'merchant_username' => $this->config->getMerchantId(),
-                    'component_url' => $this->config->getComponentUrl(),
-                ]
+                self::METHOD_CODE => array_merge($config, $integrationConfig[$mode])
             ]
         ];
     }

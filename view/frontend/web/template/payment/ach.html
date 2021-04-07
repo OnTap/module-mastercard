@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (c) 2016-2019 Mastercard
+  ~ Copyright (c) 2016-2021 Mastercard
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -31,7 +31,13 @@
             <!-- ko template: getTemplate() --><!-- /ko -->
             <!--/ko-->
         </div>
-        <p data-bind="html: getInstructions()"></p>
+
+        <div class="payment-ui">
+            <!-- ko foreach: getRegion('payment-ui') -->
+            <!-- ko template: getTemplate() --><!-- /ko -->
+            <!--/ko-->
+        </div>
+
         <div class="checkout-agreements-block">
             <!-- ko foreach: $parent.getRegion('before-place-order') -->
             <!-- ko template: getTemplate() --><!-- /ko -->

@@ -1,6 +1,5 @@
-<?php
-/**
- * Copyright (c) 2016-2019 Mastercard
+/*
+ * Copyright (c) 2016-2021 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-namespace OnTap\MasterCard\Gateway\Config\Ach;
-
-use OnTap\MasterCard\Gateway\Config\ConfigInterface;
-
-class Config extends \OnTap\MasterCard\Gateway\Config\Config implements ConfigInterface
-{
-    /**
-     * @var string
-     */
-    protected $method = 'mpgs_ach';
-
-    /**
-     * @return false
-     */
-    public function isVaultEnabled()
-    {
-        return false;
+/*global define*/
+define(
+    [
+        'uiComponent'
+    ],
+    function (Component) {
+        'use strict';
+        return Component.extend({
+            defaults: {
+            }
+        });
     }
-}
+);
