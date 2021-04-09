@@ -1,5 +1,6 @@
 "tns_hpf","MasterCard Payment Gateway Services Hosted Session"
 "tns_hosted","MasterCard Payment Gateway Services Hosted Checkout"
+"mpgs_ach","MasterCard Automated Clearing House (ACH)"
 "session","Payment Session ID"
 "Could not find order","Could not find order"
 "Could not find transaction","Could not find transaction"

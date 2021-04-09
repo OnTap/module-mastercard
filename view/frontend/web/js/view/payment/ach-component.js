@@ -22,6 +22,22 @@ define(
         'use strict';
         return Component.extend({
             defaults: {
+                adapter: false,
+                form: false,
+                exports: {
+                    'adapter': '${ $.parent }:adapter'
+                },
+                imports: {
+                    'form': '${ $.parent }'
+                }
+            },
+            initObservable: function () {
+                this._super().observe('adapter form')
+                this.adapter(this);
+                return this;
+            },
+            load: function () {
+                throw "Not implemented";
             }
         });
     }

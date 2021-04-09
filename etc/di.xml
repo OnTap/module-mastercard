@@ -301,6 +301,7 @@
             <argument name="commands" xsi:type="array">
                 <item name="check_gateway_tns_hpf" xsi:type="string">MpgsCheckHpfGatewayCommand</item>
                 <item name="check_gateway_tns_hosted" xsi:type="string">MpgsCheckHostedGatewayCommand</item>
+                <item name="check_gateway_mpgs_ach" xsi:type="string">MpgsCheckAchGatewayCommand</item>
             </argument>
         </arguments>
     </virtualType>
@@ -903,6 +904,7 @@
             <argument name="methods" xsi:type="array">
                 <item name="tns_hpf" xsi:type="string">tns_hpf</item>
                 <item name="tns_hosted" xsi:type="string">tns_hosted</item>
+                <item name="mpgs_ach" xsi:type="string">mpgs_ach</item>
             </argument>
         </arguments>
     </type>
@@ -975,6 +977,31 @@
             <argument name="data" xsi:type="array">
                 <item xsi:type="string" name="is_secure_mode">0</item>
             </argument>
+            <argument name="config" xsi:type="object">MpgsAchConfig</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsCheckAchGatewayCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">OnTap\MasterCard\Gateway\Request\NullDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">AchInformationTransferFactory</argument>
+            <argument name="client" xsi:type="object">MpgsAclRestClient</argument>
+            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\PaymentOptionsInquiryValidator</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="AchInformationTransferFactory" type="OnTap\MasterCard\Gateway\Http\InformationTransferFactory">
+        <arguments>
+            <argument name="config" xsi:type="object">MpgsAchConfig</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsAclRestClient" type="OnTap\MasterCard\Gateway\Http\Client\Rest">
+        <arguments>
+            <argument name="logger" xsi:type="object">MpgsAclLogger</argument>
+            <argument name="converter" xsi:type="object">OnTap\MasterCard\Gateway\Http\Converter\JsonToArray</argument>
+            <argument name="adapter" xsi:type="object">OnTap\MasterCard\Gateway\Http\Client\Adapter\Rest</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsAclLogger" type="Magento\Payment\Model\Method\Logger">
+        <arguments>
             <argument name="config" xsi:type="object">MpgsAchConfig</argument>
         </arguments>
     </virtualType>

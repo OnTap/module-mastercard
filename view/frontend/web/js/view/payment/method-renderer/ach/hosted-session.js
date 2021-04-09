@@ -22,7 +22,10 @@ define(
         'use strict';
         return Component.extend({
             defaults: {
-                template: 'OnTap_MasterCard/payment/ach/hosted-session',
+                template: 'OnTap_MasterCard/payment/ach/hosted-session'
+            },
+            load: function (callback) {
+                require([this.component_url], callback);
             }
         });
     }

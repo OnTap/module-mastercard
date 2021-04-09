@@ -17,13 +17,27 @@
 define(
     [
         'Magento_Checkout/js/view/payment/default',
-        'uiLayout'
+        'uiLayout',
+        'mage/translate'
     ],
-    function (Component, Layout) {
+    function (Component, Layout, $t) {
         'use strict';
         return Component.extend({
             defaults: {
                 template: 'OnTap_MasterCard/payment/ach',
+                active: false,
+                adapter: null,
+                adapterLoaded: false,
+                buttonTitle: null,
+                buttonTitleEnabled: $t('Place Order'),
+                buttonTitleDisabled: $t('Please wait...'),
+                imports: {
+                    onActiveChange: 'active'
+                }
+            },
+
+            setAdapter: function (adapter) {
+                console.log('set adapter %o', adapter)
             },
 
             /**
@@ -53,6 +67,69 @@ define(
                     }
                 ]);
                 return this;
+            },
+
+            initObservable: function () {
+                this._super()
+                    .observe([
+                        'active',
+                        'adapter',
+                        'adapterLoaded',
+                        'creditCardExpYear',
+                        'creditCardExpMonth',
+                        'buttonTitle'
+                    ]);
+
+                this.buttonTitle(this.buttonTitleDisabled);
+
+                this.isPlaceOrderActionAllowed.subscribe(function (allowed) {
+                    if (allowed === true && this.isActive()) {
+                        this.buttonTitle(this.buttonTitleEnabled);
+                    }
+                }, this);
+
+                this.adapterLoaded.subscribe(function (loaded) {
+                    if (loaded === true && this.isActive()) {
+                        this.buttonTitle(this.buttonTitleEnabled);
+                    }
+                }.bind(this));
+
+                return this;
+            },
+
+            onActiveChange: function (isActive) {
+                if (isActive && !this.adapterLoaded()) {
+                    this.loadAdapter();
+                }
+            },
+
+            isActive: function () {
+                var active = this.getCode() === this.isChecked();
+                this.active(active);
+                return active;
+            },
+
+            isCheckoutDisabled: function () {
+                return !this.adapterLoaded() || !this.isPlaceOrderActionAllowed();
+            },
+
+            loadAdapter: function () {
+                if (this.adapter()) {
+                    this.adapter().load(this.paymentAdapterLoaded.bind(this));
+                } else {
+                    this.adapter.subscribe(function (adapter) {
+                        adapter.load(this.paymentAdapterLoaded.bind(this));
+                    }.bind(this));
+                }
+            },
+
+            paymentAdapterLoaded: function () {
+                this.isPlaceOrderActionAllowed(false);
+                this.buttonTitle(this.buttonTitleDisabled);
+
+                console.log('We have loaded adapter');
+                this.adapterLoaded(true);
+                this.isPlaceOrderActionAllowed(true);
             }
        });
     }

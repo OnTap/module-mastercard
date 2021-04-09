@@ -264,8 +264,9 @@
                     </group>
                 </group>
 
-                <group id="ach" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <group id="ach" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Automated Clearing House (ACH)</label>
+                    <comment>Automated Clearing House (ACH) only supports USD</comment>
                     <field id="active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Enabled</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -331,11 +332,6 @@
                         <label>New Order Status</label>
                         <source_model>Magento\Sales\Model\Config\Source\Order\Status\Processing</source_model>
                         <config_path>payment/mpgs_ach/order_status</config_path>
-                    </field>
-                    <field id="currency" translate="label" type="select" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="0">
-                        <label>Accepted Currency</label>
-                        <source_model>Magento\Config\Model\Config\Source\Locale\Currency</source_model>
-                        <config_path>payment/mpgs_ach/currency</config_path>
                     </field>
                     <field id="allowspecific" translate="label" type="allowspecific" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Payment from Applicable Countries</label>
