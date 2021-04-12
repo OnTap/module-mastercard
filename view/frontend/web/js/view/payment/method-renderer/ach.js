@@ -127,9 +127,16 @@ define(
                 this.isPlaceOrderActionAllowed(false);
                 this.buttonTitle(this.buttonTitleDisabled);
 
-                console.log('We have loaded adapter');
-                this.adapterLoaded(true);
-                this.isPlaceOrderActionAllowed(true);
+                this.adapter().configure(function() {
+                    this.adapterLoaded(true);
+                    this.isPlaceOrderActionAllowed(true);
+                }.bind(this));
+            },
+
+            payOrder: function () {
+                this.adapter().pay(function () {
+
+                }.bind(this));
             }
        });
     }

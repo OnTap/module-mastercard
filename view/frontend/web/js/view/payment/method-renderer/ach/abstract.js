@@ -23,20 +23,28 @@ define(
         return Component.extend({
             defaults: {
                 adapter: false,
-                form: false,
                 exports: {
                     'adapter': '${ $.parent }:adapter'
-                },
-                imports: {
-                    'form': '${ $.parent }'
                 }
             },
+            getCode: function () {
+                return this.item.code;
+            },
+            getId: function () {
+                return this.index;
+            },
             initObservable: function () {
-                this._super().observe('adapter form')
+                this._super().observe('adapter')
                 this.adapter(this);
                 return this;
             },
             load: function () {
+                throw "Not implemented";
+            },
+            configure: function () {
+                throw "Not implemented";
+            },
+            pay: function () {
                 throw "Not implemented";
             }
         });

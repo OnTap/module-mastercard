@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 /*global define*/
+/*global PaymentSession*/
 define(
     [
-        'OnTap_MasterCard/js/view/payment/ach-component'
+        'OnTap_MasterCard/js/view/payment/method-renderer/ach/abstract'
     ],
     function (Component) {
         'use strict';
@@ -24,8 +25,42 @@ define(
             defaults: {
                 template: 'OnTap_MasterCard/payment/ach/hosted-session'
             },
+            getFields: function () {
+                return {
+                    ach: {
+                        accountType: "#ach-account-type",
+                        bankAccountHolder: "#ach-account-holder",
+                        bankAccountNumber: "#ach-account-number",
+                        routingNumber: "#ach-routing-number"
+                    }
+                }
+            },
             load: function (callback) {
                 require([this.component_url], callback);
+            },
+            configure: function (callback) {
+                var elem = document.getElementById('ach-account-holder');
+                if (elem) {
+                    this._configure(callback);
+                } else {
+                    setTimeout(this.configure.bind(this, callback), 100);
+                }
+            },
+            _configure: function (callback) {
+                PaymentSession.configure({
+                    fields: this.getFields(),
+                    frameEmbeddingMitigation: ['x-frame-options'],
+                    callbacks: {
+                        initialized: callback,
+                        formSessionUpdate: this.formSessionUpdate.bind(this)
+                    }
+                }, this.getId());
+            },
+            formSessionUpdate: function () {
+                console.log('formSessionUpdate', arguments);
+            },
+            pay: function () {
+                PaymentSession.updateSessionFromForm('ach', undefined, this.getId());
             }
         });
     }

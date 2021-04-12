@@ -16,7 +16,7 @@
 /*global define*/
 define(
     [
-        'OnTap_MasterCard/js/view/payment/ach-component'
+        'OnTap_MasterCard/js/view/payment/method-renderer/ach/abstract'
     ],
     function (Component) {
         'use strict';
