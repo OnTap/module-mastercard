@@ -18,9 +18,11 @@ define(
     [
         'Magento_Checkout/js/view/payment/default',
         'uiLayout',
-        'mage/translate'
+        'mage/translate',
+        'Magento_Checkout/js/action/set-payment-information',
+        'jquery'
     ],
-    function (Component, Layout, $t) {
+    function (Component, Layout, $t, setPaymentInformationAction, $) {
         'use strict';
         return Component.extend({
             defaults: {
@@ -31,6 +33,7 @@ define(
                 buttonTitle: null,
                 buttonTitleEnabled: $t('Place Order'),
                 buttonTitleDisabled: $t('Please wait...'),
+                sessionId: null,
                 imports: {
                     onActiveChange: 'active'
                 }
@@ -133,11 +136,29 @@ define(
                 }.bind(this));
             },
 
+            /**
+             * called from html
+             */
             payOrder: function () {
-                this.adapter().pay(function () {
-
+                this.isPlaceOrderActionAllowed(false);
+                this.adapter().pay(function (response) {
+                    this.sessionId = response.session.id;
+                    this.isPlaceOrderActionAllowed(true);
+                    this.placeOrder();
+                }.bind(this), function (response) {
+                    // Error
+                    this.isPlaceOrderActionAllowed(true);
                 }.bind(this));
-            }
+            },
+
+            getData: function () {
+                return {
+                    'method': this.item.method,
+                    'additional_data': {
+                        'session_id': this.sessionId
+                    }
+                };
+            },
        });
     }
 );

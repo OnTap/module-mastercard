@@ -17,9 +17,12 @@
 /*global PaymentSession*/
 define(
     [
-        'OnTap_MasterCard/js/view/payment/method-renderer/ach/abstract'
+        'OnTap_MasterCard/js/view/payment/method-renderer/ach/abstract',
+        'underscore',
+        'jquery',
+        'mage/translate'
     ],
-    function (Component) {
+    function (Component, _, $, $t) {
         'use strict';
         return Component.extend({
             defaults: {
@@ -34,6 +37,14 @@ define(
                         routingNumber: "#ach-routing-number"
                     }
                 }
+            },
+            errorMap: function () {
+                return {
+                    'accountType': $t('Invalid account type'),
+                    'bankAccountHolder': $t('Invalid bank account holder'),
+                    'bankAccountNumber': $t('Invalid bank account number'),
+                    'routingNumber': $t('Invalid routing number')
+                };
             },
             load: function (callback) {
                 require([this.component_url], callback);
@@ -56,10 +67,32 @@ define(
                     }
                 }, this.getId());
             },
-            formSessionUpdate: function () {
-                console.log('formSessionUpdate', arguments);
+            formSessionUpdate: function (response) {
+                var fields = this.getFields();
+                if (response.status === "fields_in_error") {
+                    if (response.errors) {
+                        var errors = this.errorMap();
+                        _.keys(response.errors).forEach(function(errorField) {
+                            var message = errors[errorField],
+                                elem_id = fields.ach[errorField] + '-error';
+
+                            $(elem_id).text(message).show();
+                        });
+                        this.sessionUpdateErrorCallback(response);
+                    }
+                }
+                if (response.status === "ok") {
+                    this.sessionUpdateCallback(response);
+                }
             },
-            pay: function () {
+            pay: function (callback, errorCallback) {
+                var fields = this.getFields();
+                _.values(fields.ach).forEach(function (field) {
+                    $(field + '-error').hide();
+                });
+
+                this.sessionUpdateErrorCallback = errorCallback;
+                this.sessionUpdateCallback = callback;
                 PaymentSession.updateSessionFromForm('ach', undefined, this.getId());
             }
         });

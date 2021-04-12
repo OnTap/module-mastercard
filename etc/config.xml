@@ -119,6 +119,7 @@
                 <active>0</active>
                 <title>Automated Clearing House (ACH)</title>
                 <model>MpgsAchFacade</model>
+                <payment_action>order</payment_action>
 
                 <order_status>processing</order_status>
                 <send_line_items>1</send_line_items>
@@ -145,8 +146,8 @@
                 <can_refund>0</can_refund>
                 <can_refund_partial_per_invoice>0</can_refund_partial_per_invoice>
                 <can_void>0</can_void>
-                <can_order>0</can_order>
-                <can_authorize>1</can_authorize>
+                <can_order>1</can_order>
+                <can_authorize>0</can_authorize>
                 <can_capture>0</can_capture>
                 <can_capture_partial>0</can_capture_partial>
                 <is_gateway>1</is_gateway>
