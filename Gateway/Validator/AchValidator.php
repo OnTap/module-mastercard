@@ -19,7 +19,7 @@ namespace OnTap\MasterCard\Gateway\Validator;
 
 use Magento\Payment\Gateway\Helper\SubjectReader;
 
-class AchSuccessful extends ResponseValidator
+class AchValidator extends ResponseValidator
 {
     /**
      * @param array $validationSubject
@@ -34,7 +34,7 @@ class AchSuccessful extends ResponseValidator
         }
 
         if (isset($response['error']) && $response['error']['validationType'] === 'MISSING') {
-            return $this->createResult(false, [$response['error']['explanation']]);
+            return $this->createResult(false, [$response['error']['field']]);
         }
 
         return parent::validate($validationSubject);

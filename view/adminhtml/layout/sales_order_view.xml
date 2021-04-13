@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-  ~ Copyright (c) 2016-2019 Mastercard
+  ~ Copyright (c) 2016-2021 Mastercard
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -17,7 +17,8 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceContainer name="payment_additional_info">
-            <block class="OnTap\MasterCard\Block\Adminhtml\Order\View\Info\Details" name="tns_info_details" template="OnTap_MasterCard::order/view/info/details.phtml" />
+            <block class="OnTap\MasterCard\Block\Adminhtml\Order\View\Info\Card" name="tns_info_details" template="OnTap_MasterCard::order/view/info/card_details.phtml" />
+            <block class="OnTap\MasterCard\Block\Adminhtml\Order\View\Info\Ach" name="mpgs_ach_details" template="OnTap_MasterCard::order/view/info/ach_details.phtml" />
         </referenceContainer>
     </body>
 </page>

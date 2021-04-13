@@ -38,10 +38,9 @@ class AchMessages implements DataInterface
     {
         return [
             // code => message
-            'Missing parameter. Missing ACH bank account number' => 'Missing parameter. Missing ACH bank account number',
-            'Missing parameter. Missing parameter SEC Code. The field must be provided for payments with payment type ACH.' => 'Missing parameter. Missing parameter SEC Code. The field must be provided for payments with payment type ACH.',
-            'Missing parameter. Missing parameter Bank Account Holder. The field must be provided for payments with payment type ACH.' => 'Missing parameter. Missing parameter Bank Account Holder. The field must be provided for payments with payment type ACH.',
-            'Missing parameter. Missing parameter Routing Number. The field must be provided for payments with payment type ACH.' => 'Missing parameter. Missing parameter Routing Number. The field must be provided for payments with payment type ACH.'
+            'sourceOfFunds.provided.ach.bankAccountNumber' => 'Missing ACH bank account number',
+            'sourceOfFunds.provided.ach.bankAccountHolder' => 'Missing parameter Bank Account Holder',
+            'sourceOfFunds.provided.ach.routingNumber' => 'Missing parameter Routing Number'
         ][$key];
     }
 }

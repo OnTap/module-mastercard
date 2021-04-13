@@ -152,7 +152,7 @@
                 <can_capture_partial>0</can_capture_partial>
                 <is_gateway>1</is_gateway>
 
-                <paymentInfoKeys>gateway_code,txn_result,card_scheme,card_number,card_expiry_date,auth_code</paymentInfoKeys>
+                <paymentInfoKeys>gateway_code,txn_result,bankAccountHolder,bankAccountNumber</paymentInfoKeys>
             </mpgs_ach>
         </payment>
     </default>
