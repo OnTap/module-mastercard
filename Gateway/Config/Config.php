@@ -100,6 +100,15 @@ class Config extends \Magento\Payment\Gateway\Config\Config
 
     /**
      * @param null $storeId
+     * @return mixed|null
+     */
+    public function isTestMode($storeId = null)
+    {
+        return $this->getValue('test', $storeId);
+    }
+
+    /**
+     * @param null $storeId
      * @return string
      */
     public function getMerchantPassword($storeId = null)

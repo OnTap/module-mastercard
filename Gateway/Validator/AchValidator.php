@@ -18,14 +18,15 @@
 namespace OnTap\MasterCard\Gateway\Validator;
 
 use Magento\Payment\Gateway\Helper\SubjectReader;
+use Magento\Payment\Gateway\Validator\ResultInterface;
 
 class AchValidator extends ResponseValidator
 {
     /**
      * @param array $validationSubject
-     * @return \Magento\Payment\Gateway\Validator\ResultInterface
+     * @return ResultInterface
      */
-    public function validate(array $validationSubject)
+    public function validate(array $validationSubject): ResultInterface
     {
         $response = SubjectReader::readResponse($validationSubject);
 
@@ -35,6 +36,17 @@ class AchValidator extends ResponseValidator
 
         if (isset($response['error']) && $response['error']['validationType'] === 'MISSING') {
             return $this->createResult(false, [$response['error']['field']]);
+        }
+
+        $allowStatus = [
+            'APPROVED_PENDING_SETTLEMENT',
+            'APPROVED'
+        ];
+
+        if (!in_array($response['response']['gatewayCode'], $allowStatus)) {
+            return $this->createResult(false, [
+                __('Unexpected gateway code "%1"', $response['response']['gatewayCode'])
+            ]);
         }
 
         return parent::validate($validationSubject);
