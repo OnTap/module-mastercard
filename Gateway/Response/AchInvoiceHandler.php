@@ -18,24 +18,24 @@
 namespace OnTap\MasterCard\Gateway\Response;
 
 use Magento\Payment\Gateway\Response\HandlerInterface;
-use OnTap\MasterCard\Model\Operation\WebhookNotificationOperation;
+use Magento\Sales\Api\Data\OrderPaymentInterface;
+use OnTap\MasterCard\Model\Operation\InvoiceOperation;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 
-class AchWebookNotify implements HandlerInterface
+class AchInvoiceHandler implements HandlerInterface
 {
     /**
-     * @var WebhookNotificationOperation
+     * @var InvoiceOperation
      */
-    protected $notificationOperation;
+    protected $invoiceOperation;
 
     /**
-     * AchWebookNotify constructor.
-     * @param WebhookNotificationOperation $notificationOperation
+     * @param InvoiceOperation $invoiceOperation
      */
     public function __construct(
-        WebhookNotificationOperation $notificationOperation
+        InvoiceOperation $invoiceOperation
     ) {
-        $this->notificationOperation = $notificationOperation;
+        $this->invoiceOperation = $invoiceOperation;
     }
 
     /**
@@ -46,13 +46,10 @@ class AchWebookNotify implements HandlerInterface
     {
         $paymentDO = SubjectReader::readPayment($handlingSubject);
 
-        /** @var \Magento\Sales\Model\Order\Payment $payment */
+        /** @var OrderPaymentInterface $payment */
         $payment = $paymentDO->getPayment();
 
-        if ($payment->getAmountPaid() == 0) {
-            $payment->accept();
-            $this->notificationOperation->execute($payment);
-            $payment->getOrder()->save();
-        }
+        $this->invoiceOperation->execute($payment);
+        $payment->getOrder()->save();
     }
 }

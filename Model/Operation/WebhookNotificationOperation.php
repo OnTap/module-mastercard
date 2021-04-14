@@ -20,7 +20,6 @@ namespace OnTap\MasterCard\Model\Operation;
 
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Api\Data\OrderPaymentInterface;
-use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment;
 use Magento\Sales\Model\Order\Payment\Operations\ProcessInvoiceOperation;
 use Magento\Sales\Api\TransactionRepositoryInterface;
@@ -57,7 +56,7 @@ class WebhookNotificationOperation
      */
     public function execute(OrderPaymentInterface $payment): OrderPaymentInterface
     {
-        /** @var $payment Payment */
+        /** @var Payment $payment */
         $invoice = $payment->getOrder()->prepareInvoice();
         $invoice->register();
 
