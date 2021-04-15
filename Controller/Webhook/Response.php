@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2020 Mastercard
+ * Copyright (c) 2016-2021 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,9 +40,7 @@ use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Api\TransactionRepositoryInterface;
 use OnTap\MasterCard\Gateway\Config\Config;
 use Psr\Log\LoggerInterface;
-use Zend_Json;
-use Zend_Json_Decoder;
-use Zend_Json_Exception;
+use Magento\Framework\Serialize\Serializer\Json;
 
 class Response extends Action implements CsrfAwareActionInterface
 {
@@ -102,6 +100,11 @@ class Response extends Action implements CsrfAwareActionInterface
     protected $commandPool;
 
     /**
+     * @var Json
+     */
+    protected $json;
+
+    /**
      * Response constructor.
      * @param Context $context
      * @param RawFactory $rawFactory
@@ -113,6 +116,7 @@ class Response extends Action implements CsrfAwareActionInterface
      * @param LoggerInterface $logger
      * @param PaymentDataObjectFactory $paymentDataObjectFactory
      * @param CommandPoolInterface $commandPool
+     * @param Json $json
      * @param Config[] $configProviders
      */
     public function __construct(
@@ -126,6 +130,7 @@ class Response extends Action implements CsrfAwareActionInterface
         LoggerInterface $logger,
         PaymentDataObjectFactory $paymentDataObjectFactory,
         CommandPoolInterface $commandPool,
+        Json $json,
         array $configProviders = []
     ) {
         parent::__construct($context);
@@ -139,6 +144,7 @@ class Response extends Action implements CsrfAwareActionInterface
         $this->configProviders = $configProviders;
         $this->paymentDataObjectFactory = $paymentDataObjectFactory;
         $this->commandPool = $commandPool;
+        $this->json = $json;
     }
 
     /**
@@ -221,11 +227,10 @@ class Response extends Action implements CsrfAwareActionInterface
 
     /**
      * @return array
-     * @throws Zend_Json_Exception
      */
     protected function getData()
     {
-        return Zend_Json_Decoder::decode($this->getRequest()->getContent(), Zend_Json::TYPE_ARRAY);
+        return $this->json->unserialize($this->getRequest()->getContent());
     }
 
     /**

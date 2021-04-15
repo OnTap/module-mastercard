@@ -33,9 +33,12 @@ sonarqube-check:
   allow_failure: true
   only:
     - merge_requests
+    - master
 
 .magento:build: &magento-build
   before_script:
+    - export MODULE_NAME=$(composer.phar config name)
+    - export MODULE_DIR=$(composer.phar config vendor-dir)/$MODULE_NAME
     - mkdir -p _build
     - ln -s /magento _build/magento
     - git clone . _build/module
@@ -47,8 +50,8 @@ sonarqube-check:
     - composer.phar config repo.packagist false
     - composer.phar config minimum-stability dev
     - composer.phar config prefer-stable true
-    - composer.phar require --no-suggest --dev --no-update ontap/ambassador:^1.2
-    - composer.phar require --no-suggest $MODULE_NAME:dev-build
+    - composer.phar require --no-suggest --dev --no-update --no-interaction ontap/ambassador:^1.2
+    - composer.phar require --no-suggest --no-interaction $MODULE_NAME:dev-build
     - |
       cat > $MODULE_DIR/Makefile <<- "EOF"
       MOD_PATH = $(abspath ./../../ontap/ambassador)
@@ -57,7 +60,7 @@ sonarqube-check:
       EOF
 
 magento-2.3.6:phpcs:
-  image: ontap/magento:2.3.6
+  image: gitlab.extensions.ontap.cloud:5050/ontap/docker-ontap-magento:2.3.6
   stage: test
   only:
     - merge_requests
@@ -66,7 +69,7 @@ magento-2.3.6:phpcs:
   <<: *magento-build
 
 magento-2.3.6:phpstan:
-  image: ontap/magento:2.3.6
+  image: gitlab.extensions.ontap.cloud:5050/ontap/docker-ontap-magento:2.3.6
   stage: test
   only:
     - merge_requests
@@ -75,7 +78,7 @@ magento-2.3.6:phpstan:
   <<: *magento-build
 
 magento-2.3.6:compile:
-  image: ontap/magento:2.3.6
+  image: gitlab.extensions.ontap.cloud:5050/ontap/docker-ontap-magento:2.3.6
   stage: test
   only:
     - merge_requests
@@ -84,8 +87,8 @@ magento-2.3.6:compile:
     - php -d memory_limit=1G bin/magento setup:di:compile --ansi --no-interaction
   <<: *magento-build
 
-magento-2.4.1:phpcs:
-  image: ontap/magento:2.4.1
+magento-2.4.2:phpcs:
+  image: gitlab.extensions.ontap.cloud:5050/ontap/docker-ontap-magento:2.4.2
   stage: test
   only:
     - merge_requests
@@ -93,8 +96,8 @@ magento-2.4.1:phpcs:
     - (cd $MODULE_DIR && make phpcs)
   <<: *magento-build
 
-magento-2.4.1:phpstan:
-  image: ontap/magento:2.4.1
+magento-2.4.2:phpstan:
+  image: gitlab.extensions.ontap.cloud:5050/ontap/docker-ontap-magento:2.4.2
   stage: test
   only:
     - merge_requests
@@ -102,8 +105,8 @@ magento-2.4.1:phpstan:
     - (cd $MODULE_DIR && make phpstan)
   <<: *magento-build
 
-magento-2.4.1:compile:
-  image: ontap/magento:2.4.1
+magento-2.4.2:compile:
+  image: gitlab.extensions.ontap.cloud:5050/ontap/docker-ontap-magento:2.4.2
   stage: test
   only:
     - merge_requests

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-  ~ Copyright (c) 2016-2019 Mastercard
+  ~ Copyright (c) 2016-2021 Mastercard
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -21,6 +21,9 @@
     </event>
     <event name="payment_method_assign_data_tns_hpf">
         <observer name="tns_hpf_gateway_data_assign" instance="OnTap\MasterCard\Observer\Hpf\DataAssignObserver" />
+    </event>
+    <event name="payment_method_assign_data_mpgs_ach">
+        <observer name="mpgs_ach_gateway_data_assign" instance="OnTap\MasterCard\Observer\Ach\DataAssignObserver" />
     </event>
     <event name="admin_system_config_save">
         <observer name="mpgs_admin_config_save_after" instance="OnTap\MasterCard\Observer\ConfigSaveAfter"/>
