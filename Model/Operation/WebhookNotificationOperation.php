@@ -21,16 +21,10 @@ namespace OnTap\MasterCard\Model\Operation;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Api\Data\OrderPaymentInterface;
 use Magento\Sales\Model\Order\Payment;
-use Magento\Sales\Model\Order\Payment\Operations\ProcessInvoiceOperation;
 use Magento\Sales\Api\TransactionRepositoryInterface;
 
 class WebhookNotificationOperation
 {
-    /**
-     * @var ProcessInvoiceOperation
-     */
-    protected $processInvoiceOperation;
-
     /**
      * @var TransactionRepositoryInterface
      */
@@ -38,14 +32,11 @@ class WebhookNotificationOperation
 
     /**
      * WebhookNotificationOperation constructor.
-     * @param ProcessInvoiceOperation $processInvoiceOperation
      * @param TransactionRepositoryInterface $transactionRepository
      */
     public function __construct(
-        ProcessInvoiceOperation $processInvoiceOperation,
         TransactionRepositoryInterface $transactionRepository
     ) {
-        $this->processInvoiceOperation = $processInvoiceOperation;
         $this->transactionRepository = $transactionRepository;
     }
 

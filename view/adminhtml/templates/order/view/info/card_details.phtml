@@ -34,42 +34,43 @@
         <div data-role="tns-full-payment-details-content" style="display: none">
             <table class="data-table admin__table-secondary">
                 <tbody>
-                    <?php $payment = $block->getPayment() ?>
+                    <?php $payment = $block->getPayment(); ?>
+                    <?php $info = $payment->getAdditionalInformation(); ?>
                     <tr>
                         <th><?php echo __('gateway_code') ?></th>
-                        <td><?php echo $block->safeValue($payment->getAdditionalInformation('gateway_code')) ?></td>
+                        <td><?php echo $block->safeValue($info['gateway_code'] ?? null) ?></td>
                     </tr>
                     <tr>
                         <th><?php echo __('txn_result') ?></th>
-                        <td><?php echo $block->safeValue($payment->getAdditionalInformation('txn_result')) ?></td>
+                        <td><?php echo $block->safeValue($info['txn_result'] ?? null) ?></td>
                     </tr>
                     <tr>
                         <th><?php echo __('card_scheme') ?></th>
-                        <td><?php echo $block->safeValue($payment->getAdditionalInformation('card_scheme')) ?></td>
+                        <td><?php echo $block->safeValue($info['card_scheme'] ?? null) ?></td>
                     </tr>
                     <tr>
                         <th><?php echo __('card_number') ?></th>
-                        <td><?php echo $block->safeValue($payment->getAdditionalInformation('card_number')) ?></td>
+                        <td><?php echo $block->safeValue($info['card_number'] ?? null) ?></td>
                     </tr>
                     <tr>
                         <th><?php echo __('card_expiry_date') ?></th>
-                        <td><?php echo $block->safeValue($payment->getAdditionalInformation('card_expiry_date')) ?></td>
+                        <td><?php echo $block->safeValue($info['card_expiry_date'] ?? null) ?></td>
                     </tr>
                     <tr>
                         <th><?php echo __('auth_code') ?></th>
-                        <td><?php echo $block->safeValue($payment->getAdditionalInformation('auth_code')) ?></td>
+                        <td><?php echo $block->safeValue($info['auth_code'] ?? null) ?></td>
                     </tr>
                     <tr>
                         <td><?php echo __('funding_method') ?></td>
-                        <td><?php echo $block->safeValue($payment->getAdditionalInformation('fundingMethod')) ?></td>
+                        <td><?php echo $block->safeValue($info['fundingMethod'] ?? null) ?></td>
                     </tr>
                     <tr>
                         <td><?php echo __('issuer') ?></td>
-                        <td><?php echo $block->safeValue($payment->getAdditionalInformation('issuer')) ?></td>
+                        <td><?php echo $block->safeValue($info['issuer'] ?? null) ?></td>
                     </tr>
                     <tr>
                         <td><?php echo __('name_on_card') ?></td>
-                        <td><?php echo $block->safeValue($payment->getAdditionalInformation('nameOnCard')) ?></td>
+                        <td><?php echo $block->safeValue($info['nameOnCard'] ?? null) ?></td>
                     </tr>
                     <?php if (is_array($block->getRiskData()) && isset($block->getRiskData()['response'])): ?>
                         <?php $risk = $block->getRiskData()['response'] ?>
