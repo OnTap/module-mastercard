@@ -184,6 +184,7 @@
                 <item name="operation" xsi:type="string">VoidOperationDataBuilder</item>
                 <item name="void" xsi:type="string">OnTap\MasterCard\Gateway\Request\VoidDataBuilder</item>
                 <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
+                <item name="transaction_reference" xsi:type="string">OnTap\MasterCard\Gateway\Request\TransactionReferenceDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -194,6 +195,8 @@
                 <item name="operation" xsi:type="string">RefundOperationDataBuilder</item>
                 <item name="refund" xsi:type="string">OnTap\MasterCard\Gateway\Request\TransactionDataBuilder</item>
                 <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
+                <item name="transaction_reference" xsi:type="string">OnTap\MasterCard\Gateway\Request\TransactionReferenceDataBuilder</item>
+                <item name="order_reference" xsi:type="string">OnTap\MasterCard\Gateway\Request\OrderReferenceDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -204,6 +207,8 @@
                 <item name="operation" xsi:type="string">CaptureOperationDataBuilder</item>
                 <item name="capture" xsi:type="string">OnTap\MasterCard\Gateway\Request\TransactionDataBuilder</item>
                 <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
+                <item name="order_reference" xsi:type="string">OnTap\MasterCard\Gateway\Request\OrderReferenceDataBuilder</item>
+                <item name="transaction_reference" xsi:type="string">OnTap\MasterCard\Gateway\Request\TransactionReferenceDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -420,6 +425,7 @@
                 <item name="customer" xsi:type="string">OnTap\MasterCard\Gateway\Request\CustomerDataBuilder</item>
                 <item name="source" xsi:type="string">OnTap\MasterCard\Gateway\Request\SourceDataBuilder</item>
                 <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
+                <item name="transaction_reference" xsi:type="string">OnTap\MasterCard\Gateway\Request\TransactionReferenceDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -447,6 +453,7 @@
                 <item name="customer" xsi:type="string">OnTap\MasterCard\Gateway\Request\CustomerDataBuilder</item>
                 <item name="source" xsi:type="string">OnTap\MasterCard\Gateway\Request\SourceDataBuilder</item>
                 <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
+                <item name="transaction_reference" xsi:type="string">OnTap\MasterCard\Gateway\Request\TransactionReferenceDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -523,7 +530,7 @@
                 <item name="shipping" xsi:type="string">OnTap\MasterCard\Gateway\Request\ShippingDataBuilder</item>
                 <item name="customer" xsi:type="string">OnTap\MasterCard\Gateway\Request\CustomerDataBuilder</item>
                 <item name="source" xsi:type="string">OnTap\MasterCard\Gateway\Request\SourceDataBuilder</item>
-                <item name="id" xsi:type="string">OnTap\MasterCard\Gateway\Request\OrderIdBuilder</item>
+                <item name="references" xsi:type="string">OnTap\MasterCard\Gateway\Request\QuoteReferencesBuilder</item>
                 <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
                 <item name="extra" xsi:type="string">MpgsHostedCreateSessionExtraDataBuilder</item>
             </argument>
