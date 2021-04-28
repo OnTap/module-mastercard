@@ -158,6 +158,8 @@
                 <item name="session" xsi:type="string">OnTap\MasterCard\Gateway\Request\Authentication\SessionDataBuilder</item>
                 <item name="order_currency" xsi:type="string">OnTap\MasterCard\Gateway\Request\Authentication\OrderCurrencyBuilder</item>
                 <item name="authentication" xsi:type="string">OnTap\MasterCard\Gateway\Request\Authentication\AuthenticationBuilder</item>
+                <item name="order_reference" xsi:type="string">OnTap\MasterCard\Gateway\Request\OrderReferenceDataBuilder</item>
+                <item name="transaction_reference" xsi:type="string">OnTap\MasterCard\Gateway\Request\Authentication\InitAuthTransactionReferenceDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -708,6 +710,8 @@
                 <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\TokenDataBuilder</item>
                 <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
                 <item name="extra" xsi:type="string">MpgsHpfSaleExtraDataBuilder</item>
+                <item name="transaction_reference" xsi:type="string">OnTap\MasterCard\Gateway\Request\TransactionReferenceDataBuilder</item>
+                <item name="order_reference" xsi:type="string">OnTap\MasterCard\Gateway\Request\OrderReferenceDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -723,6 +727,8 @@
                 <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\TokenDataBuilder</item>
                 <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
                 <item name="extra" xsi:type="string">MpgsHpfAuthorizeExtraDataBuilder</item>
+                <item name="transaction_reference" xsi:type="string">OnTap\MasterCard\Gateway\Request\TransactionReferenceDataBuilder</item>
+                <item name="order_reference" xsi:type="string">OnTap\MasterCard\Gateway\Request\OrderReferenceDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -782,6 +788,7 @@
                 <item name="source" xsi:type="string">OnTap\MasterCard\Gateway\Request\SourceDataBuilder</item>
                 <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
                 <item name="extra" xsi:type="string">MpgsHpfSaleExtraDataBuilder</item>
+                <item name="transaction_reference" xsi:type="string">OnTap\MasterCard\Gateway\Request\TransactionReferenceDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -878,6 +885,7 @@
                 <item name="source" xsi:type="string">OnTap\MasterCard\Gateway\Request\SourceDataBuilder</item>
                 <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
                 <item name="extra" xsi:type="string">MpgsHpfAuthorizeExtraDataBuilder</item>
+                <item name="transaction_reference" xsi:type="string">OnTap\MasterCard\Gateway\Request\TransactionReferenceDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>

@@ -31,6 +31,7 @@ use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Payment\Gateway\Command\CommandPoolInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
 use Magento\Payment\Model\InfoInterface;
@@ -40,9 +41,6 @@ use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Api\TransactionRepositoryInterface;
 use OnTap\MasterCard\Gateway\Config\Config;
 use Psr\Log\LoggerInterface;
-use Zend_Json;
-use Zend_Json_Decoder;
-use Zend_Json_Exception;
 
 class Response extends Action implements CsrfAwareActionInterface
 {
@@ -97,6 +95,11 @@ class Response extends Action implements CsrfAwareActionInterface
     protected $paymentDataObjectFactory;
 
     /**
+     * @var Json
+     */
+    private $json;
+
+    /**
      * @var CommandPoolInterface
      */
     protected $commandPool;
@@ -113,6 +116,7 @@ class Response extends Action implements CsrfAwareActionInterface
      * @param LoggerInterface $logger
      * @param PaymentDataObjectFactory $paymentDataObjectFactory
      * @param CommandPoolInterface $commandPool
+     * @param Json $json
      * @param Config[] $configProviders
      */
     public function __construct(
@@ -126,6 +130,7 @@ class Response extends Action implements CsrfAwareActionInterface
         LoggerInterface $logger,
         PaymentDataObjectFactory $paymentDataObjectFactory,
         CommandPoolInterface $commandPool,
+        Json $json,
         array $configProviders = []
     ) {
         parent::__construct($context);
@@ -138,6 +143,7 @@ class Response extends Action implements CsrfAwareActionInterface
         $this->logger = $logger;
         $this->configProviders = $configProviders;
         $this->paymentDataObjectFactory = $paymentDataObjectFactory;
+        $this->json = $json;
         $this->commandPool = $commandPool;
     }
 
@@ -221,11 +227,11 @@ class Response extends Action implements CsrfAwareActionInterface
 
     /**
      * @return array
-     * @throws Zend_Json_Exception
+     * @throws \InvalidArgumentException
      */
     protected function getData()
     {
-        return Zend_Json_Decoder::decode($this->getRequest()->getContent(), Zend_Json::TYPE_ARRAY);
+        return $this->json->unserialize($this->getRequest()->getContent());
     }
 
     /**
