@@ -35,12 +35,15 @@ define([
             node.setAttribute('data-cancel', 'window.tnsCancelCallback');
             node.setAttribute('data-complete', 'window.tnsCompletedCallback');
         },
-        configureApi: function (merchant, sessionId, sessionVersion) {
+        configureApi: function (merchant, sessionId, sessionVersion, formLocale) {
             Checkout.configure({
                 merchant: merchant,
                 session: {
                     id: sessionId,
                     version: sessionVersion
+                },
+                interaction: {
+                    locale: formLocale
                 }
             });
         },
