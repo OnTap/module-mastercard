@@ -117,11 +117,11 @@ class AuthenticatePayer extends Action implements HttpPostActionInterface
                     : 'frictionless'
             ]);
         } catch (Exception $e) {
-            $this->logger->warning((string)$e);
+            $this->logger->error((string)$e);
             $jsonResult
                 ->setHttpResponseCode(400)
                 ->setData([
-                    'message' => __('Transaction declined')
+                    'message' => __('An error occurred while processing your transaction')
                 ]);
         }
 

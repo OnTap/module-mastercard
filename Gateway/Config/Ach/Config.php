@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2019 Mastercard
+ * Copyright (c) 2016-2021 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,22 @@
  * limitations under the License.
  */
 
-namespace OnTap\MasterCard\Gateway\Response;
+namespace OnTap\MasterCard\Gateway\Config\Ach;
 
-use Magento\Payment\Gateway\Response\HandlerInterface;
-use Magento\Payment\Gateway\Helper\SubjectReader;
-use Magento\Sales\Model\Order\Payment;
-use Magento\Payment\Gateway\Helper\ContextHelper;
+use OnTap\MasterCard\Gateway\Config\ConfigInterface;
 
-class AuthorizeHandler extends OpenTransactionHandler implements HandlerInterface
+class Config extends \OnTap\MasterCard\Gateway\Config\Config implements ConfigInterface
 {
+    /**
+     * @var string
+     */
+    protected $method = 'mpgs_ach';
+
+    /**
+     * @return false
+     */
+    public function isVaultEnabled()
+    {
+        return false;
+    }
 }

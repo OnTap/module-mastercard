@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2020 Mastercard
+ * Copyright (c) 2016-2021 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 namespace OnTap\MasterCard\Controller\Webhook;
 
 use Exception;
+use InvalidArgumentException;
 use Magento\Framework\Api\FilterBuilder;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\App\Action\Action;
@@ -95,14 +96,14 @@ class Response extends Action implements CsrfAwareActionInterface
     protected $paymentDataObjectFactory;
 
     /**
-     * @var Json
-     */
-    private $json;
-
-    /**
      * @var CommandPoolInterface
      */
     protected $commandPool;
+
+    /**
+     * @var Json
+     */
+    protected $json;
 
     /**
      * Response constructor.
@@ -227,7 +228,7 @@ class Response extends Action implements CsrfAwareActionInterface
 
     /**
      * @return array
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function getData()
     {

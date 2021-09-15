@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2019 Mastercard
+ * Copyright (c) 2016-2021 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,23 @@ use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Sales\Model\Order\Payment;
 use Magento\Payment\Gateway\Helper\ContextHelper;
 
-class AuthorizeHandler extends OpenTransactionHandler implements HandlerInterface
+class OpenTransactionHandler implements HandlerInterface
 {
+    /**
+     * Handles response
+     *
+     * @param array $handlingSubject
+     * @param array $response
+     * @return void
+     */
+    public function handle(array $handlingSubject, array $response)
+    {
+        $paymentDO = SubjectReader::readPayment($handlingSubject);
+
+        /** @var Payment $payment */
+        $payment = $paymentDO->getPayment();
+        ContextHelper::assertOrderPayment($payment);
+
+        $payment->setIsTransactionClosed(false);
+    }
 }

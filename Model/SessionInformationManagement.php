@@ -17,15 +17,13 @@
 
 namespace OnTap\MasterCard\Model;
 
-use Magento\Framework\App\ObjectManager;
-use Magento\Payment\Gateway\Command\CommandPoolInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
+use Magento\Payment\Gateway\Command\CommandPoolInterface;
 use Magento\Quote\Api\BillingAddressManagementInterface;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Api\Data\AddressInterface;
 use Magento\Quote\Api\Data\PaymentInterface;
 use Magento\Quote\Api\GuestCartRepositoryInterface;
-use Magento\Quote\Model\QuoteIdMaskFactory;
 use OnTap\MasterCard\Api\SessionInformationManagementInterface;
 
 class SessionInformationManagement implements SessionInformationManagementInterface
@@ -48,17 +46,12 @@ class SessionInformationManagement implements SessionInformationManagementInterf
     protected $paymentDataObjectFactory;
 
     /**
-     * @var QuoteIdMaskFactory
-     */
-    protected $quoteIdMaskFactory;
-
-    /**
      * @var BillingAddressManagementInterface
      */
     protected $billingAddressManagement;
 
     /**
-     * @var GuestCartRepositoryInterface|null
+     * @var GuestCartRepositoryInterface
      */
     private $cartRepository;
 
@@ -67,7 +60,6 @@ class SessionInformationManagement implements SessionInformationManagementInterf
      * @param CommandPoolInterface $commandPool
      * @param CartRepositoryInterface $quoteRepository
      * @param PaymentDataObjectFactory $paymentDataObjectFactory
-     * @param QuoteIdMaskFactory $quoteIdMaskFactory
      * @param BillingAddressManagementInterface $billingAddressManagement
      * @param GuestCartRepositoryInterface $cartRepository
      */
@@ -75,14 +67,12 @@ class SessionInformationManagement implements SessionInformationManagementInterf
         CommandPoolInterface $commandPool,
         CartRepositoryInterface $quoteRepository,
         PaymentDataObjectFactory $paymentDataObjectFactory,
-        QuoteIdMaskFactory $quoteIdMaskFactory,
         BillingAddressManagementInterface $billingAddressManagement,
         GuestCartRepositoryInterface $cartRepository
     ) {
         $this->commandPool = $commandPool;
         $this->quoteRepository = $quoteRepository;
         $this->paymentDataObjectFactory = $paymentDataObjectFactory;
-        $this->quoteIdMaskFactory = $quoteIdMaskFactory;
         $this->billingAddressManagement = $billingAddressManagement;
         $this->cartRepository = $cartRepository;
     }

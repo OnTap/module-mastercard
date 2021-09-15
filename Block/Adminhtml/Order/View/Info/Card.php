@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2019 Mastercard
+ * Copyright (c) 2016-2021 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,15 @@
  * limitations under the License.
  */
 
-namespace OnTap\MasterCard\Gateway\Response;
+namespace OnTap\MasterCard\Block\Adminhtml\Order\View\Info;
 
-use Magento\Payment\Gateway\Response\HandlerInterface;
-use Magento\Payment\Gateway\Helper\SubjectReader;
-use Magento\Sales\Model\Order\Payment;
-use Magento\Payment\Gateway\Helper\ContextHelper;
-
-class AuthorizeHandler extends OpenTransactionHandler implements HandlerInterface
+class Card extends Details
 {
+    /**
+     * @var array
+     */
+    protected $applicableMethods = [
+        \OnTap\MasterCard\Model\Ui\Hpf\ConfigProvider::METHOD_CODE,
+        \OnTap\MasterCard\Model\Ui\Hosted\ConfigProvider::METHOD_CODE,
+    ];
 }

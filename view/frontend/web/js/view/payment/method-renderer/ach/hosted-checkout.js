@@ -1,6 +1,5 @@
-<?php
-/**
- * Copyright (c) 2016-2019 Mastercard
+/*
+ * Copyright (c) 2016-2021 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-namespace OnTap\MasterCard\Gateway\Response;
-
-use Magento\Payment\Gateway\Response\HandlerInterface;
-use Magento\Payment\Gateway\Helper\SubjectReader;
-use Magento\Sales\Model\Order\Payment;
-use Magento\Payment\Gateway\Helper\ContextHelper;
-
-class AuthorizeHandler extends OpenTransactionHandler implements HandlerInterface
-{
-}
+/*global define*/
+define(
+    [
+        'OnTap_MasterCard/js/view/payment/method-renderer/ach/abstract'
+    ],
+    function (Component) {
+        'use strict';
+        return Component.extend({
+            defaults: {
+                template: 'OnTap_MasterCard/payment/ach/hosted-checkout',
+            }
+        });
+    }
+);

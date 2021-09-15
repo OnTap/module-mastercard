@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2019 Mastercard
+ * Copyright (c) 2016-2021 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,58 +17,81 @@
 
 namespace OnTap\MasterCard\Block\Adminhtml\Order\View\Info;
 
-class Details extends \Magento\Framework\View\Element\Template
+use Magento\Framework\View\Element\Template;
+
+class Details extends Template
 {
     /**
-     * @var \Magento\Framework\Registry
+     * Implement in subclasses
+     * @var array
      */
-    protected $registry;
+    protected $applicableMethods = [];
 
     /**
-     * @param \Magento\Backend\Block\Template\Context $context
-     * @param \Magento\Framework\Registry $registry
+     * @var \Magento\Framework\Escaper
+     */
+    protected $escaper;
+
+    /**
+     * @var \Magento\Sales\Model\Order
+     */
+    protected $order = null;
+
+    /**
+     * AchDetails constructor.
+     * @param Template\Context $context
      * @param array $data
      */
-    public function __construct(
-        \Magento\Backend\Block\Template\Context $context,
-        \Magento\Framework\Registry $registry,
-        array $data = []
-    ) {
-        $this->registry = $registry;
+    public function __construct(Template\Context $context, array $data = [])
+    {
+        $this->escaper = $context->getEscaper();
         parent::__construct($context, $data);
     }
 
     /**
-     * @return \Magento\Sales\Model\Order\Payment
+     * @return \Magento\Sales\Model\Order
+     */
+    public function getOrder()
+    {
+        if ($this->order === null) {
+            /** @var \Magento\Sales\Block\Adminhtml\Order\View\Tab\Info $parent */
+            $parent = $this->getLayout()->getBlock('order_tab_info');
+            $this->order = $parent->getOrder();
+        }
+        return $this->order;
+    }
+
+    /**
+     * @return \Magento\Sales\Api\Data\OrderPaymentInterface
      */
     public function getPayment()
     {
-        $order = $this->registry->registry('current_order');
-        return $order->getPayment();
+        return $this->getOrder()->getPayment();
     }
 
     /**
-     * @return array|null
-     */
-    public function getRiskData()
-    {
-        return $this->getPayment()->getAdditionalInformation('risk');
-    }
-
-    /**
-     * @param string|array $data
+     * @param array|string $data
      * @param string|null $field
-     * @return string|null
+     * @return array|string
      */
     public function safeValue($data, $field = null)
     {
         if ($field === null) {
-            return !empty($data) ? $this->escapeHtml($data) : '-';
+            return !empty($data) ? $this->escaper->escapeHtml($data) : '-';
         }
         if (is_array($data)) {
-            return isset($data[$field]) ? $this->escapeHtml($data[$field]) : '-';
+            return isset($data[$field]) ? $this->escaper->escapeHtml($data[$field]) : '-';
         }
         return '-';
+    }
+
+    /**
+     * @return array|string|null
+     */
+    public function getRiskData()
+    {
+        $info = $this->getPayment()->getAdditionalInformation();
+        return $info['risk'] ?? null;
     }
 
     /**
@@ -76,10 +99,7 @@ class Details extends \Magento\Framework\View\Element\Template
      */
     public function toHtml()
     {
-        if (!in_array($this->getPayment()->getMethod(), [
-            \OnTap\MasterCard\Model\Ui\Hpf\ConfigProvider::METHOD_CODE,
-            \OnTap\MasterCard\Model\Ui\Hosted\ConfigProvider::METHOD_CODE,
-        ])) {
+        if (!in_array($this->getPayment()->getMethod(), $this->applicableMethods)) {
             return '';
         }
         return parent::toHtml();

@@ -1,0 +1,56 @@
+<!--
+  ~ Copyright (c) 2016-2021 Mastercard
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<fieldset data-bind="attr: {class: 'fieldset payment items ach ' + getCode(), id: 'payment_form_' + getCode()}">
+    <div class="field required">
+        <label for="ach-account-type" class="label">
+            <span><!-- ko i18n: 'Account Type'--><!-- /ko --></span>
+        </label>
+        <div class="control">
+            <select id="ach-account-type">
+                <option value="CONSUMER_SAVINGS"><!-- ko i18n: 'Consumer Savings Account'--><!-- /ko --></option>
+                <option value="CONSUMER_CHECKING" selected><!-- ko i18n: 'Consumer Checking Account'--><!-- /ko --></option>
+                <option value="CORPORATE_CHECKING"><!-- ko i18n: 'Business Checking Account'--><!-- /ko --></option>
+            </select>
+        </div>
+    </div>
+    <div class="field required">
+        <label for="ach-account-holder" class="label">
+            <span><!-- ko i18n: 'Bank Account Holder'--><!-- /ko --></span>
+        </label>
+        <div class="control">
+            <input type="number" id="ach-account-holder" class="input-text" value="" readonly />
+            <div class="field-error" id="ach-account-holder-error" data-bind="visible: false">This is a required field.</div>
+        </div>
+    </div>
+    <div class="field number required">
+        <label for="ach-account-number" class="label">
+            <span><!-- ko i18n: 'Bank Account Number'--><!-- /ko --></span>
+        </label>
+        <div class="control">
+            <input type="number" id="ach-account-number" class="input-text" value="" readonly />
+            <div class="field-error" id="ach-account-number-error" data-bind="visible: false">This is a required field.</div>
+        </div>
+    </div>
+    <div class="field number required">
+        <label for="ach-routing-number" class="label">
+            <span><!-- ko i18n: 'Routing Number'--><!-- /ko --></span>
+        </label>
+        <div class="control">
+            <input type="number" id="ach-routing-number" class="input-text" value="" readonly />
+            <div class="field-error" id="ach-routing-number-error" data-bind="visible: false">This is a required field.</div>
+        </div>
+    </div>
+</fieldset>
