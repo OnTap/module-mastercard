@@ -41,6 +41,11 @@ class TransferFactory implements TransferFactoryInterface
     protected $transferBuilder;
 
     /**
+     * @var array
+     */
+    protected $request = [];
+
+    /**
      * TransferFactory constructor.
      * @param ConfigInterface $config
      * @param TransferBuilder $transferBuilder
@@ -106,7 +111,7 @@ class TransferFactory implements TransferFactoryInterface
     protected function getUri(PaymentDataObjectInterface $payment)
     {
         $orderId = $payment->getOrder()->getOrderIncrementId();
-        $txnId = $this->createTxnId($payment);
+        $txnId = $this->request['transaction']['reference'] ?? $this->createTxnId($payment);
         $storeId = $payment->getOrder()->getStoreId();
 
         return $this->getGatewayUri($storeId) . 'order/' . $orderId . '/transaction/' . $txnId;
@@ -119,6 +124,7 @@ class TransferFactory implements TransferFactoryInterface
      */
     public function create(array $request, PaymentDataObjectInterface $payment)
     {
+        $this->request = $request;
         $storeId = $payment->getOrder()->getStoreId();
 
         return $this->transferBuilder

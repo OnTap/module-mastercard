@@ -18,6 +18,7 @@
 namespace OnTap\MasterCard\Controller\Webhook;
 
 use Exception;
+use InvalidArgumentException;
 use Magento\Framework\Api\FilterBuilder;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\App\Action\Action;
@@ -31,6 +32,7 @@ use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Payment\Gateway\Command\CommandPoolInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
 use Magento\Payment\Model\InfoInterface;
@@ -40,7 +42,6 @@ use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Api\TransactionRepositoryInterface;
 use OnTap\MasterCard\Gateway\Config\Config;
 use Psr\Log\LoggerInterface;
-use Magento\Framework\Serialize\Serializer\Json;
 
 class Response extends Action implements CsrfAwareActionInterface
 {
@@ -143,8 +144,8 @@ class Response extends Action implements CsrfAwareActionInterface
         $this->logger = $logger;
         $this->configProviders = $configProviders;
         $this->paymentDataObjectFactory = $paymentDataObjectFactory;
-        $this->commandPool = $commandPool;
         $this->json = $json;
+        $this->commandPool = $commandPool;
     }
 
     /**
@@ -227,6 +228,7 @@ class Response extends Action implements CsrfAwareActionInterface
 
     /**
      * @return array
+     * @throws InvalidArgumentException
      */
     protected function getData()
     {

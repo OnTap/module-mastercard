@@ -17,6 +17,7 @@
 
 namespace OnTap\MasterCard\Gateway\Request;
 
+use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\ConfigInterface;
 
@@ -28,6 +29,11 @@ class ExtraDataBuilder implements BuilderInterface
     protected $config;
 
     /**
+     * @var Json
+     */
+    private $json;
+
+    /**
      * @var string
      */
     protected $field;
@@ -37,10 +43,14 @@ class ExtraDataBuilder implements BuilderInterface
      * @param ConfigInterface $config
      * @param string $field
      */
-    public function __construct(ConfigInterface $config, $field = '')
-    {
+    public function __construct(
+        ConfigInterface $config,
+        Json $json,
+        $field = ''
+    ) {
         $this->config = $config;
         $this->field = $field;
+        $this->json = $json;
     }
 
     /**
@@ -52,6 +62,6 @@ class ExtraDataBuilder implements BuilderInterface
     public function build(array $buildSubject)
     {
         $value  = $this->config->getValue($this->field);
-        return \Zend_Json::decode($value);
+        return $this->json->unserialize($value);
     }
 }
