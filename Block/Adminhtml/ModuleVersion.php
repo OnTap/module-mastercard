@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2019 Mastercard
+ * Copyright (c) 2016-2021 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ use Magento\Backend\Block\Context;
 use Magento\Framework\Component\ComponentRegistrarInterface;
 use Magento\Framework\Filesystem\Directory\ReadFactory;
 use Magento\Framework\Serialize\Serializer\Json;
-use Zend_Json;
 use Exception;
 
 class ModuleVersion extends Heading
