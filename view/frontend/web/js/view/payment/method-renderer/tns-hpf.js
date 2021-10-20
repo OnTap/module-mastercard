@@ -182,6 +182,10 @@ define(
                 this.isPlaceOrderActionAllowed(false);
                 this.buttonTitle(this.buttonTitleDisabled);
 
+                // If this is executed _prior_ to the `hpf-cc-form.html` template having been loaded and rendered,
+                // the inputs will not currently exist and hence will not function as intended. It is easy enough
+                // to confirm when this occurs as those inputs have a `readonly` attribute so they won't accept any input.
+
                 PaymentSession.configure({
                     fields: this.getCardFields(),
                     frameEmbeddingMitigation: ['x-frame-options'],

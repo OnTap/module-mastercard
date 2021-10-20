@@ -36,7 +36,23 @@
             'transparent':{
                 'context': context()
             }, 'validation':[]}">
+
+            <!--
+                One _potential_ solution to the bug is to add an `afterRender` callback to the template binding. You will have
+                to also swap out for a non-virtual element to be able to attach this binding.
+
+                For example:
+                `<div data-bind="template: { name: 'OnTap_MasterCard/payment/hpf-cc-form' }, afterRender: loadAdapter"></div>`
+
+                This would effectively guarantee that the inputs have been rendered prior to the required JS triggering.
+
+                Disclaimer: This is only an example suggestion, I do not have intimate knowledge of the inner workings of this module.
+                Additionally, the `paymentAdapterLoaded()` method looks like it may be more suitable than the `loadAdapter()` method,
+                but I am not certain if the required JS in `config.component_url` will still function correctly with multiple calls to
+                `PaymentSession.configure(...)`.
+            -->
             <!-- ko template: 'OnTap_MasterCard/payment/hpf-cc-form' --><!-- /ko -->
+
             <!-- ko if: (isVaultEnabled())-->
             <div class="field choice">
                 <input type="checkbox"

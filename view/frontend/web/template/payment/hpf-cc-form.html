@@ -14,6 +14,17 @@
   ~ limitations under the License.
   -->
 
+<!--
+    BUG: Race condition loading JS and templates.
+
+    There is no guarantee that the inputs in this template have been rendered _prior_ to the required JS being triggered in `tns-hpf.js::paymentAdapterLoaded()`,
+    it all depends on whether or not the payment adapter was loaded first or this template.
+
+    This is trivial to simulate by adding a rule to `pub/static/.htaccess` that rewrites this file to a version of `pub/static.php` with a call to `sleep($seconds)` at the top.
+    For example, adding the rule `RewriteRule ^(.*)tns-hpf.html ../static-with-delay.php?resource=$0 [L]` immediately after `RewriteRule ^version.+?/(.+)$ $1 [L]` would work acceptably.
+    Obviously you would also need to create the relevant `pub/static-with-delay.php` file.
+-->
+
 <fieldset data-bind="attr: {class: 'fieldset payment items ccard ' + getCode(), id: 'payment_form_' + getCode()}">
     <div class="field number required">
         <label data-bind="attr: {for: getCode() + '_cc_number'}" class="label">
