@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2019 Mastercard
+ * Copyright (c) 2016-2021 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ use Magento\Framework\Data\Form\Element\AbstractElement;
 use Magento\Backend\Block\Context;
 use Magento\Framework\Component\ComponentRegistrarInterface;
 use Magento\Framework\Filesystem\Directory\ReadFactory;
-use Zend_Json;
+use Magento\Framework\Serialize\Serializer\Json;
 use Exception;
 
 class ModuleVersion extends Heading
@@ -46,22 +46,30 @@ class ModuleVersion extends Heading
     protected $context;
 
     /**
+     * @var Json
+     */
+    private $json;
+
+    /**
      * ModuleVersion constructor.
      * @param Context $context
      * @param ComponentRegistrarInterface $componentRegistrar
      * @param ReadFactory $readFactory
+     * @param Json $json
      * @param array $data
      */
     public function __construct(
         Context $context,
         ComponentRegistrarInterface $componentRegistrar,
         ReadFactory $readFactory,
+        Json $json,
         array $data = []
     ) {
         parent::__construct($context, $data);
         $this->context = $context;
         $this->componentRegistrar = $componentRegistrar;
         $this->readFactory = $readFactory;
+        $this->json = $json;
     }
 
     /**
@@ -83,7 +91,7 @@ class ModuleVersion extends Heading
 
             try {
                 $jsonData = $dir->readFile('composer.json');
-                $data = Zend_Json::decode($jsonData);
+                $data = $this->json->unserialize($jsonData);
             } catch (Exception $e) {
                 $this->_logger->error('Module read error', [
                     'exception' => $e

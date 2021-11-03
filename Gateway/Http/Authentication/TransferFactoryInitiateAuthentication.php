@@ -29,7 +29,7 @@ class TransferFactoryInitiateAuthentication extends TransferFactory
     protected function getUri(PaymentDataObjectInterface $payment)
     {
         $orderId = $payment->getOrder()->getOrderIncrementId();
-        $transactionId = $payment->getPayment()->getAdditionalInformation('auth_init_transaction_id');
+        $transactionId = $this->request['transaction']['reference'] ?? $payment->getPayment()->getAdditionalInformation('auth_init_transaction_id');
         if (!$transactionId || explode('-', $transactionId)[0] !== $orderId) {
             $transactionId = $this->createTxnId($payment);
         }

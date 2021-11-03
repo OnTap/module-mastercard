@@ -17,6 +17,7 @@
 
 namespace OnTap\MasterCard\Model\Ui\Adminhtml;
 
+use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Vault\Api\Data\PaymentTokenInterface;
 use Magento\Vault\Model\Ui\TokenUiComponentInterface;
 use Magento\Vault\Model\Ui\TokenUiComponentProviderInterface;
@@ -44,29 +45,37 @@ class TokenUiComponentProvider implements TokenUiComponentProviderInterface
     protected $config;
 
     /**
+     * @var Json
+     */
+    private $json;
+
+    /**
      * @param ConfigFactory $configFactory
      * @param TokenUiComponentInterfaceFactory $componentFactory
      * @param UrlInterface $urlBuilder
+     * @param Json $json
      */
     public function __construct(
         ConfigFactory $configFactory,
         TokenUiComponentInterfaceFactory $componentFactory,
-        UrlInterface $urlBuilder
+        UrlInterface $urlBuilder,
+        Json $json
     ) {
         $this->componentFactory = $componentFactory;
         $this->urlBuilder = $urlBuilder;
         $this->config = $configFactory->create();
+        $this->json = $json;
     }
 
     /**
      * @param PaymentTokenInterface $paymentToken
      * @return TokenUiComponentInterface
-     * @throws \Zend_Json_Exception
+     * @throws \InvalidArgumentException
      */
     public function getComponentForToken(PaymentTokenInterface $paymentToken)
     {
         $this->config->setMethodCode($paymentToken->getPaymentMethodCode());
-        $jsonDetails = \Zend_Json_Decoder::decode($paymentToken->getTokenDetails() ?: '{}', \Zend_Json::TYPE_ARRAY);
+        $jsonDetails = $this->json->unserialize($paymentToken->getTokenDetails() ?: '{}');
 
         // Check for merchant ID, if the token merchant ID does not match the payment extension merchant ID
         // then do not render the vault method in hand.

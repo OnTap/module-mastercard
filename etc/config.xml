@@ -33,7 +33,7 @@
                 <send_line_items>1</send_line_items>
                 <currency>USD</currency>
 
-                <api_version>58</api_version>
+                <api_version>61</api_version>
                 <api_gateway>api_na</api_gateway>
                 <api_eu>https://eu-gateway.mastercard.com/</api_eu>
                 <api_as>https://ap-gateway.mastercard.com/</api_as>
@@ -71,7 +71,7 @@
                 <send_line_items>1</send_line_items>
                 <currency>USD</currency>
 
-                <api_version>58</api_version>
+                <api_version>61</api_version>
                 <api_gateway>api_na</api_gateway>
                 <api_eu>https://eu-gateway.mastercard.com/</api_eu>
                 <api_as>https://ap-gateway.mastercard.com/</api_as>

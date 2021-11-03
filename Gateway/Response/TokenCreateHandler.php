@@ -22,6 +22,7 @@ use DateTime;
 use DateTimeZone;
 use Exception;
 use InvalidArgumentException;
+use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Payment\Model\InfoInterface;
@@ -31,7 +32,6 @@ use Magento\Vault\Api\Data\PaymentTokenFactoryInterface;
 use Magento\Vault\Api\Data\PaymentTokenInterface;
 use Magento\Vault\Model\VaultPaymentInterface;
 use OnTap\MasterCard\Gateway\Config\ConfigInterface;
-use Zend_Json;
 
 class TokenCreateHandler implements HandlerInterface
 {
@@ -56,22 +56,30 @@ class TokenCreateHandler implements HandlerInterface
     protected $paymentExtensionFactory;
 
     /**
+     * @var Json
+     */
+    private $json;
+
+    /**
      * TokenCreateHandler constructor.
      * @param ConfigInterface $config
      * @param VaultPaymentInterface $vaultPayment
      * @param PaymentTokenFactoryInterface $paymentTokenFactory
      * @param OrderPaymentExtensionInterfaceFactory $paymentExtensionFactory
+     * @param Json $json
      */
     public function __construct(
         ConfigInterface $config,
         VaultPaymentInterface $vaultPayment,
         PaymentTokenFactoryInterface $paymentTokenFactory,
-        OrderPaymentExtensionInterfaceFactory $paymentExtensionFactory
+        OrderPaymentExtensionInterfaceFactory $paymentExtensionFactory,
+        Json $json
     ) {
         $this->config = $config;
         $this->vaultPayment = $vaultPayment;
         $this->paymentTokenFactory = $paymentTokenFactory;
         $this->paymentExtensionFactory = $paymentExtensionFactory;
+        $this->json = $json;
     }
 
     /**
@@ -101,8 +109,8 @@ class TokenCreateHandler implements HandlerInterface
      */
     private function convertDetailsToJSON($details)
     {
-        $json = Zend_Json::encode($details);
-        return $json ? $json : '{}';
+        $json = $this->json->serialize($details);
+        return $json ?: '{}';
     }
 
     /**
