@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Mastercard
+ * Copyright (c) 2016-2021 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,8 @@ define(
         'Magento_Checkout/js/action/set-payment-information',
         'uiLayout',
         'Magento_Checkout/js/model/full-screen-loader',
-        'Magento_Vault/js/view/payment/vault-enabler'
+        'Magento_Vault/js/view/payment/vault-enabler',
+        'OnTap_MasterCard/js/lib/postponed-adapter-loader-factory',
     ],
     function (
         $,
@@ -33,7 +34,8 @@ define(
         setPaymentInformationAction,
         layout,
         fullScreenLoader,
-        VaultEnabler
+        VaultEnabler,
+        postponedAdapterLoaderFactory
     ) {
         'use strict';
 
@@ -53,12 +55,14 @@ define(
             },
             placeOrderHandler: null,
             validateHandler: null,
+            adapterLoader: null,
             sessionId: null,
 
             initialize: function () {
                 this._super();
                 this.vaultEnabler = VaultEnabler();
                 this.vaultEnabler.setPaymentCode(this.getVaultCode());
+                this.adapterLoader = postponedAdapterLoaderFactory(this.loadAdapter.bind(this))
 
                 return this;
             },
@@ -159,7 +163,7 @@ define(
 
             onActiveChange: function (isActive) {
                 if (isActive && !this.adapterLoaded()) {
-                    this.loadAdapter();
+                    this.setIsActivated();
                 }
             },
 
@@ -330,6 +334,14 @@ define(
 
             threeDSecureCancelled: function () {
                 this.isPlaceOrderActionAllowed(true);
+            },
+
+            setIsRendered: function () {
+                this.adapterLoader.setIsRendered();
+            },
+
+            setIsActivated: function () {
+                this.adapterLoader.setIsActivated();
             }
         });
     }
