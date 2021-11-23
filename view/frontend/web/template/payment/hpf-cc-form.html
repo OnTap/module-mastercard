@@ -14,7 +14,7 @@
   ~ limitations under the License.
   -->
 
-<fieldset data-bind="attr: {class: 'fieldset payment items ccard ' + getCode(), id: 'payment_form_' + getCode()}">
+<fieldset data-bind="afterRender: setIsCcFormRendered, attr: {class: 'fieldset payment items ccard ' + getCode(), id: 'payment_form_' + getCode()}">
     <div class="field number required">
         <label data-bind="attr: {for: getCode() + '_cc_number'}" class="label">
             <span><!-- ko i18n: 'Credit Card Number'--><!-- /ko --></span>

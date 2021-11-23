@@ -24,7 +24,7 @@ define(
         'uiLayout',
         'Magento_Checkout/js/model/full-screen-loader',
         'Magento_Vault/js/view/payment/vault-enabler',
-        'OnTap_MasterCard/js/lib/postponed-adapter-loader-factory',
+        'OnTap_MasterCard/js/lib/postponed-adapter-activator-factory',
     ],
     function (
         $,
@@ -35,7 +35,7 @@ define(
         layout,
         fullScreenLoader,
         VaultEnabler,
-        postponedAdapterLoaderFactory
+        postponedAdapterActivatorFactory
     ) {
         'use strict';
 
@@ -44,6 +44,7 @@ define(
                 template: 'OnTap_MasterCard/payment/tns-hpf',
                 active: false,
                 adapterLoaded: false,
+                showCcForm: false,
                 buttonTitle: null,
                 buttonTitleEnabled: $t('Place Order'),
                 buttonTitleDisabled: $t('Please wait...'),
@@ -51,18 +52,18 @@ define(
                     onActiveChange: 'active'
                 },
                 creditCardExpYear: '',
-                creditCardExpMonth: ''
+                creditCardExpMonth: '',
             },
             placeOrderHandler: null,
             validateHandler: null,
-            adapterLoader: null,
+            adapterActivator: null,
             sessionId: null,
 
             initialize: function () {
                 this._super();
                 this.vaultEnabler = VaultEnabler();
                 this.vaultEnabler.setPaymentCode(this.getVaultCode());
-                this.adapterLoader = postponedAdapterLoaderFactory(this.loadAdapter.bind(this))
+                this.adapterActivator = postponedAdapterActivatorFactory(this.activatePaymentAdapter.bind(this))
 
                 return this;
             },
@@ -86,7 +87,8 @@ define(
                         'adapterLoaded',
                         'creditCardExpYear',
                         'creditCardExpMonth',
-                        'buttonTitle'
+                        'buttonTitle',
+                        'showCcForm',
                     ]);
 
                 this.buttonTitle(this.buttonTitleDisabled);
@@ -163,7 +165,7 @@ define(
 
             onActiveChange: function (isActive) {
                 if (isActive && !this.adapterLoaded()) {
-                    this.setIsActivated();
+                    this.loadAdapter();
                 }
             },
 
@@ -175,14 +177,18 @@ define(
 
             loadAdapter: function () {
                 var config = this.getConfig();
-                require([config.component_url], this.paymentAdapterLoaded.bind(this));
+                require(
+                    [config.component_url],
+                    this.setIsAdapterLoaded.bind(this),
+                    this.paymentAdapterLoadFailed.bind(this)
+                );
             },
 
             isCheckoutDisabled: function () {
                 return !this.adapterLoaded() || !this.isPlaceOrderActionAllowed();
             },
 
-            paymentAdapterLoaded: function () {
+            activatePaymentAdapter: function () {
                 this.isPlaceOrderActionAllowed(false);
                 this.buttonTitle(this.buttonTitleDisabled);
 
@@ -191,12 +197,22 @@ define(
                     frameEmbeddingMitigation: ['x-frame-options'],
                     callbacks: {
                         initialized: function () {
+                            this.showCcForm(true);
                             this.adapterLoaded(true);
                             this.isPlaceOrderActionAllowed(true);
                         }.bind(this),
                         formSessionUpdate: this.formSessionUpdate.bind(this)
                     }
                 }, this.getId());
+            },
+
+            paymentAdapterLoadFailed: function() {
+                this.messageContainer.addErrorMessage({
+                    message: $t('It is impossible to continue with this Payment Method. Please try again later.')
+                });
+                this.buttonTitle(this.buttonTitleEnabled);
+                this.adapterLoaded(false);
+                this.isPlaceOrderActionAllowed(false);
             },
 
             formSessionUpdate: function (response) {
@@ -336,12 +352,12 @@ define(
                 this.isPlaceOrderActionAllowed(true);
             },
 
-            setIsRendered: function () {
-                this.adapterLoader.setIsRendered();
+            setIsCcFormRendered: function () {
+                this.adapterActivator.setIsFormRendered();
             },
 
-            setIsActivated: function () {
-                this.adapterLoader.setIsActivated();
+            setIsAdapterLoaded: function () {
+                this.adapterActivator.setIsAdapterLoaded();
             }
         });
     }
