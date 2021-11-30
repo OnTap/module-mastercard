@@ -15,25 +15,25 @@
  */
 /*global define*/
 define(['jquery'], function ($) {
-    return function (loadAdapterCallback) {
-        var isRenderedPromise = $.Deferred();
-        var isActivatedPromise = $.Deferred();
+    return function (activateAdapterCallback) {
+        var isFormRenderedPromise = $.Deferred();
+        var isAdapterLoadedPromise = $.Deferred();
 
         $.when(
-            isRenderedPromise,
-            isActivatedPromise
-        ).then(loadAdapterCallback);
+            isFormRenderedPromise,
+            isAdapterLoadedPromise
+        ).then(activateAdapterCallback);
 
         return {
-            setIsRendered: function () {
-                if (isRenderedPromise.state() !== 'resolved') {
-                    isRenderedPromise.resolve();
+            setIsFormRendered: function () {
+                if (isFormRenderedPromise.state() !== 'resolved') {
+                    isFormRenderedPromise.resolve();
                 }
             },
 
-            setIsActivated: function () {
-                if (isActivatedPromise.state() !== 'resolved') {
-                    isActivatedPromise.resolve()
+            setIsAdapterLoaded: function () {
+                if (isAdapterLoadedPromise.state() !== 'resolved') {
+                    isAdapterLoadedPromise.resolve()
                 }
             },
         }

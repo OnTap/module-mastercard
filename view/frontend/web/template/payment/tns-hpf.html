@@ -14,7 +14,7 @@
   ~ limitations under the License.
   -->
 
-<div class="payment-method" data-bind="afterRender: setIsRendered,  css: {'_active': isActive()}">
+<div class="payment-method" data-bind="css: {'_active': isActive()}">
     <div class="payment-method-title field choice">
         <input type="radio"
                name="payment[method]"
@@ -32,10 +32,11 @@
             <!--/ko-->
         </div>
 
-        <form class="form" id="co-transparent-form" action="#" method="post" data-bind="mageInit: {
-            'transparent':{
-                'context': context()
-            }, 'validation':[]}">
+        <form class="form" id="co-transparent-form" action="#" method="post"
+              data-bind="css: {'hidden': !showCcForm()}, mageInit: {
+                'transparent':{
+                    'context': context()
+                }, 'validation':[]}">
             <!-- ko template: 'OnTap_MasterCard/payment/hpf-cc-form' --><!-- /ko -->
             <!-- ko if: (isVaultEnabled())-->
             <div class="field choice">
