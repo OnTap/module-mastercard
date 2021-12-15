@@ -52,7 +52,7 @@ define(
                     onActiveChange: 'active'
                 },
                 creditCardExpYear: '',
-                creditCardExpMonth: '',
+                creditCardExpMonth: ''
             },
             placeOrderHandler: null,
             validateHandler: null,
@@ -88,7 +88,7 @@ define(
                         'creditCardExpYear',
                         'creditCardExpMonth',
                         'buttonTitle',
-                        'showCcForm',
+                        'showCcForm'
                     ]);
 
                 this.buttonTitle(this.buttonTitleDisabled);
@@ -114,15 +114,15 @@ define(
                 this.placeOrderHandler = handler;
             },
 
-            getCvvImageHtml: function() {
+            getCvvImageHtml: function () {
                 return '<img src="' + this.getCvvImageUrl()
                     + '" alt="' + $t('Card Verification Number Visual Reference')
                     + '" title="' + $t('Card Verification Number Visual Reference')
                     + '" />';
             },
 
-            getCcMonthsValues: function() {
-                return _.map(this.getCcMonths(), function(value, key) {
+            getCcMonthsValues: function () {
+                return _.map(this.getCcMonths(), function (value, key) {
                     return {
                         'value': key,
                         'month': value
@@ -130,8 +130,8 @@ define(
                 });
             },
 
-            getCcYearsValues: function() {
-                return _.map(this.getCcYears(), function(value, key) {
+            getCcYearsValues: function () {
+                return _.map(this.getCcYears(), function (value, key) {
                     return {
                         'value': key,
                         'year': value
@@ -139,19 +139,19 @@ define(
                 });
             },
 
-            getCcMonths: function() {
+            getCcMonths: function () {
                 return window.checkoutConfig.payment.ccform.months[this.getCode()];
             },
 
-            getCcYears: function() {
+            getCcYears: function () {
                 return window.checkoutConfig.payment.ccform.years[this.getCode()];
             },
 
-            getCvvImageUrl: function() {
+            getCvvImageUrl: function () {
                 return window.checkoutConfig.payment.ccform.cvvImageUrl[this.getCode()];
             },
 
-            hasVerification: function() {
+            hasVerification: function () {
                 return window.checkoutConfig.payment.ccform.hasVerification[this.getCode()];
             },
 
@@ -206,7 +206,7 @@ define(
                 }, this.getId());
             },
 
-            paymentAdapterLoadFailed: function() {
+            paymentAdapterLoadFailed: function () {
                 this.messageContainer.addErrorMessage({
                     message: $t('It is impossible to continue with this Payment Method. Please try again later.')
                 });
@@ -245,7 +245,7 @@ define(
                     if (this.is3DsEnabled() || this.is3Ds2Enabled()) {
                         action = setPaymentInformationAction(this.messageContainer, this.getData());
 
-                        $.when(action).done($.proxy(function() {
+                        $.when(action).done($.proxy(function () {
                             this.delegate(this.is3Ds2Enabled() ? 'threeDSecureV2Start' : 'threeDSecureOpen', this);
                         }, this)).fail(
                             $.proxy(this.threeDSecureCheckFailed, this)
@@ -309,8 +309,8 @@ define(
                 this._super();
 
                 layout(this.createChildrenComponents([
-                    { name: 'threedsecure', component: 'threedsecure' },
-                    { name: 'threedsecureV2', component: 'threedsecure-v2' }
+                    {name: 'threedsecure', component: 'threedsecure'},
+                    {name: 'threedsecureV2', component: 'threedsecure-v2'}
                 ]));
 
                 return this;
