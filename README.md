@@ -18,3 +18,7 @@ Magento 2 Mastercard Payment Gateway Service module supports following list of f
 - 3DSv1
 - 3DSv2
 - ACH
+
+## Documentation
+
+The official documentation for this module is available on: [http://ontap.wiki/magento-mastercard-payment-gateway-services/](http://ontap.wiki/magento-mastercard-payment-gateway-services/)
