@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2020 Mastercard
+ * Copyright (c) 2016-2022 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,9 @@ class DeviceBuilder implements BuilderInterface
     {
         return [
             'device' => [
+                'browser' => $this->readBrowser($buildSubject),
                 'browserDetails' => $this->readBrowserDetails($buildSubject),
-                'ipAddress' => $this->readRemoteIp($buildSubject)
+                'ipAddress' => $this->readRemoteIp($buildSubject),
             ]
         ];
     }
@@ -65,5 +66,20 @@ class DeviceBuilder implements BuilderInterface
         }
 
         return $subject['remote_ip'];
+    }
+
+    /**
+     * Reads browser from subject
+     *
+     * @param array $subject
+     * @return string
+     */
+    private function readBrowser(array $subject)
+    {
+        if (!isset($subject['browser'])) {
+            throw new InvalidArgumentException('Browser should be provided');
+        }
+
+        return $subject['browser'];
     }
 }

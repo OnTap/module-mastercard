@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020 Mastercard
+ * Copyright (c) 2016-2022 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,10 +25,14 @@ define(
         'use strict';
 
         return {
-            apiUrl: '/tns/threedsecureV2/initiateAuthentication',
+            getConfig: function () {
+                return window.checkoutConfig.payment['tns_hpf'];
+            },
             execute: function (messageContainer) {
+                var config;
 
-                return $.post(this.apiUrl, {})
+                config = this.getConfig();
+                return $.post(config.threedsecure_v2_initiate_authentication_url, {})
                     .fail(
                         function (response) {
                             errorProcessor.process(response, messageContainer);

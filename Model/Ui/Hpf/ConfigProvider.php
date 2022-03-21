@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2019 Mastercard
+ * Copyright (c) 2016-2022 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ class ConfigProvider implements ConfigProviderInterface
      */
     public function __construct(ConfigInterface $config, UrlInterface $urlBuilder)
     {
-        $this->config = $config;
+        $this->config     = $config;
         $this->urlBuilder = $urlBuilder;
     }
 
@@ -58,20 +58,28 @@ class ConfigProvider implements ConfigProviderInterface
         return [
             'payment' => [
                 self::METHOD_CODE => [
-                    'merchant_username' => $this->config->getMerchantId(),
-                    'component_url' => $this->config->getComponentUrl(),
-                    'debug' => (bool) $this->config->getValue('debug'),
-                    'three_d_secure_version' => (int) $this->config->getValue('three_d_secure'),
-                    'ccVaultCode' => static::CC_VAULT_CODE,
-                    'check_url' => $this->urlBuilder->getUrl(
+                    'merchant_username'      => $this->config->getMerchantId(),
+                    'component_url'          => $this->config->getComponentUrl(),
+                    'debug'                  => (bool)$this->config->getValue('debug'),
+                    'three_d_secure_version' => (int)$this->config->getValue('three_d_secure'),
+                    'ccVaultCode'            => static::CC_VAULT_CODE,
+                    'check_url'              => $this->urlBuilder->getUrl(
                         'tns/threedsecure/check',
                         [
-                            'method' => 'hpf',
-                            '_secure' => 1
+                            'method'  => 'hpf',
+                            '_secure' => 1,
                         ]
                     ),
-                ]
-            ]
+                    'threedsecure_v2_initiate_authentication_url' => $this->urlBuilder->getUrl(
+                        'tns/threedsecureV2/initiateAuthentication',
+                        ['_secure' => 1]
+                    ),
+                    'threedsecure_v2_authenticate_payer_url'      => $this->urlBuilder->getUrl(
+                        'tns/threedsecureV2/authenticatePayer',
+                        ['_secure' => 1]
+                    ),
+                ],
+            ],
         ];
     }
 }

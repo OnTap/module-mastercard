@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [103.7.1] - 2022-03-11
+### Fixed
+- EMV 3DS doesn't work if Website Code is used in the Base URL
+- EMV 3DS doesn't work if "device.browser" is the required parameter for 3DS validation rules
+
+
 ## [103.7.0] - 2021-10-19
 ### Changed
 - Add support for the "Enforce Unique Order Reference" and "Enforce Unique Merchant Transaction Reference" gateway features

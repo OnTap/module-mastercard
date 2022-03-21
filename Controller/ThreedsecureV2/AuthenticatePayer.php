@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2020 Mastercard
+ * Copyright (c) 2016-2022 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,7 +105,8 @@ class AuthenticatePayer extends Action implements HttpPostActionInterface
                     'payment' => $paymentDataObject,
                     'amount' => $quote->getBaseGrandTotal(),
                     'remote_ip' => $quote->getRemoteIp(),
-                    'browserDetails' => $this->getRequest()->getParam('browserDetails')
+                    'browser' => $this->getRequest()->getHeader('User-Agent'),
+                    'browserDetails' => $this->getRequest()->getParam('browserDetails'),
                 ]);
 
             $payment->save();
