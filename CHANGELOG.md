@@ -1,10 +1,16 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [103.7.1] - 2022-03-11
+## [103.7.2] - 2022-03-11
 ### Fixed
 - EMV 3DS doesn't work if Website Code is used in the Base URL
 - EMV 3DS doesn't work if "device.browser" is the required parameter for 3DS validation rules
+
+
+## [103.7.1] - 2021-12-01
+### Fixed
+- Fixed a race condition issue for Hosted Payment Form rendering 
+- Fixed an issue for Hosted Payment Form when payment form is rendered even if the payment session JS fails to load entirely
 
 
 ## [103.7.0] - 2021-10-19
