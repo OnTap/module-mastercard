@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2019 Mastercard
+ * Copyright (c) 2016-2022 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ class GetTransferFactory extends TransferFactory
         $storeId = $payment->getOrder()->getStoreId();
         return $this->transferBuilder
             ->setMethod($this->httpMethod)
-            ->setHeaders(['Content-Type' => 'application/json;charset=UTF-8'])
+            ->setHeaders($this->getMethodHeaders())
             ->setBody([])
             ->setAuthUsername($this->getMerchantUsername($storeId))
             ->setAuthPassword($this->config->getMerchantPassword($storeId))

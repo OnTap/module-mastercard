@@ -29,6 +29,7 @@ use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Payment\Gateway\Command\CommandPool;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
+use OnTap\MasterCard\Exception\SystemBusy;
 use Psr\Log\LoggerInterface;
 
 class AuthenticatePayer extends Action implements HttpPostActionInterface
@@ -62,6 +63,7 @@ class AuthenticatePayer extends Action implements HttpPostActionInterface
 
     /**
      * Check constructor.
+     *
      * @param PaymentDataObjectFactory $paymentDataObjectFactory
      * @param JsonFactory $jsonFactory
      * @param CommandPool $commandPool
@@ -115,14 +117,21 @@ class AuthenticatePayer extends Action implements HttpPostActionInterface
                 'html' => $payment->getAdditionalInformation('auth_redirect_html'),
                 'action' => $payment->getAdditionalInformation('auth_payment_interaction') === 'REQUIRED'
                     ? 'challenge'
-                    : 'frictionless'
+                    : 'frictionless',
             ]);
+        } catch (SystemBusy $e) {
+            $jsonResult
+                ->setHttpResponseCode(503)
+                ->setData([
+                    'message' => $e->getMessage(),
+                    'retry' => true,
+                ]);
         } catch (Exception $e) {
             $this->logger->error((string)$e);
             $jsonResult
                 ->setHttpResponseCode(400)
                 ->setData([
-                    'message' => __('An error occurred while processing your transaction')
+                    'message' => __('An error occurred while processing your transaction'),
                 ]);
         }
 
