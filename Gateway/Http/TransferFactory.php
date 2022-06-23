@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2019 Mastercard
+ * Copyright (c) 2016-2022 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,6 @@ class TransferFactory implements TransferFactoryInterface
     protected $request = [];
 
     /**
-     * TransferFactory constructor.
      * @param ConfigInterface $config
      * @param TransferBuilder $transferBuilder
      */
@@ -60,6 +59,7 @@ class TransferFactory implements TransferFactoryInterface
 
     /**
      * @param int|null $storeId
+     *
      * @return string
      */
     protected function getMerchantUsername($storeId = null)
@@ -69,6 +69,7 @@ class TransferFactory implements TransferFactoryInterface
 
     /**
      * @param null $storeId
+     *
      * @return string
      */
     protected function apiVersionUri($storeId = null)
@@ -78,6 +79,7 @@ class TransferFactory implements TransferFactoryInterface
 
     /**
      * @param null $storeId
+     *
      * @return string
      */
     protected function merchantUri($storeId = null)
@@ -87,16 +89,19 @@ class TransferFactory implements TransferFactoryInterface
 
     /**
      * Generate a new transactionId
+     *
      * @param PaymentDataObjectInterface $payment
+     *
      * @return string
      */
     protected function createTxnId(PaymentDataObjectInterface $payment)
     {
-        return uniqid(sprintf('%s-', (string) $payment->getOrder()->getOrderIncrementId()));
+        return uniqid(sprintf('%s-', (string)$payment->getOrder()->getOrderIncrementId()));
     }
 
     /**
      * @param int|null $storeId
+     *
      * @return mixed
      */
     protected function getGatewayUri($storeId = null)
@@ -106,6 +111,7 @@ class TransferFactory implements TransferFactoryInterface
 
     /**
      * @param PaymentDataObjectInterface $payment
+     *
      * @return string
      */
     protected function getUri(PaymentDataObjectInterface $payment)
@@ -118,8 +124,19 @@ class TransferFactory implements TransferFactoryInterface
     }
 
     /**
+     * @return string[]
+     */
+    protected function getMethodHeaders(): array
+    {
+        return [
+            'Content-Type' => 'application/json;charset=UTF-8',
+        ];
+    }
+
+    /**
      * @param array $request
      * @param PaymentDataObjectInterface $payment
+     *
      * @return TransferInterface
      */
     public function create(array $request, PaymentDataObjectInterface $payment)
@@ -129,7 +146,7 @@ class TransferFactory implements TransferFactoryInterface
 
         return $this->transferBuilder
             ->setMethod($this->httpMethod)
-            ->setHeaders(['Content-Type' => 'application/json;charset=UTF-8'])
+            ->setHeaders($this->getMethodHeaders())
             ->setBody($request)
             ->setAuthUsername($this->getMerchantUsername($storeId))
             ->setAuthPassword($this->config->getMerchantPassword($storeId))

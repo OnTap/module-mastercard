@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2019 Mastercard
+ * Copyright (c) 2016-2022 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ use Magento\Payment\Gateway\Http\ClientInterface;
 use Magento\Payment\Gateway\Http\ConverterInterface;
 use Magento\Payment\Gateway\Http\TransferInterface;
 use Magento\Payment\Model\Method\Logger;
+use Zend_Http_Client_Adapter_Interface;
 
 class Rest implements ClientInterface
 {
@@ -66,28 +67,27 @@ class Rest implements ClientInterface
     private $responseFactory;
 
     /**
-     * @var \Zend_Http_Client_Adapter_Interface
+     * @var Zend_Http_Client_Adapter_Interface
      */
     private $adapter;
+
     /**
      * @var Json
      */
     private $json;
 
     /**
-     * Constructor
-     *
      * @param Logger $logger
      * @param ConverterInterface $converter
      * @param ResponseFactory $responseFactory
-     * @param \Zend_Http_Client_Adapter_Interface $adapter
+     * @param Zend_Http_Client_Adapter_Interface $adapter
      * @param Json $json
      */
     public function __construct(
         Logger $logger,
         ConverterInterface $converter,
         ResponseFactory $responseFactory,
-        \Zend_Http_Client_Adapter_Interface $adapter,
+        Zend_Http_Client_Adapter_Interface $adapter,
         Json $json
     ) {
         $this->logger = $logger;
@@ -102,10 +102,6 @@ class Rest implements ClientInterface
      */
     public function placeRequest(TransferInterface $transferObject)
     {
-        $log = [
-            'request' => json_encode($transferObject->getBody(), JSON_UNESCAPED_SLASHES),
-            'request_uri' => $transferObject->getUri()
-        ];
         $response = [];
 
         try {
@@ -116,9 +112,16 @@ class Rest implements ClientInterface
                 ]
             );
             $headers = [];
+
             foreach ($transferObject->getHeaders() as $name => $value) {
                 $headers[] = sprintf('%s: %s', $name, $value);
             }
+
+            $log = [
+                'request' => json_encode($transferObject->getBody(), JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES),
+                'request_uri' => $transferObject->getUri(),
+            ];
+
             $this->adapter->write(
                 $transferObject->getMethod(),
                 \Zend_Uri_Http::fromString($transferObject->getUri()),
