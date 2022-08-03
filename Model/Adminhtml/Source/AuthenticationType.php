@@ -18,23 +18,23 @@
 namespace OnTap\MasterCard\Model\Adminhtml\Source;
 
 use Magento\Framework\Data\OptionSourceInterface;
-use Magento\Payment\Model\Method\AbstractMethod;
+use OnTap\MasterCard\Gateway\Config\Config;
 
-class PaymentAction implements OptionSourceInterface
+class AuthenticationType implements OptionSourceInterface
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function toOptionArray()
     {
         return [
             [
-                'value' => AbstractMethod::ACTION_AUTHORIZE,
-                'label' => __('Authorize Only')
+                'value' => Config::AUTHENTICATION_TYPE_PASSWORD,
+                'label' => __('Username and Password')
             ],
             [
-                'value' => AbstractMethod::ACTION_AUTHORIZE_CAPTURE,
-                'label' => __('Authorize and Capture')
+                'value' => Config::AUTHENTICATION_TYPE_CERTIFICATE,
+                'label' => __('SSL Certificate')
             ]
         ];
     }

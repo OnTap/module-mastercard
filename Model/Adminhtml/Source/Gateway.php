@@ -43,8 +43,8 @@ class Gateway implements ArrayInterface
                 'label' => __('North America')
             ],
             [
-                'value' => Config::API_UAT,
-                'label' => __('UAT')
+                'value' => Config::API_INDIA,
+                'label' => __('India')
             ],
             [
                 'value' => Config::API_OTHER,

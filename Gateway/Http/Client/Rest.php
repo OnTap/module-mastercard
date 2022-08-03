@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 namespace OnTap\MasterCard\Gateway\Http\Client;
 
 use Magento\Framework\Serialize\Serializer\Json;
@@ -35,16 +36,16 @@ class Rest implements ClientInterface
     /**
      * HTTP request methods
      */
-    const GET     = 'GET';
-    const POST    = 'POST';
-    const PUT     = 'PUT';
-    const HEAD    = 'HEAD';
-    const DELETE  = 'DELETE';
-    const TRACE   = 'TRACE';
+    const GET = 'GET';
+    const POST = 'POST';
+    const PUT = 'PUT';
+    const HEAD = 'HEAD';
+    const DELETE = 'DELETE';
+    const TRACE = 'TRACE';
     const OPTIONS = 'OPTIONS';
     const CONNECT = 'CONNECT';
-    const MERGE   = 'MERGE';
-    const PATCH   = 'PATCH';
+    const MERGE = 'MERGE';
+    const PATCH = 'PATCH';
 
     /**
      * @const int Request timeout
@@ -106,10 +107,7 @@ class Rest implements ClientInterface
 
         try {
             $this->adapter->setOptions(
-                [
-                    CURLOPT_USERPWD => $transferObject->getAuthUsername() . ":" . $transferObject->getAuthPassword(),
-                    CURLOPT_TIMEOUT => self::REQUEST_TIMEOUT
-                ]
+                [CURLOPT_TIMEOUT => self::REQUEST_TIMEOUT] + $transferObject->getClientConfig()
             );
             $headers = [];
 
@@ -138,7 +136,7 @@ class Rest implements ClientInterface
             $this->logger->debug($log);
         }
 
-        return (array) $response;
+        return (array)$response;
     }
 
     /**

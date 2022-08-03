@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2019 Mastercard
+ * Copyright (c) 2016-2022 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,15 @@
 namespace OnTap\MasterCard\Model\Ui\Hosted;
 
 use Magento\Framework\UrlInterface;
-use Magento\Payment\Gateway\ConfigInterface;
 use Magento\Checkout\Model\ConfigProviderInterface;
+use OnTap\MasterCard\Gateway\Config\Config;
 
 class ConfigProvider implements ConfigProviderInterface
 {
     const METHOD_CODE = 'tns_hosted';
 
     /**
-     * @var ConfigInterface
+     * @var Config
      */
     private $config;
 
@@ -36,13 +36,13 @@ class ConfigProvider implements ConfigProviderInterface
     private $urlBuilder;
 
     /**
-     * Constructor
-     *
-     * @param ConfigInterface $config
+     * @param Config $config
      * @param UrlInterface $urlBuilder
      */
-    public function __construct(ConfigInterface $config, UrlInterface $urlBuilder)
-    {
+    public function __construct(
+        Config $config,
+        UrlInterface $urlBuilder
+    ) {
         $this->config = $config;
         $this->urlBuilder = $urlBuilder;
     }
@@ -59,8 +59,8 @@ class ConfigProvider implements ConfigProviderInterface
                 self::METHOD_CODE => [
                     'merchant_username' => $this->config->getMerchantId(),
                     'component_url' => $this->config->getComponentUrl(),
-                ]
-            ]
+                ],
+            ],
         ];
     }
 }

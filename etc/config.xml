@@ -38,9 +38,15 @@
                 <api_eu>https://eu-gateway.mastercard.com/</api_eu>
                 <api_as>https://ap-gateway.mastercard.com/</api_as>
                 <api_na>https://na-gateway.mastercard.com/</api_na>
-                <api_uat>https://secure.uat.tnspayments.com/</api_uat>
+                <api_in>https://in-gateway.mastercard.com/</api_in>
+                <api_eu_pki>https://pki.eu.gateway.mastercard.com/</api_eu_pki>
+                <api_as_pki>https://pki.ap.gateway.mastercard.com/</api_as_pki>
+                <api_na_pki>https://pki.na.gateway.mastercard.com/</api_na_pki>
+                <api_in_pki>https://pki.in.gateway.mastercard.com/</api_in_pki>
+
                 <custom_create_session_request_data>{}</custom_create_session_request_data>
 
+                <authentication_type>password</authentication_type>
                 <api_password backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
                 <webhook_secret backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
 
@@ -61,6 +67,7 @@
                 <can_capture_partial>1</can_capture_partial>
 
                 <paymentInfoKeys>gateway_code,txn_result,card_scheme,card_number,card_expiry_date,auth_code</paymentInfoKeys>
+                <sort_order>10</sort_order>
             </tns_hosted>
             <tns_hpf>
                 <active>0</active>
@@ -71,16 +78,21 @@
                 <send_line_items>1</send_line_items>
                 <currency>USD</currency>
 
-                <api_version>61</api_version>
+                <api_version>63</api_version>
                 <api_gateway>api_na</api_gateway>
                 <api_eu>https://eu-gateway.mastercard.com/</api_eu>
                 <api_as>https://ap-gateway.mastercard.com/</api_as>
                 <api_na>https://na-gateway.mastercard.com/</api_na>
-                <api_uat>https://secure.uat.tnspayments.com/</api_uat>
+                <api_in>https://in-gateway.mastercard.com/</api_in>
+                <api_eu_pki>https://pki.eu.gateway.mastercard.com/</api_eu_pki>
+                <api_as_pki>https://pki.ap.gateway.mastercard.com/</api_as_pki>
+                <api_na_pki>https://pki.na.gateway.mastercard.com/</api_na_pki>
+                <api_in_pki>https://pki.in.gateway.mastercard.com/</api_in_pki>
                 <custom_create_token_request_data>{}</custom_create_token_request_data>
                 <custom_sale_request_data>{}</custom_sale_request_data>
                 <custom_authorize_request_data>{}</custom_authorize_request_data>
 
+                <authentication_type>password</authentication_type>
                 <api_password backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
                 <webhook_secret backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
 
@@ -110,6 +122,7 @@
                 <vault_ccv>1</vault_ccv>
 
                 <paymentInfoKeys>gateway_code,txn_result,card_scheme,card_number,card_expiry_date,session,auth_code</paymentInfoKeys>
+                <sort_order>20</sort_order>
             </tns_hpf>
             <tns_hpf_vault>
                 <model>MpgsHpfVaultFacade</model>
@@ -125,13 +138,18 @@
                 <send_line_items>1</send_line_items>
                 <currency>USD</currency>
 
-                <api_version>59</api_version>
+                <api_version>63</api_version>
                 <api_gateway>api_na</api_gateway>
                 <api_eu>https://eu-gateway.mastercard.com/</api_eu>
                 <api_as>https://ap-gateway.mastercard.com/</api_as>
                 <api_na>https://na-gateway.mastercard.com/</api_na>
-                <api_uat>https://secure.uat.tnspayments.com/</api_uat>
+                <api_in>https://in-gateway.mastercard.com/</api_in>
+                <api_eu_pki>https://pki.eu.gateway.mastercard.com/</api_eu_pki>
+                <api_as_pki>https://pki.ap.gateway.mastercard.com/</api_as_pki>
+                <api_na_pki>https://pki.na.gateway.mastercard.com/</api_na_pki>
+                <api_in_pki>https://pki.in.gateway.mastercard.com/</api_in_pki>
 
+                <authentication_type>password</authentication_type>
                 <api_password backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
                 <webhook_secret backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
 
@@ -153,6 +171,7 @@
                 <is_gateway>1</is_gateway>
 
                 <paymentInfoKeys>gateway_code,txn_result,bankAccountHolder,bankAccountNumber</paymentInfoKeys>
+                <sort_order>30</sort_order>
             </mpgs_ach>
         </payment>
     </default>

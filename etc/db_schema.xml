@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright (c) 2016-2022 Mastercard
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="mastercard_config_files" resource="default" engine="innodb" comment="Mastercard Configuration Files Table">
+        <column xsi:type="smallint" name="cert_id" unsigned="true" nullable="false" identity="true" comment="Cert ID" />
+        <column xsi:type="varchar" name="path" nullable="true" length="255" comment="Configuration Path" />
+        <column xsi:type="smallint" name="website_id" unsigned="true" nullable="false" identity="false" default="0" comment="Website ID" />
+        <column xsi:type="text" name="content" nullable="true" comment="Content" />
+        <column xsi:type="timestamp" name="updated_at" on_update="false" nullable="true" comment="Updated At" />
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="cert_id" />
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="MASTERCARD_CONFIG_FILES_WEBSITE_ID_STORE_WEBSITE_WEBSITE_ID" table="mastercard_cert" column="website_id" referenceTable="store_website" referenceColumn="website_id" onDelete="CASCADE" />
+        <constraint xsi:type="unique" referenceId="MASTERCARD_CONFIG_FILES_PATH_WEBSITE_ID">
+            <column name="path" />
+            <column name="website_id" />
+        </constraint>
+    </table>
+</schema>

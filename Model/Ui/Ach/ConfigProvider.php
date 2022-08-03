@@ -18,8 +18,8 @@
 namespace OnTap\MasterCard\Model\Ui\Ach;
 
 use Magento\Framework\UrlInterface;
-use Magento\Payment\Gateway\ConfigInterface;
 use Magento\Checkout\Model\ConfigProviderInterface;
+use OnTap\MasterCard\Gateway\Config\Config;
 use OnTap\MasterCard\Model\Config\Source\Integration;
 
 class ConfigProvider implements ConfigProviderInterface
@@ -29,7 +29,7 @@ class ConfigProvider implements ConfigProviderInterface
     const CHECKOUT_COMPONENT_URI = '%scheckout/version/%s/checkout.js';
 
     /**
-     * @var ConfigInterface
+     * @var Config
      */
     private $config;
 
@@ -39,13 +39,13 @@ class ConfigProvider implements ConfigProviderInterface
     private $urlBuilder;
 
     /**
-     * Constructor
-     *
-     * @param ConfigInterface $config
+     * @param Config $config
      * @param UrlInterface $urlBuilder
      */
-    public function __construct(ConfigInterface $config, UrlInterface $urlBuilder)
-    {
+    public function __construct(
+        Config $config,
+        UrlInterface $urlBuilder
+    ) {
         $this->config = $config;
         $this->urlBuilder = $urlBuilder;
     }
@@ -69,24 +69,25 @@ class ConfigProvider implements ConfigProviderInterface
                 'renderer' => 'hosted-checkout',
                 'component_url' => sprintf(
                     static::CHECKOUT_COMPONENT_URI,
-                    $this->config->getApiAreaUrl(),
+                    $this->config->getFrontendAreaUrl(),
                     $this->config->getValue('api_version')
-                )
+                ),
             ],
             Integration::HOSTED_SESSION => [
                 'renderer' => 'hosted-session',
                 'component_url' => sprintf(
                     static::SESSION_COMPONENT_URI,
-                    $this->config->getApiAreaUrl(),
+                    $this->config->getFrontendAreaUrl(),
                     $this->config->getValue('api_version'),
                     $this->config->getMerchantId()
-                )
-            ]
+                ),
+            ],
         ];
+
         return [
             'payment' => [
-                self::METHOD_CODE => array_merge($config, $integrationConfig[$mode])
-            ]
+                self::METHOD_CODE => array_merge($config, $integrationConfig[$mode]),
+            ],
         ];
     }
 }
