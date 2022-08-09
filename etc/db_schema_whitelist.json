@@ -1,0 +1,16 @@
+{
+    "mastercard_config_files": {
+        "column": {
+            "cert_id": true,
+            "path": true,
+            "website_id": true,
+            "content": true,
+            "updated_at": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "MASTERCARD_CONFIG_FILES_WEBSITE_ID_STORE_WEBSITE_WEBSITE_ID": true,
+            "MASTERCARD_CONFIG_FILES_PATH_WEBSITE_ID": true
+        }
+    }
+}

@@ -17,16 +17,18 @@
 
 namespace OnTap\MasterCard\Gateway\Http;
 
-use Magento\Payment\Gateway\ConfigInterface;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use Magento\Payment\Gateway\Http\TransferBuilder;
 use Magento\Payment\Gateway\Http\TransferInterface;
+use OnTap\MasterCard\Gateway\Config\Config;
 use OnTap\MasterCard\Gateway\Http\Client\Rest;
 
 class TransferFactory implements TransferFactoryInterface
 {
     /**
-     * @var ConfigInterface
+     * @var Config
      */
     protected $config;
 
@@ -46,11 +48,11 @@ class TransferFactory implements TransferFactoryInterface
     protected $request = [];
 
     /**
-     * @param ConfigInterface $config
+     * @param Config $config
      * @param TransferBuilder $transferBuilder
      */
     public function __construct(
-        ConfigInterface $config,
+        Config $config,
         TransferBuilder $transferBuilder
     ) {
         $this->config = $config;
@@ -138,19 +140,32 @@ class TransferFactory implements TransferFactoryInterface
      * @param PaymentDataObjectInterface $payment
      *
      * @return TransferInterface
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
      */
     public function create(array $request, PaymentDataObjectInterface $payment)
     {
         $this->request = $request;
         $storeId = $payment->getOrder()->getStoreId();
 
-        return $this->transferBuilder
+        $builder = $this->transferBuilder
             ->setMethod($this->httpMethod)
             ->setHeaders($this->getMethodHeaders())
             ->setBody($request)
-            ->setAuthUsername($this->getMerchantUsername($storeId))
-            ->setAuthPassword($this->config->getMerchantPassword($storeId))
-            ->setUri($this->getUri($payment))
-            ->build();
+            ->setUri($this->getUri($payment));
+
+        if ($this->config->isCertificateAutherntification($storeId)) {
+            $builder->setClientConfig([
+                CURLOPT_SSLCERT => $this->config->getSSLCertificatePath($storeId),
+                CURLOPT_SSLKEY => $this->config->getSSLKeyPath($storeId),
+            ]);
+        } else {
+            $userPassword = $this->getMerchantUsername($storeId) . ":" . $this->config->getMerchantPassword($storeId);
+            $builder->setClientConfig([
+                CURLOPT_USERPWD => $userPassword,
+            ]);
+        }
+
+        return $builder->build();
     }
 }
