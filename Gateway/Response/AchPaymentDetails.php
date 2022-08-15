@@ -42,6 +42,19 @@ class AchPaymentDetails implements HandlerInterface
     ];
 
     /**
+     * @var bool|null
+     */
+    protected $isPending;
+
+    /**
+     * @param bool $isPending
+     */
+    public function __construct($isPending = null)
+    {
+        $this->isPending = $isPending;
+    }
+
+    /**
      * @inheridoc
      */
     public function handle(array $handlingSubject, array $response)
@@ -58,12 +71,11 @@ class AchPaymentDetails implements HandlerInterface
         // Set transaction as pending because ACH does not capture it immediately
         // Would use this in case we need to split the process between APPROVED_PENDING_SETTLEMENT (realtime) and APPROVED (webhook)
         //$isPending = $response['response']['gatewayCode'] === 'APPROVED_PENDING_SETTLEMENT';
-        $isPending = false;
-        $payment->setIsTransactionPending($isPending == true);
-        $payment->setIsTransactionClosed($isPending != true);
+        $payment->setIsTransactionPending($this->isPending === true);
+        $payment->setIsTransactionClosed($this->isPending !== true);
 
         $sourceOfFunds = $response['sourceOfFunds']['provided']['ach'];
-        $additionalInfo = [];
+        $additionalInfo = $payment->getAdditionalInformation();
         foreach ($this->additionalAccountInfo as $item) {
             if (!isset($sourceOfFunds[$item])) {
                 continue;
