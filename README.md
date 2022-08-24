@@ -15,6 +15,7 @@ Magento 2 Mastercard Payment Gateway Service module supports following list of f
 - 3DSv2
 - ACH
 - Tokenisation (Only for Hosted Payment Session method)
+- Authentication using SSL Certificate as well as Username and Password
 
 ## Documentation
 
