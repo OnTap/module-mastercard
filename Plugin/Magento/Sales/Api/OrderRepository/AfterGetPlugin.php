@@ -65,7 +65,7 @@ class AfterGetPlugin
         }
 
         $extensionAttributes = $result->getExtensionAttributes();
-        if (!$extensionAttributes){
+        if (!$extensionAttributes) {
             $extensionAttributes = $this->orderExtensionFactory->create();
         }
         $extensionAttributes->setToken($paymentToken);

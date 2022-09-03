@@ -20,7 +20,6 @@ namespace OnTap\MasterCard\Gateway\Response;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Response\HandlerInterface;
 
-
 class CreateOrderTokenHandler implements HandlerInterface
 {
     /**

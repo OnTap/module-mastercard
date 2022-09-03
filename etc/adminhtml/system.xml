@@ -424,10 +424,13 @@
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <config_path>payment/mpgs_ach/debug</config_path>
                     </field>
-                    <field id="order_status" translate="label" type="select" sortOrder="170" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="order_status_processing" translate="label" type="select" sortOrder="170" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>New Order Status</label>
                         <source_model>Magento\Sales\Model\Config\Source\Order\Status\Processing</source_model>
                         <config_path>payment/mpgs_ach/order_status</config_path>
+                        <depends>
+                            <field id="mapped_payment_action">order_pay</field>
+                        </depends>
                     </field>
                     <field id="allowspecific" translate="label" type="allowspecific" sortOrder="180" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Payment from Applicable Countries</label>

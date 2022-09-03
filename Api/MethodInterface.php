@@ -19,6 +19,6 @@ namespace OnTap\MasterCard\Api;
 
 interface MethodInterface
 {
-    const MAPPED_ACTION_ORDER_PAY = 'order_pay';
-    const MAPPED_ACTION_ORDER_VERIFY = 'order_verify';
+    public const MAPPED_ACTION_ORDER_PAY = 'order_pay';
+    public const MAPPED_ACTION_ORDER_VERIFY = 'order_verify';
 }

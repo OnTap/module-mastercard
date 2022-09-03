@@ -22,7 +22,8 @@ use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Sales\Api\Data\OrderPaymentInterface;
 
-class AchPaymentDetails implements HandlerInterface
+class
+AchPaymentDetails implements HandlerInterface
 {
     const ACCOUNT_TYPE = 'accountType';
     const ACCOUNT_HOLDER = 'bankAccountHolder';
