@@ -16,6 +16,7 @@
   -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="OnTap\MasterCard\Api\SessionInformationManagementInterface" type="OnTap\MasterCard\Model\SessionInformationManagement" />
+    <preference for="OnTap\MasterCard\Api\VerifyPaymentFlagInterface" type="OnTap\MasterCard\Model\VerifyPaymentFlag" />
 
     <type name="OnTap\MasterCard\Model\System\Config\Backend\Cert">
         <arguments>
@@ -1070,29 +1071,19 @@
         <arguments>
             <argument name="handlers" xsi:type="array">
                 <item name="transaction_id" xsi:type="string">OnTap\MasterCard\Gateway\Response\TransactionIdHandler</item>
-                <item name="payment_details" xsi:type="string">MpgsAchPayResponsePaymentDetailsHandler</item>
+                <item name="payment_details" xsi:type="string">OnTap\MasterCard\Gateway\Response\AchPaymentDetails</item>
                 <!-- @todo: multistep_ach -->
                 <!-- Order is invoiced immediately, instead of using webhook -->
                 <item name="invoice" xsi:type="string">OnTap\MasterCard\Gateway\Response\AchInvoiceHandler</item>
             </argument>
         </arguments>
     </virtualType>
-    <virtualType name="MpgsAchPayResponsePaymentDetailsHandler" type="OnTap\MasterCard\Gateway\Response\AchPaymentDetails">
-        <arguments>
-            <argument name="isPending" xsi:type="boolean">false</argument>
-        </arguments>
-    </virtualType>
     <virtualType name="MpgsAchVerifyResponseHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
         <arguments>
             <argument name="handlers" xsi:type="array">
                 <item name="transaction_id" xsi:type="string">OnTap\MasterCard\Gateway\Response\TransactionIdHandler</item>
-                <item name="payment_details" xsi:type="string">MpgsAchVerifyResponsePaymentDetailsHandler</item>
+                <item name="payment_details" xsi:type="string">OnTap\MasterCard\Gateway\Response\AchPaymentDetails</item>
             </argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="MpgsAchVerifyResponsePaymentDetailsHandler" type="OnTap\MasterCard\Gateway\Response\AchPaymentDetails">
-        <arguments>
-            <argument name="isPending" xsi:type="boolean">true</argument>
         </arguments>
     </virtualType>
     <virtualType name="MpgsAchWebhookUpdateHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
@@ -1202,4 +1193,21 @@
             <argument name="config" xsi:type="object">MpgsAchConfig</argument>
         </arguments>
     </virtualType>
+    <type name="Magento\Sales\Model\Order\Payment\State\OrderCommand">
+        <plugin name="OnTap_MasterCard::Magento\Sales\Model\Order\Payment\State\OrderCommand::afterExecute" type="OnTap\MasterCard\Plugin\Magento\Sales\Model\Order\Payment\State\OrderCommand\AfterExecutePlugin" />
+    </type>
+    <type name="Magento\Sales\Model\Order\Payment\Transaction">
+        <plugin name="OnTap_MasterCard::Magento\Sales\Model\Order\Payment\Transaction::afterGetTransactionTypes" type="OnTap\MasterCard\Plugin\Magento\Sales\Model\Order\Payment\Transaction\AfterGetTransactionTypesPlugin" />
+        <plugin name="OnTap_MasterCard::Magento\Sales\Model\Order\Payment\Transaction::aroundSetTxnType" type="OnTap\MasterCard\Plugin\Magento\Sales\Model\Order\Payment\Transaction\AroundSetTxnTypePlugin" />
+    </type>
+    <type name="Magento\Sales\Model\Order\Payment">
+        <plugin name="OnTap_MasterCard::Magento\Sales\Model\Order\Payment::aroundAddTransactionPlugin" type="OnTap\MasterCard\Plugin\Magento\Sales\Model\Order\Payment\AroundAddTransactionPlugin" />
+    </type>
+    <type name="OnTap\MasterCard\Model\VerifyPaymentFlag">
+        <arguments>
+            <argument name="configPool" xsi:type="array">
+                <item name="mpgs_ach" xsi:type="object">MpgsAchConfig</item>
+            </argument>
+        </arguments>
+    </type>
 </config>

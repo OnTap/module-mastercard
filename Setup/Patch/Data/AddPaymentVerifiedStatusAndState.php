@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright (c) 2016-2022 Mastercard
  *
@@ -23,21 +22,13 @@ namespace OnTap\MasterCard\Setup\Patch\Data;
 use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
+use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\StatusFactory;
 use Magento\Sales\Model\ResourceModel\Order\Status as StatusResource;
+use OnTap\MasterCard\Api\Data\OrderInterface;
 
 class AddPaymentVerifiedStatusAndState implements DataPatchInterface
 {
-    /**
-     * Custom Order-State code
-     */
-    const ORDER_STATE_CODE_PAYMENT_VERIFIED = 'payment_verified';
-
-    /**
-     * Custom Order-Status code
-     */
-    const ORDER_STATUS_CODE_PAYMENT_VERIFIED = 'payment_verified';
-
     /**
      * Custom Order-Status label
      */
@@ -82,7 +73,7 @@ class AddPaymentVerifiedStatusAndState implements DataPatchInterface
 
         $status = $this->statusFactory->create();
         $status->setData([
-            'status' => self::ORDER_STATUS_CODE_PAYMENT_VERIFIED,
+            'status' => OrderInterface::STATUS_PAYMENT_VERIFIED,
             'label' => self::ORDER_STATUS_LABEL_PAYMENT_VERIFIED,
         ]);
 
@@ -92,7 +83,7 @@ class AddPaymentVerifiedStatusAndState implements DataPatchInterface
             return;
         }
 
-        $status->assignState(self::ORDER_STATE_CODE_PAYMENT_VERIFIED, true, false);
+        $status->assignState(Order::STATE_PROCESSING, false, true);
 
         $this->moduleDataSetup->endSetup();
     }

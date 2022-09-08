@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2021 Mastercard
+ * Copyright (c) 2016-2022 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,7 @@ use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Sales\Api\Data\OrderPaymentInterface;
 
-class
-AchPaymentDetails implements HandlerInterface
+class AchPaymentDetails implements HandlerInterface
 {
     const ACCOUNT_TYPE = 'accountType';
     const ACCOUNT_HOLDER = 'bankAccountHolder';
@@ -43,19 +42,6 @@ AchPaymentDetails implements HandlerInterface
     ];
 
     /**
-     * @var bool|null
-     */
-    protected $isPending;
-
-    /**
-     * @param bool $isPending
-     */
-    public function __construct($isPending = null)
-    {
-        $this->isPending = $isPending;
-    }
-
-    /**
      * @inheridoc
      */
     public function handle(array $handlingSubject, array $response)
@@ -72,8 +58,8 @@ AchPaymentDetails implements HandlerInterface
         // Set transaction as pending because ACH does not capture it immediately
         // Would use this in case we need to split the process between APPROVED_PENDING_SETTLEMENT (realtime) and APPROVED (webhook)
         //$isPending = $response['response']['gatewayCode'] === 'APPROVED_PENDING_SETTLEMENT';
-        $payment->setIsTransactionPending($this->isPending === true);
-        $payment->setIsTransactionClosed($this->isPending !== true);
+        $payment->setIsTransactionPending(false);
+        $payment->setIsTransactionClosed(true);
 
         $sourceOfFunds = $response['sourceOfFunds']['provided']['ach'];
         $additionalInfo = $payment->getAdditionalInformation();
