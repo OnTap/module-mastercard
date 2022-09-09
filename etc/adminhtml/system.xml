@@ -348,6 +348,9 @@
                         <label>Add Token to Order</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <config_path>payment/mpgs_ach/add_token_to_order</config_path>
+                        <depends>
+                            <field id="mapped_payment_action">order_pay</field>
+                        </depends>
                     </field>
                     <field id="authentication_type" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Authentication Type</label>

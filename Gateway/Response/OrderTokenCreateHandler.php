@@ -19,9 +19,24 @@ namespace OnTap\MasterCard\Gateway\Response;
 
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Response\HandlerInterface;
+use Magento\Sales\Api\Data\OrderExtensionFactory;
+use Magento\Sales\Model\Order\Payment;
 
-class CreateOrderTokenHandler implements HandlerInterface
+class OrderTokenCreateHandler implements HandlerInterface
 {
+    /**
+     * @var OrderExtensionFactory
+     */
+    private $orderExtensionFactory;
+
+    /**
+     * @param OrderExtensionFactory $orderExtensionFactory
+     */
+    public function __construct(OrderExtensionFactory $orderExtensionFactory)
+    {
+        $this->orderExtensionFactory = $orderExtensionFactory;
+    }
+
     /**
      * @param array $handlingSubject
      * @param array $response
@@ -36,10 +51,21 @@ class CreateOrderTokenHandler implements HandlerInterface
         }
 
         $paymentDO = SubjectReader::readPayment($handlingSubject);
+
+        /** @var Payment $payment */
         $payment = $paymentDO->getPayment();
 
-        $additionalInfo = $payment->getAdditionalInformation();
-        $additionalInfo['token'] = $paymentToken;
-        $payment->setAdditionalInformation($additionalInfo);
+        $order = $payment->getOrder();
+        if (!$order) {
+            return;
+        }
+
+        $order->setData('mastercard_payment_token', $paymentToken);
+        $extensionAttributes = $order->getExtensionAttributes();
+        if (!$extensionAttributes) {
+            $extensionAttributes = $this->orderExtensionFactory->create();
+        }
+        $extensionAttributes->setMastercardPaymentToken($paymentToken);
+        $order->setExtensionAttributes($extensionAttributes);
     }
 }

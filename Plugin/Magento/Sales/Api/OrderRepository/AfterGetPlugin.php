@@ -19,8 +19,8 @@ namespace OnTap\MasterCard\Plugin\Magento\Sales\Api\OrderRepository;
 
 use Magento\Framework\AuthorizationInterface;
 use Magento\Sales\Api\Data\OrderExtensionFactory;
-use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Model\Order;
 
 class AfterGetPlugin
 {
@@ -48,9 +48,9 @@ class AfterGetPlugin
 
     /**
      * @param OrderRepositoryInterface $subject
-     * @param OrderInterface $result
+     * @param Order $result
      *
-     * @return OrderInterface
+     * @return Order
      */
     public function afterGet(OrderRepositoryInterface $subject, $result)
     {
@@ -58,17 +58,12 @@ class AfterGetPlugin
             return $result;
         }
 
-        $additionalInfo = $result->getPayment()->getAdditionalInformation();
-        $paymentToken = $additionalInfo['token'] ?? null;
-        if (!$paymentToken) {
-            return $result;
-        }
-
+        $paymentToken = $result->getData('mastercard_payment_token');
         $extensionAttributes = $result->getExtensionAttributes();
         if (!$extensionAttributes) {
             $extensionAttributes = $this->orderExtensionFactory->create();
         }
-        $extensionAttributes->setToken($paymentToken);
+        $extensionAttributes->setMastercardPaymentToken($paymentToken);
         $result->setExtensionAttributes($extensionAttributes);
 
         return $result;

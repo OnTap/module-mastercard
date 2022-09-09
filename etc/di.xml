@@ -993,9 +993,10 @@
             <argument name="commands" xsi:type="array">
                 <item name="order" xsi:type="string">MpgsAchOrderCommand</item>
                 <item name="pay" xsi:type="string">MpgsAchPayCommand</item>
+                <item name="capture" xsi:type="string">MpgsAchCaptureCommand</item>
                 <item name="verify" xsi:type="string">MpgsAchVerifyCommand</item>
-                <item name="tokenize_if_enabled" xsi:type="string">MpgsAchTokenizeIfEnabledCommand</item>
                 <item name="tokenize" xsi:type="string">MpgsAchTokenizeCommand</item>
+                <item name="tokenize_if_enabled" xsi:type="string">MpgsAchTokenizeIfEnabledCommand</item>
             </argument>
         </arguments>
     </virtualType>
@@ -1018,7 +1019,7 @@
                     <item name="pay" xsi:type="string">pay</item>
                 </item>
                 <item name="order_verify" xsi:type="array">
-                    <item name="tokenize_if_enabled" xsi:type="string">tokenize_if_enabled</item>
+                    <item name="tokenize" xsi:type="string">tokenize</item>
                     <item name="verify" xsi:type="string">verify</item>
                 </item>
             </argument>
@@ -1049,8 +1050,18 @@
             <argument name="requestBuilder" xsi:type="object">MpgsAchCreateTokenDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">MpgsAchTransferFactoryCreateToken</argument>
             <argument name="client" xsi:type="object">MpgsAchRestClient</argument>
-            <argument name="handler" xsi:type="object">OnTap\MasterCard\Gateway\Response\CreateOrderTokenHandler</argument>
+            <argument name="handler" xsi:type="object">OnTap\MasterCard\Gateway\Response\OrderTokenCreateHandler</argument>
             <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\TokenCreateValidator</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsAchCaptureCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">MpgsAchCaptureDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">MpgsAchTransferFactory</argument>
+            <argument name="client" xsi:type="object">MpgsAchRestClient</argument>
+            <argument name="handler" xsi:type="object">MpgsAchPayResponseHandler</argument>
+            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\AchValidator</argument>
+            <argument name="errorMessageMapper" xsi:type="object">MpgsAchErrorMapper</argument>
         </arguments>
     </virtualType>
     <virtualType name="MpgsAchCreateTokenDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
@@ -1126,6 +1137,22 @@
                 <item name="shipping" xsi:type="string">OnTap\MasterCard\Gateway\Request\ShippingDataBuilder</item>
                 <item name="customer" xsi:type="string">OnTap\MasterCard\Gateway\Request\CustomerDataBuilder</item>
                 <item name="source" xsi:type="string">OnTap\MasterCard\Gateway\Request\SourceDataBuilder</item>
+                <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsAchCaptureDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="operation" xsi:type="string">PayOperationDataBuilder</item>
+                <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\Ach\SessionDataBuilder</item>
+                <item name="order" xsi:type="string">OnTap\MasterCard\Gateway\Request\OrderDataBuilder</item>
+                <item name="line_items" xsi:type="string">OnTap\MasterCard\Gateway\Request\LineItemsBuilder</item>
+                <item name="discount" xsi:type="string">OnTap\MasterCard\Gateway\Request\DiscountBuilder</item>
+                <item name="billing" xsi:type="string">OnTap\MasterCard\Gateway\Request\BillingDataBuilder</item>
+                <item name="shipping" xsi:type="string">OnTap\MasterCard\Gateway\Request\ShippingDataBuilder</item>
+                <item name="customer" xsi:type="string">OnTap\MasterCard\Gateway\Request\CustomerDataBuilder</item>
+                <item name="source" xsi:type="string">OnTap\MasterCard\Gateway\Request\OrderTokenSourceDataBuilder</item>
                 <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
             </argument>
         </arguments>
