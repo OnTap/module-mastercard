@@ -23,7 +23,7 @@
                         <resource id="Magento_Sales::sales_order">
                             <resource id="Magento_Sales::actions">
                                 <resource id="Magento_Sales::actions_view">
-                                    <resource id="OnTap_MasterCard::sales_order_view_token" title="Token" translate="title" sortOrder="10" />
+                                    <resource id="OnTap_MasterCard::sales_order_view_mastercard_payment_token" title="Mastercard Payment Token" translate="title" sortOrder="10" />
                                 </resource>
                             </resource>
                         </resource>

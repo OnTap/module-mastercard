@@ -54,7 +54,7 @@ class AfterGetPlugin
      */
     public function afterGet(OrderRepositoryInterface $subject, $result)
     {
-        if (!$this->authorization->isAllowed('OnTap_MasterCard::sales_order_view_token')) {
+        if (!$this->authorization->isAllowed('OnTap_MasterCard::sales_order_view_mastercard_payment_token')) {
             return $result;
         }
 
