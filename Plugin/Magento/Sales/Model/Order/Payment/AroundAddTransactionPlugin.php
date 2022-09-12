@@ -17,6 +17,7 @@
 
 namespace OnTap\MasterCard\Plugin\Magento\Sales\Model\Order\Payment;
 
+use Magento\Sales\Model\AbstractModel;
 use Magento\Sales\Model\Order\Payment;
 use Magento\Sales\Model\Order\Payment\Transaction;
 use OnTap\MasterCard\Api\Data\TransactionInterface;
@@ -40,9 +41,9 @@ class AroundAddTransactionPlugin
     /**
      * @param Payment $subject
      * @param callable $proceed
-     * @param $type
-     * @param $salesDocument
-     * @param $failSafe
+     * @param string $type
+     * @param AbstractModel $salesDocument
+     * @param bool $failSafe
      *
      * @return null|Transaction
      */
@@ -55,9 +56,9 @@ class AroundAddTransactionPlugin
     ) {
         $method = $subject->getMethod();
         if (!$this->verifyPaymentFlag->isVerifyPayment($method)) {
-            return $proceed($type);
+            return $proceed($type, $salesDocument, $failSafe);
         }
 
-        return $proceed(TransactionInterface::TYPE_VERIFY);
+        return $proceed(TransactionInterface::TYPE_VERIFY, $salesDocument, $failSafe);
     }
 }

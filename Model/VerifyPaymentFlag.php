@@ -20,6 +20,7 @@ namespace OnTap\MasterCard\Model;
 use Magento\Store\Model\StoreManagerInterface;
 use OnTap\MasterCard\Api\MethodInterface;
 use OnTap\MasterCard\Api\VerifyPaymentFlagInterface;
+use OnTap\MasterCard\Gateway\Config\Config;
 
 class VerifyPaymentFlag implements VerifyPaymentFlagInterface
 {

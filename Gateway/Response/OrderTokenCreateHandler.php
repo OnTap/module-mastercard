@@ -56,10 +56,6 @@ class OrderTokenCreateHandler implements HandlerInterface
         $payment = $paymentDO->getPayment();
 
         $order = $payment->getOrder();
-        if (!$order) {
-            return;
-        }
-
         $order->setData('mastercard_payment_token', $paymentToken);
         $extensionAttributes = $order->getExtensionAttributes();
         if (!$extensionAttributes) {

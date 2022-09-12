@@ -80,12 +80,14 @@ class AddPaymentVerifiedStatusAndState implements DataPatchInterface
         try {
             $this->statusResource->save($status);
         } catch (AlreadyExistsException $exception) {
-            return;
+            return $this;
         }
 
         $status->assignState(Order::STATE_PROCESSING, false, true);
 
         $this->moduleDataSetup->endSetup();
+
+        return $this;
     }
 
     /**
