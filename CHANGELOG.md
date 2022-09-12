@@ -1,9 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [103.8.0] - 2022-08-12
+## [103.8.0] - 2022-09-12
 ### Changed
 - Authentication by OV SSL Certificate option added
+- Add the “Verify and Tokenize“ Payment Option for the ACH Payment Method 
 
 ### Fixed
 - The module has to pause for a few seconds and then resubmit the Authenticate Payer request as-is in the case of the HTTP 503 response from the gateway instead of simply state about the unknown error
