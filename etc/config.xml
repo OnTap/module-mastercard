@@ -133,6 +133,7 @@
                 <title>Automated Clearing House (ACH)</title>
                 <model>MpgsAchFacade</model>
                 <payment_action>order</payment_action>
+                <mapped_payment_action>order_pay</mapped_payment_action>
 
                 <order_status>processing</order_status>
                 <send_line_items>1</send_line_items>

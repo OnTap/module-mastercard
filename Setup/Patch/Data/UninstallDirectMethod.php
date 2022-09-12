@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright (c) 2016-2019 Mastercard
+ * Copyright (c) 2016-2022 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +16,7 @@
  * limitations under the License.
  */
 declare(strict_types=1);
+
 namespace OnTap\MasterCard\Setup\Patch\Data;
 
 use Exception;
@@ -27,8 +29,7 @@ use Magento\Framework\Setup\Patch\DataPatchInterface;
 /**
  * Patch is mechanism, that allows to do atomic upgrade data changes
  */
-class UninstallDirectMethod implements
-    DataPatchInterface
+class UninstallDirectMethod implements DataPatchInterface
 {
     /**
      * @var ModuleDataSetupInterface $moduleDataSetup
@@ -46,7 +47,6 @@ class UninstallDirectMethod implements
     private $configResource;
 
     /**
-     * UninstallDirectMethod constructor.
      * @param ModuleDataSetupInterface $moduleDataSetup
      * @param CollectionFactory $collectionFactory
      * @param ConfigResource $configResource
@@ -67,13 +67,19 @@ class UninstallDirectMethod implements
      */
     public function apply()
     {
+        $this->moduleDataSetup->startSetup();
+
         $this->removeConfigByPath('payment/tns_direct');
         $this->removeConfigByPath('payment/tns_direct_vault');
+
+        $this->moduleDataSetup->endSetup();
+
         return $this;
     }
 
     /**
      * @param string $path
+     *
      * @throws Exception
      */
     private function removeConfigByPath($path)

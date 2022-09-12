@@ -15,27 +15,29 @@
  * limitations under the License.
  */
 
-namespace OnTap\MasterCard\Model\Adminhtml\Source;
+namespace OnTap\MasterCard\Plugin\Magento\Sales\Model\Order\Payment\Transaction;
 
-use Magento\Framework\Data\OptionSourceInterface;
-use Magento\Payment\Model\MethodInterface;
+use Magento\Sales\Model\Order\Payment\Transaction;
+use OnTap\MasterCard\Api\Data\TransactionInterface;
 
-class PaymentAction implements OptionSourceInterface
+class AroundSetTxnTypePlugin
 {
     /**
-     * {@inheritdoc}
+     * @param Transaction $subject
+     * @param callable $proceed
+     * @param string $txnType
+     *
+     * @return Transaction
      */
-    public function toOptionArray()
-    {
-        return [
-            [
-                'value' => MethodInterface::ACTION_AUTHORIZE,
-                'label' => __('Authorize Only')
-            ],
-            [
-                'value' => MethodInterface::ACTION_AUTHORIZE_CAPTURE,
-                'label' => __('Authorize and Capture')
-            ]
-        ];
+    public function aroundSetTxnType(
+        $subject,
+        callable $proceed,
+        $txnType
+    ) {
+        if (TransactionInterface::TYPE_VERIFY !== $txnType) {
+            return $proceed($txnType);
+        }
+
+        return $subject->setData('txn_type', $txnType);
     }
 }

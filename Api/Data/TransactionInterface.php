@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2021 Mastercard
+ * Copyright (c) 2016-2022 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,23 +15,11 @@
  * limitations under the License.
  */
 
-namespace OnTap\MasterCard\Gateway\Config\Ach;
+namespace OnTap\MasterCard\Api\Data;
 
-use Magento\Framework\Exception\NoSuchEntityException;
-use OnTap\MasterCard\Gateway\Config\ConfigInterface;
+use Magento\Sales\Api\Data\TransactionInterface as OriginalTransactionInterface;
 
-class Config extends \OnTap\MasterCard\Gateway\Config\Config implements ConfigInterface
+interface TransactionInterface extends OriginalTransactionInterface
 {
-    /**
-     * @var string
-     */
-    protected $method = 'mpgs_ach';
-
-    /**
-     * @return bool
-     */
-    public function isVaultEnabled()
-    {
-        return false;
-    }
+    public const TYPE_VERIFY = 'verify';
 }
