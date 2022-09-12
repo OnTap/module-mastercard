@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2019 Mastercard
+ * Copyright (c) 2016-2022 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 namespace OnTap\MasterCard\Block\Adminhtml\Api;
 
 use Magento\Backend\Block\Context;
+use Magento\Config\Block\System\Config\Form\Field\Heading;
+use Magento\Framework\Data\Form\Element\AbstractElement;
+use Magento\Framework\Phrase;
 
-class Version extends \Magento\Config\Block\System\Config\Form\Field\Heading
+class Version extends Heading
 {
     /**
      * @var Context
@@ -32,6 +36,7 @@ class Version extends \Magento\Config\Block\System\Config\Form\Field\Heading
 
     /**
      * Version constructor.
+     *
      * @param Context $context
      * @param string $methodCode
      * @param array $data
@@ -47,7 +52,7 @@ class Version extends \Magento\Config\Block\System\Config\Form\Field\Heading
     }
 
     /**
-     * @return \Magento\Framework\Phrase
+     * @return Phrase
      */
     protected function getVersionInfo()
     {
@@ -67,10 +72,11 @@ class Version extends \Magento\Config\Block\System\Config\Form\Field\Heading
     /**
      * Render element html
      *
-     * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
+     * @param AbstractElement $element
+     *
      * @return string
      */
-    public function render(\Magento\Framework\Data\Form\Element\AbstractElement $element)
+    public function render(AbstractElement $element)
     {
         return sprintf(
             '<tr class="system-fieldset-sub-head" id="row_%s">'

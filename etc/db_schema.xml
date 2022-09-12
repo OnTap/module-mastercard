@@ -32,4 +32,7 @@
             <column name="website_id" />
         </constraint>
     </table>
+    <table name="sales_order" resource="sales" comment="Sales Flat Order">
+        <column xsi:type="varchar" length="255" name="mastercard_payment_token" nullable="true" comment="MasterCard Payment Token"/>
+    </table>
 </schema>

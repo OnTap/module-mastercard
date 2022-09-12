@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-  ~ Copyright (c) 2016-2021 Mastercard
+  ~ Copyright (c) 2016-2022 Mastercard
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -339,16 +339,29 @@
                         <label>Title</label>
                         <config_path>payment/mpgs_ach/title</config_path>
                     </field>
-                    <field id="authentication_type" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="mapped_payment_action" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Payment Action</label>
+                        <source_model>OnTap\MasterCard\Model\Adminhtml\Source\Ach\MappedPaymentAction</source_model>
+                        <config_path>payment/mpgs_ach/mapped_payment_action</config_path>
+                    </field>
+                    <field id="add_token_to_order" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                        <label>Add Token to Order</label>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <config_path>payment/mpgs_ach/add_token_to_order</config_path>
+                        <depends>
+                            <field id="mapped_payment_action">order_pay</field>
+                        </depends>
+                    </field>
+                    <field id="authentication_type" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Authentication Type</label>
                         <source_model>OnTap\MasterCard\Model\Adminhtml\Source\AuthenticationType</source_model>
                         <config_path>payment/mpgs_ach/authentication_type</config_path>
                     </field>
-                    <field id="api_username" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="api_username" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>API Username</label>
                         <config_path>payment/mpgs_ach/api_username</config_path>
                     </field>
-                    <field id="api_password" translate="label" type="obscure" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="api_password" translate="label" type="obscure" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>API Password</label>
                         <config_path>payment/mpgs_ach/api_password</config_path>
                         <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
@@ -356,7 +369,7 @@
                             <field id="authentication_type">password</field>
                         </depends>
                     </field>
-                    <field id="api_cert" translate="label" type="file" sortOrder="60" showInDefault="1" showInWebsite="1">
+                    <field id="api_cert" translate="label" type="file" sortOrder="80" showInDefault="1" showInWebsite="1">
                         <label>SSL Certificate</label>
                         <config_path>payment/mpgs_ach/api_cert</config_path>
                         <backend_model>OnTap\MasterCard\Model\System\Config\Backend\Cert</backend_model>
@@ -364,7 +377,7 @@
                             <field id="authentication_type">certificate</field>
                         </depends>
                     </field>
-                    <field id="api_key" translate="label" type="file" sortOrder="70" showInDefault="1" showInWebsite="1">
+                    <field id="api_key" translate="label" type="file" sortOrder="90" showInDefault="1" showInWebsite="1">
                         <label>SSL Key</label>
                         <config_path>payment/mpgs_ach/api_key</config_path>
                         <backend_model>OnTap\MasterCard\Model\System\Config\Backend\Cert</backend_model>
@@ -372,19 +385,19 @@
                             <field id="authentication_type">certificate</field>
                         </depends>
                     </field>
-                    <field id="api_gateway" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="api_gateway" translate="label" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Gateway</label>
                         <source_model>OnTap\MasterCard\Model\Adminhtml\Source\Gateway</source_model>
                         <config_path>payment/mpgs_ach/api_gateway</config_path>
                     </field>
-                    <field id="api_gateway_other" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="api_gateway_other" translate="label" type="text" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Custom Gateway URL</label>
                         <config_path>payment/mpgs_ach/api_gateway_other</config_path>
                         <depends>
                             <field id="api_gateway">api_other</field>
                         </depends>
                     </field>
-                    <field id="api_gateway_other_pki" translate="label comment" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="api_gateway_other_pki" translate="label comment" type="text" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Custom PKI Gateway URL</label>
                         <config_path>payment/mpgs_ach/api_gateway_other_pki</config_path>
                         <comment>Please contact your payment service provider to receive Custom PKI Gateway URL for Certificate Authentication.</comment>
@@ -393,53 +406,56 @@
                             <field id="authentication_type">certificate</field>
                         </depends>
                     </field>
-                    <field id="webhook_secret" translate="label comment" type="obscure" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="webhook_secret" translate="label comment" type="obscure" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>WebHook Secret</label>
                         <config_path>payment/mpgs_ach/webhook_secret</config_path>
                         <comment>Be sure to enable the WebHook support in your MasterCard Merchant Administration</comment>
                         <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                     </field>
-                    <field id="webhook_url" translate="label comment" type="text" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="webhook_url" translate="label comment" type="text" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>WebHook URL</label>
                         <config_path>payment/mpgs_ach/webhook_url</config_path>
                         <comment>If left blank, will be chosen automatically</comment>
                     </field>
-                    <field id="test" translate="label" type="select" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="test" translate="label" type="select" sortOrder="150" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Test Mode</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <config_path>payment/mpgs_ach/test</config_path>
                     </field>
-                    <field id="debug" translate="label" type="select" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="debug" translate="label" type="select" sortOrder="160" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Debug</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <config_path>payment/mpgs_ach/debug</config_path>
                     </field>
-                    <field id="order_status" translate="label" type="select" sortOrder="150" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="order_status_processing" translate="label" type="select" sortOrder="170" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>New Order Status</label>
                         <source_model>Magento\Sales\Model\Config\Source\Order\Status\Processing</source_model>
                         <config_path>payment/mpgs_ach/order_status</config_path>
+                        <depends>
+                            <field id="mapped_payment_action">order_pay</field>
+                        </depends>
                     </field>
-                    <field id="allowspecific" translate="label" type="allowspecific" sortOrder="160" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="allowspecific" translate="label" type="allowspecific" sortOrder="180" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Payment from Applicable Countries</label>
                         <source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
                         <config_path>payment/mpgs_ach/allowspecific</config_path>
                     </field>
-                    <field id="specificcountry" translate="label" type="multiselect" sortOrder="170" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="specificcountry" translate="label" type="multiselect" sortOrder="190" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Payment from Specific Countries</label>
                         <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
                         <config_path>payment/mpgs_ach/specificcountry</config_path>
                     </field>
-                    <field id="send_line_items" translate="label" type="select" sortOrder="180" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="send_line_items" translate="label" type="select" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Send Line Items</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <config_path>payment/mpgs_ach/send_line_items</config_path>
                     </field>
-                    <field id="sort_order" translate="label" type="text" sortOrder="190" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <field id="sort_order" translate="label" type="text" sortOrder="210" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Sort Order</label>
                         <frontend_class>validate-number</frontend_class>
                         <config_path>payment/mpgs_ach/sort_order</config_path>
                     </field>
-                    <group id="advanced" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <group id="advanced" translate="label" type="text" sortOrder="220" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Advanced Configuration</label>
                         <field id="version_info" type="text" translate="label comment" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                             <frontend_model>MpgsAchApiVersionInfoModel</frontend_model>

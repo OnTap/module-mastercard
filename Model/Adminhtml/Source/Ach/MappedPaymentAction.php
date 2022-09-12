@@ -15,27 +15,27 @@
  * limitations under the License.
  */
 
-namespace OnTap\MasterCard\Model\Adminhtml\Source;
+namespace OnTap\MasterCard\Model\Adminhtml\Source\Ach;
 
-use Magento\Framework\Data\OptionSourceInterface;
-use Magento\Payment\Model\MethodInterface;
+use OnTap\MasterCard\Api\MethodInterface;
+use OnTap\MasterCard\Model\Adminhtml\Source\PaymentAction as BasicPaymentAction;
 
-class PaymentAction implements OptionSourceInterface
+class MappedPaymentAction extends BasicPaymentAction
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function toOptionArray()
     {
         return [
             [
-                'value' => MethodInterface::ACTION_AUTHORIZE,
-                'label' => __('Authorize Only')
+                'value' => MethodInterface::MAPPED_ACTION_ORDER_PAY,
+                'label' => __('Pay'),
             ],
             [
-                'value' => MethodInterface::ACTION_AUTHORIZE_CAPTURE,
-                'label' => __('Authorize and Capture')
-            ]
+                'value' => MethodInterface::MAPPED_ACTION_ORDER_VERIFY,
+                'label' => __('Verify and Add Token to Order'),
+            ],
         ];
     }
 }

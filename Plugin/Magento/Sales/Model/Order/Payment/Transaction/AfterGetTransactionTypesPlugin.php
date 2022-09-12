@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2021 Mastercard
+ * Copyright (c) 2016-2022 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,23 +15,23 @@
  * limitations under the License.
  */
 
-namespace OnTap\MasterCard\Gateway\Config\Ach;
+namespace OnTap\MasterCard\Plugin\Magento\Sales\Model\Order\Payment\Transaction;
 
-use Magento\Framework\Exception\NoSuchEntityException;
-use OnTap\MasterCard\Gateway\Config\ConfigInterface;
+use Magento\Sales\Model\Order\Payment\Transaction;
+use OnTap\MasterCard\Api\Data\TransactionInterface;
 
-class Config extends \OnTap\MasterCard\Gateway\Config\Config implements ConfigInterface
+class AfterGetTransactionTypesPlugin
 {
     /**
-     * @var string
+     * @param Transaction $subject
+     * @param array $result
+     *
+     * @return array
      */
-    protected $method = 'mpgs_ach';
-
-    /**
-     * @return bool
-     */
-    public function isVaultEnabled()
+    public function afterGetTransactionTypes(Transaction $subject, $result)
     {
-        return false;
+        return array_merge($result, [
+            TransactionInterface::TYPE_VERIFY => __('Verify'),
+        ]);
     }
 }
