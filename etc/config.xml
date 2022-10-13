@@ -91,6 +91,7 @@
                 <custom_create_token_request_data>{}</custom_create_token_request_data>
                 <custom_sale_request_data>{}</custom_sale_request_data>
                 <custom_authorize_request_data>{}</custom_authorize_request_data>
+                <custom_verify_request_data>{}</custom_verify_request_data>
 
                 <authentication_type>password</authentication_type>
                 <api_password backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
@@ -111,7 +112,7 @@
                 <can_refund>1</can_refund>
                 <can_refund_partial_per_invoice>1</can_refund_partial_per_invoice>
                 <can_void>1</can_void>
-                <can_order>0</can_order>
+                <can_order>1</can_order>
                 <can_authorize>1</can_authorize>
                 <can_capture>1</can_capture>
                 <can_capture_partial>1</can_capture_partial>

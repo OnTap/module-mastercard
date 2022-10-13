@@ -15,17 +15,9 @@
  * limitations under the License.
  */
 
-namespace OnTap\MasterCard\Gateway\Config;
+namespace OnTap\MasterCard\Api;
 
-interface ConfigInterface extends \Magento\Payment\Gateway\ConfigInterface
+interface VaultPaymentInterface
 {
-    /**
-     * @return bool
-     */
-    public function isVaultEnabled(): bool;
-
-    /**
-     * @return bool
-     */
-    public function isOrderTokenizationEnabled(): bool;
+    const VAULT_ORDER = 'vault_order';
 }
