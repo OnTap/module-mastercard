@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2021 Mastercard
+ * Copyright (c) 2016-2022 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 namespace OnTap\MasterCard\Gateway\Config\Ach;
 
 use Magento\Framework\Exception\NoSuchEntityException;
+use OnTap\MasterCard\Api\MethodInterface;
 use OnTap\MasterCard\Gateway\Config\ConfigInterface;
 
 class Config extends \OnTap\MasterCard\Gateway\Config\Config implements ConfigInterface
@@ -30,8 +31,23 @@ class Config extends \OnTap\MasterCard\Gateway\Config\Config implements ConfigIn
     /**
      * @return bool
      */
-    public function isVaultEnabled()
+    public function isVaultEnabled(): bool
     {
         return false;
+    }
+
+    /**
+     * @return bool
+     * @throws NoSuchEntityException
+     */
+    public function isOrderTokenizationEnabled(): bool
+    {
+        $storeId = $this->storeManager->getStore()->getId();
+        $paymentAction = $this->getValue('mapped_payment_action', $storeId);
+        if ($paymentAction === MethodInterface::MAPPED_ACTION_ORDER_VERIFY) {
+            return true;
+        }
+
+        return (bool)$this->getValue('add_token_to_order');
     }
 }
