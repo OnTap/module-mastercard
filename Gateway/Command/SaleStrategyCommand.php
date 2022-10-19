@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2019 Mastercard
+ * Copyright (c) 2016-2022 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,10 @@
 
 namespace OnTap\MasterCard\Gateway\Command;
 
-use Magento\Payment\Gateway\Command;
+use Magento\Framework\Exception\NotFoundException;
+use Magento\Payment\Gateway\Command\CommandException;
+use Magento\Payment\Gateway\Command\CommandPoolInterface;
+use Magento\Payment\Gateway\Command\ResultInterface;
 use Magento\Payment\Gateway\CommandInterface;
 use Magento\Sales\Model\Order;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
@@ -28,18 +31,18 @@ class SaleStrategyCommand implements CommandInterface
 {
     const PRE_AUTH_CAPTURE = 'pre_auth_capture';
     const SALE = 'sale';
+    const CREATE_ORDER_TOKEN = 'tokenize';
 
     /**
-     * @var Command\CommandPoolInterface
+     * @var CommandPoolInterface
      */
     private $commandPool;
 
     /**
-     * @param Command\CommandPoolInterface $commandPool
+     * @param CommandPoolInterface $commandPool
      */
-    public function __construct(
-        Command\CommandPoolInterface $commandPool
-    ) {
+    public function __construct(CommandPoolInterface $commandPool)
+    {
         $this->commandPool = $commandPool;
     }
 
@@ -47,7 +50,11 @@ class SaleStrategyCommand implements CommandInterface
      * Executes command basing on business object
      *
      * @param array $commandSubject
-     * @return null|Command\ResultInterface
+     *
+     * @return null|ResultInterface
+     *
+     * @throws CommandException
+     * @throws NotFoundException
      */
     public function execute(array $commandSubject)
     {

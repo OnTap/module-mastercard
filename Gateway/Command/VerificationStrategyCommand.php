@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2020 Mastercard
+ * Copyright (c) 2016-2022 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ class VerificationStrategyCommand implements CommandInterface
 {
     const PROCESS_3DS_RESULT = '3ds_process';
     const CREATE_TOKEN = 'create_token';
+    const CREATE_ORDER_TOKEN = 'tokenize';
 
     /**
      * @var Command\CommandPoolInterface
@@ -55,7 +56,6 @@ class VerificationStrategyCommand implements CommandInterface
     private $state;
 
     /**
-     * VerificationStrategyCommand constructor.
      * @param State $state
      * @param Command\CommandPoolInterface $commandPool
      * @param ConfigInterface $config
@@ -138,6 +138,12 @@ class VerificationStrategyCommand implements CommandInterface
             $paymentInfo->getAdditionalInformation(VaultConfigProvider::IS_ACTIVE_CODE)) {
             $this->commandPool
                 ->get(static::CREATE_TOKEN)
+                ->execute($commandSubject);
+        }
+
+        if ($this->config->isOrderTokenizationEnabled()) {
+            $this->commandPool
+                ->get(static::CREATE_ORDER_TOKEN)
                 ->execute($commandSubject);
         }
 

@@ -41,9 +41,17 @@ class Config extends \OnTap\MasterCard\Gateway\Config\Config implements ConfigIn
     }
 
     /**
-     * @return bool
+     * {@inheritDoc}
      */
-    public function isVaultEnabled()
+    public function isVaultEnabled(): bool
+    {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isOrderTokenizationEnabled(): bool
     {
         return false;
     }

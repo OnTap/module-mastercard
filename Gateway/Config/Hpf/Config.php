@@ -39,11 +39,27 @@ class Config extends \OnTap\MasterCard\Gateway\Config\Config implements ConfigIn
      * @throws LocalizedException
      * @throws NoSuchEntityException
      */
-    public function isVaultEnabled()
+    public function isVaultEnabled(): bool
     {
         $storeId = $this->storeManager->getStore()->getId();
         $vaultPayment = $this->getVaultPayment();
         return $vaultPayment->isActive($storeId);
+    }
+
+    /**
+     * @return bool
+     *
+     * @throws NoSuchEntityException
+     */
+    public function isOrderTokenizationEnabled(): bool
+    {
+        $storeId = $this->storeManager->getStore()->getId();
+        $paymentAction = $this->getValue('payment_action', $storeId);
+        if ($paymentAction === MethodInterface::ACTION_ORDER) {
+            return true;
+        }
+
+        return (bool)$this->getValue('add_token_to_order');
     }
 
     /**
