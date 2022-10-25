@@ -33,7 +33,7 @@
 
     <virtualType name="MpgsHostedLogger" type="Magento\Payment\Model\Method\Logger">
         <arguments>
-            <argument name="config" xsi:type="object">TnsHpfConfig</argument>
+            <argument name="config" xsi:type="object">TnsHostedConfig</argument>
         </arguments>
     </virtualType>
 
