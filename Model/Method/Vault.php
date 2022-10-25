@@ -71,7 +71,7 @@ class Vault extends VaultPaymentMethod
     /**
      * @var SerializerInterface
      */
-      private $serializer;
+    private $serializer;
 
     /**
      * @param ConfigInterface $config
@@ -99,9 +99,9 @@ class Vault extends VaultPaymentMethod
         PaymentTokenManagementInterface $tokenManagement,
         OrderPaymentExtensionInterfaceFactory $paymentExtensionFactory,
         VerifyPaymentFlagInterface $verifyPaymentFlag,
-        Json $jsonSerializer,
         string $code,
-        SerializerInterface $serializer
+        SerializerInterface $serializer,
+        Json $jsonSerializer = null
     ) {
         parent::__construct(
             $config,
@@ -114,8 +114,7 @@ class Vault extends VaultPaymentMethod
             $tokenManagement,
             $paymentExtensionFactory,
             $code,
-            $jsonSerializer,
-            $jsonSerializer = $jsonSerializer ?: $this->serializer = $serializer
+            $this->jsonSerializer = $jsonSerializer ?: $this->serializer = $serializer
         );
 
         $this->commandManagerPool = $commandManagerPool;
