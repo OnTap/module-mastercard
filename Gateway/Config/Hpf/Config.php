@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2019 Mastercard
+ * Copyright (c) 2016-2022 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Payment\Helper\Data;
+use Magento\Payment\Model\MethodInterface;
 use OnTap\MasterCard\Gateway\Config\ConfigInterface;
 use OnTap\MasterCard\Model\Ui\Hpf\ConfigProvider;
 
@@ -46,23 +47,12 @@ class Config extends \OnTap\MasterCard\Gateway\Config\Config implements ConfigIn
     }
 
     /**
-     * @return Data
-     */
-    protected function getPaymentDataHelper()
-    {
-        if ($this->paymentDataHelper === null) {
-            $this->paymentDataHelper = ObjectManager::getInstance()->get(Data::class);
-        }
-        return $this->paymentDataHelper;
-    }
-
-    /**
-     * @return \Magento\Payment\Model\MethodInterface
+     * @return MethodInterface
      * @throws LocalizedException
      */
     protected function getVaultPayment()
     {
-        return $this->getPaymentDataHelper()->getMethodInstance(ConfigProvider::CC_VAULT_CODE);
+        return $this->paymentDataHelper->getMethodInstance(ConfigProvider::CC_VAULT_CODE);
     }
 
     /**
@@ -72,7 +62,7 @@ class Config extends \OnTap\MasterCard\Gateway\Config\Config implements ConfigIn
     {
         return sprintf(
             static::COMPONENT_URI,
-            $this->getApiAreaUrl(),
+            $this->getFrontendAreaUrl(),
             $this->getValue('api_version'),
             $this->getMerchantId()
         );

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 define(
     [
         'jquery',
@@ -49,15 +50,41 @@ define(
              * @returns {*}
              */
             execute: function (payload, messageContainer) {
-                var config;
+                var promise, config;
 
+                promise = $.Deferred();
                 config = this.getConfig();
-                return $.post(config.threedsecure_v2_authenticate_payer_url, payload)
-                    .fail(
-                        function (response) {
-                            errorProcessor.process(response, messageContainer);
+
+                $.ajax({
+                    url: config.threedsecure_v2_authenticate_payer_url,
+                    type: 'POST',
+                    data: payload,
+                    tryCount: 0,
+                    timeOuts: {
+                        1: 2000,
+                        2: 3000,
+                        3: 5000,
+                    },
+                    retryLimit: 3,
+                    success: function (response) {
+                        promise.resolve(response);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        if (xhr.status == 503) {
+                            this.tryCount++;
+                            if (this.tryCount <= this.retryLimit) {
+                                setTimeout($.proxy(function () {
+                                    $.ajax(this);
+                                }, this), this.timeOuts[this.tryCount]);
+                                return;
+                            }
                         }
-                    );
+                        errorProcessor.process(response, messageContainer);
+                        promise.reject(response);
+                    }
+                });
+
+                return promise;
             }
         }
     }

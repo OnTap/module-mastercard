@@ -1,6 +1,18 @@
 <?php
-/*
- * Copyright (c) On Tap Networks Limited.
+/**
+ * Copyright (c) 2016-2022 Mastercard
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 namespace OnTap\MasterCard\Observer;
@@ -13,6 +25,7 @@ use Magento\Payment\Gateway\Command\CommandPoolInterface;
 use Magento\Store\Api\GroupRepositoryInterface;
 use Magento\Store\Api\WebsiteRepositoryInterface;
 use Magento\Store\Model\ScopeInterface;
+use OnTap\MasterCard\Gateway\Config\Config;
 use OnTap\MasterCard\Gateway\Config\ConfigFactory;
 use OnTap\MasterCard\Model\SelectedStore;
 use Psr\Log\LoggerInterface;
@@ -66,6 +79,7 @@ class ConfigSaveAfter implements ObserverInterface
 
     /**
      * ConfigSaveAfter constructor.
+     *
      * @param WebsiteRepositoryInterface $websiteRepository
      * @param GroupRepositoryInterface $groupRepository
      * @param ManagerInterface $messageManager
@@ -128,28 +142,36 @@ class ConfigSaveAfter implements ObserverInterface
             $this->selectedStore->setStoreId($storeId);
 
             foreach ($this->methods as $method => $label) {
-                /** @var \OnTap\MasterCard\Gateway\Config\Config $config */
-                $config = $this->configFactory->create();
-                $config->setMethodCode($method);
+                $config = $this->configFactory->create(['methodCode' => $method]);
 
+                $isCertificate = $config->isCertificateAutherntification($storeId);
                 $merchantId = $config->getMerchantId($storeId);
-                $password = $config->getMerchantPassword($storeId);
                 $apiUrl = $config->getApiUrl($storeId);
-
                 $enabled = "1" === $this->config->getValue(
                     sprintf('payment/%s/active', $method),
                     ($storeId !== null) ? ScopeInterface::SCOPE_STORE : ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
                     $storeId
                 );
 
-                if (!$enabled || !$merchantId || !$password || !$apiUrl) {
-                    continue;
+                if ($isCertificate) {
+                    $sslCertPath = $config->getSSLCertificatePath($storeId);
+                    $sslKeyPath = $config->getSSLKeyPath($storeId);
+                    if (!$enabled || !$merchantId || !$sslCertPath || !$sslKeyPath || !$apiUrl) {
+                        continue;
+                    }
+                } else {
+                    $password = $config->getMerchantPassword($storeId);
+                    if (!$enabled || !$merchantId || !$password || !$apiUrl) {
+                        continue;
+                    }
                 }
 
                 try {
                     $command = $this->commandPool->get(sprintf('check_gateway_%s', $method));
                     $command->execute([]);
-                    $this->messageManager->addSuccessMessage(__('"%1" test was successful.', __($label)));
+                    $this->messageManager->addSuccessMessage(
+                        __('"%1" test was successful.', __($label))
+                    );
                 } catch (\Exception $e) {
                     $this->messageManager->addWarningMessage(
                         __(
@@ -162,7 +184,7 @@ class ConfigSaveAfter implements ObserverInterface
             }
         } catch (\Exception $e) {
             $this->logger->critical('Error occurred while testing MasterCard configuration: ' . $e->getMessage(), [
-                'exception' => $e
+                'exception' => $e,
             ]);
         }
     }

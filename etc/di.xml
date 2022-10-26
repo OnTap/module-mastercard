@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-  ~ Copyright (c) 2016-2021 Mastercard
+  ~ Copyright (c) 2016-2022 Mastercard
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -16,6 +16,14 @@
   -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="OnTap\MasterCard\Api\SessionInformationManagementInterface" type="OnTap\MasterCard\Model\SessionInformationManagement" />
+    <preference for="OnTap\MasterCard\Api\VerifyPaymentFlagInterface" type="OnTap\MasterCard\Model\VerifyPaymentFlag" />
+
+    <type name="OnTap\MasterCard\Model\System\Config\Backend\Cert">
+        <arguments>
+            <argument name="resource" xsi:type="object">Magento\Config\Model\ResourceModel\Config\Data</argument>
+            <argument name="resourceCollection" xsi:type="object">Magento\Config\Model\ResourceModel\Config\Data\Collection\Proxy</argument>
+        </arguments>
+    </type>
 
     <virtualType name="MpgsHpfLogger" type="Magento\Payment\Model\Method\Logger">
         <arguments>
@@ -45,7 +53,12 @@
             <argument name="operation" xsi:type="string">CAPTURE</argument>
         </arguments>
     </virtualType>
-    <virtualType name="SaleOperationDataBuilder" type="OnTap\MasterCard\Gateway\Request\OperationBuilder">
+    <virtualType name="VerifyOperationDataBuilder" type="OnTap\MasterCard\Gateway\Request\OperationBuilder">
+        <arguments>
+            <argument name="operation" xsi:type="string">VERIFY</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PayOperationDataBuilder" type="OnTap\MasterCard\Gateway\Request\OperationBuilder">
         <arguments>
             <argument name="operation" xsi:type="string">PAY</argument>
         </arguments>
@@ -449,7 +462,7 @@
     <virtualType name="MpgsHostedSaleDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
         <arguments>
             <argument name="builders" xsi:type="array">
-                <item name="operation" xsi:type="string">SaleOperationDataBuilder</item>
+                <item name="operation" xsi:type="string">PayOperationDataBuilder</item>
                 <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\SessionDataBuilder</item>
                 <item name="order" xsi:type="string">OnTap\MasterCard\Gateway\Request\OrderDataBuilder</item>
                 <item name="line_items" xsi:type="string">OnTap\MasterCard\Gateway\Request\LineItemsBuilder</item>
@@ -779,7 +792,7 @@
     <virtualType name="TnsHpfSaleDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
         <arguments>
             <argument name="builders" xsi:type="array">
-                <item name="operation" xsi:type="string">SaleOperationDataBuilder</item>
+                <item name="operation" xsi:type="string">PayOperationDataBuilder</item>
                 <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\Hpf\SessionDataBuilder</item>
                 <item name="order" xsi:type="string">OnTap\MasterCard\Gateway\Request\OrderDataBuilder</item>
                 <item name="authentication_transaction_id" xsi:type="string">OnTap\MasterCard\Gateway\Request\Authentication\AuthenticationTransactionIdBuilder</item>
@@ -979,27 +992,108 @@
         <arguments>
             <argument name="commands" xsi:type="array">
                 <item name="order" xsi:type="string">MpgsAchOrderCommand</item>
+                <item name="pay" xsi:type="string">MpgsAchPayCommand</item>
+                <item name="capture" xsi:type="string">MpgsAchCaptureCommand</item>
+                <item name="verify" xsi:type="string">MpgsAchVerifyCommand</item>
+                <item name="tokenize" xsi:type="string">MpgsAchTokenizeCommand</item>
+                <item name="tokenize_if_enabled" xsi:type="string">MpgsAchTokenizeIfEnabledCommand</item>
             </argument>
         </arguments>
     </virtualType>
-    <virtualType name="MpgsAchOrderCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
+    <virtualType name="MpgsAchTokenizeIfEnabledCommand" type="OnTap\MasterCard\Gateway\Command\ConditionalCommand">
         <arguments>
-            <argument name="requestBuilder" xsi:type="object">MpgsAchOrderDataBuilder</argument>
+            <argument name="configProvider" xsi:type="object">MpgsAchConfig</argument>
+            <argument name="commandPool" xsi:type="object">MpgsAchCommandPool</argument>
+            <argument name="configKey" xsi:type="string">add_token_to_order</argument>
+            <argument name="commandName" xsi:type="string">tokenize</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsAchOrderCommand" type="OnTap\MasterCard\Gateway\Command\MappedCommand">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">MpgsAchCommandPool</argument>
+            <argument name="configProvider" xsi:type="object">MpgsAchConfig</argument>
+            <argument name="configKey" xsi:type="string">mapped_payment_action</argument>
+            <argument name="commandMap" xsi:type="array">
+                <item name="order_pay" xsi:type="array">
+                    <item name="tokenize_if_enabled" xsi:type="string">tokenize_if_enabled</item>
+                    <item name="pay" xsi:type="string">pay</item>
+                </item>
+                <item name="order_verify" xsi:type="array">
+                    <item name="tokenize" xsi:type="string">tokenize</item>
+                    <item name="verify" xsi:type="string">verify</item>
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsAchPayCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">MpgsAchPayDataBuilder</argument>
             <argument name="transferFactory" xsi:type="object">MpgsAchTransferFactory</argument>
             <argument name="client" xsi:type="object">MpgsAchRestClient</argument>
-            <argument name="handler" xsi:type="object">MpgsAchResponseHandler</argument>
+            <argument name="handler" xsi:type="object">MpgsAchPayResponseHandler</argument>
             <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\AchValidator</argument>
             <argument name="errorMessageMapper" xsi:type="object">MpgsAchErrorMapper</argument>
         </arguments>
     </virtualType>
-    <virtualType name="MpgsAchResponseHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
+    <virtualType name="MpgsAchVerifyCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">MpgsAchVerifyDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">MpgsAchTransferFactory</argument>
+            <argument name="client" xsi:type="object">MpgsAchRestClient</argument>
+            <argument name="handler" xsi:type="object">MpgsAchVerifyResponseHandler</argument>
+            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\AchValidator</argument>
+            <argument name="errorMessageMapper" xsi:type="object">MpgsAchErrorMapper</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsAchTokenizeCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">MpgsAchCreateTokenDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">MpgsAchTransferFactoryCreateToken</argument>
+            <argument name="client" xsi:type="object">MpgsAchRestClient</argument>
+            <argument name="handler" xsi:type="object">OnTap\MasterCard\Gateway\Response\OrderTokenCreateHandler</argument>
+            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\TokenCreateValidator</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsAchCaptureCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">MpgsAchCaptureDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">MpgsAchTransferFactory</argument>
+            <argument name="client" xsi:type="object">MpgsAchRestClient</argument>
+            <argument name="handler" xsi:type="object">MpgsAchPayResponseHandler</argument>
+            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\AchValidator</argument>
+            <argument name="errorMessageMapper" xsi:type="object">MpgsAchErrorMapper</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsAchCreateTokenDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="session" xsi:type="string">OnTap\MasterCard\Gateway\Request\Ach\SessionDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MpgsAchTransferFactoryCreateToken" type="OnTap\MasterCard\Gateway\Http\Vault\TransferFactoryCreateToken">
+        <arguments>
+            <argument name="config" xsi:type="object">MpgsAchConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MpgsAchPayResponseHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
         <arguments>
             <argument name="handlers" xsi:type="array">
-                <item name="transaction" xsi:type="string">OnTap\MasterCard\Gateway\Response\TransactionIdHandler</item>
+                <item name="transaction_id" xsi:type="string">OnTap\MasterCard\Gateway\Response\TransactionIdHandler</item>
                 <item name="payment_details" xsi:type="string">OnTap\MasterCard\Gateway\Response\AchPaymentDetails</item>
                 <!-- @todo: multistep_ach -->
                 <!-- Order is invoiced immediately, instead of using webhook -->
                 <item name="invoice" xsi:type="string">OnTap\MasterCard\Gateway\Response\AchInvoiceHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsAchVerifyResponseHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="transaction_id" xsi:type="string">OnTap\MasterCard\Gateway\Response\TransactionIdHandler</item>
+                <item name="payment_details" xsi:type="string">OnTap\MasterCard\Gateway\Response\AchPaymentDetails</item>
             </argument>
         </arguments>
     </virtualType>
@@ -1015,10 +1109,10 @@
             <argument name="messageMapping" xsi:type="object">OnTap\MasterCard\Gateway\ErrorMapper\AchMessages</argument>
         </arguments>
     </virtualType>
-    <virtualType name="MpgsAchOrderDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
+    <virtualType name="MpgsAchPayDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
         <arguments>
             <argument name="builders" xsi:type="array">
-                <item name="operation" xsi:type="string">SaleOperationDataBuilder</item>
+                <item name="operation" xsi:type="string">PayOperationDataBuilder</item>
                 <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\Ach\SessionDataBuilder</item>
                 <item name="order" xsi:type="string">OnTap\MasterCard\Gateway\Request\OrderDataBuilder</item>
                 <item name="line_items" xsi:type="string">OnTap\MasterCard\Gateway\Request\LineItemsBuilder</item>
@@ -1027,6 +1121,38 @@
                 <item name="shipping" xsi:type="string">OnTap\MasterCard\Gateway\Request\ShippingDataBuilder</item>
                 <item name="customer" xsi:type="string">OnTap\MasterCard\Gateway\Request\CustomerDataBuilder</item>
                 <item name="source" xsi:type="string">OnTap\MasterCard\Gateway\Request\SourceDataBuilder</item>
+                <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsAchVerifyDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="operation" xsi:type="string">VerifyOperationDataBuilder</item>
+                <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\Ach\SessionDataBuilder</item>
+                <item name="order" xsi:type="string">OnTap\MasterCard\Gateway\Request\OrderDataBuilder</item>
+                <item name="line_items" xsi:type="string">OnTap\MasterCard\Gateway\Request\LineItemsBuilder</item>
+                <item name="discount" xsi:type="string">OnTap\MasterCard\Gateway\Request\DiscountBuilder</item>
+                <item name="billing" xsi:type="string">OnTap\MasterCard\Gateway\Request\BillingDataBuilder</item>
+                <item name="shipping" xsi:type="string">OnTap\MasterCard\Gateway\Request\ShippingDataBuilder</item>
+                <item name="customer" xsi:type="string">OnTap\MasterCard\Gateway\Request\CustomerDataBuilder</item>
+                <item name="source" xsi:type="string">OnTap\MasterCard\Gateway\Request\SourceDataBuilder</item>
+                <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsAchCaptureDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="operation" xsi:type="string">PayOperationDataBuilder</item>
+                <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\Ach\SessionDataBuilder</item>
+                <item name="order" xsi:type="string">OnTap\MasterCard\Gateway\Request\OrderDataBuilder</item>
+                <item name="line_items" xsi:type="string">OnTap\MasterCard\Gateway\Request\LineItemsBuilder</item>
+                <item name="discount" xsi:type="string">OnTap\MasterCard\Gateway\Request\DiscountBuilder</item>
+                <item name="billing" xsi:type="string">OnTap\MasterCard\Gateway\Request\BillingDataBuilder</item>
+                <item name="shipping" xsi:type="string">OnTap\MasterCard\Gateway\Request\ShippingDataBuilder</item>
+                <item name="customer" xsi:type="string">OnTap\MasterCard\Gateway\Request\CustomerDataBuilder</item>
+                <item name="source" xsi:type="string">OnTap\MasterCard\Gateway\Request\OrderTokenSourceDataBuilder</item>
                 <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
             </argument>
         </arguments>
@@ -1094,4 +1220,21 @@
             <argument name="config" xsi:type="object">MpgsAchConfig</argument>
         </arguments>
     </virtualType>
+    <type name="Magento\Sales\Model\Order\Payment\State\OrderCommand">
+        <plugin name="OnTap_MasterCard::Magento\Sales\Model\Order\Payment\State\OrderCommand::afterExecute" type="OnTap\MasterCard\Plugin\Magento\Sales\Model\Order\Payment\State\OrderCommand\AfterExecutePlugin" />
+    </type>
+    <type name="Magento\Sales\Model\Order\Payment\Transaction">
+        <plugin name="OnTap_MasterCard::Magento\Sales\Model\Order\Payment\Transaction::afterGetTransactionTypes" type="OnTap\MasterCard\Plugin\Magento\Sales\Model\Order\Payment\Transaction\AfterGetTransactionTypesPlugin" />
+        <plugin name="OnTap_MasterCard::Magento\Sales\Model\Order\Payment\Transaction::aroundSetTxnType" type="OnTap\MasterCard\Plugin\Magento\Sales\Model\Order\Payment\Transaction\AroundSetTxnTypePlugin" />
+    </type>
+    <type name="Magento\Sales\Model\Order\Payment">
+        <plugin name="OnTap_MasterCard::Magento\Sales\Model\Order\Payment::aroundAddTransactionPlugin" type="OnTap\MasterCard\Plugin\Magento\Sales\Model\Order\Payment\AroundAddTransactionPlugin" />
+    </type>
+    <type name="OnTap\MasterCard\Model\VerifyPaymentFlag">
+        <arguments>
+            <argument name="configPool" xsi:type="array">
+                <item name="mpgs_ach" xsi:type="object">MpgsAchConfig</item>
+            </argument>
+        </arguments>
+    </type>
 </config>

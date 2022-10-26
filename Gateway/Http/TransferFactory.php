@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2019 Mastercard
+ * Copyright (c) 2016-2022 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,18 @@
 
 namespace OnTap\MasterCard\Gateway\Http;
 
-use Magento\Payment\Gateway\ConfigInterface;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use Magento\Payment\Gateway\Http\TransferBuilder;
 use Magento\Payment\Gateway\Http\TransferInterface;
+use OnTap\MasterCard\Gateway\Config\Config;
 use OnTap\MasterCard\Gateway\Http\Client\Rest;
 
 class TransferFactory implements TransferFactoryInterface
 {
     /**
-     * @var ConfigInterface
+     * @var Config
      */
     protected $config;
 
@@ -46,12 +48,11 @@ class TransferFactory implements TransferFactoryInterface
     protected $request = [];
 
     /**
-     * TransferFactory constructor.
-     * @param ConfigInterface $config
+     * @param Config $config
      * @param TransferBuilder $transferBuilder
      */
     public function __construct(
-        ConfigInterface $config,
+        Config $config,
         TransferBuilder $transferBuilder
     ) {
         $this->config = $config;
@@ -60,6 +61,7 @@ class TransferFactory implements TransferFactoryInterface
 
     /**
      * @param int|null $storeId
+     *
      * @return string
      */
     protected function getMerchantUsername($storeId = null)
@@ -69,6 +71,7 @@ class TransferFactory implements TransferFactoryInterface
 
     /**
      * @param null $storeId
+     *
      * @return string
      */
     protected function apiVersionUri($storeId = null)
@@ -78,6 +81,7 @@ class TransferFactory implements TransferFactoryInterface
 
     /**
      * @param null $storeId
+     *
      * @return string
      */
     protected function merchantUri($storeId = null)
@@ -87,16 +91,19 @@ class TransferFactory implements TransferFactoryInterface
 
     /**
      * Generate a new transactionId
+     *
      * @param PaymentDataObjectInterface $payment
+     *
      * @return string
      */
     protected function createTxnId(PaymentDataObjectInterface $payment)
     {
-        return uniqid(sprintf('%s-', (string) $payment->getOrder()->getOrderIncrementId()));
+        return uniqid(sprintf('%s-', (string)$payment->getOrder()->getOrderIncrementId()));
     }
 
     /**
      * @param int|null $storeId
+     *
      * @return mixed
      */
     protected function getGatewayUri($storeId = null)
@@ -106,6 +113,7 @@ class TransferFactory implements TransferFactoryInterface
 
     /**
      * @param PaymentDataObjectInterface $payment
+     *
      * @return string
      */
     protected function getUri(PaymentDataObjectInterface $payment)
@@ -118,22 +126,46 @@ class TransferFactory implements TransferFactoryInterface
     }
 
     /**
+     * @return string[]
+     */
+    protected function getMethodHeaders(): array
+    {
+        return [
+            'Content-Type' => 'application/json;charset=UTF-8',
+        ];
+    }
+
+    /**
      * @param array $request
      * @param PaymentDataObjectInterface $payment
+     *
      * @return TransferInterface
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
      */
     public function create(array $request, PaymentDataObjectInterface $payment)
     {
         $this->request = $request;
         $storeId = $payment->getOrder()->getStoreId();
 
-        return $this->transferBuilder
+        $builder = $this->transferBuilder
             ->setMethod($this->httpMethod)
-            ->setHeaders(['Content-Type' => 'application/json;charset=UTF-8'])
+            ->setHeaders($this->getMethodHeaders())
             ->setBody($request)
-            ->setAuthUsername($this->getMerchantUsername($storeId))
-            ->setAuthPassword($this->config->getMerchantPassword($storeId))
-            ->setUri($this->getUri($payment))
-            ->build();
+            ->setUri($this->getUri($payment));
+
+        if ($this->config->isCertificateAutherntification($storeId)) {
+            $builder->setClientConfig([
+                CURLOPT_SSLCERT => $this->config->getSSLCertificatePath($storeId),
+                CURLOPT_SSLKEY => $this->config->getSSLKeyPath($storeId),
+            ]);
+        } else {
+            $userPassword = $this->getMerchantUsername($storeId) . ":" . $this->config->getMerchantPassword($storeId);
+            $builder->setClientConfig([
+                CURLOPT_USERPWD => $userPassword,
+            ]);
+        }
+
+        return $builder->build();
     }
 }

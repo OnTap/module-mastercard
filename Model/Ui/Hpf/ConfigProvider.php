@@ -20,6 +20,7 @@ namespace OnTap\MasterCard\Model\Ui\Hpf;
 use Magento\Framework\UrlInterface;
 use Magento\Payment\Gateway\ConfigInterface;
 use Magento\Checkout\Model\ConfigProviderInterface;
+use OnTap\MasterCard\Gateway\Config\Config;
 
 class ConfigProvider implements ConfigProviderInterface
 {
@@ -27,7 +28,7 @@ class ConfigProvider implements ConfigProviderInterface
     const CC_VAULT_CODE = 'tns_hpf_vault';
 
     /**
-     * @var ConfigInterface
+     * @var Config
      */
     private $config;
 
@@ -37,14 +38,14 @@ class ConfigProvider implements ConfigProviderInterface
     private $urlBuilder;
 
     /**
-     * Constructor
-     *
-     * @param ConfigInterface $config
+     * @param Config $config
      * @param UrlInterface $urlBuilder
      */
-    public function __construct(ConfigInterface $config, UrlInterface $urlBuilder)
-    {
-        $this->config     = $config;
+    public function __construct(
+        Config $config,
+        UrlInterface $urlBuilder
+    ) {
+        $this->config = $config;
         $this->urlBuilder = $urlBuilder;
     }
 
@@ -58,15 +59,15 @@ class ConfigProvider implements ConfigProviderInterface
         return [
             'payment' => [
                 self::METHOD_CODE => [
-                    'merchant_username'      => $this->config->getMerchantId(),
-                    'component_url'          => $this->config->getComponentUrl(),
-                    'debug'                  => (bool)$this->config->getValue('debug'),
+                    'merchant_username' => $this->config->getMerchantId(),
+                    'component_url' => $this->config->getComponentUrl(),
+                    'debug' => (bool)$this->config->getValue('debug'),
                     'three_d_secure_version' => (int)$this->config->getValue('three_d_secure'),
-                    'ccVaultCode'            => static::CC_VAULT_CODE,
-                    'check_url'              => $this->urlBuilder->getUrl(
+                    'ccVaultCode' => static::CC_VAULT_CODE,
+                    'check_url' => $this->urlBuilder->getUrl(
                         'tns/threedsecure/check',
                         [
-                            'method'  => 'hpf',
+                            'method' => 'hpf',
                             '_secure' => 1,
                         ]
                     ),
@@ -74,7 +75,7 @@ class ConfigProvider implements ConfigProviderInterface
                         'tns/threedsecureV2/initiateAuthentication',
                         ['_secure' => 1]
                     ),
-                    'threedsecure_v2_authenticate_payer_url'      => $this->urlBuilder->getUrl(
+                    'threedsecure_v2_authenticate_payer_url' => $this->urlBuilder->getUrl(
                         'tns/threedsecureV2/authenticatePayer',
                         ['_secure' => 1]
                     ),

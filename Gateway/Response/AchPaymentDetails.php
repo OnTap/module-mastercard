@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2021 Mastercard
+ * Copyright (c) 2016-2022 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,12 +58,11 @@ class AchPaymentDetails implements HandlerInterface
         // Set transaction as pending because ACH does not capture it immediately
         // Would use this in case we need to split the process between APPROVED_PENDING_SETTLEMENT (realtime) and APPROVED (webhook)
         //$isPending = $response['response']['gatewayCode'] === 'APPROVED_PENDING_SETTLEMENT';
-        $isPending = false;
-        $payment->setIsTransactionPending($isPending == true);
-        $payment->setIsTransactionClosed($isPending != true);
+        $payment->setIsTransactionPending(false);
+        $payment->setIsTransactionClosed(true);
 
         $sourceOfFunds = $response['sourceOfFunds']['provided']['ach'];
-        $additionalInfo = [];
+        $additionalInfo = $payment->getAdditionalInformation();
         foreach ($this->additionalAccountInfo as $item) {
             if (!isset($sourceOfFunds[$item])) {
                 continue;

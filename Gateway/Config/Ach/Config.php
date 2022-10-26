@@ -17,6 +17,7 @@
 
 namespace OnTap\MasterCard\Gateway\Config\Ach;
 
+use Magento\Framework\Exception\NoSuchEntityException;
 use OnTap\MasterCard\Gateway\Config\ConfigInterface;
 
 class Config extends \OnTap\MasterCard\Gateway\Config\Config implements ConfigInterface
@@ -27,7 +28,7 @@ class Config extends \OnTap\MasterCard\Gateway\Config\Config implements ConfigIn
     protected $method = 'mpgs_ach';
 
     /**
-     * @return false
+     * @return bool
      */
     public function isVaultEnabled()
     {

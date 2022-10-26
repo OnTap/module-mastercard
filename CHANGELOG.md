@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [103.8.0] - 2022-09-12
+### Changed
+- Authentication by OV SSL Certificate option added
+- Add the “Verify and Tokenize“ Payment Option for the ACH Payment Method 
+
+### Fixed
+- The module has to pause for a few seconds and then resubmit the Authenticate Payer request as-is in the case of the HTTP 503 response from the gateway instead of simply state about the unknown error
+
+
 ## [103.7.2] - 2022-03-11
 ### Fixed
 - EMV 3DS doesn't work if Website Code is used in the Base URL
@@ -25,6 +34,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - Fixes a bug in value serialisation
 
+
 ## [103.5.0] - 2021-03-30
 ### Changed
 - EMV 3D Secure 2.0 support for both Payment Methods
@@ -35,6 +45,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - Fixed a bug where under certain circumstances, the quote was loaded incorrectly
 - Fixed the problems with the Payment sessions for the Guests.
+
 
 ## [103.4.0] - 2020-10-20
 ### Changed
@@ -47,13 +58,16 @@ All notable changes to this project will be documented in this file.
 - Fixes deadlock loading bug with Vault payments
 - Fixes the telephone file usage
 
+
 ## [103.3.2] - 2020-03-20
 ### Fixed
 - Bugfixes
 
+
 ## [103.3.1] - 2020-02-07
 ### Fixed
 - Fixes a an issue with `\Composer` component usage
+
 
 ## [103.3.0] - 2021-10-19
 ### Changed
@@ -69,9 +83,11 @@ All notable changes to this project will be documented in this file.
 - Fixes a bug with currency setup
 - Fixes a bug with Hosted Checkout modal title
 
+
 ## [103.2.5] - 2019-12-04
 ### Fixed
 - Fixes issue with Magento 2.3 patch 3 - MAGETWO-99075
+
 
 ## [102.2.4] - 2020-02-25
 ### Fixed

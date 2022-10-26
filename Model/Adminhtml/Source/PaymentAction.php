@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016-2019 Mastercard
+ * Copyright (c) 2016-2022 Mastercard
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
 
 namespace OnTap\MasterCard\Model\Adminhtml\Source;
 
-use Magento\Framework\Option\ArrayInterface;
-use Magento\Payment\Model\Method\AbstractMethod;
+use Magento\Framework\Data\OptionSourceInterface;
+use Magento\Payment\Model\MethodInterface;
 
-class PaymentAction implements ArrayInterface
+class PaymentAction implements OptionSourceInterface
 {
     /**
      * {@inheritdoc}
@@ -29,11 +29,11 @@ class PaymentAction implements ArrayInterface
     {
         return [
             [
-                'value' => AbstractMethod::ACTION_AUTHORIZE,
+                'value' => MethodInterface::ACTION_AUTHORIZE,
                 'label' => __('Authorize Only')
             ],
             [
-                'value' => AbstractMethod::ACTION_AUTHORIZE_CAPTURE,
+                'value' => MethodInterface::ACTION_AUTHORIZE_CAPTURE,
                 'label' => __('Authorize and Capture')
             ]
         ];

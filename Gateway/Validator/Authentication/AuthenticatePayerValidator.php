@@ -22,6 +22,7 @@ use Magento\Payment\Gateway\Validator\AbstractValidator;
 use Magento\Payment\Gateway\Validator\ResultInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
+use OnTap\MasterCard\Exception\SystemBusy;
 
 class AuthenticatePayerValidator extends AbstractValidator
 {
@@ -32,6 +33,7 @@ class AuthenticatePayerValidator extends AbstractValidator
 
     /**
      * InitiateAuthValidator constructor.
+     *
      * @param ResultInterfaceFactory $resultFactory
      * @param ArrayManager $arrayManager
      */
@@ -47,11 +49,18 @@ class AuthenticatePayerValidator extends AbstractValidator
      * Performs domain-related validation for business object
      *
      * @param array $validationSubject
+     *
      * @return ResultInterface
+     *
+     * @throws SystemBusy
      */
     public function validate(array $validationSubject)
     {
         $response = SubjectReader::readResponse($validationSubject);
+
+        if ($this->isServerBusyResponse($response)) {
+            $this->throwServerBusyError($response);
+        }
 
         $error = $this->arrayManager->get('error', $response);
         $result = $this->arrayManager->get('result', $response);
@@ -70,7 +79,7 @@ class AuthenticatePayerValidator extends AbstractValidator
 
         if ($version !== '3DS1' && $version !== '3DS2') {
             return $this->createResult(false, [
-                'Unsupported version of 3DS'
+                'Unsupported version of 3DS',
             ]);
         }
 
@@ -80,5 +89,35 @@ class AuthenticatePayerValidator extends AbstractValidator
         }
 
         return $this->createResult(true);
+    }
+
+    /**
+     * @param array $response
+     *
+     * @return bool
+     */
+    private function isServerBusyResponse(array $response): bool
+    {
+        $cause = $response['cause'] ?? null;
+        if (!$cause) {
+            return false;
+        }
+
+        return 'SERVER_BUSY' === $cause;
+    }
+
+    /**
+     * @param array $response
+     *
+     * @return void
+     *
+     * @throws SystemBusy
+     */
+    private function throwServerBusyError(array $response): void
+    {
+        $explanation = $response['explanation'] ?? null;
+        $explanation = $explanation ? __($explanation) : __('System Busy');
+
+        throw new SystemBusy($explanation);
     }
 }
