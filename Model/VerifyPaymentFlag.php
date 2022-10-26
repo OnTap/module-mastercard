@@ -18,25 +18,26 @@
 namespace OnTap\MasterCard\Model;
 
 use Magento\Store\Model\StoreManagerInterface;
-use OnTap\MasterCard\Api\MethodInterface;
 use OnTap\MasterCard\Api\VerifyPaymentFlagInterface;
 use OnTap\MasterCard\Gateway\Config\Config;
 
 class VerifyPaymentFlag implements VerifyPaymentFlagInterface
 {
+    private const CONFIG_PATH_ACTIVE = 'active';
+
     /**
      * @var StoreManagerInterface
      */
     private $storeManager;
 
     /**
-     * @var Config[]
+     * @var array
      */
     private $configPool;
 
     /**
      * @param StoreManagerInterface $storeManager
-     * @param Config[] $configPool
+     * @param array $configPool
      */
     public function __construct(
         StoreManagerInterface $storeManager,
@@ -51,15 +52,19 @@ class VerifyPaymentFlag implements VerifyPaymentFlagInterface
      */
     public function isVerifyPayment(string $method): bool
     {
-        $config = $this->configPool[$method] ?? null;
-        if (null === $config) {
+        /** @var Config|null $configProvider */
+        $configProvider = $this->configPool[$method]['configProvider'] ?? null;
+        $configPath = $this->configPool[$method]['configPath'] ?? null;
+        $verifyOperationValue = $this->configPool[$method]['configValue'] ?? null;
+        if (in_array(null, [$configProvider, $configPath, $verifyOperationValue], true)) {
             return false;
         }
 
         $storeId = $this->storeManager->getStore()->getId();
-        $isActive = (bool)$config->getValue('active', $storeId);
-        $paymentOperation = $config->getValue('mapped_payment_action', $storeId);
-        $isVerifyOperation = $paymentOperation === MethodInterface::MAPPED_ACTION_ORDER_VERIFY;
+        $isActive = (bool)$configProvider->getValue(self::CONFIG_PATH_ACTIVE, $storeId);
+
+        $paymentOperation = $configProvider->getValue($configPath, $storeId);
+        $isVerifyOperation = $paymentOperation === $verifyOperationValue;
 
         return $isActive && $isVerifyOperation;
     }

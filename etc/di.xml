@@ -237,6 +237,15 @@
         </arguments>
     </virtualType>
 
+    <virtualType name="TnsVerifyResponseHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="transaction" xsi:type="string">OnTap\MasterCard\Gateway\Response\TransactionIdHandler</item>
+                <item name="payment" xsi:type="string">OnTap\MasterCard\Gateway\Response\PaymentHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
     <virtualType name="TnsAuthorizeResponseHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
         <arguments>
             <argument name="handlers" xsi:type="array">
@@ -592,11 +601,6 @@
             </argument>
         </arguments>
     </virtualType>
-    <type name="OnTap\MasterCard\Gateway\Config\Is3DS2EnabledHandler">
-        <arguments>
-            <argument name="configInterface" xsi:type="object">TnsHpfConfig</argument>
-        </arguments>
-    </type>
     <virtualType name="TnsHpfConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
         <arguments>
             <argument name="configInterface" xsi:type="object">TnsHpfConfig</argument>
@@ -647,16 +651,42 @@
                 <item name="refund" xsi:type="string">TnsHpfRefundCommand</item>
                 <item name="void" xsi:type="string">TnsHpfVoidCommand</item>
                 <item name="create_token" xsi:type="string">MpgsHpfCreateTokenCommand</item>
-                <item name="vault_sale" xsi:type="string">MpgsHpfVaultSaleCommand</item>
-                <item name="vault_authorize" xsi:type="string">MpgsHpfVaultAuthorizeCommand</item>
                 <item name="initiate_authentication" xsi:type="string">TnsHpfThreeDSecure2InitiateAuthenticationCommand</item>
                 <item name="authenticate_payer" xsi:type="string">TnsHpfThreeDSecure2AuthenticatePayerCommand</item>
+                <item name="order" xsi:type="string">TnsHpfOrderCommand</item>
+                <item name="verify" xsi:type="string">TnsHpfVerifyStrategyCommand</item>
+                <item name="verify_simple" xsi:type="string">TnsHpfVerifyCommand</item>
+                <item name="tokenize" xsi:type="string">TnsHpfCreateOrderTokenCommand</item>
+                <item name="vault_sale" xsi:type="string">MpgsHpfVaultSaleCommand</item>
+                <item name="vault_authorize" xsi:type="string">MpgsHpfVaultAuthorizeCommand</item>
+                <item name="vault_order" xsi:type="string">MpgsHpfVaultOrderCommand</item>
+                <item name="vault_tokenize" xsi:type="string">MpgsHpfVaultCreateOrderTokenCommand</item>
+                <item name="vault_verify" xsi:type="string">MpgsHpfVaultVerifyCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="TnsHpfOrderCommand" type="OnTap\MasterCard\Gateway\Command\ChainCommand">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">TnsHpfCommandPool</argument>
+            <argument name="commandChain" xsi:type="array">
+                <item name="tokenize" xsi:type="string">tokenize</item>
+                <item name="verify" xsi:type="string">verify</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsHpfVaultOrderCommand" type="OnTap\MasterCard\Gateway\Command\ChainCommand">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">TnsHpfCommandPool</argument>
+            <argument name="commandChain" xsi:type="array">
+                <item name="tokenize" xsi:type="string">vault_tokenize</item>
+                <item name="verify" xsi:type="string">vault_verify</item>
             </argument>
         </arguments>
     </virtualType>
 
     <!-- HPF Vault -->
-    <virtualType name="MpgsHpfVaultFacade" type="Magento\Vault\Model\Method\Vault">
+    <virtualType name="MpgsHpfVaultFacade" type="OnTap\MasterCard\Model\Method\Vault">
         <arguments>
             <argument name="config" xsi:type="object">MpgsHpfVaultPaymentConfig</argument>
             <argument name="valueHandlerPool" xsi:type="object">MpgsHpfVaultPaymentValueHandlerPool</argument>
@@ -684,7 +714,7 @@
     <virtualType name="MpgsHpfCreateTokenCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
         <arguments>
             <argument name="requestBuilder" xsi:type="object">MpgsHpfCreateTokenDataBuilder</argument>
-            <argument name="transferFactory" xsi:type="object">MpgsHpfTrasferFactoryCreateToken</argument>
+            <argument name="transferFactory" xsi:type="object">MpgsHpfTransferFactoryCreateToken</argument>
             <argument name="client" xsi:type="object">MpgsHpfRestClient</argument>
             <argument name="handler" xsi:type="object">MpgsHpfTokenCreateHandler</argument>
             <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\TokenCreateValidator</argument>
@@ -705,7 +735,17 @@
         </arguments>
     </virtualType>
 
-    <virtualType name="MpgsHpfTrasferFactoryCreateToken" type="OnTap\MasterCard\Gateway\Http\Vault\TransferFactoryCreateToken">
+    <virtualType name="TnsHpfCreateOrderTokenCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">MpgsHpfCreateTokenDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">MpgsHpfTransferFactoryCreateToken</argument>
+            <argument name="client" xsi:type="object">MpgsHpfRestClient</argument>
+            <argument name="handler" xsi:type="object">OnTap\MasterCard\Gateway\Response\OrderTokenCreateHandler</argument>
+            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\TokenCreateValidator</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MpgsHpfTransferFactoryCreateToken" type="OnTap\MasterCard\Gateway\Http\Vault\TransferFactoryCreateToken">
         <arguments>
             <argument name="config" xsi:type="object">TnsHpfConfig</argument>
         </arguments>
@@ -732,6 +772,39 @@
             </argument>
         </arguments>
     </virtualType>
+    <virtualType name="MpgsHpfVaultVerifyCommand" type="TnsHpfVerifyCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">MpgsHpfVaultVerifyDataBuilder</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MpgsHpfVaultCreateOrderTokenCommand" type="TnsHpfCreateOrderTokenCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">MpgsHpfVaultCreateTokenDataBuilder</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MpgsHpfVaultCreateTokenDataBuilder" type="MpgsHpfCreateTokenDataBuilder">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\TokenDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MpgsHpfVaultVerifyDataBuilder" type="TnsHpfVerifyDataBuilder">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="session" xsi:type="string">OnTap\MasterCard\Gateway\Request\Hpf\SessionDataBuilder</item>
+                <item name="card" xsi:type="string">OnTap\MasterCard\Gateway\Request\TokenDataBuilder</item>
+                <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
+                <item name="extra" xsi:type="string">MpgsHpfVerifyExtraDataBuilder</item>
+                <item name="transaction_reference" xsi:type="string">OnTap\MasterCard\Gateway\Request\TransactionReferenceDataBuilder</item>
+                <item name="order_reference" xsi:type="string">OnTap\MasterCard\Gateway\Request\OrderReferenceDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
     <virtualType name="MpgsHpfVaultAuthorizeCommand" type="TnsHpfAuthorizeCommand">
         <arguments>
             <argument name="requestBuilder" xsi:type="object">MpgsHpfVaultAuthorizeDataBuilder</argument>
@@ -809,6 +882,7 @@
             </argument>
         </arguments>
     </virtualType>
+
     <virtualType name="MpgsHpfSaleExtraDataBuilder" type="OnTap\MasterCard\Gateway\Request\ExtraDataBuilder">
         <arguments>
             <argument name="config" xsi:type="object">TnsHpfConfig</argument>
@@ -827,6 +901,15 @@
         </arguments>
     </virtualType>
 
+    <!-- Verify -->
+    <virtualType name="TnsHpfVerifyStrategyCommand" type="OnTap\MasterCard\Gateway\Command\VerificationStrategyCommand">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">TnsHpfCommandPool</argument>
+            <argument name="config" xsi:type="object">TnsHpfConfig</argument>
+            <argument name="successCommand" xsi:type="string">verify_simple</argument>
+        </arguments>
+    </virtualType>
+
     <!-- Capture -->
     <virtualType name="TnsHpfCaptureStrategyCommand" type="OnTap\MasterCard\Gateway\Command\VerificationStrategyCommand">
         <arguments>
@@ -835,6 +918,7 @@
             <argument name="successCommand" xsi:type="string">capture_simple</argument>
         </arguments>
     </virtualType>
+
     <virtualType name="TnsHpfSaleStrategyCommand" type="OnTap\MasterCard\Gateway\Command\SaleStrategyCommand">
         <arguments>
             <argument name="commandPool" xsi:type="object">TnsHpfCommandPool</argument>
@@ -861,6 +945,17 @@
         </arguments>
     </virtualType>
 
+    <!-- Verify command -->
+    <virtualType name="TnsHpfVerifyCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">TnsHpfVerifyDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">TnsHpfTransferFactory</argument>
+            <argument name="client" xsi:type="object">MpgsHpfRestClient</argument>
+            <argument name="handler" xsi:type="object">TnsVerifyResponseHandler</argument>
+            <argument name="validator" xsi:type="object">OnTap\MasterCard\Gateway\Validator\ResponseValidator</argument>
+        </arguments>
+    </virtualType>
+
     <!-- Verify 3D-Secure results -->
     <virtualType name="TnsHpf3dsProcessCommand" type="OnTap\MasterCard\Gateway\Command\GatewayCommand">
         <arguments>
@@ -883,6 +978,33 @@
                 <item name="response" xsi:type="string">OnTap\MasterCard\Gateway\Validator\ThreeDSecureValidator</item>
                 <item name="session" xsi:type="string">OnTap\MasterCard\Gateway\Validator\ThreeDSecure\ProcessValidator</item>
             </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="TnsHpfVerifyDataBuilder" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="operation" xsi:type="string">VerifyOperationDataBuilder</item>
+                <item name="session" xsi:type="string">OnTap\MasterCard\Gateway\Request\Hpf\SessionDataBuilder</item>
+                <item name="order" xsi:type="string">OnTap\MasterCard\Gateway\Request\OrderDataBuilder</item>
+                <item name="authentication_transaction_id" xsi:type="string">OnTap\MasterCard\Gateway\Request\Authentication\AuthenticationTransactionIdBuilder</item>
+                <item name="line_items" xsi:type="string">OnTap\MasterCard\Gateway\Request\LineItemsBuilder</item>
+                <item name="discount" xsi:type="string">OnTap\MasterCard\Gateway\Request\DiscountBuilder</item>
+                <item name="billing" xsi:type="string">OnTap\MasterCard\Gateway\Request\BillingDataBuilder</item>
+                <item name="shipping" xsi:type="string">OnTap\MasterCard\Gateway\Request\ShippingDataBuilder</item>
+                <item name="customer" xsi:type="string">OnTap\MasterCard\Gateway\Request\CustomerDataBuilder</item>
+                <item name="3ds_results" xsi:type="string">TnsHpfThreeDSecureResultDataBuilder</item>
+                <item name="source" xsi:type="string">OnTap\MasterCard\Gateway\Request\SourceDataBuilder</item>
+                <item name="version" xsi:type="string">OnTap\MasterCard\Gateway\Request\VersionDataBuilder</item>
+                <item name="extra" xsi:type="string">MpgsHpfVerifyExtraDataBuilder</item>
+                <item name="transaction_reference" xsi:type="string">OnTap\MasterCard\Gateway\Request\TransactionReferenceDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MpgsHpfVerifyExtraDataBuilder" type="OnTap\MasterCard\Gateway\Request\ExtraDataBuilder">
+        <arguments>
+            <argument name="config" xsi:type="object">TnsHpfConfig</argument>
+            <argument name="field" xsi:type="string">custom_verify_request_data</argument>
         </arguments>
     </virtualType>
 
@@ -1233,7 +1355,21 @@
     <type name="OnTap\MasterCard\Model\VerifyPaymentFlag">
         <arguments>
             <argument name="configPool" xsi:type="array">
-                <item name="mpgs_ach" xsi:type="object">MpgsAchConfig</item>
+                <item name="mpgs_ach" xsi:type="array">
+                    <item name="configProvider" xsi:type="object">MpgsAchConfig</item>
+                    <item name="configPath" xsi:type="string">mapped_payment_action</item>
+                    <item name="configValue" xsi:type="const">OnTap\MasterCard\Api\MethodInterface::MAPPED_ACTION_ORDER_VERIFY</item>
+                </item>
+                <item name="tns_hpf" xsi:type="array">
+                    <item name="configProvider" xsi:type="object">TnsHpfConfig</item>
+                    <item name="configPath" xsi:type="string">payment_action</item>
+                    <item name="configValue" xsi:type="const">Magento\Payment\Model\MethodInterface::ACTION_ORDER</item>
+                </item>
+                <item name="tns_hpf_vault" xsi:type="array">
+                    <item name="configProvider" xsi:type="object">TnsHpfConfig</item>
+                    <item name="configPath" xsi:type="string">payment_action</item>
+                    <item name="configValue" xsi:type="const">Magento\Payment\Model\MethodInterface::ACTION_ORDER</item>
+                </item>
             </argument>
         </arguments>
     </type>

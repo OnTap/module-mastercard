@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [103.9.0] - 2022-10-19
+### Changed
+- Add the “Verify and Tokenize“ Payment Option for the "Hosted Payment Session" Payment Method
+
+
 ## [103.8.0] - 2022-09-12
 ### Changed
 - Authentication by OV SSL Certificate option added
