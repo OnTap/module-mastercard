@@ -28,7 +28,8 @@ define(
             defaults: {
                 template: 'OnTap_MasterCard/payment/ach/hosted-session'
             },
-            getFields: function () {
+
+            getCardFields: function () {
                 return {
                     ach: {
                         accountType: "#ach-account-type",
@@ -38,6 +39,7 @@ define(
                     }
                 }
             },
+
             errorMap: function () {
                 return {
                     'accountType': $t('Invalid account type'),
@@ -46,9 +48,11 @@ define(
                     'routingNumber': $t('Invalid routing number')
                 };
             },
+
             load: function (callback) {
                 require([this.component_url], callback);
             },
+
             configure: function (callback) {
                 var elem = document.getElementById('ach-account-holder');
                 if (elem) {
@@ -57,9 +61,10 @@ define(
                     setTimeout(this.configure.bind(this, callback), 100);
                 }
             },
+
             _configure: function (callback) {
                 PaymentSession.configure({
-                    fields: this.getFields(),
+                    fields: this.getCardFields(),
                     frameEmbeddingMitigation: ['x-frame-options'],
                     callbacks: {
                         initialized: callback,
@@ -67,33 +72,75 @@ define(
                     }
                 }, this.getId());
             },
+
             formSessionUpdate: function (response) {
-                var fields = this.getFields();
+                var fields, errors, message, elemId;
+
+                fields = this.getCardFields();
                 if (response.status === "fields_in_error") {
                     if (response.errors) {
-                        var errors = this.errorMap();
-                        _.keys(response.errors).forEach(function(errorField) {
-                            var message = errors[errorField],
-                                elem_id = fields.ach[errorField] + '-error';
+                        errors = this.errorMap();
+                        _.keys(response.errors).forEach(function (errorField) {
+                            message = errors[errorField];
+                            elemId = fields.ach[errorField] + '-error';
 
-                            $(elem_id).text(message).show();
+                            $(elemId).text(message).show();
                         });
                         this.sessionUpdateErrorCallback(response);
                     }
                 }
+
                 if (response.status === "ok") {
                     this.sessionUpdateCallback(response);
                 }
             },
+
             pay: function (callback, errorCallback) {
-                var fields = this.getFields();
+                var fields, isAchValid, achResult;
+
+                fields = this.getCardFields();
                 _.values(fields.ach).forEach(function (field) {
                     $(field + '-error').hide();
                 });
 
-                this.sessionUpdateErrorCallback = errorCallback;
-                this.sessionUpdateCallback = callback;
-                PaymentSession.updateSessionFromForm('ach', undefined, this.getId());
+                PaymentSession.validate('ach', function (result) {
+                    achResult = result.ach || {};
+                    isAchValid = achResult.isValid || false;
+
+                    if (isAchValid) {
+                        this.sessionUpdateErrorCallback = errorCallback;
+                        this.sessionUpdateCallback = callback;
+                        PaymentSession.updateSessionFromForm('ach', undefined, this.getId());
+                    } else {
+                        this.showValidationErrors(result);
+                        errorCallback(result);
+                    }
+                }.bind(this));
+            },
+
+            showValidationErrors: function (result) {
+                var achResult, errorsMessages, fields;
+
+                achResult = result.ach || {};
+                fields = this.getCardFields();
+                _.values(fields.ach).forEach(function (field) {
+                    $(field + '-error').hide();
+                });
+
+                errorsMessages = this.errorMap();
+                _.keys(fields.ach).forEach(function (fieldKey) {
+                    var fieldData, message, elemId;
+
+                    fieldData = achResult[fieldKey] || false;
+                    if (!fieldData || fieldData.isValid) {
+                        return;
+                    }
+
+                    message = errorsMessages[fieldKey];
+                    elemId = fields.ach[fieldKey] + '-error';
+
+                    $(elemId).text(message).show();
+                })
             }
         });
     }
