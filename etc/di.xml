@@ -18,6 +18,8 @@
     <preference for="OnTap\MasterCard\Api\SessionInformationManagementInterface" type="OnTap\MasterCard\Model\SessionInformationManagement" />
     <preference for="OnTap\MasterCard\Api\VerifyPaymentFlagInterface" type="OnTap\MasterCard\Model\VerifyPaymentFlag" />
 
+    <type name="OnTap\MasterCard\Gateway\Http\Client\Adapter\Rest" shared="false" />
+
     <type name="OnTap\MasterCard\Model\System\Config\Backend\Cert">
         <arguments>
             <argument name="resource" xsi:type="object">Magento\Config\Model\ResourceModel\Config\Data</argument>
@@ -33,7 +35,7 @@
 
     <virtualType name="MpgsHostedLogger" type="Magento\Payment\Model\Method\Logger">
         <arguments>
-            <argument name="config" xsi:type="object">TnsHpfConfig</argument>
+            <argument name="config" xsi:type="object">TnsHostedConfig</argument>
         </arguments>
     </virtualType>
 
