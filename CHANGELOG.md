@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [103.9.1] - 2022-11-23
+### Fixed
+- Client-side validation is not triggered while clicking on the “Place Order“ button for the ACH payment method
+- There is an "Invalid credentials" error message is shown when trying to save module settings even for correct credentials
+
+
 ## [103.9.0] - 2022-10-19
 ### Changed
 - Add the “Verify and Tokenize“ Payment Option for the "Hosted Payment Session" Payment Method
