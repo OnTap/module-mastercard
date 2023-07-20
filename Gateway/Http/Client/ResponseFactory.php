@@ -17,18 +17,18 @@
 
 namespace OnTap\MasterCard\Gateway\Http\Client;
 
-use Zend_Http_Response;
+use Laminas\Http\Response;
 
 class ResponseFactory
 {
     /**
-     * Create a new Zend_Http_Response object from a string
+     * Create a new Response object from a string
      *
      * @param string $response
-     * @return Zend_Http_Response
+     * @return Response
      */
     public function create($response)
     {
-        return Zend_Http_Response::fromString($response);
+        return Response::fromString($response);
     }
 }
