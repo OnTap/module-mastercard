@@ -47,15 +47,15 @@ class Rest extends Curl
         curl_setopt($this->_getResource(), CURLOPT_URL, $url);
         curl_setopt($this->_getResource(), CURLOPT_RETURNTRANSFER, true);
 
-        if ($method == Request::POST) {
+        if ($method == Request::METHOD_POST) {
             curl_setopt($this->_getResource(), CURLOPT_POST, true);
             curl_setopt($this->_getResource(), CURLOPT_POSTFIELDS, $body);
             $headers[] = 'Content-Length: ' . strlen($body);
-        } elseif ($method == Request::PUT) {
-            curl_setopt($this->_getResource(), CURLOPT_CUSTOMREQUEST, Request::PUT);
+        } elseif ($method == Request::METHOD_PUT) {
+            curl_setopt($this->_getResource(), CURLOPT_CUSTOMREQUEST, Request::METHOD_PUT);
             curl_setopt($this->_getResource(), CURLOPT_POSTFIELDS, $body);
             $headers[] = 'Content-Length: ' . strlen($body);
-        } elseif ($method == Request::GET) {
+        } elseif ($method == Request::METHOD_GET) {
             curl_setopt($this->_getResource(), CURLOPT_HTTPGET, true);
         }
 
