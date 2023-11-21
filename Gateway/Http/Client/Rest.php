@@ -23,7 +23,7 @@ use Magento\Payment\Gateway\Http\ClientInterface;
 use Magento\Payment\Gateway\Http\ConverterInterface;
 use Magento\Payment\Gateway\Http\TransferInterface;
 use Magento\Payment\Model\Method\Logger;
-use Zend_Http_Client_Adapter_Interface;
+use Laminas\Http\Client\Adapter\AdapterInterface;
 
 class Rest implements ClientInterface
 {
@@ -68,7 +68,7 @@ class Rest implements ClientInterface
     private $responseFactory;
 
     /**
-     * @var Zend_Http_Client_Adapter_Interface
+     * @var AdapterInterface
      */
     private $adapter;
 
@@ -81,14 +81,14 @@ class Rest implements ClientInterface
      * @param Logger $logger
      * @param ConverterInterface $converter
      * @param ResponseFactory $responseFactory
-     * @param Zend_Http_Client_Adapter_Interface $adapter
+     * @param AdapterInterface $adapter
      * @param Json $json
      */
     public function __construct(
         Logger $logger,
         ConverterInterface $converter,
         ResponseFactory $responseFactory,
-        Zend_Http_Client_Adapter_Interface $adapter,
+        AdapterInterface $adapter,
         Json $json
     ) {
         $this->logger = $logger;
